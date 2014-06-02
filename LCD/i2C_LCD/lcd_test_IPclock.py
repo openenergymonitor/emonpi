@@ -10,8 +10,8 @@ lcd.lcd_display_string("emonPi", 1)
 lcd.lcd_display_string("IP clock test",2)  
 sleep(1)
  
-cmd = "ip addr show wlan0 | grep inet | awk '{print $2}' | cut -d/ -f1"
-#cmd = "ip addr show eth0 | grep inet | awk '{print $2}' | cut -d/ -f1"
+cmd = "ip addr show wlan0 | grep inet | awk '{print $2}' | cut -d/ -f1 | head -n1"
+#cmd = "ip addr show eth0 | grep inet | awk '{print $2}' | cut -d/ -f1 | head -n1"
  
  
 def run_cmd(eth0):
