@@ -47,9 +47,12 @@ print is_connected()
 while 1:
         IP, network = local_IP()
         #lcd.lcd_display_string(datetime.now().strftime('%b %d  %H:%M:%S\n'),1)
+        if IP == "":
+        	lcd.lcd_display_string('local net down',1)
         if IP != "":
         	lcd.lcd_display_string('%s connected' % (network),1)
-        	else lcd.lcd_display_string('local net down',1)
+        	
+        	 
 
         lcd.lcd_display_string('IP %s' % ( IP ),2)
 
