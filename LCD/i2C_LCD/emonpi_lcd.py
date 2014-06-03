@@ -10,6 +10,7 @@ firmware_rev=0.1
 
 print 'emonPi V%s' %(software_rev)
 print 'Firmware: V%s'%(firmware_rev)
+print datetime.now().strftime('%b %d %H:%M')
 
 def lcd_startup(software_rev, firmware_rev):
     lcd.lcd_display_string('emonPi V%s' %(software_rev), 1)
@@ -51,13 +52,15 @@ def is_connected():
   return False
 print 'Internet connected? %s' %(is_connected())
 
+sleep(5)
  
 while 1:
         lcd.lcd_clear()
         IP, network = local_IP()
-        #lcd.lcd_display_string(datetime.now().strftime('%b %d  %H:%M:%S\n'),1)
+        
         if IP == "":
-        	lcd.lcd_display_string('local net down',1)
+        	lcd.lcd_display_string('Awaiting Network',1)
+            lcd.lcd_display_string('Connection......',2)
         if IP != "":
         	lcd.lcd_display_string('%s connected' % (network),1)
         	
@@ -71,11 +74,46 @@ while 1:
         if is_connected() == True:
         	lcd.lcd_display_string('Internet',1)
         	lcd.lcd_display_string('Connected',2)
+        else:
+            lcd.lcd_display_string('Internet',1)
+            lcd.lcd_display_string('Connection FAIL',2)
 
         sleep(5)
+
         lcd.lcd_clear()
-        lcd.lcd_display_string(datetime.now().strftime('%b %d  %H:%M:%S\n'),1)
+        lcd.lcd_display_string(datetime.now().strftime('%b %d %H:%M'),1)
+        lcd.lcd_display_string(datetime.now().strftime('Uptime: 123 days'),2)
         sleep(5)
+
+       
+        lcd.lcd_clear()
+        lcd.lcd_display_string(datetime.now().strftime('Found AC Voltage'),1)
+        lcd.lcd_display_string(datetime.now().strftime('240.2V RMS'),2)
+        sleep(5)
+
+        lcd.lcd_clear()
+        lcd.lcd_display_string(datetime.now().strftime('Real Power '),1)
+        lcd.lcd_display_string(datetime.now().strftime('Sampling Active'),2)
+        sleep(5)
+  
+        lcd.lcd_clear()
+        lcd.lcd_display_string(datetime.now().strftime('CT1 Now: 25000W'),1)
+        lcd.lcd_display_string(datetime.now().strftime('CT2 Now: 120W'),2)
+        sleep(5)
+
+        lcd.lcd_clear()
+        lcd.lcd_display_string(datetime.now().strftime('CT1:005451.2 KWh'),1)
+        lcd.lcd_display_string(datetime.now().strftime('CT2:000065.2 KWh'),2)
+        sleep(5)
+
+        lcd.lcd_clear()
+        lcd.lcd_display_string(datetime.now().strftime('Found 3 DS18B20'),1)
+        lcd.lcd_display_string(datetime.now().strftime('20.2 18.3 16.5'),2)
+        sleep(2)
+        lcd.lcd_display_string(datetime.now().strftime('Temperatures:  '),1)
+        sleep(5)
+
+        
 
 
 
