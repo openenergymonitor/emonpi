@@ -57,15 +57,15 @@ sleep(5)
 while 1:
         lcd.lcd_clear()
         IP, network = local_IP()
-        
+
         if IP == "":
-        	lcd.lcd_display_string('Awaiting Network',1)
-            lcd.lcd_display_string('Connection......',2)
+            lcd.lcd_display_string('Awaiting Network',1) 
+            lcd.lcd_display_string('Connection......',1)
+            
         if IP != "":
         	lcd.lcd_display_string('%s connected' % (network),1)
-        	
-        	 
 
+        	
         lcd.lcd_display_string('IP: %s' % ( IP ),2)
 
         sleep(5)
