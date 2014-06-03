@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import lcddriver
 from subprocess import *
 from time import sleep, strftime
@@ -60,13 +61,11 @@ while 1:
 
         if IP == "":
             lcd.lcd_display_string('Awaiting Network',1) 
-            lcd.lcd_display_string('Connection......',1)
+            lcd.lcd_display_string('Connection......',2)
             
         if IP != "":
-        	lcd.lcd_display_string('%s connected' % (network),1)
-
-        	
-        lcd.lcd_display_string('IP: %s' % ( IP ),2)
+            lcd.lcd_display_string('%s connected' % (network),1)
+            lcd.lcd_display_string('IP: %s' % ( IP ),2)
 
         sleep(5)
         lcd.lcd_clear()
