@@ -13,6 +13,7 @@ void setup()
   Serial.println("emon Pi Shutdown Button test");
   delay(100);
   
+  pinMode(shutdown_switch_pin, INPUT);
   pinMode(shutdown_switch_pin,INPUT_PULLUP);            //enable ATmega328 internal pull-up resistors 
   
   
@@ -21,7 +22,8 @@ void setup()
 void loop()
 {
   
-  if (digitalRead(shutdown_switch_pin == LOW) ){
+  if (digitalRead(shutdown_switch_pin) == 0 ){
+    Serial.println(digitalRead(shutdown_switch_pin));
     Serial.print("Shutdown!");
     Serial.println("sudo halt");
     digitalWrite(emonpi_LED_pin, HIGH);
