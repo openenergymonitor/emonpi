@@ -1,6 +1,9 @@
 
 const byte emonpi_LED_pin=9;
 const byte shutdown_switch_pin = 8;
+const byte emonpi_GPIO_pin=5;              //connected to Pi GPIO 17
+
+long unsigned int start_press=0; 
 
 
 
@@ -16,21 +19,36 @@ void setup()
   pinMode(shutdown_switch_pin, INPUT);
   pinMode(shutdown_switch_pin,INPUT_PULLUP);            //enable ATmega328 internal pull-up resistors 
   
+  pinMode(emonpi_GPIO_pin, OUTPUT);
+  digitalWrite(emonpi_GPIO_pin, LOW);
   
 }
 
 void loop()
 {
   
-  if (digitalRead(shutdown_switch_pin) == 0 ){
-    Serial.println(digitalRead(shutdown_switch_pin));
-    Serial.print("Shutdown!");
-    Serial.println("sudo halt");
-    digitalWrite(emonpi_LED_pin, HIGH);
-    delay(5000);
-  }
+  if (digitalRead(shutdown_switch_pin) == 0 ) shutdown_sequence(); 
   
-
-  digitalWrite(emonpi_LED_pin, LOW);
 }
+
     
+ void shutdown_sequence()
+  {
+    Serial.println("Hold button for 5s to shutdown Pi...release to restart just emonPi ATmega328"); 
+    Serial.print("Shutdown Pi in : ");
+    digitalWrite(emonpi_LED_pin, HIGH);
+    
+    start_press=millis();                                                                                // record time shutdown push button is pressed
+    while( ((millis()-start_press) < 5000))                                                    // time 5s
+    {
+      if  (digitalRead(shutdown_switch_pin) == 1)                                     // if shutdown button is released in less than 5s then soft restart ATmega328 
+        asm volatile ("  jmp 0");                                                                       // restarts sketch but does not reset the peripherals and registers
+      if (millis()-start_press >1000) Serial.println("...5");
+      if (millis()-start_press >2000) Serial.println("...4");
+      if (millis()-start_press >3000) Serial.println("...3");
+      if (millis()-start_press >4000) Serial.println("...2");
+      if (millis()-start_press >4500) { Serial.println("...1"); Serial.println ("SHUTDOWN!");}
+    }
+    digitalWrite(emonpi_GPIO_pin, HIGH);                                                  // sent shutdown signal to Pi GPIO pin after 5s
+    asm volatile ("  jmp 0");                                                                          // soft restart ATmega328    
+}

@@ -572,6 +572,7 @@ void setup () {
 }
 
 void loop () {
+  
 #if TINY
     if (_receive_buffer_index)
         handleInput(inChar());
