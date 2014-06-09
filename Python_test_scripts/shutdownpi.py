@@ -13,7 +13,7 @@ def shutdown(pin):
     call('halt', shell=False)
  
 gpio.setmode(gpio.BOARD) # Set pin numbering to board numbering
-gpio.setup(17, gpio.IN) # Set up pin 7 as an input
-gpio.add_event_detect(17, gpio.RISING, callback=shutdown, bouncetime=200) # Set up an interrupt to look for button presses
+gpio.setup(11, gpio.IN) # Set up pin 11 GPIO 17 as an input
+gpio.add_event_detect(11, gpio.RISING, callback=shutdown, bouncetime=200) # Set up an interrupt to look for button presses
  
 loop() # Run the loop function to keep script running
