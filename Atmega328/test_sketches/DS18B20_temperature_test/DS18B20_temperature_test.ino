@@ -2,156 +2,140 @@
 #include <DallasTemperature.h>
 
 // Data wire is plugged into port 2 on the Arduino
-#define ONE_WIRE_BUS 4                      //emonPi RJ45 DS18B20 one-wire 
-#define TEMPERATURE_PRECISION 9
-
+#define ONE_WIRE_BUS 4                         //emonPi RJ45 DS18B20 one-wire 
+#define TEMPERATURE_PRECISION 12
 
 const byte emonpi_LED_pin=9;
-byte num_sensors; 
+const byte shutdown_switch_pin = 8;
+const byte emonpi_GPIO_pin=5;              //connected to Pi GPIO 17
 
-
-// Setup a oneWire instance to communicate with any OneWire devices (not just Maxim/Dallas temperature ICs)
 OneWire oneWire(ONE_WIRE_BUS);
-
-// Pass our oneWire reference to Dallas Temperature. 
 DallasTemperature sensors(&oneWire);
 
-// arrays to hold device addresses
-DeviceAddress insideThermometer, outsideThermometer;
+
+
+byte num_sensors; 
+long unsigned int start_press;
+byte flag;
+DeviceAddress tmp_address;
+
 
 void setup(void)
 {
   pinMode(emonpi_LED_pin, OUTPUT);
   digitalWrite(emonpi_LED_pin, HIGH);
   
-  // start serial port
-  Serial.begin(9600);
+  pinMode(shutdown_switch_pin, INPUT);
+  pinMode(shutdown_switch_pin,INPUT_PULLUP);            //enable ATmega328 internal pull-up resistors 
+  
+  Serial.begin(57600);
   Serial.println("ATmega328 Startup");
   Serial.println("Dallas Temperature IC Control Library Demo");
 
-  // Start up the library
   sensors.begin();
 
-  // locate devices on the bus
-  Serial.print("Locating devices...");
-  Serial.print("Found ");
-  num_sensors = (sensors.getDeviceCount(), DEC);
+  Serial.println("Locating devices...");
+  delay(1000);
+  Serial.print("found: ");
+  num_sensors = (sensors.getDeviceCount());
   Serial.print(num_sensors);
   Serial.println(" devices.");
-
-  // report parasite power requirements
-  Serial.print("Parasite power is: "); 
-  if (sensors.isParasitePowerMode()) Serial.println("ON");
-  else Serial.println("OFF");
-
-  // assign address manually.  the addresses below will beed to be changed
-  // to valid device addresses on your bus.  device address can be retrieved
-  // by using either oneWire.search(deviceAddress) or individually via
-  // sensors.getAddress(deviceAddress, index)
-  //insideThermometer = { 0x28, 0x1D, 0x39, 0x31, 0x2, 0x0, 0x0, 0xF0 };
-  //outsideThermometer   = { 0x28, 0x3F, 0x1C, 0x31, 0x2, 0x0, 0x0, 0x2 };
-
-  // search for devices on the bus and assign based on an index.  ideally,
-  // you would do this to initially discover addresses on the bus and then 
-  // use those addresses and manually assign them (see above) once you know 
-  // the devices on your bus (and assuming they don't change).
-  // 
-  // method 1: by index
-  if (!sensors.getAddress(insideThermometer, 0)) Serial.println("Unable to find address for Device 0"); 
-  if (!sensors.getAddress(outsideThermometer, 1)) Serial.println("Unable to find address for Device 1"); 
-
-  // method 2: search()
-  // search() looks for the next device. Returns 1 if a new address has been
-  // returned. A zero might mean that the bus is shorted, there are no devices, 
-  // or you have already retrieved all of them.  It might be a good idea to 
-  // check the CRC to make sure you didn't get garbage.  The order is 
-  // deterministic. You will always get the same devices in the same order
-  //
-  // Must be called before search()
-  //oneWire.reset_search();
-  // assigns the first address found to insideThermometer
-  //if (!oneWire.search(insideThermometer)) Serial.println("Unable to find address for insideThermometer");
-  // assigns the seconds address found to outsideThermometer
-  //if (!oneWire.search(outsideThermometer)) Serial.println("Unable to find address for outsideThermometer");
-
-  // show the addresses we found on the bus
-  Serial.print("Device 0 Address: ");
-  printAddress(insideThermometer);
-  Serial.println();
-
-  Serial.print("Device 1 Address: ");
-  printAddress(outsideThermometer);
-  Serial.println();
-
-  // set the resolution to 9 bit
-  sensors.setResolution(insideThermometer, TEMPERATURE_PRECISION);
-  sensors.setResolution(outsideThermometer, TEMPERATURE_PRECISION);
-
-  Serial.print("Device 0 Resolution: ");
-  Serial.print(sensors.getResolution(insideThermometer), DEC); 
-  Serial.println();
-
-  Serial.print("Device 1 Resolution: ");
-  Serial.print(sensors.getResolution(outsideThermometer), DEC); 
-  Serial.println();
   
   digitalWrite(emonpi_LED_pin, LOW);
 }
 
-// function to print a device address
-void printAddress(DeviceAddress deviceAddress)
-{
-  for (uint8_t i = 0; i < 8; i++)
-  {
-    // zero pad the address if necessary
-    if (deviceAddress[i] < 16) Serial.print("0");
-    Serial.print(deviceAddress[i], HEX);
-  }
-}
 
-// function to print the temperature for a device
-void printTemperature(DeviceAddress deviceAddress)
-{
-  float tempC = sensors.getTempC(deviceAddress);
-  Serial.print("Temp C: ");
-  Serial.print(tempC);
-  Serial.print(" Temp F: ");
-  Serial.print(DallasTemperature::toFahrenheit(tempC));
-}
 
-// function to print a device's resolution
-void printResolution(DeviceAddress deviceAddress)
-{
-  Serial.print("Resolution: ");
-  Serial.print(sensors.getResolution(deviceAddress));
-  Serial.println();    
-}
-
-// main function to print information about a device
-void printData(DeviceAddress deviceAddress)
-{
-  Serial.print("Device Address: ");
-  printAddress(deviceAddress);
-  Serial.print(" ");
-  printTemperature(deviceAddress);
-  Serial.println();
-}
-
-void loop(void)
+void loop()
 { 
   digitalWrite(emonpi_LED_pin, HIGH);
   sensors.requestTemperatures();
-
-
-  // print the device information
-  printData(insideThermometer);
-  printData(outsideThermometer);
   
-   Serial.print("Found ");
-  Serial.print(num_sensors );
-  Serial.println(" devices.");
+   Serial.print("Found ");  Serial.print(num_sensors ); Serial.println(" devices.");
+ 
+   for(int i=0;i<num_sensors; i++)
+  {
+    sensors.getAddress(tmp_address, i);
+    printAddress(tmp_address);
+    Serial.println();
+  }
   
+  if (num_sensors >= 0) 
+    take_ds18b20_reading();
+
   delay(5000);
   digitalWrite(emonpi_LED_pin, LOW);
+  if (digitalRead(shutdown_switch_pin) == 0 ) shutdown_sequence(); 
+  
+ delay(5000);
+}
+
+
+void printAddress(DeviceAddress deviceAddress)
+{
+  Serial.print("{ ");
+  for (uint8_t i = 0; i < 8; i++)
+  {
+    // zero pad the address if necessary
+    Serial.print("0x");
+    if (deviceAddress[i] < 16) Serial.print("0");
+    Serial.print(deviceAddress[i], HEX);
+    if (i<7) Serial.print(", ");
+  }
+  Serial.print(" }");
+}  
+  
+void take_ds18b20_reading()   
+{
+  // Loop through each device, print out temperature data
+  for(int i=0;i<num_sensors; i++)
+  {
+    // Search the wire for address
+    if(sensors.getAddress(tmp_address, i))
+      {	
+           sensors.setResolution(tmp_address, TEMPERATURE_PRECISION);
+           
+           // Get readings. We must wait for ASYNC_DELAY due to power-saving (waitForConversion = false)
+           sensors.requestTemperatures();                                   
+           float temp1=(sensors.getTempC(tmp_address));
+           
+           // Payload will maintain previous reading unless the temperature is within range.
+           if (temperature_in_range(temp1)){
+           Serial.print(i); Serial.print(": "); Serial.println(temp1);
+	   } 
+          else 
+          Serial.print(i); Serial.print(": ");  Serial.println("ghost device! Check your power requirements and cabling"); 
+	//else ghost device! Check your power requirements and cabling
+      }
+  }
+}
+   
+
+
+
+boolean temperature_in_range(float temp)
+{
+  // Only accept the reading if it's within a desired range.
+  float minimumTemp = -40.0;
+  float maximumTemp = 125.0;
+
+  return temp > minimumTemp && temp < maximumTemp;
+}
+
+
+ void shutdown_sequence()
+  {
+    Serial.println("Hold button for 5s to shutdown Pi...release to restart just emonPi ATmega328"); 
+    digitalWrite(emonpi_LED_pin, HIGH);
+    
+    start_press=millis();                                                                 // record time shutdown push button is pressed
+    flag=0;
+    while( ((millis()-start_press) < 5000))                                               // time 5s
+    {
+      if  (digitalRead(shutdown_switch_pin) == 1)                                         // if shutdown button is released in less than 5s then soft restart ATmega328 
+        asm volatile ("  jmp 0");                                                         // restarts sketch but does not reset the peripherals and register
+    }
+    digitalWrite(emonpi_GPIO_pin, HIGH);                                                  // sent shutdown signal to Pi GPIO pin after 5s
+    asm volatile ("  jmp 0");                                                             // soft restart ATmega328    
 }
 
