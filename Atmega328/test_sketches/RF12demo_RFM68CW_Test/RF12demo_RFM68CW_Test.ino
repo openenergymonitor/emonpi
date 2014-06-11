@@ -28,7 +28,7 @@
 #define TINY        0
 #define SERIAL_BAUD 57600   // adjust as needed
 #define DATAFLASH   0       // set to 0 for non-JeeLinks, else 4/8/16 (Mbit)
-#define LED_PIN     9       // activity LED, comment out to disable
+#define LED_PIN     6       // activity LED, comment out to disable
 #endif
 
 /// Save a few bytes of flash by declaring const if used more than once.
