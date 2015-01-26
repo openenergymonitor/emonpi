@@ -1,7 +1,4 @@
 
-
-
-
 int check_for_DS18B20()                                      //Setup and for presence of DS18B20, return number of sensors 
 {
   sensors.begin();

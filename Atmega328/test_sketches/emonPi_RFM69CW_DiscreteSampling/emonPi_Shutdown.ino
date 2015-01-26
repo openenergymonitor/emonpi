@@ -1,61 +1,16 @@
 
-#include <Wire.h> 
-#include <LiquidCrystal_I2C.h>
 
-LiquidCrystal_I2C lcd(0x27,16,2);  // set the LCD address to 0x20 for a 16 chars and 2 line display
-
-const byte emonpi_LED_pin=9;
-const byte shutdown_switch_pin = 8;
-const byte emonpi_GPIO_pin=5;              //connected to Pi GPIO 17
-
-long unsigned int start_press=0; 
-byte flag=0;
-
-void setup()
-{
-  pinMode(emonpi_LED_pin, OUTPUT);
-  digitalWrite(emonpi_LED_pin, HIGH);
-  
-  pinMode(shutdown_switch_pin, INPUT);
-  pinMode(shutdown_switch_pin,INPUT_PULLUP);            //enable ATmega328 internal pull-up resistors 
-  
-  pinMode(emonpi_GPIO_pin, OUTPUT);
-  digitalWrite(emonpi_GPIO_pin, LOW);
-  
-  Serial.begin(57600);
-  Serial.println("ATmega328 Startup");
-  Serial.println("I2C LCD Hand-over test");
-  delay(100);
-  
-  lcd.init();                      // initialize the lcd 
- 
-  // Print a message to the LCD.
-  lcd.backlight();                                  // lcd.noBacklight() 
-  lcd.clear();
-  lcd.print("RaspberryPi"); lcd.setCursor(0, 1);
-  lcd.print("Booting....");
-  Wire.endTransmission();   //might not be needed? 
-  
-  digitalWrite(emonpi_LED_pin, LOW);
-}
-
-void loop()
-{
-  
-  if (digitalRead(shutdown_switch_pin) == 0 ) shutdown_sequence(); 
-
-}
 
 void shutdown_sequence()
   {
-    Serial.println("Hold button for 5s to shutdown Pi...release to restart just emonPi ATmega328"); 
+    Serial.println("Hold to shutdown...release to reset MCU"); 
     lcd.clear();
-    lcd.print("Hold to shutdown"); lcd.setCursor(0, 1);
-    lcd.print("Release to reset");
-    digitalWrite(emonpi_LED_pin, HIGH);
+    lcd.print("RESET"); lcd.setCursor(0, 1);
+    lcd.print("Hold to Shutdown");
+    digitalWrite(LEDpin, HIGH);
     
     start_press=millis();                                                                 // record time shutdown push button is pressed
-    flag=0;
+    byte flag=0;
     while( ((millis()-start_press) < 5000))                                               // time 5s
     {
       if  (digitalRead(shutdown_switch_pin) == 1)                                         // if shutdown button is released in less than 5s then soft restart ATmega328 
@@ -116,3 +71,4 @@ void shutdown_sequence()
      lcd.clear(); lcd.print("Power Off");
   
 }
+
