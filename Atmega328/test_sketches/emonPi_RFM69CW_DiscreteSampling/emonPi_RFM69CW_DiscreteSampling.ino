@@ -7,7 +7,7 @@
   
   Transmitt values via RFM69CW radio
   
-   -----------------------------------------
+   ----------------------------------------b-
   Part of the openenergymonitor.org project
   
   Authors: Glyn Hudson & Trystan Lea 
@@ -27,7 +27,7 @@
 15-16	- Base Station & logging nodes
 17-30	- Environmental sensing nodes (temperature humidity etc.)
 31	- Special allocation in JeeLib RFM12 driver - Node31 can communicate with nodes on any network group
--------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------b------------------------------------------------------
 
 
 Change Log:
@@ -57,7 +57,7 @@ boolean debug =                   TRUE;
 const int BAUD_RATE=              9600;
 
 const byte Vrms=                  230;                               // Vrms for apparent power readings (when no AC-AC voltage sample is present)
-const byte TIME_BETWEEN_READINGS= 1;                                 // Time between readings (S)  
+const byte TIME_BETWEEN_READINGS= 1000;                              // Time between readings (mS)  
 
 
 //http://openenergymonitor.org/emon/buildingblocks/calibration
@@ -77,6 +77,7 @@ const int timeout=                2000;                               // emonLib
 const int ACAC_DETECTION_LEVEL=   3000;
 const int TEMPERATURE_PRECISION=  11;                                 // 9 (93.8ms),10 (187.5ms) ,11 (375ms) or 12 (750ms) bits equal to resplution of 0.5C, 0.25C, 0.125C and 0.0625C
 #define ASYNC_DELAY               375                                 // DS18B20 conversion delay - 9bit requres 95ms, 10bit 187ms, 11bit 375ms and 12bit resolution takes 750ms
+boolean RF_STATUS=                1;
 //-------------------------------------------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -100,9 +101,9 @@ byte allAddress [4][8];  // 8 bytes per address, MAX 4!
 //-------------------------------------------------------------------------------------------------------------------------------------------
 
 //-----------------------RFM12B / RFM69CW SETTINGS----------------------------------------------------------------------------------------------------
-#define RF_freq RF12_433MHZ                                        // Frequency of RF69CW module can be RF12_433MHZ, RF12_868MHZ or RF12_915MHZ. You should use the one matching the module you have.
+byte RF_freq=RF12_433MHZ;                                        // Frequency of RF69CW module can be RF12_433MHZ, RF12_868MHZ or RF12_915MHZ. You should use the one matching the module you have.
 byte nodeID = 5;                                                   // emonpi node ID
-const int networkGroup = 210;  
+int networkGroup = 210;  
 typedef struct { int power1, power2, Vrms, temp; } PayloadTX;     // create structure - a neat way of packaging data for RF comms
   PayloadTX emonPi; 
 //-------------------------------------------------------------------------------------------------------------------------------------------
@@ -112,21 +113,38 @@ typedef struct { int power1, power2, Vrms, temp; } PayloadTX;     // create stru
 //Global Variables 
 double vrms;
 boolean CT1, CT2, ACAC, DS18B20_STATUS;
-byte CT_count=0;
-byte flag; 
+byte CT_count=0;                                                 // Number of CT sensors detected
+byte flag;                                                       // flag to record shutdown push button press
+static byte stack[RF12_MAXDATA+4], top, sendLen, dest;                                  // RF variables 
+static char cmd;
+static word value;                                               // Used to store serial input
 long unsigned int start_press=0;                                 // Record time emonPi shutdown push switch is pressed
+unsigned long last_sample=0;                                     // Record millis time of last discrete sample
+
+
+const char helpText1[] PROGMEM =
+"\n"
+"Available commands:\n"
+"  <nn> i     - set node ID (standard node ids are 1..30)\n"
+"  <n> b      - set MHz band (4 = 433, 8 = 868, 9 = 915)\n"
+"  <nnn> g    - set network group (RFM12 only allows 212, 0 = any)\n"
+"  <n> c      - set collect mode (advanced, normally 0)\n"
+"  ...,<nn> a - send data packet to node <nn>, request ack\n"
+"  ...,<nn> s - send data packet to node <nn>, no ack\n"
+;
 
 //-------------------------------------------------------------------------------------------------------------------------------------------
 // SETUP ********************************************************************************************
 //-------------------------------------------------------------------------------------------------------------------------------------------
 void setup()
 { 
-
+  delay(100);
   int numsensors =  check_for_DS18B20();                //check for presence of DS18B20 and return number of sensors 
 
   emonPi_startup();                                                     // emonPi startup proceadure, check for AC waveform and print out debug
   emonPi_LCD_Startup();                                                 // Startup emonPi LCD and print startup notice
   CT_Detect();
+  if (RF_STATUS==1) RF_Setup(); 
   serial_print_startup();
 
  
@@ -142,47 +160,80 @@ void setup()
  
 } //end setup
 
+
+//-------------------------------------------------------------------------------------------------------------------------------------------
+// LOOP ********************************************************************************************
+//-------------------------------------------------------------------------------------------------------------------------------------------
 void loop()
 {
-  if (digitalRead(shutdown_switch_pin) == 0 ) shutdown_sequence();    //if emonPi shutdown butten pressed then initiate shutdown sequence
-  
-  if (ACAC) {
-    delay(200);                                //if powering from AC-AC allow time for power supply to settle    
-    emonPi.Vrms=0;                      //Set Vrms to zero, this will be overwirtten by either CT 1-2
-  }
-  
-  if (CT1) 
-  {
-   if (ACAC) 
-   {
-     ct1.calcVI(no_of_half_wavelengths,timeout); emonPi.power1=ct1.realPower;
-     emonPi.Vrms=ct1.Vrms*100;
-   }
-   else
-     emonPi.power1 = ct1.calcIrms(no_of_samples)*Vrms;                               // Calculate Apparent Power 1  1480 is  number of samples
-   //if (debug==1) {Serial.print(emonPi.power1); Serial.print(" ");delay(5);} 
+  digitalWrite(LEDpin, LOW);
 
-  }
+  if (digitalRead(shutdown_switch_pin) == 0 ) shutdown_sequence();    // if emonPi shutdown butten pressed then initiate shutdown sequence
   
-  if (CT2) 
-  {
-   if (ACAC) 
-   {
-     ct2.calcVI(no_of_half_wavelengths,timeout); emonPi.power2=ct2.realPower;
-     emonPi.Vrms=ct2.Vrms*100;
-   }
-   else
-     emonPi.power2 = ct2.calcIrms(no_of_samples)*Vrms;                               // Calculate Apparent Power 1  1480 is  number of samples
-  // if (debug==1) {Serial.print(emonPi.power2); Serial.print(" ");delay(5);}  
+  if (Serial.available())                                             // If serial input is received
+      handleInput(Serial.read());
+
+  if (RF_STATUS==1){                                                  // IF RF module is present and enabled then perform RF tasks
+    if (RF_Rx_Handle()==1){                                           // Returns true if RF packet is received                                            
+      digitalWrite(LEDpin, HIGH); 
+    }
+    send_RF();                                                        // Transmitt data packets if needed
   }
 
-    if (DS18B20_STATUS==1)                                                                             //Get temperature from DS18B20 if sensor is present
-        emonPi.temp=get_temperature();
+ 
+
+
+  
+  
+   
+
+  unsigned long currentMillis = millis();
+  
+  if (currentMillis - last_sample > TIME_BETWEEN_READINGS)
+  {
+    if (ACAC) {
+      delay(200);                                //if powering from AC-AC allow time for power supply to settle    
+      emonPi.Vrms=0;                      //Set Vrms to zero, this will be overwirtten by either CT 1-2
+    }
+    
+    if (CT1) 
+    {
+     if (ACAC) 
+     {
+       ct1.calcVI(no_of_half_wavelengths,timeout); emonPi.power1=ct1.realPower;
+       emonPi.Vrms=ct1.Vrms*100;
+     }
+     else
+       emonPi.power1 = ct1.calcIrms(no_of_samples)*Vrms;                               // Calculate Apparent Power 1  1480 is  number of samples
+     //if (debug==1) {Serial.print(emonPi.power1); Serial.print(" ");delay(5);} 
+
+    }
+    
+    if (CT2) 
+    {
+     if (ACAC) 
+     {
+       ct2.calcVI(no_of_half_wavelengths,timeout); emonPi.power2=ct2.realPower;
+       emonPi.Vrms=ct2.Vrms*100;
+     }
+     else
+       emonPi.power2 = ct2.calcIrms(no_of_samples)*Vrms;                               // Calculate Apparent Power 1  1480 is  number of samples
+    // if (debug==1) {Serial.print(emonPi.power2); Serial.print(" ");delay(5);}  
+    }
+
+    if (DS18B20_STATUS==1) emonPi.temp=get_temperature();                                                                             //Get temperature from DS18B20 if sensor is present
+          
     //Serial.print(emonPi.temp);
+    
     send_emonpi_serial();                                        //Send emonPi data to Pi serial using struct packet structure 
-     
-     delay(TIME_BETWEEN_READINGS*1000);
-     digitalWrite(LEDpin, HIGH); delay(200); digitalWrite(LEDpin, LOW);    
+       
+    //delay(TIME_BETWEEN_READINGS*1000);
+    
+    digitalWrite(LEDpin, HIGH);   
+    last_sample = currentMillis;                               //Record time of sample  
+    }
+
+  
     
  
 } // end loop---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
