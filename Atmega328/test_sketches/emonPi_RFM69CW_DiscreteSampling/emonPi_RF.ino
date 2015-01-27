@@ -21,10 +21,12 @@ boolean RF_Rx_Handle(){
 	    if (rf12_crc == 0)							//Check packet is good
 	    {
 	    	Serial.print("OK");
-	    	Serial.print(' ');							//Print RF packet to serial in struct format
-	    	Serial.print((word)rf12_hdr & 0x1F);
-	    	for (byte i = 0; i < n; ++i) 
+	    	Serial.print(" ");							//Print RF packet to serial in struct format
+	    	Serial.print(rf12_hdr & 0x1F);				// Extract and print nod ID
+	    	for (byte i = 0; i < n; ++i) {
 	      		Serial.print((word)rf12_data[i]);
+	      		Serial.print(' ');
+	    	}
 
 	      	#if RF69_COMPAT
 		    // display RSSI value after packet data
@@ -33,6 +35,12 @@ boolean RF_Rx_Handle(){
 		    Serial.print(") ");
 			#endif
 		    	Serial.println();
+
+	        if (RF12_WANTS_ACK==1) {
+	           Serial.print(" -> ack");
+	           rf12_sendStart(RF12_ACK_REPLY, 0, 0);
+	       }
+
 	    return(1);
 	    }
 	    else
@@ -55,6 +63,7 @@ void send_RF(){
 	      header |= RF12_HDR_DST | dest;
 	    rf12_sendStart(header, stack, sendLen);
 	    cmd = 0;
+	    digitalWrite(LEDpin, HIGH);
 	}
 
 }
