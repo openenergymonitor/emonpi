@@ -3,79 +3,81 @@
 void emonPi_LCD_Startup() {
   lcd.init();                      // initialize the lcd 
   lcd.backlight();                 // Or lcd.noBacklight() 
-  lcd.print(PSTR("emonPi V")); lcd.print(firmware_version);
-  lcd.setCursor(0, 1); lcd.print(PSTR("OpenEnergyMon"));
+  lcd.print("emonPi V"); lcd.print(firmware_version);
+  lcd.setCursor(0, 1); lcd.print("OpenEnergyMon");
   delay(2000);
-    lcd.setCursor(0, 1); lcd.print(PSTR("Detecting CT's..")); 
+    lcd.setCursor(0, 1); lcd.print("Detecting CT's.."); 
 } 
 
 void serial_print_startup(){
   //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   lcd.clear(); 
 
-  Serial.print(PSTR("CT 1 Cal: ")); Serial.println(Ical1);
-  Serial.print(PSTR("CT 2 Cal: ")); Serial.println(Ical2);
+  Serial.print("CT 1 Cal: "); Serial.println(Ical1);
+  Serial.print("CT 2 Cal: "); Serial.println(Ical2);
   delay(1000);
 
-  Serial.print(PSTR("VRMS AC ~"));
-  Serial.print(vrms,0); Serial.println(PSTR("V"));
+  Serial.print("VRMS AC ~");
+  Serial.print(vrms,0); Serial.println("V");
 
   if (ACAC) 
   {
-    lcd.print(PSTR("AC Wave Detected"));
-    Serial.println(PSTR("AC Wave Detected - Real Power calc enabled"));
-    if (USA==TRUE) Serial.println(PSTR("USA mode")); 
-    Serial.print(PSTR("Vcal: ")); Serial.println(Vcal);
-    Serial.print(PSTR("Phase Shift: ")); Serial.println(phase_shift);
+    lcd.print("AC Wave Detected");
+    Serial.println("AC Wave Detected - Real Power calc enabled");
+    if (USA==TRUE) Serial.println("USA mode"); 
+    Serial.print("Vcal: "); Serial.println(Vcal);
+    Serial.print("Phase Shift: "); Serial.println(phase_shift);
   }
   else 
   {
-    lcd.print(PSTR("AC NOT Detected"));
-   Serial.println(PSTR("AC NOT detected - Apparent Power calc enabled"));
-   Serial.print(PSTR("Assuming VRMS to be ")); Serial.print(Vrms); Serial.println(PSTR("V"));
+    lcd.print("AC NOT Detected");
+   Serial.println("AC NOT detected - Apparent Power calc enabled");
+   Serial.print("Assuming VRMS to be "); Serial.print(Vrms); Serial.println("V");
  }  
 
-lcd.setCursor(0, 1); lcd.print(PSTR("Detected "));
+lcd.setCursor(0, 1); lcd.print("Detected ");
 
   if (CT_count==0) {
-    Serial.println(PSTR("NO CT detected, sampling from CT1 anyway"));
-    lcd.print(PSTR("No CT's"));
+    Serial.println("NO CT detected, sampling from CT1 anyway");
+    lcd.print("No CT's");
   }
    else   
    {
     
      if (CT1) {
-      Serial.println(PSTR("CT 1 detected"));
-      lcd.print(PSTR("CT1 "));
+      Serial.println("CT 1 detected");
+      lcd.print("CT1 ");
     }
      if (CT2) {
-      Serial.println(PSTR("CT 2 detected"));
-      lcd.print(PSTR("CT2"));
+      Serial.println("CT 2 detected");
+      lcd.print("CT2");
     }
    }
   if (DS18B20_STATUS==1) {
-    Serial.print(PSTR("Detected ")); 
+    Serial.print("Detected "); 
     Serial.print(numSensors); 
-    Serial.println(PSTR(" DS18B20"));
+    Serial.println(" DS18B20");
     delay(5000);
     lcd.clear();
-    lcd.print(PSTR("Detected: ")); lcd.print(numSensors); 
-    lcd.setCursor(0, 1); lcd.print(PSTR("DS18B20 Temp")); 
+    lcd.print("Detected: "); lcd.print(numSensors); 
+    lcd.setCursor(0, 1); lcd.print("DS18B20 Temp"); 
   }
-  else Serial.println(PSTR("Zero DS18B20 temp sensor detected"));
+  else Serial.println("Zero DS18B20 temp sensor detected");
 
-  #if (RF69_COMPAT)
-    Serial.println(PSTR("RFM69CW Init: "));
-  #else
-    Serial.println(PSTR("RFM12B Init: "));
-  #endif
+  if (RF_STATUS == 1){
+    #if (RF69_COMPAT)
+      Serial.println("RFM69CW Init: ");
+    #else
+      Serial.println("RFM12B Init: ");
+    #endif
 
-  Serial.print(PSTR("Node ")); Serial.print(nodeID); 
-  Serial.print(PSTR(" Freq ")); 
-  if (RF_freq == RF12_433MHZ) Serial.print(PSTR("433Mhz"));
-  if (RF_freq == RF12_868MHZ) Serial.print(PSTR("868Mhz"));
-  if (RF_freq == RF12_915MHZ) Serial.print(PSTR("915Mhz")); 
-  Serial.print(PSTR(" Network ")); Serial.println(networkGroup);
+    Serial.print("Node "); Serial.print(nodeID); 
+    Serial.print(" Freq "); 
+    if (RF_freq == RF12_433MHZ) Serial.print("433Mhz");
+    if (RF_freq == RF12_868MHZ) Serial.print("868Mhz");
+    if (RF_freq == RF12_915MHZ) Serial.print("915Mhz"); 
+    Serial.print(" Network "); Serial.println(networkGroup);
+  }
   delay(500);  
 }
 
@@ -145,8 +147,20 @@ static void handleInput (char c) {
         default:
           showString(helpText1);
       } //end case 
-        
+    //Print Current RF config  
+    Serial.print(' ');
+    Serial.print((char) ('@' + (nodeID & RF12_HDR_MASK)));
+    Serial.print(" i");
+    Serial.print(nodeID & RF12_HDR_MASK);   
+    Serial.print(" g");
+    Serial.print(networkGroup);
+    Serial.print(" @ ");
+    Serial.print(RF_freq == RF12_433MHZ ? 433 :
+                 RF_freq == RF12_868MHZ ? 868 :
+                 RF_freq == RF12_915MHZ ? 915 : 0);
+    Serial.print(" MHz"); 
     }
+  value = top = 0;
 }
 
 

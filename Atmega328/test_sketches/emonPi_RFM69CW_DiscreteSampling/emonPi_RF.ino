@@ -20,28 +20,28 @@ boolean RF_Rx_Handle(){
 	    byte n = rf12_len;
 	    if (rf12_crc == 0)							//Check packet is good
 	    {
-	    	Serial.print(PSTR("OK"));
-	    }
+	    	Serial.print("OK");
+	    	Serial.print(' ');							//Print RF packet to serial in struct format
+	    	Serial.print((word)rf12_hdr & 0x1F);
+	    	for (byte i = 0; i < n; ++i) 
+	      		Serial.print((word)rf12_data[i]);
 
-	    Serial.print(' ');							//Print RF packet to serial in struct format
-	    Serial.print((word)rf12_hdr & 0x1F);
-	    for (byte i = 0; i < n; ++i) {
-	      Serial.print((word)rf12_data[i]);
-	    }
-
-	    #if RF69_COMPAT
-	    // display RSSI value after packet data
-	    Serial.print(PSTR(" ("));
-	    Serial.print(-(RF69::rssi>>1));
-	    Serial.print(PSTR(") "));
-		#endif
-	    	Serial.println();
-
+	      	#if RF69_COMPAT
+		    // display RSSI value after packet data
+		    Serial.print(" (");
+		    Serial.print(-(RF69::rssi>>1));
+		    Serial.print(") ");
+			#endif
+		    	Serial.println();
 	    return(1);
-	}
-	else
-		return(0);
+	    }
+	    else
+			return(0);
+	       
+	} //end recDone
+	
 }
+
 
 void send_RF(){
 

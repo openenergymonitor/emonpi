@@ -37,7 +37,10 @@ Change Log:
 
 #define emonTxV3                                                      // Tell emonLib this is the emonPi V3 - don't read Vcc assume Vcc = 3.3V as is always the case on emonPi eliminates bandgap error and need for calibration http://harizanov.com/2013/09/thoughts-on-avr-adc-accuracy/
 #define RF69_COMPAT 1                                                 // Set to 1 if using RFM69CW or 0 is using RFM12B
+
 #include <JeeLib.h>                                                   // https://github.com/jcw/jeelib - Tested with JeeLib 3/11/14
+#include <avr/pgmspace.h>
+#include <util/parity.h>
 ISR(WDT_vect) { Sleepy::watchdogEvent(); }                            // Attached JeeLib sleep function to Atmega328 watchdog -enables MCU to be put into sleep mode inbetween readings to reduce power consumption 
 
 #include "EmonLib.h"                                                  // Include EmonLib energy monitoring library https://github.com/openenergymonitor/EmonLib
@@ -57,7 +60,7 @@ boolean debug =                   TRUE;
 const int BAUD_RATE=              9600;
 
 const byte Vrms=                  230;                               // Vrms for apparent power readings (when no AC-AC voltage sample is present)
-const byte TIME_BETWEEN_READINGS= 1000;                              // Time between readings (mS)  
+const int TIME_BETWEEN_READINGS=  2000;                              // Time between readings (mS)  
 
 
 //http://openenergymonitor.org/emon/buildingblocks/calibration
@@ -139,12 +142,14 @@ const char helpText1[] PROGMEM =
 void setup()
 { 
   delay(100);
+  
+  if (RF_STATUS==1) RF_Setup(); 
   int numsensors =  check_for_DS18B20();                //check for presence of DS18B20 and return number of sensors 
-
   emonPi_startup();                                                     // emonPi startup proceadure, check for AC waveform and print out debug
   emonPi_LCD_Startup();                                                 // Startup emonPi LCD and print startup notice
   CT_Detect();
-  if (RF_STATUS==1) RF_Setup(); 
+  
+   
   serial_print_startup();
 
  
@@ -177,19 +182,12 @@ void loop()
     if (RF_Rx_Handle()==1){                                           // Returns true if RF packet is received                                            
       digitalWrite(LEDpin, HIGH); 
     }
-    send_RF();                                                        // Transmitt data packets if needed
+    //send_RF();                                                        // Transmitt data packets if needed
   }
 
  
-
-
   
-  
-   
-
-  unsigned long currentMillis = millis();
-  
-  if (currentMillis - last_sample > TIME_BETWEEN_READINGS)
+  if ((millis() - last_sample) > TIME_BETWEEN_READINGS)
   {
     if (ACAC) {
       delay(200);                                //if powering from AC-AC allow time for power supply to settle    
@@ -230,7 +228,7 @@ void loop()
     //delay(TIME_BETWEEN_READINGS*1000);
     
     digitalWrite(LEDpin, HIGH);   
-    last_sample = currentMillis;                               //Record time of sample  
+    last_sample = millis();                               //Record time of sample  
     }
 
   

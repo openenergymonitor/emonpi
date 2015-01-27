@@ -22,9 +22,9 @@ void emonPi_startup()                                                     //emon
   digitalWrite(emonpi_GPIO_pin, LOW);
 
   Serial.begin(BAUD_RATE);
-  Serial.print(PSTR("emonPi Discrete Sampling V")); Serial.println(firmware_version);
-  Serial.println(PSTR("OpenEnergyMonitor.org"));
-  Serial.println(PSTR("POST.....wait 10s"));
+  Serial.print("emonPi Discrete Sampling V"); Serial.println(firmware_version);
+  Serial.println("OpenEnergyMonitor.org");
+  Serial.println("POST.....wait 10s");
 }
 
 
