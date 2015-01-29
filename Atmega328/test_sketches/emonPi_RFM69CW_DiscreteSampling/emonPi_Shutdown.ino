@@ -18,7 +18,7 @@ void shutdown_sequence()
       
       if ((millis()-start_press >1000) && (flag==0)) 
       {
-        Serial.println("...5"); 
+        Serial.println(".5"); 
         flag=1;
          lcd.clear();
         lcd.print("5s to shutdown"); lcd.setCursor(0, 1);
@@ -36,7 +36,7 @@ void shutdown_sequence()
 
       if ((millis()-start_press >3000) && (flag==2)) 
       {
-        Serial.println("...3"); 
+        Serial.println(".3"); 
         flag=3;
          lcd.clear();
         lcd.print("3s to shutdown"); lcd.setCursor(0, 1);
@@ -45,7 +45,7 @@ void shutdown_sequence()
       
       if ((millis()-start_press >4000) && (flag==3)) 
       {
-        Serial.println("...2"); 
+        Serial.println(".2"); 
         flag=4;
          lcd.clear();
         lcd.print("2s to shutdown"); lcd.setCursor(0, 1);
