@@ -22,7 +22,7 @@ boolean RF_Rx_Handle(){
 	    {
 	    	Serial.print("OK");
 	    	Serial.print(" ");							//Print RF packet to serial in struct format
-	    	Serial.print(rf12_hdr & 0x1F);				// Extract and print nod ID
+	    	Serial.print(rf12_hdr & 0x1F);				// Extract and print node ID
 	    	Serial.print(" ");
 	    	for (byte i = 0; i < n; ++i) {
 	      		Serial.print((word)rf12_data[i]);
