@@ -66,6 +66,77 @@ void send_RF(){
 	    cmd = 0;
 	    digitalWrite(LEDpin, HIGH);
 	}
+}
 
+
+static void handleInput (char c) {
+  if ('0' <= c && c <= '9') {
+    value = 10 * value + c - '0';
+    return;
+  }
+
+  if (c == ',') {
+    if (top < sizeof stack)
+      stack[top++] = value; // truncated to 8 bits
+    value = 0;
+    return;
+  }
+
+  if (c > ' ') {
+
+    switch (c) {
+
+      case 'i': //set node ID
+        if (value){
+          nodeID = value;
+          if (RF_STATUS==1) rf12_initialize(nodeID, RF_freq, networkGroup);
+        break;
+      }
+
+      case 'b': // set band: 4 = 433, 8 = 868, 9 = 915
+        value = bandToFreq(value);
+        if (value){
+          RF_freq = value;
+          if (RF_STATUS==1) rf12_initialize(nodeID, RF_freq, networkGroup);
+        }
+        break;
+    
+      case 'g': // set network group
+        if (value){
+          networkGroup = value;
+          if (RF_STATUS==1) rf12_initialize(nodeID, RF_freq, networkGroup);
+        }
+          break;
+
+      case 'a': // send packet to node ID N, request an ack
+      case 's': // send packet to node ID N, no ack
+        cmd = c;
+        sendLen = top;
+        dest = value;
+        break;
+
+        default:
+          showString(helpText1);
+      } //end case 
+    //Print Current RF config  
+    Serial.print(' ');
+    Serial.print((char) ('@' + (nodeID & RF12_HDR_MASK)));
+    Serial.print(" i");
+    Serial.print(nodeID & RF12_HDR_MASK);   
+    Serial.print(" g");
+    Serial.print(networkGroup);
+    Serial.print(" @ ");
+    Serial.print(RF_freq == RF12_433MHZ ? 433 :
+                 RF_freq == RF12_868MHZ ? 868 :
+                 RF_freq == RF12_915MHZ ? 915 : 0);
+    Serial.print(" MHz"); 
+    Serial.println(" ");
+    }
+  value = top = 0;
+}
+
+
+static byte bandToFreq (byte band) {
+  return band == 4 ? RF12_433MHZ : band == 8 ? RF12_868MHZ : band == 9 ? RF12_915MHZ : 0;
 }
  
