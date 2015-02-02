@@ -1,8 +1,9 @@
 #!/bin/bash
 
-
+sudo cp ~/emonpi/shutdownpi/shutdownpi /usr/bin/local/shutdownpi
 sudo ln ~/emonpi/shutdownpi/shutdownpi /usr/bin/local/shutdownpi
 sudo chmod a+x /usr/bin/local/shutdownpi
+sudo cp ~/emonpi/shutdownpi/shutdownpi.sh /etc/init.d
 sudo ln ~/emonpi/shutdownpi/shutdownpi.sh /etc/init.d
 sudo update-rc.d shutdownpi.sh defaults
 sudo service shutdownpi start 
