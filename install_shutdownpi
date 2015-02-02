@@ -1,0 +1,9 @@
+#!/bin/bash
+
+
+sudo cp shudownpi/shutdownpi /usr/bin/local/shutdownpi
+sudo a+x /usr/bin/local/shutdownpi
+sudo cp shutdownpi.sh /etc/init.d
+sudo update-rc.d shutdownpi.sh defaults
+sudo service shutdownpi start 
+

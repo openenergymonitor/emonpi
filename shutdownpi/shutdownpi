@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
-# from http://www.pi-supply.com/pi-supply-switch-v1-1-code-examples/
+# emonPi - Raspberrry Pi Energy Monitoring 
+# Part of the OpenEnergyMonitor.org project 
+
+# Based on http://www.pi-supply.com/pi-supply-switch-v1-1-code-examples/
 
 # Import the modules to send commands to the system and access GPIO pins
 from subprocess import call
