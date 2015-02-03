@@ -1,0 +1,27 @@
+#!/bin/bash
+
+echo "Enable I2C module" 
+
+if ! grep -Fxq "#blacklist i2c-bcm2708" /etc/modprobe.d/raspi-blacklist.conf ; then
+	sudo sed -i 's/blacklist i2c-bcm2708/#blacklist i2c-bcm2708/' /etc/modprobe.d/raspi-blacklist.conf
+else
+	echo 'module already enabled in /etc/modprobe.d/raspi-blacklist.conf'
+fi
+
+if ! grep -Fxq "i2c-bcm2708 i2c-dev" /etc/modules ; then
+	sudo echo 'i2c-bcm2708 i2c-dev' >> /etc/modules
+else
+	echo 'module already enabled in /etc/modules'
+fi
+
+echo 'Intall Python I2C Tools'
+sudo apt-get update
+sudo apt-get install python-smbus i2c-tools
+
+echo 'Install emonPi Python LCD install scripts'
+sudo ln ~/emonpi/lcd/emonPiLCD.py /usr/bin/emonPiLCD.py
+sudo ln ~/emonpi/lcd/emonPiLCD.sh /etc/init.d/emonPiLCD.sh
+sudo update-rc.d emonPiLCD.sh defaults
+
+echo 'emonPi I2C LCD installed...please reboot to take effect"
+
