@@ -11,7 +11,7 @@
 ### END INIT INFO
  
 # Change the next 3 lines to suit where you install your script and what you want to call it
-DIR=/home/pi/emonpi/LCD/i2C_LCD
+DIR=/usr/share/emonPiLCD
 DAEMON=$DIR/emonPiLCD.py
 DAEMON_NAME=emonPiLCD
  
