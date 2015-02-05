@@ -39,13 +39,16 @@ sudo i2cdetect -y 1
 
 echo 'Install emonPi Python LCD install scripts'
 
-sudo mkdir /usr/share/emonPiLCD
-sudo ln /home/pi/emonpi/lcd/emonPiLCD.py /usr/share/emonPiLCD/emonPiLCD.py
-sudo ln /home/pi/emonpi/lcd/lcddriver.py /usr/share/emonPiLCD/lcddriver.py
-sudo ln /home/pi/emonpi/lcd/i2c_lib.py /usr/share/emonPiLCD/i2c_lib.py
+# create linked directoty for LCD scripts 
+sudo rm -r /usr/share/emonPiLCD
+sudo ln -s /home/pi/emonpi/lcd/ /usr/share/emonPiLCD
 
-sudo ln /home/pi/emonpi/lcd/emonPiLCD.sh /etc/init.d/emonPiLCD.sh
-sudo update-rc.d emonPiLCD.sh defaults
+# create linked init service script 
+sudo rm -f /etc/init.d/emonPiLCD
+sudo ln -s /home/pi/emonpi/lcd/emonPiLCD /etc/init.d/emonPiLCD
+
+# launch at startup 
+sudo update-rc.d emonPiLCD defaults 99
 
 echo 'emonPi I2C LCD installed...please reboot to take effect'
 
