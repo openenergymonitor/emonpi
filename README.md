@@ -1,4 +1,4 @@
-emonIi
+emonPi
 ======
 
 emonPi - Raspberry Pi Energy Monitoring Unit
