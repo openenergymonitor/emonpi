@@ -14,10 +14,10 @@ git clone https://github.com/openenergymonitor/avrdude-rpi.git ~/avrdude-rpi && 
 git clone https://github.com/openenergymonitor/emonpi.git ~/emonpi  
 
 echo "install shutdown service"
-sudo ~/shutdownpi/install
+sudo /home/pi/emonpi/shutdownpi/install
 
 echo "install LCD"
-sudo ~/emonpi/lcd/install
+sudo /home/pi/emonpi/lcd/install
 
 
 
