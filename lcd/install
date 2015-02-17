@@ -31,11 +31,11 @@ else
 	echo 'i2c-dev already enabled in /etc/modules'
 fi
 
-if ! grep -Fxq "dtparam=i2c_arm=o" /boot/config.txt ; then
-	sudo echo 'dtparam=i2c_arm=o' >> //boot/config.txt
-	echo 'tparam=i2c_arm=o added to /boot/config.txt'
+if ! grep -Fxq "dtparam=i2c_arm=on" /boot/config.txt ; then
+	sudo echo 'dtparam=i2c_arm=on' >> //boot/config.txt
+	echo 'tparam=i2c_arm=on added to /boot/config.txt'
 else
-	echo 'tparam=i2c_arm=o already added to /boot/config.txt'
+	echo 'tparam=i2c_arm=on already added to /boot/config.txt'
 fi
 
 
