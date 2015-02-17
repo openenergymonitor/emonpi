@@ -5,7 +5,7 @@ sudo sed -i 's/raspberrypi/emonpi/' /etc/hosts
 sudo sed -i 's/raspberrypi/emonpi/' /etc/hostname
 
 echo "disable serial console"
-sudo wget https://raw.github.com/lurch/rpi-serial-console/master/rpi-serial-console -O /usr/bin/rpi-serial-console && sudo chmod +x /usr/bin/rpi-serial-console
+sudo wget https://raw.githubusercontent.com/lurch/rpi-serial-console/master/rpi-serial-console -O /usr/bin/rpi-serial-console && sudo chmod +x /usr/bin/rpi-serial-console
 sudo rpi-serial-console disable
 
 echo "enable serial uploads with avrdue and autoreset"
