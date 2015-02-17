@@ -8,9 +8,17 @@ echo "disable serial console"
 sudo wget https://raw.githubusercontent.com/lurch/rpi-serial-console/master/rpi-serial-console -O /usr/bin/rpi-serial-console && sudo chmod +x /usr/bin/rpi-serial-console
 sudo rpi-serial-console disable
 
-echo "enable serial uploads with avrdue and autoreset"
+echo "enable serial uploads with avrdue and autoreset & install minicom"
 git clone https://github.com/openenergymonitor/avrdude-rpi.git ~/avrdude-rpi && ~/avrdude-rpi/install
 
+echo "install ino Arduino compile tool"
+git clone https://github.com/openenergymonitor/ino
+( cd /home/pi/ino && sudo make install )
+
+echo "disable the raspi-config auto run"
+sudo rm /etc/profile.d/raspi-config.sh
+
+echo "clone emonpi github"
 git clone https://github.com/openenergymonitor/emonpi.git ~/emonpi  
 
 echo "install shutdown service"
