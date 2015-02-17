@@ -31,6 +31,15 @@ else
 	echo 'i2c-dev already enabled in /etc/modules'
 fi
 
+if ! grep -Fxq "dtparam=i2c_arm=o" /boot/config.txt ; then
+	sudo echo 'dtparam=i2c_arm=o' >> //boot/config.txt
+	echo 'tparam=i2c_arm=o added to /boot/config.txt'
+else
+	echo 'tparam=i2c_arm=o already added to /boot/config.txt'
+fi
+
+
+
 echo 'Intall Python I2C Tools'
 sudo apt-get install python-smbus i2c-tools
 
