@@ -95,10 +95,10 @@ while 1:
             lcd.lcd_display_string('Connection......',2)
             
         if IP != "":
-        	led_string = string_lenth('%s connected' % (network), 16)  #make sure string is 16 characters long to fill LED
+        	led_string = string_lenth('%s connected' % (IP), 16)  #make sure string is 16 characters long to fill LED
         	lcd.lcd_display_string(led_string,1)
         	
-        	led_string = string_lenth('IP: %s' % (IP) , 16)
+        	led_string = string_lenth('IP: %s' % (network) , 16)
         	lcd.lcd_display_string(led_string,2)
 
     elif buttoninput.press_num == 1:          
