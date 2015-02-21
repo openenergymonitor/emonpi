@@ -81,7 +81,6 @@ def string_lenth(string, length):
 	# Add blank characters to end of string to make up to length long
 	if (len(string) < 16):
 		string += ' ' * (16 - len(string))
-		print (len(string))
 	return (string)
 
  
