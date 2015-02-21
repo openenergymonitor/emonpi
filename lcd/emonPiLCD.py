@@ -44,6 +44,7 @@ def local_IP():
 	eth0 = "ip addr show eth0 | grep inet | awk '{print $2}' | cut -d/ -f1 | head -n1"
 	p = Popen(eth0, shell=True, stdout=PIPE)
 	IP = p.communicate()[0]
+	IP = IP[:-1] 												#remove blank space at end of IP
 	network = "eth0"
 	if IP == "":
 		p = Popen(wlan0, shell=True, stdout=PIPE)
@@ -76,6 +77,13 @@ def updatelcd():
     threading.Timer(3, updatelcd).start()
     lcd.lcd_clear();
 
+def string_lenth(string, length):
+	# Add blank characters to end of string to make up to length long
+	if (len(string) < 16):
+		string += ' ' * (16 - len(string))
+		print (len(string))
+	return (string)
+
  
 while 1:
 
@@ -88,9 +96,11 @@ while 1:
             lcd.lcd_display_string('Connection......',2)
             
         if IP != "":
-        	lcd.lcd_display_string('%s connected' % (network),1)
-        	IP = IP[:-1]
-        	lcd.lcd_display_string('IP: %s' % (IP),2)
+        	led_string = string_lenth('%s connected' % (network), 16)  #make sure string is 16 characters long to fill LED
+        	lcd.lcd_display_string(led_string,1)
+        	
+        	led_string = string_lenth('IP: %s' % (IP) , 16)
+        	lcd.lcd_display_string(led_string,2)
 
     elif buttoninput.press_num == 1:          
         lcd.lcd_display_string('Checking WAN    ',1) 
