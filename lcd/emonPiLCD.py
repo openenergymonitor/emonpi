@@ -82,20 +82,17 @@ while 1:
     ##updatelcd();
 
     if buttoninput.press_num == 0:   
-        print "screen 0" 
-        print buttoninput.press_num
         IP, network = local_IP()
         if IP == "":
             lcd.lcd_display_string('Awaiting Network',1) 
             lcd.lcd_display_string('Connection......',2)
             
         if IP != "":
-            lcd.lcd_display_string('%s connected' % (IP),1)
-            lcd.lcd_display_string('IP: %s' % ( network ),2)
+        	lcd.lcd_display_string('%s connected' % (network),1)
+        	IP = IP[:-1]
+        	lcd.lcd_display_string('IP: %s' % (IP),2)
 
     elif buttoninput.press_num == 1:          
-        print "screen 2"
-        print buttoninput.press_num
         lcd.lcd_display_string('Checking WAN    ',1) 
         lcd.lcd_display_string('Connection......',2)
         #if is_connected() == True:
@@ -105,15 +102,15 @@ while 1:
         #    lcd.lcd_display_string('Internet',1)
         #    lcd.lcd_display_string('Connection FAIL',2)
 
-    elif buttoninput.press_num == 2: 
-        print "screen 2"
-        print buttoninput.press_num       
+    elif buttoninput.press_num == 2:     
         lcd.lcd_display_string(datetime.now().strftime('%b %d %H:%M'),1)
         lcd.lcd_display_string(datetime.now().strftime('Uptime: 123 days'),2)
+    
+    elif buttoninput.press_num == 3:     
+        lcd.lcd_display_string('Power: 563W',1)
+        lcd.lcd_display_string('Tody: 1.3KW',2)        
 
     else:
-        print "reset"
-        print buttoninput.press_num
         buttoninput.press_num = 0
 
 #
