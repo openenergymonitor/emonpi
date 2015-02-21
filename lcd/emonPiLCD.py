@@ -115,9 +115,12 @@ while 1:
         lcd.lcd_display_string(datetime.now().strftime('%b %d %H:%M'),1)
         lcd.lcd_display_string(datetime.now().strftime('Uptime: 123 days'),2)
     
-    elif buttoninput.press_num == 3:     
-        lcd.lcd_display_string('Power: 563W',1)
-        lcd.lcd_display_string('Tody: 1.3KW',2)        
+    elif buttoninput.press_num == 3: 
+    	led_string = string_lenth('Power: 563W', 16)  #make sure string is 16 characters long to fill LED    
+        lcd.lcd_display_string(led_string,1)
+
+        led_string = string_lenth('Today: 1.3KW', 16)  #make sure string is 16 characters long to fill LED        
+        lcd.lcd_display_string(led_string,2)
 
     else:
         buttoninput.press_num = 0
