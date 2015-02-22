@@ -12,7 +12,7 @@ import threading
 import RPi.GPIO as GPIO
 
 
-# Use Pi board pin numbers as these as always consistant between revisions 
+# Use Pi board pin numbers as these as always consistent between revisions 
 GPIO.setmode(GPIO.BOARD)                                 
 
 #emonPi push button Pin 16 GPIO 23
@@ -32,6 +32,7 @@ class ButtonInput():
     def buttonPress(self,channel):
         print('Button 1 pressed!') 
         self.press_num = self.press_num + 1 
+        updatelcd()
 
 buttoninput = ButtonInput()
 #Setup callback function buttonpress to appen on press of push button    
@@ -72,10 +73,10 @@ def is_connected():
   return False
 #print 'Internet connected? %s' %(is_connected())
 
-#update lcd 
+# write to I2C LCD 
 def updatelcd():
-    threading.Timer(3, updatelcd).start()
-    lcd.lcd_clear();
+    lcd.lcd_display_string( string_lenth(led_string1, 16),1) # line 1- make sure string is 16 characters long to fill LED 
+    lcd.lcd_display_string( string_lenth(led_string2, 16),2) # line 2
 
 def string_lenth(string, length):
 	# Add blank characters to end of string to make up to length long
@@ -86,41 +87,33 @@ def string_lenth(string, length):
  
 while 1:
 
-    ##updatelcd();
-
     if buttoninput.press_num == 0:   
         IP, network = local_IP()
         if IP == "":
-            lcd.lcd_display_string('Awaiting Network',1) 
-            lcd.lcd_display_string('Connection......',2)
+            led_string1 = 'Awaiting Network'
+            led_string2 = 'Connection......'
             
         if IP != "":
-        	led_string = string_lenth('%s connected' % (IP), 16)  #make sure string is 16 characters long to fill LED
-        	lcd.lcd_display_string(led_string,1)
-        	
-        	led_string = string_lenth('IP: %s' % (network) , 16)
-        	lcd.lcd_display_string(led_string,2)
+        	led_string1 = '%s connected' % (IP)
+        	led_string2 = 'IP: %s' % (network)
 
     elif buttoninput.press_num == 1:          
-        lcd.lcd_display_string('Checking WAN    ',1) 
-        lcd.lcd_display_string('Connection......',2)
+        led_string1 = 'Checking WAN    '
+        led_string2 = 'Connection......'
         #if is_connected() == True:
-        #    lcd.lcd_display_string('Internet',1)
-        #    lcd.lcd_display_string('Connected',2)
+        #    led_string1 = 'Internet'
+        #    led_string2 = 'Connected'
         #else:
-        #    lcd.lcd_display_string('Internet',1)
-        #    lcd.lcd_display_string('Connection FAIL',2)
+        #    led_string1 = 'Internet'
+        #    led_string2 = 'Connection FAIL'
 
     elif buttoninput.press_num == 2:     
-        lcd.lcd_display_string(datetime.now().strftime('%b %d %H:%M'),1)
-        lcd.lcd_display_string(datetime.now().strftime('Uptime: 123 days'),2)
+        led_string1 = datetime.now().strftime('%b %d %H:%M')
+        led_string2 = datetime.now().strftime('Uptime: 123 days')
     
     elif buttoninput.press_num == 3: 
-    	led_string = string_lenth('Power: 563W', 16)  #make sure string is 16 characters long to fill LED    
-        lcd.lcd_display_string(led_string,1)
-
-        led_string = string_lenth('Today: 1.3KW', 16)  #make sure string is 16 characters long to fill LED        
-        lcd.lcd_display_string(led_string,2)
+    	led_string1 = 'Power: 563W'  
+        led_string2 = 'Today: 1.3KW'      
 
     else:
         buttoninput.press_num = 0
