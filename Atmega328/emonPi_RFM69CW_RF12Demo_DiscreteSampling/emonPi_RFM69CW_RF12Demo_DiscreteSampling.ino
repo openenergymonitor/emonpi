@@ -57,10 +57,10 @@ float firmware_version = 0.1;
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
 boolean debug =                   TRUE; 
-const int BAUD_RATE=              9600;
+const unsigned long BAUD_RATE=    38400;
 
 const byte Vrms=                  230;                               // Vrms for apparent power readings (when no AC-AC voltage sample is present)
-const int TIME_BETWEEN_READINGS=  2000;                              // Time between readings (mS)  
+const int TIME_BETWEEN_READINGS=  3000;                              // Time between readings (mS)  
 
 
 //http://openenergymonitor.org/emon/buildingblocks/calibration
@@ -182,7 +182,7 @@ void loop()
     if (RF_Rx_Handle()==1){                                           // Returns true if RF packet is received                                            
       digitalWrite(LEDpin, HIGH); 
     }
-    //send_RF();                                                        // Transmitt data packets if needed
+    //send_RF();                                                        // Transmitt data packets if needed NEEDS TESTING
   }
 
  
@@ -221,8 +221,12 @@ void loop()
 
     if (DS18B20_STATUS==1) emonPi.temp=get_temperature();                                                                             //Get temperature from DS18B20 if sensor is present
           
-    //Serial.print(emonPi.temp);
     
+    /*Serial.print(emonPi.power1); Serial.print(" ");
+    Serial.print(emonPi.power2); Serial.print(" ");
+    Serial.print(emonPi.Vrms); Serial.print(" ");
+    Serial.println(emonPi.temp);
+    */
     send_emonpi_serial();                                        //Send emonPi data to Pi serial using struct packet structure 
        
     //delay(TIME_BETWEEN_READINGS*1000);

@@ -86,13 +86,14 @@ void send_emonpi_serial()  //Send emonPi data to Pi serial /dev/ttyAMA0 using st
 {
   byte binarray[sizeof(emonPi)];
   memcpy(binarray, &emonPi, sizeof(emonPi));
-    
-  Serial.print(' ');
+  
+  Serial.print("OK ");
   Serial.print(nodeID);
-  for (byte i = 0; i < 4; ++i) {
+  for (byte i = 0; i < sizeof(binarray); i++) {
     Serial.print(' ');
     Serial.print(binarray[i]);
   }
+  Serial.print(" (-0)");
   Serial.println();
   
   delay(10);
