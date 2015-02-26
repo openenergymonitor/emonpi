@@ -19,19 +19,19 @@ void setup()
 {    
   pinMode(emonpi_LED_pin, OUTPUT);
   digitalWrite(emonpi_LED_pin, HIGH);
-  Serial.begin(57600);
+  Serial.begin(9600);
   Serial.println("ATmega328 Startup");
   Serial.println("emonPi discrete sampling test sketch ");
   
   // Calibration, phase_shift
-  ct1.voltage(0, 276.9, 1.7);        //ADC pin number, calibration, phase shift           
-  ct2.voltage(0, 276.9, 1.7);
+  ct1.voltage(0, 268.97, 1.7);        //ADC pin number, calibration, phase shift           
+  ct2.voltage(0, 268.97, 1.7);
 
   
   // CT Current calibration 
   // (2000 turns / 22 Ohm burden resistor = 90.909)
-  ct1.current(1, 90.9); 
-  ct2.current(2, 90.9);
+  ct1.current(1, 60.606); 
+  ct2.current(2, 60.606 );
   
   lastpost = 0;
   digitalWrite(emonpi_LED_pin, LOW);
