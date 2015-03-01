@@ -6,7 +6,7 @@ import time
 from datetime import datetime
 from datetime import timedelta
 #from gprs_signal import previous_signalf
-from  gprs_signal import get_gsm_signal_strength
+from  gprs_signal import get_gsm_signal_strength, switch_off_gsm
 from uptime import uptime
 import threading
 import sys
@@ -296,7 +296,8 @@ def shutdown():
         lcd.lcd_display_string( string_lenth("Wait 30s...", 16),1)
         lcd.lcd_display_string( string_lenth("Before Unplug!", 16),2)
         time.sleep(4)
-        subprocess.call(['/home/debian/gprsAndEmonInstall/switch_off_gsm_module.py'])
+	switch_off_gsm()
+#from gprs_signal import previous_signalf
         time.sleep(1)
 
         lcd.backlight(0) 											# backlight zero must be the last call to the LCD to keep the backlight off
@@ -461,13 +462,13 @@ while 1:
 
         elif page==2:
                 if int(r.get("ppp:active")):
-			lcd_string1 = "GPRS: YES - "+r.get("ppp:gsm_signallevel")+"%"
+			lcd_string1 = "GSM: YES - "+r.get("ppp:gsm_signallevel")+"%"
 			lcd_string2 = r.get("ppp:ip")
                #print  "SIGNAL STRENGTH" + lcd_string1
                 #print"********************CONNECTED!!!!!!!!"+r.get("ppp:ip")
 
 		else:
-			lcd_string1 = "GPRS:"
+			lcd_string1 = "GSM:"
 			lcd_string2 = "NOT CONNECTED"
                 #print  "SIGNAL STRENGTH" + lcd_string1
                 #print"****************NOT CONNECTED"
