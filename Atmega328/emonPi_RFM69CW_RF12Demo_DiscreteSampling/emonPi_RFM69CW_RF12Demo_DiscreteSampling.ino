@@ -180,7 +180,7 @@ const char helpText1[] PROGMEM =                                 // Available Se
 ;
 
 //*********************battery voltage reading**********************************************************************
-const byte v_battery_pin =    A5;
+const byte v_battery_pin = A5;
 
 //int v_battery_pin = A5;  //vout of voltage divider is connected to A5
 float vout = 0.0;      //output of voltage regulator
@@ -315,8 +315,10 @@ void loop()
     //Serial.println(vin_old); 
     // Serial.print("INPUT V= ");
  
-      vin=(vin_new+vin_old)*100/2;   // final data to send in emonhub 
-      Serial.println(vin);
+      vin=(vin_new+vin_old)*10/2;   // final data to send in emonhub 
+      
+      //Serial.print("vin:");
+     // Serial.println(vin);
   }
   else
   {

@@ -174,8 +174,6 @@ class Background(threading.Thread):
 			   logger.info("background: ppp data tx:"+str(ppp0tx))
 			   logger.info("background: ppp data rx:"+str(ppp0rx))
                            data_counter_init = True
-
-
 		    if (now - last100s) >= 100.0:
 			last100s = now
 
