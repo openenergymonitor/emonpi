@@ -7,9 +7,7 @@ from datetime import timedelta
 from uptime import uptime
 import threading
 import sys
-#import RPi.GPIO as GPIO
 import Adafruit_BBIO.GPIO as GPIO
-lcd = lcddriver.lcd()
 import signal
 import redis
 import re
@@ -26,16 +24,20 @@ backlight_timeout = 180
 # emonPi Node ID (default 5)
 # ------------------------------------------------------------------------------------
 emonPi_nodeID = 10
+lcd = lcddriver.lcd()
+
 
 # Default Startup Page
 page = 0
 inc = 0
 GPIO_PORT = "P8_11"
+#in case we use a button to switch on/off
 GPIO_PORT_shutdown = "P8_12"
 GPIO.setup( GPIO_PORT,GPIO.IN)
-new_switch_state = GPIO.input(GPIO_PORT)
 GPIO.setup( GPIO_PORT_shutdown,GPIO.IN)
+new_switch_state = GPIO.input(GPIO_PORT)
 shutdown_button =GPIO.input(GPIO_PORT_shutdown)
+
 max_number_pages = 3
 
 SHUTDOWN_TIME =3  # Shutdown after 3 second press
@@ -62,6 +64,7 @@ logger.addHandler(loghandler)
 logger.setLevel(logging.INFO)
 
 logger.info("emonPiLCD Start")
+
 # ------------------------------------------------------------------------------------
 
 r = redis.Redis(host='localhost', port=6379, db=0)
@@ -180,6 +183,8 @@ def sigterm_handler(signal, frame):
     background.stop = True;
     sys.exit(0)
 
+
+
 def shutdown():
     while (shutdown_button == 1):
         lcd_string1 = "RMC Shutdown"
@@ -213,11 +218,12 @@ def get_uptime():
 
     return string
 
+
 def string_lenth(string, length):
-	# Add blank characters to end of string to make up to length long
-	if (len(string) < 16):
-		string += ' ' * (16 - len(string))
-	return (string)
+        # Add blank characters to end of string to make up to length long
+        if (len(string) < 16):
+                string += ' ' * (16 - len(string))
+        return (string)
 
 # write to I2C LCD
 def updatelcd():
@@ -274,8 +280,6 @@ lcd_string2 = ""
 background = Background()
 background.start()
 buttoninput = ButtonInput()
-
-#lcd = lcddriver.lcd()
 
 mqttc = mqtt.Client()
 mqttc.on_connect = on_connect
@@ -345,11 +349,12 @@ while 1:
                 lcd_string1 = "Ethernet: YES"
                 lcd_string2 = r.get("eth:ip")
             else:
-            	if int(r.get("wlan:active")):
-            		page=page+1
-            	else:
-            		lcd_string1 = "Ethernet:"
-            		lcd_string2 = "NOT CONNECTED"
+                if int(r.get("wlan:active")):
+                        page=page+1
+                else:
+                        lcd_string1 = "Ethernet:"
+                        lcd_string2 = "NOT CONNECTED"
+
 
         elif page==1:
             if int(r.get("wlan:active")):
@@ -389,3 +394,4 @@ while 1:
 
 GPIO.cleanup()
 logging.shutdown()
+
