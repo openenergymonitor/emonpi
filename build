@@ -22,8 +22,9 @@ sudo rm /etc/profile.d/raspi-config.sh
 echo "clone emonpi github"
 git clone https://github.com/openenergymonitor/emonpi.git ~/emonpi  
 
-echo "install shutdown service"
-sudo /home/pi/emonpi/shutdownpi/install
+# Only used when emonPi is used without LCD, run either LCD service or shutdwn service. LCD script also handles shutdown 
+# echo "install shutdown service"
+# sudo /home/pi/emonpi/shutdownpi/install
 
 echo "install LCD"
 sudo /home/pi/emonpi/lcd/install

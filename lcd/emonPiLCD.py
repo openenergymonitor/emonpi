@@ -1,39 +1,63 @@
 #!/usr/bin/env python
 
-import lcddriver
+import lcddriver 
 lcd = lcddriver.lcd()
 
 from subprocess import *
 from time import sleep, strftime
 from datetime import datetime
-
 import threading
-
+import sys
 import RPi.GPIO as GPIO
 
 
 # Use Pi board pin numbers as these as always consistent between revisions 
 GPIO.setmode(GPIO.BOARD)                                 
 
-#emonPi push button Pin 16 GPIO 23
+#emonPi LCD push button Pin 16 GPIO 23
 GPIO.setup(16, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)    
+#emonPi Shutdown button
+GPIO.setup(11, GPIO.IN)
 
+print "OpenEnergyMonitor - emonPi LCD / Shutdown Python Script"
 
+def shutdown():
+    while (GPIO.input(11) == 1):
+        lcd_string1 = "emonPi Shutdown"
+        lcd_string2 = "5.."
+        lcd.lcd_display_string( string_lenth(lcd_string1, 16),1)
+        lcd.lcd_display_string( string_lenth(lcd_string2, 16),2)
+        print lcd_string1
+        sleep(1)
+        for x in range(4, 0, -1):
+            lcd_string2 += "%d.." % (x)
+            lcd.lcd_display_string( string_lenth(lcd_string2, 16),2) 
+            print lcd_string2
+            sleep(1)
+            
+            if (GPIO.input(11) == 0):
+                return
+        lcd_string2="SHUTDOWN NOW!"
+        lcd.lcd_display_string( string_lenth(lcd_string1, 16),1)
+        lcd.lcd_display_string( string_lenth(lcd_string2, 16),2) 
+        sleep(2)
+        lcd.backlight(0)
+        lcd.lcd_clear()
+        lcd.lcd_display_string( string_lenth("Power", 16),1)
+        lcd.lcd_display_string( string_lenth("Off", 16),2)
+        sleep(2)
+        call('halt', shell=False)
+        sys.exit() #end script 
 
-
-print datetime.now().strftime('%b %d %H:%M')
 
 class ButtonInput():
-
     def __init__(self):
-        GPIO.add_event_detect(16, GPIO.RISING, callback=self.buttonPress, bouncetime=500) 
+        GPIO.add_event_detect(16, GPIO.RISING, callback=self.buttonPress, bouncetime=200) 
         self.press_num = 0
-
     def buttonPress(self,channel):
-        print('Button 1 pressed!') 
+        print self.press_num
         self.press_num = self.press_num + 1 
-        updatelcd()
-
+        #updatelcd()
 buttoninput = ButtonInput()
 #Setup callback function buttonpress to appen on press of push button    
 
@@ -75,8 +99,11 @@ def is_connected():
 
 # write to I2C LCD 
 def updatelcd():
-    lcd.lcd_display_string( string_lenth(led_string1, 16),1) # line 1- make sure string is 16 characters long to fill LED 
-    lcd.lcd_display_string( string_lenth(led_string2, 16),2) # line 2
+    lcd.lcd_display_string( string_lenth(lcd_string1, 16),1) # line 1- make sure string is 16 characters long to fill LED 
+    lcd.lcd_display_string( string_lenth(lcd_string2, 16),2) # line 2
+#    print lcd_string1
+#    print lcd_string2
+
 
 def string_lenth(string, length):
 	# Add blank characters to end of string to make up to length long
@@ -84,41 +111,46 @@ def string_lenth(string, length):
 		string += ' ' * (16 - len(string))
 	return (string)
 
+
  
 while 1:
 
     if buttoninput.press_num == 0:   
         IP, network = local_IP()
         if IP == "":
-            led_string1 = 'Awaiting Network'
-            led_string2 = 'Connection......'
-            
+            lcd_string1 = 'Awaiting Network'
+            lcd_string2 = 'Connection......'
+
         if IP != "":
-        	led_string1 = '%s connected' % (IP)
-        	led_string2 = 'IP: %s' % (network)
+        	lcd_string1 = '%s connected' % (IP)
+        	lcd_string2 = 'IP: %s' % (network)
 
     elif buttoninput.press_num == 1:          
-        led_string1 = 'Checking WAN    '
-        led_string2 = 'Connection......'
+        lcd_string1 = 'Checking WAN    '
+        lcd_string2 = 'Connection......'
         #if is_connected() == True:
-        #    led_string1 = 'Internet'
-        #    led_string2 = 'Connected'
+        #    lcd_string1 = 'Internet'
+        #    lcd_string2 = 'Connected'
         #else:
-        #    led_string1 = 'Internet'
-        #    led_string2 = 'Connection FAIL'
+        #    lcd_string1 = 'Internet'
+        #    lcd_string2 = 'Connection FAIL'
 
     elif buttoninput.press_num == 2:     
-        led_string1 = datetime.now().strftime('%b %d %H:%M')
-        led_string2 = datetime.now().strftime('Uptime: 123 days')
+        lcd_string1 = datetime.now().strftime('%b %d %H:%M')
+        lcd_string2 = datetime.now().strftime('Uptime: 123 days')
     
     elif buttoninput.press_num == 3: 
-    	led_string1 = 'Power: 563W'  
-        led_string2 = 'Today: 1.3KW'      
+    	lcd_string1 = 'Power: 563W'  
+        lcd_string2 = 'Today: 1.3KW'      
 
     else:
         buttoninput.press_num = 0
 
-#
+    if (GPIO.input(11) == 0): # only update LCD if shutdown button is not pressed
+        updatelcd()
+    else:
+        shutdown()
+        lcd.lcd_clear()
 
             
 GPIO.cleanup()
