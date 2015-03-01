@@ -91,7 +91,7 @@ sudo chown www-data:root /home/debian/data/phptimeseries
 echo "git clone emoncms repo into /var/www/"
 sudo chown debian /var/www
 cd /var/www
-git clone -b beaglebonebla https://github.com/GreatLakesEnergy/emoncms.git
+git clone -b 9.0 https://github.com/GreatLakesEnergy/emoncms.git
 cp /var/www/emoncms/default.emonpi.settings.php /var/www/emoncms/settings.php
 
 echo "git clone emoncms modules repo into /var/www/Modules"

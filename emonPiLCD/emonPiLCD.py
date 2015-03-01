@@ -349,7 +349,7 @@ while 1:
                 lcd_string1 = "Ethernet: YES"
                 lcd_string2 = r.get("eth:ip")
             else:
-                # AT - Removing int casting. not necassary
+                wlan_status = r.get("wlan:active"):
                 if r.get("wlan:active"):
                         page=page+1
                 else:
