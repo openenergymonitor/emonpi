@@ -51,11 +51,10 @@ boolean RF_Rx_Handle(){
 	
 }
 
-
 void send_RF(){
 
-	if (cmd && rf12_canSend() ) {
-	    digitalWrite(LEDpin, HIGH);
+	if (cmd && rf12_canSend() ) {                                                //if command 'cmd' is waiting to be sent then let's send it
+	    digitalWrite(LEDpin, HIGH); delay(200); digitalWrite(LEDpin, LOW);
 	    showString(PSTR(" -> "));
 	    Serial.print((word) sendLen);
 	    showString(PSTR(" b\n"));
@@ -64,7 +63,7 @@ void send_RF(){
 	      header |= RF12_HDR_DST | dest;
 	    rf12_sendStart(header, stack, sendLen);
 	    cmd = 0;
-	    digitalWrite(LEDpin, HIGH);
+	    
 	}
 }
 
