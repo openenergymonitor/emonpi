@@ -2,10 +2,11 @@
 
 import lcddriver 
 lcd = lcddriver.lcd()
-
 from subprocess import *
 from time import sleep, strftime
 from datetime import datetime
+from datetime import timedelta
+from uptime import uptime
 import threading
 import sys
 import RPi.GPIO as GPIO
@@ -61,6 +62,12 @@ class ButtonInput():
 buttoninput = ButtonInput()
 #Setup callback function buttonpress to appen on press of push button    
 
+def get_uptime():
+    with open('/proc/uptime', 'r') as f:
+        seconds = float(f.readline().split()[0])
+        array = str(timedelta(seconds = seconds)).split('.')
+        string = array[0]
+    return string
 
 
 # Return local IP address for eth0 or wlan0
@@ -111,9 +118,16 @@ def string_lenth(string, length):
 		string += ' ' * (16 - len(string))
 	return (string)
 
+def uptime_days():
+    uptime_days = uptime() / 86400
+    threading.Timer(60, uptime_days).start()     # every 60's update uptime display 
+    return(uptime_days)
+
 
  
 while 1:
+
+    uptime_days()
 
     if buttoninput.press_num == 0:   
         IP, network = local_IP()
@@ -125,9 +139,9 @@ while 1:
         	lcd_string1 = '%s connected' % (IP)
         	lcd_string2 = 'IP: %s' % (network)
 
-    elif buttoninput.press_num == 1:          
-        lcd_string1 = 'Checking WAN    '
-        lcd_string2 = 'Connection......'
+    #elif buttoninput.press_num == 1:          
+    #    lcd_string1 = 'Checking WAN    '
+    #    lcd_string2 = 'Connection......'
         #if is_connected() == True:
         #    lcd_string1 = 'Internet'
         #    lcd_string2 = 'Connected'
@@ -135,11 +149,13 @@ while 1:
         #    lcd_string1 = 'Internet'
         #    lcd_string2 = 'Connection FAIL'
 
-    elif buttoninput.press_num == 2:     
+    elif buttoninput.press_num == 1: 
+ 
+        #print uptime('FORMAT_HOUR')
         lcd_string1 = datetime.now().strftime('%b %d %H:%M')
-        lcd_string2 = datetime.now().strftime('Uptime: 123 days')
+        lcd_string2 =  'Uptime %.2f days' % (uptime_days())
     
-    elif buttoninput.press_num == 3: 
+    elif buttoninput.press_num == 2: 
     	lcd_string1 = 'Power: 563W'  
         lcd_string2 = 'Today: 1.3KW'      
 
@@ -152,7 +168,9 @@ while 1:
         shutdown()
         lcd.lcd_clear()
 
-            
+
+
+
 GPIO.cleanup()
         
 

@@ -41,12 +41,16 @@ fi
 
 
 echo 'Intall Python I2C Tools'
-sudo apt-get install python-smbus i2c-tools
+sudo apt-get install python-smbus i2c-tools -y
 
 echo 'Attemp to search for LCD I2C address:'
 sudo i2cdetect -y 1
 
 echo 'Install emonPi Python LCD install scripts'
+
+echo 'Install Python pip and uptime module'
+sudo apt-get install python-pip -y
+sudo pip install uptime
 
 # create linked directoty for LCD scripts 
 sudo rm -r /usr/share/emonPiLCD
