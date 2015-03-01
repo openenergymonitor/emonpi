@@ -171,24 +171,32 @@ void setup()
 //-------------------------------------------------------------------------------------------------------------------------------------------
 void loop()
 {
-  digitalWrite(LEDpin, LOW);
+ 
 
-  if (digitalRead(shutdown_switch_pin) == 0 ) shutdown_sequence();    // if emonPi shutdown butten pressed then initiate shutdown sequence
+  if (digitalRead(shutdown_switch_pin) == 0 ) 
+    digitalWrite(emonpi_GPIO_pin, HIGH);     // if emonPi shutdown butten pressed then send signal to the Pi on GPIO 11
+  else 
+    digitalWrite(emonpi_GPIO_pin, LOW);
   
-  if (Serial.available())                                             // If serial input is received
-      handleInput(Serial.read());
+  if (Serial.available()){
+    handleInput(Serial.read()); // If serial input is received
+    digitalWrite(LEDpin, HIGH);  delay(200); digitalWrite(LEDpin, LOW); 
+  }                                             
+      
 
   if (RF_STATUS==1){                                                  // IF RF module is present and enabled then perform RF tasks
     if (RF_Rx_Handle()==1){                                           // Returns true if RF packet is received                                            
-      digitalWrite(LEDpin, HIGH); 
+       digitalWrite(LEDpin, HIGH);  delay(200); digitalWrite(LEDpin, LOW);   
     }
-    //send_RF();                                                        // Transmitt data packets if needed NEEDS TESTING
+    send_RF();                                                        // Transmitt data packets if needed NEEDS TESTING
   }
 
  
   
   if ((millis() - last_sample) > TIME_BETWEEN_READINGS)
   {
+    digitalWrite(LEDpin, HIGH);  delay(200); digitalWrite(LEDpin, LOW); 
+
     if (ACAC) {
       delay(200);                                //if powering from AC-AC allow time for power supply to settle    
       emonPi.Vrms=0;                      //Set Vrms to zero, this will be overwirtten by either CT 1-2
@@ -227,13 +235,11 @@ void loop()
     Serial.print(emonPi.Vrms); Serial.print(" ");
     Serial.println(emonPi.temp);
     */
-    send_emonpi_serial();                                        //Send emonPi data to Pi serial using struct packet structure 
-       
-    //delay(TIME_BETWEEN_READINGS*1000);
+    send_emonpi_serial();                                        //Send emonPi data to Pi serial using struct packet structure
     
-    digitalWrite(LEDpin, HIGH);   
     last_sample = millis();                               //Record time of sample  
-    }
+    
+    } // end sample
 
   
     
