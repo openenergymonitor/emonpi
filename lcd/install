@@ -44,6 +44,7 @@ echo 'Intall Python I2C Tools'
 sudo apt-get install python-smbus i2c-tools -y
 
 echo 'Attemp to search for LCD I2C address:'
+# Use port 1 for 512Mb RAM pi (rev2 B, B+ & 2) or port 0 for older 256Mb RAM pi Model B (rev1)
 sudo i2cdetect -y 1
 
 echo 'Install emonPi Python LCD install scripts'
