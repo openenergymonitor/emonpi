@@ -8,12 +8,13 @@
 
 echo "Enable I2C module" 
 
-if ! grep -Fxq "#blacklist i2c-bcm2708" /etc/modprobe.d/raspi-blacklist.conf ; then
-	sudo sed -i 's/blacklist i2c-bcm2708/#blacklist i2c-bcm2708/' /etc/modprobe.d/raspi-blacklist.conf
-	echo 'I2C module enabled in /etc/modprobe.d/raspi-blacklist.conf'
-else
-	echo 'I2C already enabled in /etc/modprobe.d/raspi-blacklist.conf'
-fi
+# Black list method is not used in newer versions of Raspbien 
+#if ! grep -Fxq "#blacklist i2c-bcm2708" /etc/modprobe.d/raspi-blacklist.conf ; then
+#	sudo sed -i 's/blacklist i2c-bcm2708/#blacklist i2c-bcm2708/' /etc/modprobe.d/raspi-blacklist.conf
+#	echo 'I2C module enabled in /etc/modprobe.d/raspi-blacklist.conf'
+#else
+#	echo 'I2C already enabled in /etc/modprobe.d/raspi-blacklist.conf'
+#fi
 
 if ! grep -Fxq "i2c-bcm2708" /etc/modules ; then
 	sudo echo 'i2c-bcm2708' >> /etc/modules
