@@ -136,8 +136,8 @@ while 1:
             lcd_string2 = 'Connection......'
 
         if IP != "":
-        	lcd_string1 = '%s connected' % (IP)
-        	lcd_string2 = 'IP: %s' % (network)
+        	lcd_string1 = '%s connected' % (network)
+        	lcd_string2 = 'IP: %s' % (IP)
 
     #elif buttoninput.press_num == 1:          
     #    lcd_string1 = 'Checking WAN    '
