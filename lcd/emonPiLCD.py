@@ -17,7 +17,7 @@ GPIO.setmode(GPIO.BOARD)
 
 #emonPi LCD push button Pin 16 GPIO 23
 GPIO.setup(16, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)    
-#emonPi Shutdown button
+#emonPi Shutdown button, Pin 11 GPIO 17
 GPIO.setup(11, GPIO.IN)
 
 print "OpenEnergyMonitor - emonPi LCD / Shutdown Python Script"
