@@ -4,7 +4,7 @@ emonPi
 emonPi - Raspberry Pi Energy Monitoring Unit
 
 
-![emonpi_diagram](emonPi_V1.4_Diagram.jpg)
+![emonpi_diagram](emonPi_System_Diagram.png)
 
 
 ## Overview: 
