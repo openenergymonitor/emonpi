@@ -107,6 +107,13 @@ static void handleInput (char c) {
         }
           break;
 
+      case 'v': // set Vcc Cal 1=UK/EU 2=USA
+        if (value){
+          if (value==1) USA=false;
+          if (value==2) USA=true;
+        }
+          break;
+
       case 'a': // send packet to node ID N, request an ack
       case 's': // send packet to node ID N, no ack
         cmd = c;
@@ -130,7 +137,9 @@ static void handleInput (char c) {
                    RF_freq == RF12_868MHZ ? 868 :
                    RF_freq == RF12_915MHZ ? 915 : 0);
       Serial.print(" MHz"); 
+      Serial.print(" USA "); Serial.print(USA);
       Serial.println(" ");
+
     }
     
     }
