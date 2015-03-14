@@ -22,7 +22,8 @@ void emonPi_startup()                                                     //emon
   digitalWrite(emonpi_GPIO_pin, LOW);
 
   Serial.begin(BAUD_RATE);
-  Serial.print("emonPi V"); Serial.println(firmware_version);
+  Serial.print("emonPi V"); Serial.print(firmware_version); 
+  if (USA==TRUE) Serial.println(" USA"); else Serial.print(" EU");
   Serial.println("OpenEnergyMonitor.org");
   Serial.println("POST.....wait 10s");
 }

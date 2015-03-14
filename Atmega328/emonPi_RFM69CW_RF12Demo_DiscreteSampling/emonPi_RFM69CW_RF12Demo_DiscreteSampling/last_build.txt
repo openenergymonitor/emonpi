@@ -1,0 +1,16 @@
+{
+    "bare_gcc": false, 
+    "big_project": false, 
+    "board_id": "ide.arduino.avr.uno", 
+    "ide_path": "/home/glyn/Dropbox/Arduino/Arduino 32-bit/arduino-1.0.5", 
+    "lib_paths": [
+        "/home/glyn/Dropbox/Arduino/Arduino 32-bit/arduino-1.0.5/libraries/jeelib", 
+        "/home/glyn/Dropbox/Arduino/Arduino 32-bit/arduino-1.0.5/libraries/EmonLib", 
+        "/home/glyn/Dropbox/Arduino/Arduino 32-bit/arduino-1.0.5/libraries/OneWire", 
+        "/home/glyn/Dropbox/Arduino/Arduino 32-bit/arduino-1.0.5/libraries/TemperatureControlLibrary", 
+        "/home/glyn/Dropbox/Arduino/Arduino 32-bit/arduino-1.0.5/libraries/Wire", 
+        "/home/glyn/Dropbox/Arduino/Arduino 32-bit/arduino-1.0.5/libraries/LiquidCrystal_I2C1602V1"
+    ], 
+    "sketchbook_path": "/home/glyn/Arduino", 
+    "sub_board_ids": []
+}

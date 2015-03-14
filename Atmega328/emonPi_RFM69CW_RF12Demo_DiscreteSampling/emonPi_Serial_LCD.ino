@@ -4,6 +4,7 @@ void emonPi_LCD_Startup() {
   lcd.init();                      // initialize the lcd 
   lcd.backlight();                 // Or lcd.noBacklight() 
   lcd.print("emonPi V"); lcd.print(firmware_version);
+  if (USA==TRUE) lcd.print(" USA"); else lcd.print(" EU");
   lcd.setCursor(0, 1); lcd.print("OpenEnergyMon");
   delay(2000);
     lcd.setCursor(0, 1); lcd.print("Detecting CT's.."); 
