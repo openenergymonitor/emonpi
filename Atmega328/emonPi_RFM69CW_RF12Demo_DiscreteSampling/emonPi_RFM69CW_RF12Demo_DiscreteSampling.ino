@@ -162,8 +162,6 @@ void setup()
    
   serial_print_startup();
 
- 
-
   if (CT1) ct1.current(1, Ical1);                                     // CT ADC channel 1, calibration.  calibration (2000 turns / 22 Ohm burden resistor = 90.909)
   if (CT2) ct2.current(2, Ical2);                                     // CT ADC channel 2, calibration.
 

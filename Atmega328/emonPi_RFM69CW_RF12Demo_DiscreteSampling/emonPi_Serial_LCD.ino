@@ -5,8 +5,7 @@ void emonPi_LCD_Startup() {
   lcd.backlight();                 // Or lcd.noBacklight() 
   lcd.print("emonPi V"); lcd.print(firmware_version);
   lcd.setCursor(0, 1); lcd.print("OpenEnergyMon");
-  delay(2000);
-    lcd.setCursor(0, 1); lcd.print("Detecting CT's.."); 
+  lcd.setCursor(0, 1); lcd.print("Detecting CT's.."); 
 } 
 
 void serial_print_startup(){
@@ -30,37 +29,44 @@ void serial_print_startup(){
   {
     lcd.print("AC NOT Detected");
    Serial.println("AC NOT detected - Apparent Power calc enabled");
-   Serial.print("Assuming VRMS to be "); Serial.print(Vrms); Serial.println("V");
+   Serial.print("Assuming VRMS:"); Serial.print(Vrms); Serial.println("V");
  }  
 
 lcd.setCursor(0, 1); lcd.print("Detected ");
 
   if (CT_count==0) {
-    Serial.println("NO CT detected, sampling from CT1 anyway");
+    Serial.println("no CT detected");
     lcd.print("No CT's");
   }
    else   
    {
     
      if (CT1) {
-      Serial.println("CT 1 detected");
+      Serial.println("CT 1 detect");
       lcd.print("CT1 ");
     }
      if (CT2) {
-      Serial.println("CT 2 detected");
+      Serial.println("CT 2 detect");
       lcd.print("CT2");
     }
    }
+  
+  delay(1500);
+
   if (DS18B20_STATUS==1) {
-    Serial.print("Detected "); 
+    Serial.print("Detect "); 
     Serial.print(numSensors); 
     Serial.println(" DS18B20");
-    delay(2000);
     lcd.clear();
     lcd.print("Detected: "); lcd.print(numSensors); 
     lcd.setCursor(0, 1); lcd.print("DS18B20 Temp"); 
   }
-  else Serial.println("Zero DS18B20 temp sensor detected");
+  else {
+  	Serial.println("0 DS18B20 detected");
+  	lcd.clear();
+  	lcd.print("Detected: "); lcd.print(numSensors); 
+    lcd.setCursor(0, 1); lcd.print("DS18B20 Temp"); 
+  }
 
   if (RF_STATUS == 1){
     #if (RF69_COMPAT)
@@ -76,7 +82,7 @@ lcd.setCursor(0, 1); lcd.print("Detected ");
     if (RF_freq == RF12_915MHZ) Serial.print("915Mhz"); 
     Serial.print(" Network "); Serial.println(networkGroup);
   }
-  delay(500);  
+  delay(20);  
 }
 
 

@@ -24,7 +24,6 @@ int get_temperature(byte sensor)
      float temp=(sensors.getTempC(allAddress[sensor]));
    
      if ((temp<125.0) && (temp>-40.0)) return(temp*10);            //if reading is within range for the sensor convert float to int ready to send via RF
-     if (debug==1) {Serial.print("temp "); Serial.print(sensor); Serial.print(" "); Serial.println(temp);}
   }
 }
 

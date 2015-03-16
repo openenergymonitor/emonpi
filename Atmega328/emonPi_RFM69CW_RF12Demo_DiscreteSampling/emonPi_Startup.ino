@@ -49,21 +49,6 @@ digitalWrite(LEDpin,LOW);
 vrms = calc_rms(0,1780) * 0.87;      //ADC 0   double vrms = calc_rms(0,1780) * (Vcal * (3.3/1024) );
 if (vrms>90) ACAC = 1; else ACAC=0;
 //Serial.print(vrms);
-
-if (ACAC) 
-{
-  for (int i=0; i<10; i++)                                              // indicate AC has been detected by flashing LED 10 times
-  { 
-    digitalWrite(LEDpin, HIGH); delay(200);
-    digitalWrite(LEDpin, LOW); delay(300);
-  }
-}
-else 
-{
-  delay(1000);
-  digitalWrite(LEDpin, HIGH); delay(2000); digitalWrite(LEDpin, LOW);   // indicate that no AC signal has been detected by turing LED on then off
-}
-
 }
 
 
