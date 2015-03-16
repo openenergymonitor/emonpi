@@ -15,8 +15,6 @@ void serial_print_startup(){
 
   Serial.print("CT 1 Cal: "); Serial.println(Ical1);
   Serial.print("CT 2 Cal: "); Serial.println(Ical2);
-  delay(1000);
-
   Serial.print("VRMS AC ~");
   Serial.print(vrms,0); Serial.println("V");
 
@@ -57,7 +55,7 @@ lcd.setCursor(0, 1); lcd.print("Detected ");
     Serial.print("Detected "); 
     Serial.print(numSensors); 
     Serial.println(" DS18B20");
-    delay(5000);
+    delay(2000);
     lcd.clear();
     lcd.print("Detected: "); lcd.print(numSensors); 
     lcd.setCursor(0, 1); lcd.print("DS18B20 Temp"); 

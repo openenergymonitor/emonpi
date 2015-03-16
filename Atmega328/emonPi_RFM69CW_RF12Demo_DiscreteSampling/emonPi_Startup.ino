@@ -20,11 +20,13 @@ void emonPi_startup()                                                     //emon
 
   pinMode(emonpi_GPIO_pin, OUTPUT);                     //Connected to RasPi GPIO pin 17
   digitalWrite(emonpi_GPIO_pin, LOW);
+  
+  pinMode(emonPi_int1, INPUT);                          // Set RJ45 interrupt pin to input (INT 1)
 
   Serial.begin(BAUD_RATE);
   Serial.print("emonPi V"); Serial.print(firmware_version); 
   Serial.println("OpenEnergyMonitor.org");
-  Serial.println("POST.....wait 10s");
+  Serial.println("please wait.....");
 }
 
 
@@ -40,7 +42,7 @@ if ( CT_count == 0) CT1=1;                                                      
 
 // Quick check to see if there is a voltage waveform present on the ACAC Voltage input
 // Check consists of calculating the RMS from 100 samples of the voltage input.
-Sleepy::loseSomeTime(10000);            //wait for settle
+delay(5000);
 digitalWrite(LEDpin,LOW); 
 
 // Calculate if there is an ACAC adapter on analog input 0

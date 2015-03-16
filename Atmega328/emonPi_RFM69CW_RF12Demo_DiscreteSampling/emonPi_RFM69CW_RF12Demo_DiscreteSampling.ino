@@ -78,7 +78,6 @@ const int no_of_samples=          1480;
 const byte no_of_half_wavelengths= 20;
 const int timeout=                2000;                               // emonLib timeout 
 const int ACAC_DETECTION_LEVEL=   3000;
-const int ppwh=                   1;                                  // Number of Wh elapsed per pulse (*1000 per Kwh)
 
 const byte TEMPERATURE_PRECISION=  12;                                 // 9 (93.8ms),10 (187.5ms) ,11 (375ms) or 12 (750ms) bits equal to resplution of 0.5C, 0.25C, 0.125C and 0.0625C
 const byte MaxOnewire=             6;                                  // maximum number of DS18B20 one wire sensors           
@@ -93,7 +92,7 @@ const byte shutdown_switch_pin =       8;              // Push-to-make - Low whe
 const byte emonpi_GPIO_pin=            5;              // Connected to Pi GPIO 17, used to activate Pi Shutdown when HIGH
 //const byte emonpi_OKK_Tx=              6;              // On-off keying transmission Pin - not populated by default 
 //const byte emonPi_RJ45_8_IO=           A6;             // RJ45 pin 8 - Analog 6 (D19) - Aux I/O
-const byte emonPi_int1=                1;              // RJ45 pin 6 - INT1 - PWM - Dig 3 - default pulse count input
+const byte emonPi_int1=                3;              // RJ45 pin 6 - INT1 - PWM - Dig 3 - default pulse count input
 //const byte emonPi_int0=                2;              // Default RFM INT (Dig2) - Can be jumpered used JP5 to RJ45 pin 7 - PWM - D2
 #define ONE_WIRE_BUS                   4               // DS18B20 Data, RJ45 pin 4
 //-------------------------------------------------------------------------------------------------------------------------------------------
@@ -109,7 +108,7 @@ byte numSensors;
 byte RF_freq=RF12_433MHZ;                                        // Frequency of RF69CW module can be RF12_433MHZ, RF12_868MHZ or RF12_915MHZ. You should use the one matching the module you have.
 byte nodeID = 5;                                                   // emonpi node ID
 int networkGroup = 210;  
-typedef struct { int power1, power2, pulse_elapsedkWh, Vrms, temp[MaxOnewire]; } PayloadTX;     // create structure - a neat way of packaging data for RF comms
+typedef struct { int power1, power2, pulseCount, Vrms, temp[MaxOnewire]; } PayloadTX;     // create structure - a neat way of packaging data for RF comms
   PayloadTX emonPi; 
 //-------------------------------------------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------------------------------
@@ -122,16 +121,12 @@ byte CT_count=0;                                                 // Number of CT
 unsigned long last_sample=0;                                     // Record millis time of last discrete sample
 byte flag;                                                       // flag to record shutdown push button press
 
+
 // RF Global Variables 
 static byte stack[RF12_MAXDATA+4], top, sendLen, dest;           // RF variables 
 static char cmd;
 static word value;                                               // Used to store serial input
 long unsigned int start_press=0;                                 // Record time emonPi shutdown push switch is pressed
-
-// Pulse Counting                          
-long pulseCount = 0;                                             // Number of pulses, used to measure energy.
-unsigned long pulseTime,lastPulseTime;                           // Record time between pulses 
-double pulse_elapsedkWh;                                         // Elapsed Kwh from pulse couting
 
 const char helpText1[] PROGMEM =                                 // Available Serial Commands 
 "\n"
@@ -152,15 +147,16 @@ void setup()
 { 
   delay(100);
 
-  attachInterrupt(emonPi_int1, onPulse, FALLING);                       // Attach pulse counting interrupt on RJ45
+  attachInterrupt(1, onPulse, FALLING);                                 // Attach pulse counting interrupt on RJ45 (Dig 3 / INT 1)
+  emonPi.pulseCount = 0;                                                // Reset Pulse Count 
 
    if (USA==TRUE) Vcal=Vcal_USA;                                        // Assume USA AC/AC adatper is being used, set calibration accordingly 
     else Vcal=Vcal_EU;
   
   if (RF_STATUS==1) RF_Setup(); 
-  byte numSensors =  check_for_DS18B20();                              // check for presence of DS18B20 and return number of sensors 
-  emonPi_startup();                                                   // emonPi startup proceadure, check for AC waveform and print out debug
-  emonPi_LCD_Startup();                                               // Startup emonPi LCD and print startup notice
+  byte numSensors =  check_for_DS18B20();                               // check for presence of DS18B20 and return number of sensors 
+  emonPi_startup();                                                     // emonPi startup proceadure, check for AC waveform and print out debug
+  emonPi_LCD_Startup();                                                 // Startup emonPi LCD and print startup notice
   CT_Detect();
   
    
