@@ -42,11 +42,10 @@ def shutdown():
         lcd.lcd_display_string( string_lenth(lcd_string1, 16),1)
         lcd.lcd_display_string( string_lenth(lcd_string2, 16),2) 
         sleep(2)
-        lcd.backlight(0)
         lcd.lcd_clear()
         lcd.lcd_display_string( string_lenth("Power", 16),1)
         lcd.lcd_display_string( string_lenth("Off", 16),2)
-        sleep(2)
+        lcd.backlight(0) 											# backlight zero must be the last call to the LCD to keep the backlight off 
         call('halt', shell=False)
         sys.exit() #end script 
 
@@ -58,7 +57,7 @@ class ButtonInput():
     def buttonPress(self,channel):
         print self.press_num
         self.press_num = self.press_num + 1 
-        #updatelcd()
+        print uptime_days
 buttoninput = ButtonInput()
 #Setup callback function buttonpress to appen on press of push button    
 
@@ -104,33 +103,31 @@ def is_connected():
   return False
 #print 'Internet connected? %s' %(is_connected())
 
-# write to I2C LCD 
-def updatelcd():
-    lcd.lcd_display_string( string_lenth(lcd_string1, 16),1) # line 1- make sure string is 16 characters long to fill LED 
-    lcd.lcd_display_string( string_lenth(lcd_string2, 16),2) # line 2
-#    print lcd_string1
-#    print lcd_string2
-
-
 def string_lenth(string, length):
 	# Add blank characters to end of string to make up to length long
 	if (len(string) < 16):
 		string += ' ' * (16 - len(string))
 	return (string)
 
-def uptime_days():
-    uptime_days = uptime() / 86400
-    threading.Timer(60, uptime_days).start()     # every 60's update uptime display 
-    return(uptime_days)
+# write to I2C LCD 
+def updatelcd():
+    lcd.lcd_display_string( string_lenth(lcd_string1, 16),1) # line 1- make sure string is 16 characters long to fill LED 
+    lcd.lcd_display_string( string_lenth(lcd_string2, 16),2) # line 2
 
 
- 
+def calc_uptime_days():
+	uptime_days = uptime() / 86400
+	threading.Timer(60, calc_uptime_days).start()
+	return(uptime_days)
+	
+calc_uptime_days()
+
 while 1:
 
-    uptime_days()
+	uptime_days=calc_uptime_days()
 
-    if buttoninput.press_num == 0:   
-        IP, network = local_IP()
+	if buttoninput.press_num == 0:
+		IP, network = local_IP()
         if IP == "":
             lcd_string1 = 'Awaiting Network'
             lcd_string2 = 'Connection......'
@@ -149,27 +146,20 @@ while 1:
         #    lcd_string1 = 'Internet'
         #    lcd_string2 = 'Connection FAIL'
 
-    elif buttoninput.press_num == 1: 
- 
-        #print uptime('FORMAT_HOUR')
-        lcd_string1 = datetime.now().strftime('%b %d %H:%M')
-        lcd_string2 =  'Uptime %.2f days' % (uptime_days())
+	elif buttoninput.press_num == 1:
+		lcd_string1 = datetime.now().strftime('%b %d %H:%M')
+		lcd_string2 =  'Uptime %.2f days' % (uptime_days)
     
-    elif buttoninput.press_num == 2: 
-    	lcd_string1 = 'Power: 563W'  
-        lcd_string2 = 'Today: 1.3KW'      
-
-    else:
-        buttoninput.press_num = 0
+	elif buttoninput.press_num == 2: 
+		lcd_string1 = 'Power: 563W'
+		lcd_string2 = 'Today: 1.3KW'
+	else:
+		buttoninput.press_num = 0
 
     if (GPIO.input(11) == 0): # only update LCD if shutdown button is not pressed
-        updatelcd()
+    	updatelcd()
     else:
-        shutdown()
-        lcd.lcd_clear()
-
-
-
+    	shutdown()
 
 GPIO.cleanup()
         
