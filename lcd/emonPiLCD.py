@@ -156,10 +156,11 @@ while 1:
 	else:
 		buttoninput.press_num = 0
 
-    if (GPIO.input(11) == 0): # only update LCD if shutdown button is not pressed
-    	updatelcd()
-    else:
-    	shutdown()
+# only update LCD if shutdown button is not pressed
+	if (GPIO.input(11) == 0): 
+		updatelcd()
+	else:
+		shutdown()
 
 GPIO.cleanup()
         
