@@ -148,8 +148,8 @@ long unsigned int start_press=0;                                 // Record time 
 
 // Pulse Counting                          
 long pulseCount = 0;                                             // Number of pulses, used to measure energy.
-unsigned long pulseTime,lastPulseTime;                                // Record time between pulses 
-double pulse_elapsedkWh;                                          // Elapsed Kwh from pulse couting
+unsigned long pulseTime,lastPulseTime;                           // Record time between pulses 
+double pulse_elapsedkWh;                                         // Elapsed Kwh from pulse couting
 
 const char helpText1[] PROGMEM =                                 // Available Serial Commands 
 "\n"
