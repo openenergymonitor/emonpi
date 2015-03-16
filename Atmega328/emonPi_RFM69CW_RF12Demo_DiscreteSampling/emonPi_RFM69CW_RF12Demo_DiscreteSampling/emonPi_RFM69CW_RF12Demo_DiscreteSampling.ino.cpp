@@ -84,10 +84,10 @@ const int TIME_BETWEEN_READINGS=  10000;                             // Time bet
 
 const float Ical1=                60.606;                             // emonpi Calibration factor = (100A / 0.05A) / 33 Ohms
 const float Ical2=                60.606;                                 
-float Vcal=                       268.97;                             // (230V x 13) / (9V x 1.2) = 276.9 Calibration for UK AC-AC adapter 77DB-06-09 
+float Vcal_EU=                    268.97;                             // (230V x 13) / (9V x 1.2) = 276.9 Calibration for UK AC-AC adapter 77DB-06-09 
 //const float Vcal=               260;                                // Calibration for EU AC-AC adapter 77DE-06-09 
 const float Vcal_USA=             130.0;                              // Calibration for US AC-AC adapter 77DA-10-09
-boolean USA=                      TRUE; 
+boolean USA=                      FALSE; 
 
 
 const float phase_shift=          1.7;
@@ -132,7 +132,7 @@ typedef struct { int power1, power2, Vrms, temp[MaxOnewire]; } PayloadTX;     //
 
 
 //Global Variables 
-double vrms;
+double vrms, Vcal;
 boolean CT1, CT2, ACAC, DS18B20_STATUS;
 byte CT_count=0;                                                 // Number of CT sensors detected
 byte flag;                                                       // flag to record shutdown push button press
@@ -152,6 +152,7 @@ const char helpText1[] PROGMEM =
 "  <n> c      - set collect mode (advanced, normally 0)\n"
 "  ...,<nn> a - send data packet to node <nn>, request ack\n"
 "  ...,<nn> s - send data packet to node <nn>, no ack\n"
+"  ...,<n> v  - Set AC Adapter Vcal 1v = UK, 2v = USA\n"
 ;
 
 //-------------------------------------------------------------------------------------------------------------------------------------------
@@ -161,9 +162,8 @@ void setup()
 { 
   delay(100);
 
-   if (USA==TRUE){                                                   // if USA mode is true
-  Vcal=Vcal_USA;                                                     // Assume USA AC/AC adatper is being used, set calibration accordingly 
- } 
+   if (USA==TRUE) Vcal=Vcal_USA;                                                     // Assume USA AC/AC adatper is being used, set calibration accordingly 
+    else Vcal=Vcal_EU;
   
   if (RF_STATUS==1) RF_Setup(); 
   byte numSensors =  check_for_DS18B20();                              // check for presence of DS18B20 and return number of sensors 
@@ -194,6 +194,8 @@ void setup()
 void loop()
 {
  
+    if (USA==TRUE) Vcal=Vcal_USA;                                                     // Assume USA AC/AC adatper is being used, set calibration accordingly 
+    else Vcal=Vcal_EU;
 
   if (digitalRead(shutdown_switch_pin) == 0 ) 
     digitalWrite(emonpi_GPIO_pin, HIGH);     // if emonPi shutdown butten pressed then send signal to the Pi on GPIO 11
@@ -386,6 +388,13 @@ static void handleInput (char c) {
         }
           break;
 
+      case 'v': // set Vcc Cal 1=UK/EU 2=USA
+        if (value){
+          if (value==1) USA=false;
+          if (value==2) USA=true;
+        }
+          break;
+
       case 'a': // send packet to node ID N, request an ack
       case 's': // send packet to node ID N, no ack
         cmd = c;
@@ -409,7 +418,9 @@ static void handleInput (char c) {
                    RF_freq == RF12_868MHZ ? 868 :
                    RF_freq == RF12_915MHZ ? 915 : 0);
       Serial.print(" MHz"); 
+      Serial.print(" USA "); Serial.print(USA);
       Serial.println(" ");
+
     }
     
     }
@@ -429,7 +440,6 @@ void emonPi_LCD_Startup() {
   lcd.init();                      // initialize the lcd 
   lcd.backlight();                 // Or lcd.noBacklight() 
   lcd.print("emonPi V"); lcd.print(firmware_version);
-  if (USA==TRUE) lcd.print(" USA"); else lcd.print(" EU");
   lcd.setCursor(0, 1); lcd.print("OpenEnergyMon");
   delay(2000);
     lcd.setCursor(0, 1); lcd.print("Detecting CT's.."); 
@@ -561,7 +571,6 @@ void emonPi_startup()                                                     //emon
 
   Serial.begin(BAUD_RATE);
   Serial.print("emonPi V"); Serial.print(firmware_version); 
-  if (USA==TRUE) Serial.println(" USA"); else Serial.print(" EU");
   Serial.println("OpenEnergyMonitor.org");
   Serial.println("POST.....wait 10s");
 }
