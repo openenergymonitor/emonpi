@@ -108,8 +108,16 @@ byte numSensors;
 byte RF_freq=RF12_433MHZ;                                        // Frequency of RF69CW module can be RF12_433MHZ, RF12_868MHZ or RF12_915MHZ. You should use the one matching the module you have.
 byte nodeID = 5;                                                   // emonpi node ID
 int networkGroup = 210;  
-typedef struct { int power1, power2, pulseCount, Vrms, temp[MaxOnewire]; } PayloadTX;     // create structure - a neat way of packaging data for RF comms
-  PayloadTX emonPi; 
+
+typedef struct { 
+int power1;
+int power2;
+unsigned long pulseCount; 
+int Vrms; 
+int temp[MaxOnewire]; 
+} PayloadTX;     // create structure - a neat way of packaging data for RF comms
+PayloadTX emonPi; 
+
 //-------------------------------------------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -161,8 +169,6 @@ void setup()
   
    
   serial_print_startup();
-
- 
 
   if (CT1) ct1.current(1, Ical1);                                     // CT ADC channel 1, calibration.  calibration (2000 turns / 22 Ohm burden resistor = 90.909)
   if (CT2) ct2.current(2, Ical2);                                     // CT ADC channel 2, calibration.
