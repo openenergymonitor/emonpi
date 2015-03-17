@@ -169,12 +169,15 @@ while 1:
         
         if buttoninput.press_num==0:
             IP = r.get("ipaddress")
-            if IP == "":
+            if IP == "" or IP == None:
                 lcd_string1 = 'Awaiting Network'
                 lcd_string2 = 'Connection......'
             else:
-                lcd_string1 = str(r.get("network"))+"    SIG:"+str(r.get("wlan:signallevel"))+"%"
-                lcd_string2 = "IP "+IP
+                lcd_string1 = str(r.get("network"))
+                signallevel = r.get("wlan:signallevel")
+                if signallevel is not None:
+                    lcd_string1 += "    SIG:"+str()+"%"
+                lcd_string2 = "IP "+str(IP)
             
         elif buttoninput.press_num==1:
             lcd_string1 = "Link|Sig|Noise"
