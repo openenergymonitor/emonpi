@@ -58,31 +58,55 @@ class Background(threading.Thread):
             # ----------------------------------------------------------
             if (now-last5s)>=5.0:
                 last5s = now
-                
-                # Ip address's
-                wlan0 = "ip addr show wlan0 | grep inet | awk '{print $2}' | cut -d/ -f1 | head -n1"
+
+                # Ethernet
+                # --------------------------------------------------------------------------------
                 eth0 = "ip addr show eth0 | grep inet | awk '{print $2}' | cut -d/ -f1 | head -n1"
                 p = Popen(eth0, shell=True, stdout=PIPE)
-                IP = p.communicate()[0]
-                IP = IP[:-1] #remove blank space at end of IP
-                network = "eth"
-                if IP == "":
-                    p = Popen(wlan0, shell=True, stdout=PIPE)
-                    IP = p.communicate()[0].rstrip('\n')
-                    network = "wlan"
-                r.set("ipaddress",IP)
-                r.set("network",network)
+                eth0ip = p.communicate()[0][:-1]
                 
-                if network=="wlan":
+                ethactive = 1
+                if eth0ip=="" or eth0ip==False:
+                    ethactive = 0
+                    
+                r.set("eth:active",ethactive)
+                r.set("eth:ip",eth0ip)
+                print "eth:"+str(int(ethactive))+" "+eth0ip
+                
+                # Wireless LAN
+                # ----------------------------------------------------------------------------------
+                wlan0 = "ip addr show wlan0 | grep inet | awk '{print $2}' | cut -d/ -f1 | head -n1"
+                p = Popen(wlan0, shell=True, stdout=PIPE)
+                wlan0ip = p.communicate()[0][:-1]
+                
+                wlanactive = 1
+                if wlan0ip=="" or wlan0ip==False:
+                    wlanactive = 0
+                    
+                r.set("wlan:active",wlanactive)
+                r.set("wlan:ip",wlan0ip)
+                print "wlan:"+str(int(wlanactive))+" "+wlan0ip
+                
+                # ----------------------------------------------------------------------------------
+        
+                signallevel = 0
+                linklevel = 0
+                noiselevel = 0        
+
+                if wlanactive:
                     # wlan link status
                     p = Popen("/sbin/iwconfig wlan0", shell=True, stdout=PIPE)
                     iwconfig = p.communicate()[0]
-                    signallevel = re.findall('(?<=Signal level=)\w+',iwconfig)[0]
-                    linklevel = re.findall('(?<=Link Quality=)\w+',iwconfig)[0]
-                    noiselevel = re.findall('(?<=Noise level=)\w+',iwconfig)[0]
-                    r.set("wlan:signallevel",signallevel)
-                    r.set("wlan:linklevel",linklevel)
-                    r.set("wlan:noiselevel",noiselevel)
+                    tmp = re.findall('(?<=Signal level=)\w+',iwconfig)
+                    if len(tmp)>0: signallevel = tmp[0]
+                    tmp = re.findall('(?<=Link Quality=)\w+',iwconfig)
+                    if len(tmp)>0: linklevel = tmp[0]
+                    tmp = re.findall('(?<=Noise level=)\w+',iwconfig)
+                    if len(tmp)>0: noiselevel = tmp[0]
+
+                r.set("wlan:signallevel",signallevel)
+                r.set("wlan:linklevel",linklevel)
+                r.set("wlan:noiselevel",noiselevel)
                 
             # this loop runs a bit faster so that ctrl-c exits are fast
             time.sleep(0.1)
@@ -128,7 +152,7 @@ class ButtonInput():
     def buttonPress(self,channel):
         print self.press_num
         self.press_num = self.press_num + 1
-        if self.press_num>3: self.press_num = 0
+        if self.press_num>4: self.press_num = 0
         self.pressed = True
                     
 def get_uptime():
@@ -179,29 +203,38 @@ while 1:
         buttoninput.pressed = False
         
         if buttoninput.press_num==0:
-            IP = r.get("ipaddress")
-            if IP == "" or IP == None:
-                lcd_string1 = 'Awaiting Network'
-                lcd_string2 = 'Connection......'
+                
+            if int(r.get("eth:active")):
+                lcd_string1 = "Ethernet: YES"
+                lcd_string2 = r.get("eth:ip")
             else:
-                lcd_string1 = str(r.get("network"))
-                signallevel = r.get("wlan:signallevel")
-                if signallevel is not None:
-                    lcd_string1 += "    SIG:"+str()+"%"
-                lcd_string2 = "IP "+str(IP)
-            
+                lcd_string1 = "Ethernet: NO"
+                lcd_string2 = ""
+                
         elif buttoninput.press_num==1:
+                
+            if int(r.get("wlan:active")):
+                lcd_string1 = "WLAN: YES  "+str(r.get("wlan:signallevel"))+"%"
+                lcd_string2 = r.get("wlan:ip")
+            else:
+                lcd_string1 = "WLAN: NO"
+                lcd_string2 = ""
+                
+            
+        elif buttoninput.press_num==2:
             lcd_string1 = "Link|Sig|Noise"
-            if r.get("network")=="wlan":
-                lcd_string2 = r.get("wlan:linklevel")+"% "+r.get("wlan:signallevel")+"% "+r.get("wlan:noiselevel")+"%"
+            if int(r.get("wlan:active")):
+                lcd_string2 = str(r.get("wlan:linklevel"))+"% "
+                lcd_string2 += str(r.get("wlan:signallevel"))+"% "
+                lcd_string2 += str(r.get("wlan:noiselevel"))+"%"
             else:
                 lcd_string2 = ""
 
-        elif buttoninput.press_num==2:
+        elif buttoninput.press_num==3:
 		    lcd_string1 = datetime.now().strftime('%b %d %H:%M')
 		    lcd_string2 =  'Uptime %.2f days' % (float(r.get("uptime"))/86400)
 		    
-        elif buttoninput.press_num==3: 
+        elif buttoninput.press_num==4: 
             lcd_string1 = 'Power: 563W'
             lcd_string2 = 'Today: 1.3KW'
         
