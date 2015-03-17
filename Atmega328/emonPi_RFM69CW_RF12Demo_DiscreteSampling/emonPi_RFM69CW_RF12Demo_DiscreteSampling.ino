@@ -65,8 +65,8 @@ const int TIME_BETWEEN_READINGS=  10000;                             // Time bet
 
 //http://openenergymonitor.org/emon/buildingblocks/calibration
 
-const float Ical1=                60.606;                             // emonpi Calibration factor = (100A / 0.05A) / 33 Ohms
-const float Ical2=                60.606;                                 
+const float Ical1=                90.9;                             // (2000 turns / 22 Ohm burden) = 90.9
+const float Ical2=                90.9;                                 
 float Vcal_EU=                    268.97;                             // (230V x 13) / (9V x 1.2) = 276.9 Calibration for UK AC-AC adapter 77DB-06-09 
 //const float Vcal=               260;                                // Calibration for EU AC-AC adapter 77DE-06-09 
 const float Vcal_USA=             130.0;                              // Calibration for US AC-AC adapter 77DA-10-09
@@ -81,7 +81,7 @@ const int ACAC_DETECTION_LEVEL=   3000;
 
 const byte TEMPERATURE_PRECISION=  12;                                 // 9 (93.8ms),10 (187.5ms) ,11 (375ms) or 12 (750ms) bits equal to resplution of 0.5C, 0.25C, 0.125C and 0.0625C
 const byte MaxOnewire=             6;                                  // maximum number of DS18B20 one wire sensors           
-boolean RF_STATUS=                 1;
+boolean RF_STATUS=                 1;                                  // Turn RF on and off
 //-------------------------------------------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -247,6 +247,7 @@ void loop()
 
     if (DS18B20_STATUS==1) 
     {
+       sensors.requestTemperatures();                                        // Send the command to get temperatures
       for(byte j=0;j<numSensors;j++) emonPi.temp[j]=get_temperature(j); 
     }                                                                           
             
