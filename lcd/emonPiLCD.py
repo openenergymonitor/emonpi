@@ -23,7 +23,8 @@ while not redisready:
         r.client_list()
         redisready = True
     except redis.ConnectionError:
-        time.sleep(0.5)
+	print "waiting for redis-server to start..."
+        time.sleep(1.0)
 
 background = False
 
