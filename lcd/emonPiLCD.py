@@ -15,6 +15,16 @@ import redis
 import re
 
 r = redis.Redis(host='localhost', port=6379, db=0)
+
+# We wait here until redis has successfully started up
+redisready = False
+while not redisready:
+    try:
+        r.client_list()
+        redisready = True
+    except redis.ConnectionError:
+        time.sleep(0.5)
+
 background = False
 
 class Background(threading.Thread):
