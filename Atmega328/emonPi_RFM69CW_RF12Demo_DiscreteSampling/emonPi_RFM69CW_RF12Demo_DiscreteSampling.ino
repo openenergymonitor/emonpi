@@ -114,7 +114,7 @@ int power1;
 int power2;
 unsigned long pulseCount; 
 int Vrms; 
-int temp[MaxOnewire]; 
+int temp[MaxOnewire-1]; 
 } PayloadTX;     // create structure - a neat way of packaging data for RF comms
 PayloadTX emonPi; 
 
