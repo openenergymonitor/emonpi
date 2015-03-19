@@ -69,7 +69,7 @@ cp /var/www/emoncms/default.settings.php /var/www/emoncms/settings.php
 
 cd
 git clone https://github.com/emoncms/development.git
-cp development/Modules/wifi /var/www/emoncms/Modules/wifi
+cp -r development/Modules/wifi /var/www/emoncms/Modules
 
 sudo cp /var/www/emoncms/run/feedwriter /etc/init.d/
 sudo chmod 755 /etc/init.d/feedwriter
