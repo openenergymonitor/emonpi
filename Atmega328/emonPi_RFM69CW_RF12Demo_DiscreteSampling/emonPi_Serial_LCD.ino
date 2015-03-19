@@ -5,7 +5,6 @@ void emonPi_LCD_Startup() {
   lcd.backlight();                 // Or lcd.noBacklight() 
   lcd.print("emonPi V"); lcd.print(firmware_version);
   lcd.setCursor(0, 1); lcd.print("OpenEnergyMon");
-  lcd.setCursor(0, 1); lcd.print("Detecting CT's.."); 
 } 
 
 void serial_print_startup(){
@@ -51,7 +50,7 @@ lcd.setCursor(0, 1); lcd.print("Detected ");
     }
    }
   
-  delay(1500);
+  delay(2000);
 
   if (DS18B20_STATUS==1) {
     Serial.print("Detect "); 

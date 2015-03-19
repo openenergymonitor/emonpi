@@ -42,7 +42,7 @@ if ( CT_count == 0) CT1=1;                                                      
 
 // Quick check to see if there is a voltage waveform present on the ACAC Voltage input
 // Check consists of calculating the RMS from 100 samples of the voltage input.
-delay(5000);
+//delay(5000); // Unlike on the emonTx V3 since the emonPi is not powred by AC-DC circuit there should not be need for delay to allow residual AC in resivour capacitot to diminnish. 
 digitalWrite(LEDpin,LOW); 
 
 // Calculate if there is an ACAC adapter on analog input 0

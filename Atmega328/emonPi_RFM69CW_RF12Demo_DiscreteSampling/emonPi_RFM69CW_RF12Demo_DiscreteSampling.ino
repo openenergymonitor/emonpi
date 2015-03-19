@@ -139,7 +139,7 @@ long unsigned int start_press=0;                                 // Record time 
 const char helpText1[] PROGMEM =                                 // Available Serial Commands 
 "\n"
 "Available commands:\n"
-"  <nn> i     - set node ID (standard node ids are 1..30)\n"
+"  <nn> i     - set node IDs (standard node ids are 1..30)\n"
 "  <n> b      - set MHz band (4 = 433, 8 = 868, 9 = 915)\n"
 "  <nnn> g    - set network group (RFM12 only allows 212, 0 = any)\n"
 "  <n> c      - set collect mode (advanced, normally 0)\n"
@@ -154,21 +154,21 @@ const char helpText1[] PROGMEM =                                 // Available Se
 void setup()
 { 
   delay(100);
-
-  attachInterrupt(1, onPulse, FALLING);                                 // Attach pulse counting interrupt on RJ45 (Dig 3 / INT 1)
-  emonPi.pulseCount = 0;                                                // Reset Pulse Count 
-
-   if (USA==TRUE) Vcal=Vcal_USA;                                        // Assume USA AC/AC adatper is being used, set calibration accordingly 
+  if (USA==TRUE) Vcal=Vcal_USA;                                        // Assume USA AC/AC adatper is being used, set calibration accordingly 
     else Vcal=Vcal_EU;
   
   if (RF_STATUS==1) RF_Setup(); 
   byte numSensors =  check_for_DS18B20();                               // check for presence of DS18B20 and return number of sensors 
   emonPi_startup();                                                     // emonPi startup proceadure, check for AC waveform and print out debug
-  emonPi_LCD_Startup();                                                 // Startup emonPi LCD and print startup notice
+  emonPi_LCD_Startup(); 
   CT_Detect();
-  
-   
+  delay(2000);                                                          // Startup emonPi LCD and print startup notice
   serial_print_startup();
+
+  if (DS18B20_STATUS==0) attachInterrupt(1, onPulse, FALLING);          // Attach pulse counting interrupt on RJ45 (Dig 3 / INT 1) only if no temperature sensors are detected as they use the same port and can conflict
+  emonPi.pulseCount = 0;                                                // Reset Pulse Count 
+   
+  
 
   if (CT1) ct1.current(1, Ical1);                                     // CT ADC channel 1, calibration.  calibration (2000 turns / 22 Ohm burden resistor = 90.909)
   if (CT2) ct2.current(2, Ical2);                                     // CT ADC channel 2, calibration.
@@ -188,7 +188,7 @@ void setup()
 void loop()
 {
  
-    if (USA==TRUE) Vcal=Vcal_USA;                                                     // Assume USA AC/AC adatper is being used, set calibration accordingly 
+  if (USA==TRUE) Vcal=Vcal_USA;                                                     // Assume USA AC/AC adatper is being used, set calibration accordingly 
     else Vcal=Vcal_EU;
 
   if (digitalRead(shutdown_switch_pin) == 0 ) 
@@ -247,7 +247,7 @@ void loop()
 
     if (DS18B20_STATUS==1) 
     {
-       sensors.requestTemperatures();                                        // Send the command to get temperatures
+      sensors.requestTemperatures();                                        // Send the command to get temperatures
       for(byte j=0;j<numSensors;j++) emonPi.temp[j]=get_temperature(j); 
     }                                                                           
             
