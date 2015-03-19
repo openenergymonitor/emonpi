@@ -1,0 +1,84 @@
+#!/bin/bash
+
+# -----------------------------------------------------------------------------------------------
+# INSTALL APT-GET DEPENDENCIES
+# -----------------------------------------------------------------------------------------------
+# rpi-rw
+
+# Install all dependencies
+# There are a few extra things in here such as mosquitto
+# which will become useful soon
+
+# MYSQL INSTALL WITHOUT PASSWORD PROMPT
+sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password raspberry'
+sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password raspberry'
+sudo apt-get -y install mysql-server
+
+# All other apt-get packages
+sudo apt-get install -y apache2 mysql-client php5 libapache2-mod-php5 php5-mysql php5-curl php-pear php5-dev php5-mcrypt git-core redis-server build-essential ufw ntp python-serial python-configobj mosquitto mosquitto-clients python-pip python-dev screen sysstat minicom
+
+# Redis and log4php
+sudo pecl install redis
+sudo pear channel-discover pear.apache.org/log4php
+sudo pear install log4php/Apache_log4php
+
+# Add pecl modules to php5 config
+sudo sh -c 'echo "extension=redis.so" > /etc/php5/apache2/conf.d/20-redis.ini'
+sudo sh -c 'echo "extension=redis.so" > /etc/php5/cli/conf.d/20-redis.ini'
+
+# MOD REWRITE
+sudo a2enmod rewrite
+
+# Change allow override
+sed '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/sites-enabled/000-default > /tmp/000-default
+sudo cp /tmp/000-default /etc/apache2/sites-enabled/000-default
+
+# Custom log
+sed 's/CustomLog/# CustomLog/' /etc/apache2/sites-enabled/000-default > /tmp/000-default
+sudo cp /tmp/000-default /etc/apache2/sites-enabled/000-default
+
+# Custom log vhosts
+sed 's/CustomLog/# CustomLog/' /etc/apache2/conf.d/other-vhosts-access-log > /tmp/other-vhosts-access-log
+sudo cp /tmp/other-vhosts-access-log /etc/apache2/conf.d/other-vhosts-access-log
+
+# Comment out save settings in redis
+sed 's/logfile \/var\/log\/redis\/redis-server.log/# logfile \/var\/log\/redis\/redis-server.log/' /etc/redis/redis.conf > /tmp/redis.conf
+sudo cp /tmp/redis.conf /etc/redis/redis.conf
+
+sed 's/save 900 1/# save 900 1/' /etc/redis/redis.conf > /tmp/redis.conf
+sudo cp /tmp/redis.conf /etc/redis/redis.conf
+sed 's/save 300 10/# save 300 10/' /etc/redis/redis.conf > /tmp/redis.conf
+sudo cp /tmp/redis.conf /etc/redis/redis.conf
+sed 's/save 60 10000/# save 60 10000/' /etc/redis/redis.conf > /tmp/redis.conf
+sudo cp /tmp/redis.conf /etc/redis/redis.conf
+
+# MYSQL database
+mysql -u root -e "create database emoncms" -praspberry
+
+# Create data repositories for emoncms feed engine's
+sudo mkdir /home/pi/data
+sudo mkdir /home/pi/data/phpfina
+sudo mkdir /home/pi/data/phptimeseries
+sudo chown www-data:root /home/pi/data/phpfina
+sudo chown www-data:root /home/pi/data/phptimeseries
+
+sudo chown pi /var/www
+cd /var/www
+git clone -b bufferedwrite https://github.com/emoncms/emoncms.git
+cp /var/www/emoncms/default.settings.php /var/www/emoncms/settings.php
+
+cd
+git clone https://github.com/emoncms/development.git
+cp -r /home/pi/development/Modules/wifi /var/www/emoncms/Modules
+
+sudo cp /var/www/emoncms/run/feedwriter /etc/init.d/
+sudo chmod 755 /etc/init.d/feedwriter
+sudo update-rc.d feedwriter defaults
+
+sudo wget https://raw.github.com/lurch/rpi-serial-console/master/rpi-serial-console -O /usr/bin/rpi-serial-console && sudo chmod +x /usr/bin/rpi-serial-console
+sudo rpi-serial-console disable
+rpi-serial-console status
+
+sudo service redis-server restart
+sudo service apache2 restart
+
