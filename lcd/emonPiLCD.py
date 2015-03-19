@@ -17,7 +17,7 @@ import re
 # ------------------------------------------------------------------------------------
 import logging
 import logging.handlers
-uselogfile = True
+uselogfile = False
 
 if not uselogfile:
     loghandler = logging.StreamHandler()
@@ -154,6 +154,7 @@ def shutdown():
             if (GPIO.input(11) == 0):
                 return
         lcd_string2="SHUTDOWN NOW!"
+        background.stop = True
         lcd.lcd_display_string( string_lenth(lcd_string1, 16),1)
         lcd.lcd_display_string( string_lenth(lcd_string2, 16),2) 
         time.sleep(2)
@@ -264,6 +265,7 @@ while 1:
         if (GPIO.input(11) == 0):
             updatelcd()
         else:
+            logger.info("shutdown button pressed")
             shutdown()
     
     time.sleep(0.1)
