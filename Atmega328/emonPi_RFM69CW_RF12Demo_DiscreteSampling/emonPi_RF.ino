@@ -105,14 +105,18 @@ static void handleInput (char c) {
           networkGroup = value;
           if (RF_STATUS==1) rf12_initialize(nodeID, RF_freq, networkGroup);
         }
-          break;
+        break;
 
-      case 'v': // set Vcc Cal 1=UK/EU 2=USA
+      case 'p': // set Vcc Cal 1=UK/EU 2=USA
         if (value){
           if (value==1) USA=false;
           if (value==2) USA=true;
         }
-          break;
+        break;
+
+      case 'v': // print firmware version
+        Serial.print("[emonPi."); Serial.print(firmware_version*0.1); Serial.println("]");
+        break;
 
       case 'a': // send packet to node ID N, request an ack
       case 's': // send packet to node ID N, no ack
@@ -126,6 +130,8 @@ static void handleInput (char c) {
       } //end case 
     //Print Current RF config  
     if (RF_STATUS==1) {
+      showString(helpText1);
+      showString(PSTR("Current configuration:\n"));
       Serial.print(' ');
       Serial.print((char) ('@' + (nodeID & RF12_HDR_MASK)));
       Serial.print(" i");
@@ -139,7 +145,6 @@ static void handleInput (char c) {
       Serial.print(" MHz"); 
       Serial.print(" USA "); Serial.print(USA);
       Serial.println(" ");
-
     }
     
     }

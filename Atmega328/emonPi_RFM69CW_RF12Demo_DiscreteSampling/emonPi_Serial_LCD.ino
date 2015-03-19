@@ -3,7 +3,7 @@
 void emonPi_LCD_Startup() {
   lcd.init();                      // initialize the lcd 
   lcd.backlight();                 // Or lcd.noBacklight() 
-  lcd.print("emonPi V"); lcd.print(firmware_version);
+  lcd.print("emonPi V"); lcd.print(firmware_version*0.1);
   lcd.setCursor(0, 1); lcd.print("OpenEnergyMon");
 } 
 
@@ -80,6 +80,8 @@ lcd.setCursor(0, 1); lcd.print("Detected ");
     if (RF_freq == RF12_868MHZ) Serial.print("868Mhz");
     if (RF_freq == RF12_915MHZ) Serial.print("915Mhz"); 
     Serial.print(" Network "); Serial.println(networkGroup);
+
+    showString(helpText1);
   }
   delay(20);  
 }

@@ -53,7 +53,7 @@ EnergyMonitor ct1, ct2;
 #include <LiquidCrystal_I2C.h>                                        // https://github.com/openenergymonitor/LiquidCrystal_I2C1602V1
 LiquidCrystal_I2C lcd(0x27,16,2);                                     // LCD I2C address to 0x27, 16x2 line display
 
-float firmware_version = 0.1;
+const byte firmware_version = 1;                                           //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
 boolean debug =                   TRUE; 
@@ -112,9 +112,9 @@ int networkGroup = 210;
 typedef struct { 
 int power1;
 int power2;
-unsigned long pulseCount; 
+int pulseCount;                                               
 int Vrms; 
-int temp[MaxOnewire-1]; 
+int temp[MaxOnewire]; 
 } PayloadTX;     // create structure - a neat way of packaging data for RF comms
 PayloadTX emonPi; 
 
@@ -145,7 +145,8 @@ const char helpText1[] PROGMEM =                                 // Available Se
 "  <n> c      - set collect mode (advanced, normally 0)\n"
 "  ...,<nn> a - send data packet to node <nn>, request ack\n"
 "  ...,<nn> s - send data packet to node <nn>, no ack\n"
-"  ...,<n> v  - Set AC Adapter Vcal 1v = UK, 2v = USA\n"
+"  ...,<n> p  - Set AC Adapter Vcal 1p = UK, 2p = USA\n"
+"  v          - Show firmware version\n"
 ;
 
 //-------------------------------------------------------------------------------------------------------------------------------------------
