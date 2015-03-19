@@ -20,10 +20,10 @@ byte check_for_DS18B20()                                      //Setup and for pr
 int get_temperature(byte sensor)                
 {
     {
-     sensors.requestTemperatures();                                        // Send the command to get temperatures
+    
      float temp=(sensors.getTempC(allAddress[sensor]));
    
-     if ((temp<125.0) && (temp>-40.0)) return(temp*10);            //if reading is within range for the sensor convert float to int ready to send via RF
+     if ((temp<125.0) && (temp>-55.0)) return(temp*10);            //if reading is within range for the sensor convert float to int ready to send via RF
   }
 }
 
