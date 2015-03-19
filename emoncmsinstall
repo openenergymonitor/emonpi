@@ -67,6 +67,10 @@ cd /var/www
 git clone -b bufferedwrite https://github.com/emoncms/emoncms.git
 cp /var/www/emoncms/default.settings.php /var/www/emoncms/settings.php
 
+cd
+git clone https://github.com/emoncms/development.git
+cp development/Modules/wifi /var/www/emoncms/Modules/wifi
+
 sudo cp /var/www/emoncms/run/feedwriter /etc/init.d/
 sudo chmod 755 /etc/init.d/feedwriter
 sudo update-rc.d feedwriter defaults
@@ -77,3 +81,4 @@ rpi-serial-console status
 
 sudo service redis-server restart
 sudo service apache2 restart
+
