@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-
-import lcddriver 
-lcd = lcddriver.lcd()
+import lcddriver
 from subprocess import *
 import time
 from datetime import datetime
@@ -14,6 +12,26 @@ import signal
 import redis
 import re
 
+# ------------------------------------------------------------------------------------
+# Start Logging
+# ------------------------------------------------------------------------------------
+import logging
+import logging.handlers
+uselogfile = True
+
+if not uselogfile:
+    loghandler = logging.StreamHandler()
+else:
+    loghandler = logging.handlers.RotatingFileHandler("/var/log/emonPiLCD",'a', 5000 * 1024, 1)
+
+loghandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
+logger = logging.getLogger("EmonPiLCD")
+logger.addHandler(loghandler)    
+logger.setLevel(logging.INFO)
+
+logger.info("EmonPiLCD Start")
+# ------------------------------------------------------------------------------------
+
 r = redis.Redis(host='localhost', port=6379, db=0)
 
 # We wait here until redis has successfully started up
@@ -23,7 +41,7 @@ while not redisready:
         r.client_list()
         redisready = True
     except redis.ConnectionError:
-	print "waiting for redis-server to start..."
+        logger.info("waiting for redis-server to start...")
         time.sleep(1.0)
 
 background = False
@@ -37,6 +55,7 @@ class Background(threading.Thread):
     def run(self):
         last1s = time.time() - 2.0
         last5s = time.time() - 6.0
+        logger.info("Starting background thread")
         # Loop until we stop is false (our exit signal)
         while not self.stop:
             now = time.time()
@@ -71,7 +90,7 @@ class Background(threading.Thread):
                     
                 r.set("eth:active",ethactive)
                 r.set("eth:ip",eth0ip)
-                print "eth:"+str(int(ethactive))+" "+eth0ip
+                logger.info("background: eth:"+str(int(ethactive))+" "+eth0ip)
                 
                 # Wireless LAN
                 # ----------------------------------------------------------------------------------
@@ -85,7 +104,7 @@ class Background(threading.Thread):
                     
                 r.set("wlan:active",wlanactive)
                 r.set("wlan:ip",wlan0ip)
-                print "wlan:"+str(int(wlanactive))+" "+wlan0ip
+                logger.info("background: wlan:"+str(int(wlanactive))+" "+wlan0ip)
                 
                 # ----------------------------------------------------------------------------------
         
@@ -107,13 +126,14 @@ class Background(threading.Thread):
                 r.set("wlan:signallevel",signallevel)
                 r.set("wlan:linklevel",linklevel)
                 r.set("wlan:noiselevel",noiselevel)
+                logger.info("background: wlan "+signallevel+" "+linklevel+" "+noiselevel)
                 
             # this loop runs a bit faster so that ctrl-c exits are fast
             time.sleep(0.1)
             
 def sigint_handler(signal, frame):
     """Catch SIGINT (Ctrl+C)."""
-    print "SIGINT received."
+    logger.info("ctrl+c exit received")
     background.stop = True;
     sys.exit(0)
 
@@ -123,12 +143,12 @@ def shutdown():
         lcd_string2 = "5.."
         lcd.lcd_display_string( string_lenth(lcd_string1, 16),1)
         lcd.lcd_display_string( string_lenth(lcd_string2, 16),2)
-        print lcd_string1
+        logger.info("main lcd_string1: "+lcd_string1)
         time.sleep(1)
         for x in range(4, 0, -1):
             lcd_string2 += "%d.." % (x)
             lcd.lcd_display_string( string_lenth(lcd_string2, 16),2) 
-            print lcd_string2
+            logger.info("main lcd_string2: "+lcd_string2)
             time.sleep(1)
             
             if (GPIO.input(11) == 0):
@@ -150,10 +170,10 @@ class ButtonInput():
         self.press_num = 0
         self.pressed = False
     def buttonPress(self,channel):
-        print self.press_num
         self.press_num = self.press_num + 1
         if self.press_num>4: self.press_num = 0
         self.pressed = True
+        logger.info("lcd button press "+str(self.press_num))
                     
 def get_uptime():
 
@@ -169,9 +189,9 @@ def string_lenth(string, length):
 def updatelcd():
     # line 1- make sure string is 16 characters long to fill LED 
     lcd.lcd_display_string( string_lenth(lcd_string1, 16),1)
-    print lcd_string1
     lcd.lcd_display_string( string_lenth(lcd_string2, 16),2) # line 2
-    print lcd_string2
+
+signal.signal(signal.SIGINT, sigint_handler)
 
 # Use Pi board pin numbers as these as always consistent between revisions 
 GPIO.setmode(GPIO.BOARD)                                 
@@ -180,16 +200,16 @@ GPIO.setup(16, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 #emonPi Shutdown button, Pin 11 GPIO 17
 GPIO.setup(11, GPIO.IN)
 
-print "OpenEnergyMonitor - emonPi LCD / Shutdown Python Script"
+time.sleep(1.0)
 
 lcd_string1 = ""
 lcd_string2 = ""
 
-signal.signal(signal.SIGINT, sigint_handler)
-
 background = Background()
 background.start()
 buttoninput = ButtonInput()
+
+lcd = lcddriver.lcd()
 
 last1s = time.time() - 1.0
 while 1:
@@ -238,6 +258,9 @@ while 1:
             lcd_string1 = 'Power: 563W'
             lcd_string2 = 'Today: 1.3KW'
         
+        logger.info("main lcd_string1: "+lcd_string1)
+        logger.info("main lcd_string2: "+lcd_string2)
+        
         if (GPIO.input(11) == 0):
             updatelcd()
         else:
@@ -246,6 +269,7 @@ while 1:
     time.sleep(0.1)
     
 GPIO.cleanup()
+logging.shutdown()
         
 
 
