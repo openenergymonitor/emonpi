@@ -92,7 +92,8 @@ const byte shutdown_switch_pin =       8;              // Push-to-make - Low whe
 const byte emonpi_GPIO_pin=            5;              // Connected to Pi GPIO 17, used to activate Pi Shutdown when HIGH
 //const byte emonpi_OKK_Tx=              6;              // On-off keying transmission Pin - not populated by default 
 //const byte emonPi_RJ45_8_IO=           A6;             // RJ45 pin 8 - Analog 6 (D19) - Aux I/O
-const byte emonPi_int1=                3;              // RJ45 pin 6 - INT1 - PWM - Dig 3 - default pulse count input
+const byte emonPi_int1=                1;              // RJ45 pin 6 - INT1 - PWM - Dig 3 - default pulse count input
+const byte emonPi_int1_pin=            3;              // RJ45 pin 6 - INT1 - PWM - Dig 3 - default pulse count input
 //const byte emonPi_int0=                2;              // Default RFM INT (Dig2) - Can be jumpered used JP5 to RJ45 pin 7 - PWM - D2
 #define ONE_WIRE_BUS                   4               // DS18B20 Data, RJ45 pin 4
 //-------------------------------------------------------------------------------------------------------------------------------------------
@@ -128,7 +129,7 @@ boolean CT1, CT2, ACAC, DS18B20_STATUS;
 byte CT_count=0;                                                 // Number of CT sensors detected
 unsigned long last_sample=0;                                     // Record millis time of last discrete sample
 byte flag;                                                       // flag to record shutdown push button press
-
+volatile byte pulseCount = 0;
 
 // RF Global Variables 
 static byte stack[RF12_MAXDATA+4], top, sendLen, dest;           // RF variables 
@@ -166,7 +167,7 @@ void setup()
   delay(2000);                                                          // Startup emonPi LCD and print startup notice
   serial_print_startup();
 
-  if (DS18B20_STATUS==0) attachInterrupt(1, onPulse, FALLING);          // Attach pulse counting interrupt on RJ45 (Dig 3 / INT 1) only if no temperature sensors are detected as they use the same port and can conflict
+  if (DS18B20_STATUS==0) attachInterrupt(emonPi_int1, onPulse, FALLING);  // Attach pulse counting interrupt on RJ45 (Dig 3 / INT 1) only if no temperature sensors are detected as they use the same port and can conflict
   emonPi.pulseCount = 0;                                                // Reset Pulse Count 
    
   
@@ -251,7 +252,12 @@ void loop()
       sensors.requestTemperatures();                                        // Send the command to get temperatures
       for(byte j=0;j<numSensors;j++) emonPi.temp[j]=get_temperature(j); 
     }                                                                           
-            
+    
+    if (pulseCount)                                                       // if the ISR has counted some pulses, update the total count
+    {
+      emonPi.pulseCount += pulseCount;
+      pulseCount = 0;
+    }     
     
     /*Serial.print(emonPi.power1); Serial.print(" ");
     Serial.print(emonPi.power2); Serial.print(" ");
