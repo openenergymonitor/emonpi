@@ -255,8 +255,10 @@ void loop()
     
     if (pulseCount)                                                       // if the ISR has counted some pulses, update the total count
     {
+      cli();                                                             // Disable interrupt just in case pulse comes in while we are updating the count
       emonPi.pulseCount += pulseCount;
       pulseCount = 0;
+      sei();                                                            // Re-enable interrupts
     }     
     
     /*Serial.print(emonPi.power1); Serial.print(" ");
