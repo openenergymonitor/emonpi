@@ -53,14 +53,14 @@ EnergyMonitor ct1, ct2;
 #include <LiquidCrystal_I2C.h>                                        // https://github.com/openenergymonitor/LiquidCrystal_I2C1602V1
 LiquidCrystal_I2C lcd(0x27,16,2);                                     // LCD I2C address to 0x27, 16x2 line display
 
-const byte firmware_version = 1;                                           //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
+const byte firmware_version = 0;                                           //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
 boolean debug =                   TRUE; 
 const unsigned long BAUD_RATE=    38400;
 
 const byte Vrms=                  230;                               // Vrms for apparent power readings (when no AC-AC voltage sample is present)
-const int TIME_BETWEEN_READINGS=  10000;                             // Time between readings (mS)  
+const int TIME_BETWEEN_READINGS=  5000;                             // Time between readings (mS)  
 
 
 //http://openenergymonitor.org/emon/buildingblocks/calibration
@@ -107,7 +107,7 @@ byte numSensors;
 
 //-----------------------RFM12B / RFM69CW SETTINGS----------------------------------------------------------------------------------------------------
 byte RF_freq=RF12_433MHZ;                                        // Frequency of RF69CW module can be RF12_433MHZ, RF12_868MHZ or RF12_915MHZ. You should use the one matching the module you have.
-byte nodeID = 5;                                                   // emonpi node ID
+byte nodeID = 5;                                                 // emonpi node ID
 int networkGroup = 210;  
 
 typedef struct { 

@@ -130,8 +130,6 @@ static void handleInput (char c) {
       } //end case 
     //Print Current RF config  
     if (RF_STATUS==1) {
-      showString(helpText1);
-      showString(PSTR("Current configuration:\n"));
       Serial.print(' ');
       Serial.print((char) ('@' + (nodeID & RF12_HDR_MASK)));
       Serial.print(" i");
@@ -145,6 +143,7 @@ static void handleInput (char c) {
       Serial.print(" MHz"); 
       Serial.print(" USA "); Serial.print(USA);
       Serial.println(" ");
+      
     }
     
     }
