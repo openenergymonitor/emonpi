@@ -11,6 +11,7 @@ import RPi.GPIO as GPIO
 import signal
 import redis
 import re
+import paho.mqtt.client as mqtt
 
 # ------------------------------------------------------------------------------------
 # Start Logging
@@ -18,6 +19,9 @@ import re
 import logging
 import logging.handlers
 uselogfile = False
+
+mqttc = False
+basedata = []
 
 if not uselogfile:
     loghandler = logging.StreamHandler()
@@ -191,6 +195,15 @@ def updatelcd():
     # line 1- make sure string is 16 characters long to fill LED 
     lcd.lcd_display_string( string_lenth(lcd_string1, 16),1)
     lcd.lcd_display_string( string_lenth(lcd_string2, 16),2) # line 2
+    
+def on_connect(client, userdata, flags, rc):
+    mqttc.subscribe("emonhub/rx/#")
+
+def on_message(client, userdata, msg):
+    topic_parts = msg.topic.split("/")
+    if topic_parts[2]=="5":
+        basedata = msg.payload.split(",")
+        r.set("basedata",msg.payload)
 
 signal.signal(signal.SIGINT, sigint_handler)
 
@@ -212,8 +225,15 @@ buttoninput = ButtonInput()
 
 lcd = lcddriver.lcd()
 
+mqttc = mqtt.Client()
+mqttc.on_connect = on_connect
+mqttc.on_message = on_message
+mqttc.connect("127.0.0.1", "1883", 60)
+
+
 last1s = time.time() - 1.0
 while 1:
+    mqttc.loop(0)
     now = time.time()
     
     # ----------------------------------------------------------
@@ -256,8 +276,14 @@ while 1:
 		    lcd_string2 =  'Uptime %.2f days' % (float(r.get("uptime"))/86400)
 		    
         elif buttoninput.press_num==4: 
-            lcd_string1 = 'Power: 563W'
-            lcd_string2 = 'Today: 1.3KW'
+            basedata = r.get("basedata")
+            if basedata is not None:
+                basedata = basedata.split(",")
+                lcd_string1 = 'Power 1: '+str(basedata[0])+"W"
+                lcd_string2 = 'Power 2: '+str(basedata[1])+"W"
+            else:
+                lcd_string1 = 'Power 1: (waiting)'
+                lcd_string2 = 'Power 2: (waiting)'
         
         logger.info("main lcd_string1: "+lcd_string1)
         logger.info("main lcd_string2: "+lcd_string2)
@@ -272,8 +298,3 @@ while 1:
     
 GPIO.cleanup()
 logging.shutdown()
-        
-
-
-
-
