@@ -129,8 +129,11 @@ static void handleInput (char c) {
           showString(helpText1);
       } //end case 
     //Print Current RF config  
-    
+
     if (RF_STATUS==1) {
+      Serial.print(' ');
+-     Serial.print((char) ('@' + (nodeID & RF12_HDR_MASK)));
+-     Serial.print(" i");
       Serial.print(nodeID & RF12_HDR_MASK);   
       Serial.print(" g");
       Serial.print(networkGroup);
@@ -139,9 +142,9 @@ static void handleInput (char c) {
                    RF_freq == RF12_868MHZ ? 868 :
                    RF_freq == RF12_915MHZ ? 915 : 0);
       Serial.print(" MHz"); 
-      Serial.print(" USA "); Serial.print(USA);
-      Serial.println(" ");
     }
+    Serial.print(" USA "); Serial.print(USA);
+    Serial.println(" ");
     
     }
   value = top = 0;
