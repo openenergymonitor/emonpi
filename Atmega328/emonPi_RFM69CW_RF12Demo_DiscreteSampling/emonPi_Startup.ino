@@ -26,7 +26,7 @@ void emonPi_startup()                                                     //emon
   Serial.begin(BAUD_RATE);
   Serial.print("emonPi V"); Serial.println(firmware_version*0.1); 
   Serial.println("OpenEnergyMonitor.org");
-  Serial.println("please wait.....");
+  Serial.println("startup...");
 }
 
 

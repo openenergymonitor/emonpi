@@ -159,9 +159,9 @@ void setup()
   if (USA==TRUE) Vcal=Vcal_USA;                                        // Assume USA AC/AC adatper is being used, set calibration accordingly 
     else Vcal=Vcal_EU;
   
+  emonPi_startup();                                                     // emonPi startup proceadure, check for AC waveform and print out debug
   if (RF_STATUS==1) RF_Setup(); 
   byte numSensors =  check_for_DS18B20();                               // check for presence of DS18B20 and return number of sensors 
-  emonPi_startup();                                                     // emonPi startup proceadure, check for AC waveform and print out debug
   emonPi_LCD_Startup(); 
   CT_Detect();
   delay(2000);                                                          // Startup emonPi LCD and print startup notice
