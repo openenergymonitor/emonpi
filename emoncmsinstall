@@ -82,9 +82,10 @@ sudo cp /var/www/emoncms/run/feedwriter /etc/init.d/
 sudo chmod 755 /etc/init.d/feedwriter
 sudo update-rc.d feedwriter defaults
 
-sudo wget https://raw.github.com/lurch/rpi-serial-console/master/rpi-serial-console -O /usr/bin/rpi-serial-console && sudo chmod +x /usr/bin/rpi-serial-console
-sudo rpi-serial-console disable
-rpi-serial-console status
+# Already done by emonPi install script 
+#sudo wget https://raw.github.com/lurch/rpi-serial-console/master/rpi-serial-console -O /usr/bin/rpi-serial-console && sudo chmod +x /usr/bin/rpi-serial-console
+#sudo rpi-serial-console disable
+#rpi-serial-console status
 
 sudo service redis-server restart
 sudo service apache2 restart
