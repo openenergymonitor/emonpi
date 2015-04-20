@@ -89,4 +89,3 @@ sudo update-rc.d feedwriter defaults
 
 sudo service redis-server restart
 sudo service apache2 restart
-
