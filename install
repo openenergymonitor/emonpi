@@ -16,9 +16,6 @@ pip install ino
 echo "disable the raspi-config auto run"
 sudo rm /etc/profile.d/raspi-config.sh
 
-echo "clone emonpi github"
-git clone https://github.com/openenergymonitor/emonpi.git ~/emonpi  
-
 # Only used when emonPi is used without LCD, run either LCD service or shutdwn service. LCD script also handles shutdown 
 # echo "install shutdown service"
 # sudo /home/pi/emonpi/shutdownpi/install
