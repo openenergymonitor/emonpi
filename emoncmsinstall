@@ -73,8 +73,9 @@ cp -r /home/pi/development/Modules/wifi /var/www/emoncms/Modules
 cp -r /home/pi/development/Modules/nodes /var/www/emoncms/Modules
 cp -r /home/pi/development/Modules/config /var/www/emoncms/Modules
 
-cd /home/pi/data
+cd /home/pi
 > emoncms.conf
+sudo mv /home/pi/emoncms.conf /home/pi/data/emoncms.conf
 sudo chown pi:www-data emoncms.conf
 sudo chmod 664 emoncms.conf
 
