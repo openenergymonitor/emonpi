@@ -87,6 +87,20 @@ echo "Installing Emonhub"
 
 cd
 git clone https://github.com/emonhub/dev-emonhub.git ~/dev-emonhub && ~/dev-emonhub/install
+sudo service emonhub stop
+
+git clone https://github.com/trystanlea/emonhub.git hub
+
+cp /home/pi/hub/conf/emonhub.conf /home/pi/data/emonhub.conf
+sudo chown pi:www-data /home/pi/data/emonhub.conf
+sudo chmod 664 /home/pi/data/emonhub.conf
+
+sudo service emonhub start
+
+sudo cp /var/www/emoncms/Modules/nodes/emoncms-nodes-service /etc/init.d/
+sudo chmod 755 /etc/init.d/emoncms-nodes-service
+sudo update-rc.d emoncms-nodes-service defaults
+sudo service emoncms-nodes-service start
 
 # Already done by emonPi install script 
 #sudo wget https://raw.github.com/lurch/rpi-serial-console/master/rpi-serial-console -O /usr/bin/rpi-serial-console && sudo chmod +x /usr/bin/rpi-serial-console
