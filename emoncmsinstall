@@ -76,8 +76,8 @@ cp -r /home/pi/development/Modules/config /var/www/emoncms/Modules
 cd /home/pi
 > emoncms.conf
 sudo mv /home/pi/emoncms.conf /home/pi/data/emoncms.conf
-sudo chown pi:www-data emoncms.conf
-sudo chmod 664 emoncms.conf
+sudo chown pi:www-data /home/pi/data/emoncms.conf
+sudo chmod 664 /home/pi/data/emoncms.conf
 
 sudo cp /var/www/emoncms/run/feedwriter /etc/init.d/
 sudo chmod 755 /etc/init.d/feedwriter
