@@ -89,9 +89,11 @@ cd
 git clone https://github.com/emonhub/dev-emonhub.git ~/dev-emonhub && ~/dev-emonhub/install
 sudo service emonhub stop
 
+sudo pip install paho-mqtt
+sudo pip install pydispatcher
 git clone https://github.com/trystanlea/emonhub.git hub
 
-cp /home/pi/hub/conf/emonhub.conf /home/pi/data/emonhub.conf
+sudo cp /home/pi/hub/conf/emonhub.conf /home/pi/data/emonhub.conf
 sudo chown pi:www-data /home/pi/data/emonhub.conf
 sudo chmod 664 /home/pi/data/emonhub.conf
 
