@@ -93,10 +93,10 @@ sudo pip install paho-mqtt
 sudo pip install pydispatcher
 git clone https://github.com/trystanlea/emonhub.git hub
 
-sed 's/EMONHUB_PATH=\/usr\/share\/\/emonhub\//EMONHUB_PATH=\/home\/pi\/hub\/src\//'/etc/default/emonhub > /tmp/emonhub
+sed 's/EMONHUB_PATH=\/usr\/share\/emonhub\//EMONHUB_PATH=\/home\/pi\/hub\/src\//' /etc/default/emonhub > /tmp/emonhub
 sudo cp /tmp/emonhub /etc/default/emonhub
 
-sed 's/EMONHUB_CONFIG=\/etc\/emonhub\/emonhub.conf/EMONHUB_CONFIG=\/home\/pi\/data\/emonhub.conf/'/etc/default/emonhub > /tmp/emonhub
+sed 's/EMONHUB_CONFIG=\/etc\/emonhub\/emonhub.conf/EMONHUB_CONFIG=\/home\/pi\/data\/emonhub.conf/' /etc/default/emonhub > /tmp/emonhub
 sudo cp /tmp/emonhub /etc/default/emonhub
 
 
