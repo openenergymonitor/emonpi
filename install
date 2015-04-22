@@ -14,7 +14,7 @@ echo "enable serial uploads with avrdue and autoreset & install minicom & enable
 git clone https://github.com/openenergymonitor/avrdude-rpi.git ~/avrdude-rpi && ~/avrdude-rpi/install
 
 echo "install ino Arduino compile tool"
-sudo apt-get install arduino -f
+sudo apt-get install arduino -y
 sudo apt-get install python-pip
 pip install ino
 
