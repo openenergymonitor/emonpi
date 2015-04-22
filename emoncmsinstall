@@ -78,9 +78,12 @@ cp -r /home/pi/development/Modules/app /var/www/emoncms/Modules
 
 rm -rf /var/www/emoncms/Modules/input
 
-if ! sudo su -c "grep -Fxq 'www-data ALL=(ALL) NOPASSWD:/sbin/ifdown wlan0,/sbin/ifup wlan0,/bin/cat /etc/wpa_supplicant/wpa_supplicant.conf,/bin/cp /tmp/wifidata /etc/wpa_supplicant/wpa_supplicant.conf,/sbin/wpa_cli scan_results,/sbin/wpa_cli scan,/bin/cp /tmp/hostapddata /etc/hostapd/hostapd.conf,/etc/init.d/hostapd start,/etc/init.d/hostapd stop,/etc/init.d/dnsmasq start,/etc/init.d/dnsmasq stop,/bin/cp /tmp/dhcpddata /etc/dnsmasq.conf' /etc/sudoers" ; then
-  sudo su -c "echo 'www-data ALL=(ALL) NOPASSWD:/sbin/ifdown wlan0,/sbin/ifup wlan0,/bin/cat /etc/wpa_supplicant/wpa_supplicant.conf,/bin/cp /tmp/wifidata /etc/wpa_supplicant/wpa_supplicant.conf,/sbin/wpa_cli scan_results,/sbin/wpa_cli scan,/bin/cp /tmp/hostapddata /etc/hostapd/hostapd.conf,/etc/init.d/hostapd start,/etc/init.d/hostapd stop,/etc/init.d/dnsmasq start,/etc/init.d/dnsmasq stop,/bin/cp /tmp/dhcpddata /etc/dnsmasq.conf' >> /etc/sudoers"
+if [ ! -f /etc/sudoers.d/wifi ]; then 
+	sudo mv /home/pi/emonpi/wifi /etc/sudoers.d/wifi
+	sudo chown root:root /etc/sudoers.d/wifi
+	sudo chmod 0440
 fi
+
 
 cd /home/pi
 > emoncms.conf
