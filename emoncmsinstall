@@ -72,6 +72,9 @@ git clone https://github.com/emoncms/development.git
 cp -r /home/pi/development/Modules/wifi /var/www/emoncms/Modules
 cp -r /home/pi/development/Modules/nodes /var/www/emoncms/Modules
 cp -r /home/pi/development/Modules/config /var/www/emoncms/Modules
+cp -r /home/pi/development/Modules/app /var/www/emoncms/Modules
+
+rm -rf /var/www/emoncms/Modules/input
 
 cd /home/pi
 > emoncms.conf
