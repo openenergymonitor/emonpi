@@ -53,6 +53,7 @@ echo 'Install emonPi Python LCD install scripts'
 echo 'Install Python pip and uptime module'
 sudo apt-get install python-pip -y
 sudo pip install uptime
+sudo pip install redis
 
 # create linked directoty for LCD scripts 
 sudo rm -r /usr/share/emonPiLCD
