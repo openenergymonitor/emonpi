@@ -201,7 +201,9 @@ def on_connect(client, userdata, flags, rc):
 
 def on_message(client, userdata, msg):
     topic_parts = msg.topic.split("/")
-    if topic_parts[2]=="5":
+    print "mqtt rx"
+    print topic_parts
+    if topic_parts[2]=="15":
         basedata = msg.payload.split(",")
         r.set("basedata",msg.payload)
 
@@ -282,8 +284,8 @@ while 1:
                 lcd_string1 = 'Power 1: '+str(basedata[0])+"W"
                 lcd_string2 = 'Power 2: '+str(basedata[1])+"W"
             else:
-                lcd_string1 = 'Power 1: (waiting)'
-                lcd_string2 = 'Power 2: (waiting)'
+                lcd_string1 = 'Power 1: ...'
+                lcd_string2 = 'Power 2: ...'
         
         logger.info("main lcd_string1: "+lcd_string1)
         logger.info("main lcd_string2: "+lcd_string2)
