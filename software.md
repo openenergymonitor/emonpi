@@ -17,6 +17,27 @@ The origin of the reason data is received from rfm12demo as a byte value string 
 
 In the emontx structure every variable happens to be an 2 byte integer so the first 2 bytes of the payload will be power1, the next two bytes power2 and so on. When the rf payload data is received by the rfm transciever its just a series of bytes which then need to be converted back to their real values. This series of bytes is the space seperated byte value string sent from the emonpi shield to the raspberrypi serial port which is then decoded by emonhub.
 
+### EmonHub
+
+The byte value string is decoded back into real values in the EmonHubJeeInterfacer in emonhub according to the decoder specification in emonhub.conf
+ 
+The real values are then made available via an internal bus for other emonhub interfacers to use.
+
+The MQTT Interfacer published the node data to the mosquitto MQTT server running on the emonpi. The topic string contains the nodeid and specifies that its received (rx) data.
+
+    topic            csv values
+    emonhub/rx/10    100,200,300
+    emonhub/rx/15    1,2,3
+    
+The MQTT Interfacer also subscribes to topics starting with:
+
+    emonhub/tx/#
+    
+The topic emonhub/tx/nodeid is used to send data from emoncms or other applications on the emonpi back up to the emonpi shield or the rfm network, designed to be used for control.
+
+
+    
+
 
 
 
