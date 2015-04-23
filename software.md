@@ -20,6 +20,17 @@ In the emontx structure every variable happens to be an 2 byte integer so the fi
 ### EmonHub
 
 The byte value string is decoded back into real values in the EmonHubJeeInterfacer in emonhub according to the decoder specification in emonhub.conf
+
+    [[15]]
+        nodename = EmonPi
+        firmware = emonPi_RFM69CW_RF12Demo_DiscreteSampling.ino
+        hardware = emonpi
+        [[[rx]]]
+            names = power1,power2,pulseCount,Vrms,T1,T2,T3,T4,T5,T6
+            datacode = h
+            scales = 1,1,1,0.01,0.01,0.01,0.01,0.01,0.01,0.01
+            units = W,W,"",V,C,C,C,C,C,C
+        [[[tx]]]
  
 The real values are then made available via an internal bus for other emonhub interfacers to use.
 
