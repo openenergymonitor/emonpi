@@ -244,7 +244,7 @@ void loop()
     else 
     {
       emonPi.power1 = ct1.calcIrms(no_of_samples)*Vrms;                               // Calculate Apparent Power 1  1480 is  number of samples
-      emonPi.Vrms=Vrms;
+      emonPi.Vrms=Vrms*100;
     }  
 
 
@@ -257,7 +257,7 @@ void loop()
    else 
    {
      emonPi.power2 = ct2.calcIrms(no_of_samples)*Vrms;                               // Calculate Apparent Power 1  1480 is  number of samples
-     emonPi.Vrms=Vrms;
+     emonPi.Vrms=Vrms*100;
    }
 
   //if (debug==1) {Serial.print(emonPi.power1); Serial.print(" ");delay(5);}   
