@@ -58,7 +58,8 @@ Even if the local emoncms is not used for storing data it can be used for emonhu
 
 The local emoncms can now be used for editing the emonhub.conf file via the browser and viewing the emonhub.log to check for errors. This is intended to reduce the need to SSH into the raspberrypi.
 
-The local emoncms also subscribes to the emonhub/rx/nodeid messages published by the emonhub MQTT interfacer and can publish to data to be sent to the topics emonhub/tx/nodeid. 
+The local emoncms subscribes to the emonhub/rx/nodeid messages published by the emonhub MQTT interfacer via the Modules/nodes/nodes_mqtt_process.php script or emoncms-nodes-service script. This script also reads the nodename, firmware, hardware and variable names and units from emonhub.conf which is used to provide this information in the nodes interface.
+
 
 
 
