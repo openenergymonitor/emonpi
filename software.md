@@ -4,8 +4,8 @@ The emonpi shield is an ATMega328 (Arduino) based energy monitoring shield for t
 
 On the raspberrypi the serial port that connects to the emonpi shield is read by emonhub, from emonhub's perspective the emonpi shield appears as any other wireless node. Node data read from the serial port looks like this:
 
-OK 10 0 100 0 200 0 100          (emontx data received via rfm69 transceiver)
-OK 15 0 1 0 2 0 3                (emonpi shield data generated on the shield)
+    OK 10 0 100 0 200 0 100          (emontx data received via rfm69 transceiver)
+    OK 15 0 1 0 2 0 3                (emonpi shield data generated on the shield)
 
 The source of the data is distinguished by the nodeid, which is the first number after the OK. Every number after the OK and the nodeid is a byte value 0 - 256.
 
@@ -13,7 +13,7 @@ The source of the data is distinguished by the nodeid, which is the first number
 
 The origin of the reason data is received from rfm12demo as a byte value string is that structures are used to build the rf packet on the wirless nodes. Using structures makes it possible to send data with much fewer bytes than sending data as a string. A typical structure definition on the emontx looks like this:
 
-typedef struct { int power1, power2, power3, power4, Vrms, temp; } PayloadTX;
+    typedef struct { int power1, power2, power3, power4, Vrms, temp; } PayloadTX;
 
 In the emontx structure every variable happens to be an 2 byte integer so the first 2 bytes of the payload will be power1, the next two bytes power2 and so on. When the rf payload data is received by the rfm transciever its just a series of bytes which then need to be converted back to their real values. This series of bytes is the reason data is sent as a space seperated byte value string from the emonpi shield to the raspberrypi serial port as the decoding happens in emonhub.
 
