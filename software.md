@@ -46,6 +46,21 @@ The MQTT Interfacer also subscribes to topics starting with:
     
 The topic emonhub/tx/nodeid is used to send data from emoncms or other applications on the emonpi back up to the emonpi shield or the rfm network, designed to be used for control.
 
+### EmonPi LCD
+
+The EmonPi LCD script subscribes to the emonhub/rx/# topics directly in order to print the power values to the emonPi LCD display.
+
+### Low-write-v8.5 emoncms on the emonpi
+
+The emonpi will have the low write version of emoncms that's running locally enabled by default rather than needing to be enabled as was the case in the previous raspberrypi sd card image.
+
+Even if the local emoncms is not used for storing data it can be used for emonhub configuration and checking the data received from the emonpi shield and rfm network.
+
+The local emoncms can now be used for editing the emonhub.conf file via the browser and viewing the emonhub.log to check for errors. This is intended to reduce the need to SSH into the raspberrypi.
+
+The local emoncms also subscribes to the emonhub/rx/nodeid messages published by the emonhub MQTT interfacer and can publish to data to be sent to the topics emonhub/tx/nodeid. 
+
+
 
     
 
