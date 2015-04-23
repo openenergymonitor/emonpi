@@ -15,7 +15,9 @@ The origin of the reason data is received from rfm12demo as a byte value string 
 
     typedef struct { int power1, power2, power3, power4, Vrms, temp; } PayloadTX;
 
-In the emontx structure every variable happens to be an 2 byte integer so the first 2 bytes of the payload will be power1, the next two bytes power2 and so on. When the rf payload data is received by the rfm transciever its just a series of bytes which then need to be converted back to their real values. This series of bytes is the reason data is sent as a space seperated byte value string from the emonpi shield to the raspberrypi serial port as the decoding happens in emonhub.
+In the emontx structure every variable happens to be an 2 byte integer so the first 2 bytes of the payload will be power1, the next two bytes power2 and so on. When the rf payload data is received by the rfm transciever its just a series of bytes which then need to be converted back to their real values. This series of bytes is the space seperated byte value string sent from the emonpi shield to the raspberrypi serial port which is then decoded by emonhub.
+
+
 
 
 
