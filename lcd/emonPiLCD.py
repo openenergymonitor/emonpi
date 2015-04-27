@@ -21,6 +21,7 @@ import logging.handlers
 uselogfile = False
 
 mqttc = False
+mqttConnected = False
 basedata = []
 
 if not uselogfile:
@@ -130,7 +131,7 @@ class Background(threading.Thread):
                 r.set("wlan:signallevel",signallevel)
                 r.set("wlan:linklevel",linklevel)
                 r.set("wlan:noiselevel",noiselevel)
-                logger.info("background: wlan "+signallevel+" "+linklevel+" "+noiselevel)
+                logger.info("background: wlan "+str(signallevel)+" "+str(linklevel)+" "+str(noiselevel))
                 
             # this loop runs a bit faster so that ctrl-c exits are fast
             time.sleep(0.1)
@@ -197,12 +198,22 @@ def updatelcd():
     lcd.lcd_display_string( string_lenth(lcd_string2, 16),2) # line 2
     
 def on_connect(client, userdata, flags, rc):
-    mqttc.subscribe("emonhub/rx/#")
+    global mqttConnected
+    if rc:
+        mqttConnected = False
+    else:
+        logger.info("MQTT Connection UP")
+        mqttConnected = True
+        mqttc.subscribe("emonhub/rx/#")
+    
+def on_disconnect(client, userdata, rc):
+    global mqttConnected
+    logger.info("MQTT Connection DOWN")
+    mqttConnected = False
 
 def on_message(client, userdata, msg):
     topic_parts = msg.topic.split("/")
-    print "mqtt rx"
-    print topic_parts
+    logger.info("MQTT RX: "+msg.topic+" "+msg.payload)
     if topic_parts[2]=="15":
         basedata = msg.payload.split(",")
         r.set("basedata",msg.payload)
@@ -229,15 +240,24 @@ lcd = lcddriver.lcd()
 
 mqttc = mqtt.Client()
 mqttc.on_connect = on_connect
+mqttc.on_disconnect = on_disconnect
 mqttc.on_message = on_message
-mqttc.connect("127.0.0.1", "1883", 60)
-
 
 last1s = time.time() - 1.0
 while 1:
-    mqttc.loop(0)
+
     now = time.time()
+
+    if not mqttConnected:
+        logger.info("Connecting to MQTT Server")
+        try:
+            mqttc.connect("127.0.0.1", "1883", 60)
+        except:
+            logger.info("Could not connect...")
+            time.sleep(1.0)
     
+    mqttc.loop(0)
+        
     # ----------------------------------------------------------
     # UPDATE EVERY 1's
     # ----------------------------------------------------------
