@@ -74,6 +74,7 @@ Click save and check using the emonhub log viewer if data is being send and the 
 
     2015-04-27 16:28:08,890 INFO     emoncmsorg sending: 
     http://emoncms.org/input/bulk.json?apikey=E-M-O-N-C-M-S-A-P-I-K-E-Y&data=[[1430152081,15,77,0,0,0,0,0,0,0,0,0],[1430152086,15,80,0,0,0,0,0,0,0,0,0]]&sentat=1430152088
+    2015-04-27 16:28:09,120 DEBUG    emoncmsorg acknowledged receipt with 'ok' from http://emoncms.org
 
 ### Logging data locally on the emonpi
 
