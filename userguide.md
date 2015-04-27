@@ -10,3 +10,5 @@ This will bring up the emonpi login. Select register to create a user, enter a u
 
 Development: create custom emonpi login without email address requirement, emonpi graphic and title, and automatic single account creation (automatically disable ability to create further accounts)
 
+![Create account](files/guide-createaccount.png)
+
