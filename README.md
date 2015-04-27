@@ -6,6 +6,9 @@ emonPi - Raspberry Pi Energy Monitoring Unit
 
 ![emonpi_diagram](emonPi_System_Diagram.png)
 
+## User guide
+
+[Software User Guide](https://github.com/openenergymonitor/emonpi/blob/master/userguide.md)
 
 ## Overview: 
 http://openenergymonitor.org/emon/modules/emonPi
