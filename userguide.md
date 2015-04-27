@@ -67,6 +67,6 @@ The power to kwh option creates a feed that records the accumulating kwh used or
 
 The feeds page shows the feeds created, in the example below CT1 was house power and CT2 the solar power generation recorded with 'log to feed' to feeds 'house power' and 'solar power'. The 'power to kwh' option was used to generated 'house kwh' and 'solar kwh':
 
-![logging data locally: feeds](files/guide-nodes.png)
+![logging data locally: feeds](files/guide-feeds.png)
 
 Clicking on the eye icon will show the data recorded using the data viewer. The data can be exported as CSV data both from the feeds page and from the data viewer.
