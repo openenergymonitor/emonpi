@@ -142,7 +142,7 @@ If its not running, start it with:
 
 #### EmonPi LCD is not updating
 
-Check that the feedwriter service is running:
+Check that the emonPiLCD service is running:
 
     sudo service emonPiLCD status
     
