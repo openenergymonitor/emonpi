@@ -59,7 +59,7 @@ Near the top of emonhub.conf there is a section labeled RFM2Pi, The first part o
 
 ### Sending data to emoncms.org, or other remote server
 
-To send data to emoncms.org or other remote server add the following lines in the interfacers section of emonhub.conf
+To send data to emoncms.org or other remote server add the following lines in the interfacers section of emonhub.conf. You will need your write apikey from the emoncms.org account you wish to post data too, enter the write apikey on the apikey line:
 
     [[emoncmsorg]]
         Type = EmonHubEmoncmsHTTPInterfacer
@@ -70,11 +70,12 @@ To send data to emoncms.org or other remote server add the following lines in th
             url = http://emoncms.org
             apikey = YOUR EMONCMS WRITE APIKEY
             
-Click save and check using the emonhub log viewer if data is being send and the response is an 'ok' from the remote emoncms server:
+Click save and check using the emonhub log viewer if data is being sent and the response is an 'ok' from the remote emoncms server:
 
     2015-04-27 16:28:08,890 INFO     emoncmsorg sending: 
     http://emoncms.org/input/bulk.json?apikey=E-M-O-N-C-M-S-A-P-I-K-E-Y&data=[[1430152081,15,77,0,0,0,0,0,0,0,0,0],[1430152086,15,80,0,0,0,0,0,0,0,0,0]]&sentat=1430152088
     2015-04-27 16:28:09,120 DEBUG    emoncmsorg acknowledged receipt with 'ok' from http://emoncms.org
+    
 
 ### Logging data locally on the emonpi
 
