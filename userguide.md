@@ -12,3 +12,10 @@ Development: create custom emonpi login without email address requirement, emonp
 
 ![Create account](files/guide-createaccount.png)
 
+Once logged in you will see the user profile page on which you can change your username, password and other user settings. 
+
+In the top navigation menu click on *Nodes* to bring up a live view of the emonpi measurement data *node 15* by default and any other nodes on the default rfm69 network (433Mhz, group 210). The emonpi data should refresh every 5 seconds.
+
+![EmonPi nodes](files/emonpi-nodes.png)
+
+
