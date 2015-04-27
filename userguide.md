@@ -57,3 +57,16 @@ Near the top of emonhub.conf there is a section labeled RFM2Pi, The first part o
             # interval = 300 #(default:0)
             # nodeoffset = 32 #(default:0)
 
+### Logging data locally on the emonpi
+
+The emonpi measurement data and data recieved from wireless nodes can be logged locally to the emonpi SD card. To record a particular node:variable click on the spanner icon next to the variable you wish to log and select the log to feed option, if your unsure which engine type to use use the default option. The interval determines the how often the data is recorded, a large interval will mean less disk space is used up but at the expense of detail.
+
+The power to kwh option creates a feed that records the accumulating kwh used or generated calculated from the power value in this case. Accumulating kwh feeds can be used to create a bar graph of daily use or generation values.
+
+![logging data locally: nodes config](files/guide-local.png)
+
+The feeds page shows the feeds created, in the example below CT1 was house power and CT2 the solar power generation recorded with 'log to feed' to feeds 'house power' and 'solar power'. The 'power to kwh' option was used to generated 'house kwh' and 'solar kwh':
+
+![logging data locally: feeds](files/guide-nodes.png)
+
+Clicking on the eye icon will show the data recorded using the data viewer. The data can be exported as CSV data both from the feeds page and from the data viewer.
