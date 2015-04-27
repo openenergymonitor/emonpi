@@ -20,7 +20,19 @@ In the top navigation menu click on *Nodes* to bring up a live view of the emonp
 
 Under the hood here we have data being read from the emonpi shield serial connection with a piece of software called emonhub and then forwarded using MQTT to the local installation of emoncms which provides the GUI, data storage and visualisation. The important thing to note is that the information for decoding, scaling and naming the node data is stored in the emonhub.conf configuration file.
 
-The emonhub.conf configuration file can be accessed from within emoncms by clicking on the EmonHub tab in the top menu. Scrolling down to the bottom of the file you will see the node definition:
+The emonhub.conf configuration file can be accessed from within emoncms by clicking on the EmonHub tab in the top menu. 
+
+![emonhubconf.png](files/emonhubconf.png)
+
+You can also view the emonhub log using the in-browser log viewer, click on log viewer to bring up a snapshot of the emonhub log.
+
+![emonhubconf.png](files/emonhubconf.png)
+
+Click on refresh to load latest log entries.
+
+**Nodes config**
+
+Scrolling down to the bottom of the file you will see the node definition:
 
     [[15]]
         nodename = EmonPi
@@ -34,7 +46,7 @@ The emonhub.conf configuration file can be accessed from within emoncms by click
             
 If you wish to change the variable and node names, units or any of the other properties, change them here and click 'save'. The new configuration will then appear on the Nodes page within 5 seconds.
 
-**EmonPi RFM69 Radio settings**
+**EmonPi RFM69 Radio config**
 
 Near the top of emonhub.conf there is a section labeled RFM2Pi, The first part of the settings here specify the serial port to which the emonpi shield is connect and its baud rate. The second part contains the radio group, frequency and baseid settings which can be changed if your radio module is an 868Mhz module or that you wish to run your radio network on a different group.
 
