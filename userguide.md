@@ -139,3 +139,18 @@ should return:
 If its not running, start it with:
 
     sudo service feedwriter start
+
+#### EmonPi LCD is not updating
+
+Check that the feedwriter service is running:
+
+    sudo service emonPiLCD status
+    
+should return:
+
+    [ ok ] /usr/share/emonPiLCD/emonPiLCD.py is running.
+
+If its not running, start it with:
+
+    sudo service emonPiLCD start
+
