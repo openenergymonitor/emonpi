@@ -57,6 +57,23 @@ Near the top of emonhub.conf there is a section labeled RFM2Pi, The first part o
             # interval = 300 #(default:0)
             # nodeoffset = 32 #(default:0)
 
+### Sending data to emoncms.org, or other remote server
+
+To send data to emoncms.org or other remote server add the following lines in the interfacers section of emonhub.conf
+
+    [[emoncmsorg]]
+        Type = EmonHubEmoncmsHTTPInterfacer
+        [[[init_settings]]]
+        [[[runtimesettings]]]
+            pub_channels = ToRFM12,
+            sub_channels = ToEmonCMS,
+            url = http://emoncms.org
+            apikey = YOUR EMONCMS WRITE APIKEY
+            
+Click save and check using the emonhub log viewer if data is being send and the response is an 'ok' from the remote emoncms server:
+
+    2015-04-27 16:28:08,890 INFO     emoncmsorg sending: http://emoncms.org/input/bulk.json?apikey=E-M-O-N-C-M-S-A-P-I-K-E-Y&data=[[1430152081,15,77,0,0,0,0,0,0,0,0,0],[1430152086,15,80,0,0,0,0,0,0,0,0,0]]&sentat=1430152088
+
 ### Logging data locally on the emonpi
 
 The emonpi measurement data and data recieved from wireless nodes can be logged locally to the emonpi SD card. To record a particular node:variable click on the spanner icon next to the variable you wish to log and select the log to feed option, if your unsure which engine type to use use the default option. The interval determines the how often the data is recorded, a large interval will mean less disk space is used up but at the expense of detail.
