@@ -154,3 +154,11 @@ If its not running, start it with:
 
     sudo service emonPiLCD start
 
+#### Local MQTT (mosquitto), Redis server, MYSQL and Apache2
+
+The emonpi software stack depends on several key services that need to be running to work, the status of these can be checked with:
+
+    sudo service redis-server status
+    sudo service mosquitto status
+    sudo service apache2 status
+    sudo service mysql status
