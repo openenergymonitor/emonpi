@@ -90,3 +90,52 @@ The feeds page shows the feeds created, in the example below CT1 was house power
 ![logging data locally: feeds](files/guide-feeds.png)
 
 Clicking on the eye icon will show the data recorded using the data viewer. The data can be exported as CSV data both from the feeds page and from the data viewer.
+
+### Troubleshooting
+
+#### Nodes page is not updating
+
+Check that emonhub is running, if new items appear in the emonhub log when the log is refreshed and the content looks to contain no errors then there is a good chance that emonhub is working ok. A typical sample of the emonhub log looks like this:
+
+    2015-04-27 17:19:23,004 DEBUG    RFM2Pi     1810 NEW FRAME : OK 15 81 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 (-0)
+    2015-04-27 17:19:23,012 DEBUG    RFM2Pi     1810 Timestamp : 1430155163.0
+    2015-04-27 17:19:23,015 DEBUG    RFM2Pi     1810 From Node : 15
+    2015-04-27 17:19:23,017 DEBUG    RFM2Pi     1810    Values : [81, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    2015-04-27 17:19:23,020 INFO     RFM2Pi     Publishing: emonhub/rx/15/values 81,0,0,0,0,0,0,0,0,0
+    2015-04-27 17:19:23,025 DEBUG    RFM2Pi     1810 adding frame to buffer => [1430155163, 15, 81, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    2015-04-27 17:19:23,028 DEBUG    RFM2Pi     1810 Sent to channel' : ToEmonCMS
+    2015-04-27 17:19:28,285 DEBUG    RFM2Pi     1811 NEW FRAME : OK 15 77 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 (-0)
+    2015-04-27 17:19:28,299 DEBUG    RFM2Pi     1811 Timestamp : 1430155168.28
+    2015-04-27 17:19:28,301 DEBUG    RFM2Pi     1811 From Node : 15
+    2015-04-27 17:19:28,304 DEBUG    RFM2Pi     1811    Values : [77, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    2015-04-27 17:19:28,307 INFO     RFM2Pi     Publishing: emonhub/rx/15/values 77,0,0,0,0,0,0,0,0,0
+    2015-04-27 17:19:28,312 DEBUG    RFM2Pi     1811 adding frame to buffer => [1430155168, 15, 77, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    2015-04-27 17:19:28,314 DEBUG    RFM2Pi     1811 Sent to channel' : ToEmonCMS
+
+Check that emoncms-nodes-service is running. The emoncms-nodes-service is a service that subscribes to the MQTT emonhub/rx topic created by emonhub and inserts/updates the data in emoncms. This service can be checked by logging in to the raspberrypi via SSH.
+
+    sudo service emoncms-nodes-service status
+    
+should return:
+
+    Log is turned off
+    running
+    
+The logfile for emoncms-nodes-service can be viewed with:
+
+    tail -f /var/log/emoncms.log
+    
+#### Feeds view is updating but no data is being written
+
+Check that the feedwriter service is running:
+
+    sudo service feedwriter status
+    
+should return:
+
+    Log is turned off
+    running
+
+If its not running, start it with:
+
+    sudo service feedwriter start
