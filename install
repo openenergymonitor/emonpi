@@ -1,5 +1,9 @@
 #!/bin/bash
 
+echo "update"
+sudo apt-get update -y
+sudo apt-get upgrade -y
+
 echo "deleting unused software"
 sudo apt-get purge -y wolfram-engine minecraft-pi sonic-pi scratch
 sudo apt-get autoremove -y
@@ -14,8 +18,8 @@ echo "enable serial uploads with avrdue and autoreset & install minicom & enable
 git clone https://github.com/openenergymonitor/avrdude-rpi.git ~/avrdude-rpi && ~/avrdude-rpi/install
 
 echo "install ino Arduino compile tool"
-sudo apt-get install arduino -f
-sudo apt-get install python-pip
+sudo apt-get install arduino -y
+sudo apt-get install python-pip -y
 pip install ino
 
 echo "disable the raspi-config auto run"

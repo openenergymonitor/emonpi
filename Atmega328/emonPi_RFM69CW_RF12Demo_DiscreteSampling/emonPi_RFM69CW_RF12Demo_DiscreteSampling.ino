@@ -31,6 +31,8 @@
 
 
 Change Log:
+V1.0 First release 
+V1.1 Add sample from both CT's as default and set 110V VRMS for apparent power when US calibration is set e.g '2p'
 
 
 */
@@ -53,13 +55,14 @@ EnergyMonitor ct1, ct2;
 #include <LiquidCrystal_I2C.h>                                        // https://github.com/openenergymonitor/LiquidCrystal_I2C1602V1
 LiquidCrystal_I2C lcd(0x27,16,2);                                     // LCD I2C address to 0x27, 16x2 line display
 
-const byte firmware_version = 10;                                           //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
+const byte firmware_version = 11;                                    //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
 boolean debug =                   TRUE; 
 const unsigned long BAUD_RATE=    38400;
 
-const byte Vrms=                  230;                               // Vrms for apparent power readings (when no AC-AC voltage sample is present)
+const byte Vrms_EU=               230;                               // Vrms for apparent power readings (when no AC-AC voltage sample is present)
+const byte Vrms_USA=              110;                               // USA apparent power VRMS  
 const int TIME_BETWEEN_READINGS=  5000;                             // Time between readings (mS)  
 
 
@@ -90,11 +93,11 @@ boolean RF_STATUS=                 1;                                  // Turn R
 const byte LEDpin=                     9;              // emonPi LED - on when HIGH
 const byte shutdown_switch_pin =       8;              // Push-to-make - Low when pressed
 const byte emonpi_GPIO_pin=            5;              // Connected to Pi GPIO 17, used to activate Pi Shutdown when HIGH
-//const byte emonpi_OKK_Tx=              6;              // On-off keying transmission Pin - not populated by default 
-//const byte emonPi_RJ45_8_IO=           A6;             // RJ45 pin 8 - Analog 6 (D19) - Aux I/O
+//const byte emonpi_OKK_Tx=              6;            // On-off keying transmission Pin - not populated by default 
+//const byte emonPi_RJ45_8_IO=           A6;           // RJ45 pin 8 - Analog 6 (D19) - Aux I/O
 const byte emonPi_int1=                1;              // RJ45 pin 6 - INT1 - PWM - Dig 3 - default pulse count input
 const byte emonPi_int1_pin=            3;              // RJ45 pin 6 - INT1 - PWM - Dig 3 - default pulse count input
-//const byte emonPi_int0=                2;              // Default RFM INT (Dig2) - Can be jumpered used JP5 to RJ45 pin 7 - PWM - D2
+//const byte emonPi_int0=                2;            // Default RFM INT (Dig2) - Can be jumpered used JP5 to RJ45 pin 7 - PWM - D2
 #define ONE_WIRE_BUS                   4               // DS18B20 Data, RJ45 pin 4
 //-------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -116,7 +119,7 @@ int power2;
 int pulseCount;                                               
 int Vrms; 
 int temp[MaxOnewire]; 
-} PayloadTX;     // create structure - a neat way of packaging data for RF comms
+} PayloadTX;                                                    // create JeeLabs RF packet structure - a neat way of packaging data for RF comms
 PayloadTX emonPi; 
 
 //-------------------------------------------------------------------------------------------------------------------------------------------
@@ -124,9 +127,9 @@ PayloadTX emonPi;
 
 
 //Global Variables Energy Monitoring 
-double vrms, Vcal;
+double Vcal, vrms;
 boolean CT1, CT2, ACAC, DS18B20_STATUS;
-byte CT_count=0;                                                 // Number of CT sensors detected
+byte CT_count, Vrms;                                             
 unsigned long last_sample=0;                                     // Record millis time of last discrete sample
 byte flag;                                                       // flag to record shutdown push button press
 volatile byte pulseCount = 0;
@@ -156,8 +159,16 @@ const char helpText1[] PROGMEM =                                 // Available Se
 void setup()
 { 
   delay(100);
-  if (USA==TRUE) Vcal=Vcal_USA;                                        // Assume USA AC/AC adatper is being used, set calibration accordingly 
-    else Vcal=Vcal_EU;
+  if (USA==TRUE) 
+  {
+    Vcal = Vcal_USA;                                                       // Assume USA AC/AC adatper is being used, set calibration accordingly 
+    Vrms = Vrms_USA;
+  }
+  else 
+  {
+    Vcal = Vcal_EU;
+    Vrms = Vrms_EU;
+  }
   
   emonPi_startup();                                                     // emonPi startup proceadure, check for AC waveform and print out debug
   if (RF_STATUS==1) RF_Setup(); 
@@ -168,17 +179,17 @@ void setup()
   serial_print_startup();
 
   if (DS18B20_STATUS==0) attachInterrupt(emonPi_int1, onPulse, FALLING);  // Attach pulse counting interrupt on RJ45 (Dig 3 / INT 1) only if no temperature sensors are detected as they use the same port and can conflict
-  emonPi.pulseCount = 0;                                                // Reset Pulse Count 
+  emonPi.pulseCount = 0;                                                  // Reset Pulse Count 
    
   
 
-  if (CT1) ct1.current(1, Ical1);                                     // CT ADC channel 1, calibration.  calibration (2000 turns / 22 Ohm burden resistor = 90.909)
-  if (CT2) ct2.current(2, Ical2);                                     // CT ADC channel 2, calibration.
+  ct1.current(1, Ical1);                                     // CT ADC channel 1, calibration.  calibration (2000 turns / 22 Ohm burden resistor = 90.909)
+  ct2.current(2, Ical2);                                     // CT ADC channel 2, calibration.
 
   if (ACAC)                                                           //If AC wavefrom has been detected 
   {
-    if (CT1) ct1.voltage(0, Vcal, phase_shift);                       // ADC pin, Calibration, phase_shift
-    if (CT2) ct2.voltage(0, Vcal, phase_shift);                       // ADC pin, Calibration, phase_shift
+    ct1.voltage(0, Vcal, phase_shift);                       // ADC pin, Calibration, phase_shift
+    ct2.voltage(0, Vcal, phase_shift);                       // ADC pin, Calibration, phase_shift
   }
  
 } //end setup
@@ -190,62 +201,68 @@ void setup()
 void loop()
 {
  
-  if (USA==TRUE) Vcal=Vcal_USA;                                                     // Assume USA AC/AC adatper is being used, set calibration accordingly 
-    else Vcal=Vcal_EU;
+  if (USA==TRUE) 
+  {
+    Vcal = Vcal_USA;                                                       // Assume USA AC/AC adatper is being used, set calibration accordingly 
+    Vrms = Vrms_USA;
+  }
+  else 
+  {
+    Vcal = Vcal_EU;
+    Vrms = Vrms_EU;
+  }
 
   if (digitalRead(shutdown_switch_pin) == 0 ) 
-    digitalWrite(emonpi_GPIO_pin, HIGH);     // if emonPi shutdown butten pressed then send signal to the Pi on GPIO 11
+    digitalWrite(emonpi_GPIO_pin, HIGH);                                          // if emonPi shutdown butten pressed then send signal to the Pi on GPIO 11
   else 
     digitalWrite(emonpi_GPIO_pin, LOW);
   
   if (Serial.available()){
-    handleInput(Serial.read()); // If serial input is received
-    //digitalWrite(LEDpin, HIGH);  delay(200); digitalWrite(LEDpin, LOW); 
+    handleInput(Serial.read());                                                   // If serial input is received
+    double_LED_flash();
   }                                             
       
 
-  if (RF_STATUS==1){                                                  // IF RF module is present and enabled then perform RF tasks
-    if (RF_Rx_Handle()==1){                                           // Returns true if RF packet is received                                            
-       digitalWrite(LEDpin, HIGH);  delay(200); digitalWrite(LEDpin, LOW);   
+  if (RF_STATUS==1){                                                              // IF RF module is present and enabled then perform RF tasks
+    if (RF_Rx_Handle()==1)
+    {                                                                             // Returns true if RF packet is received                                            
+       double_LED_flash(); 
     }
-    send_RF();                                                        // Transmitt data packets if needed NEEDS TESTING
+    send_RF();                                                                    // Transmitt data packets if needed 
   }
 
  
-  
   if ((millis() - last_sample) > TIME_BETWEEN_READINGS)
   {
-    //digitalWrite(LEDpin, HIGH);  delay(200); digitalWrite(LEDpin, LOW); 
-
-    if (ACAC) {
-      delay(200);                                //if powering from AC-AC allow time for power supply to settle    
-      emonPi.Vrms=0;                      //Set Vrms to zero, this will be overwirtten by either CT 1-2
-    }
+    single_LED_flash();                                                            // single flash of LED on local CT sample
     
-    if (CT1) 
+    if (ACAC)                                                                      // Read from CT 1
     {
-     if (ACAC) 
-     {
-       ct1.calcVI(no_of_half_wavelengths,timeout); emonPi.power1=ct1.realPower;
-       emonPi.Vrms=ct1.Vrms*100;
-     }
-     else
-       emonPi.power1 = ct1.calcIrms(no_of_samples)*Vrms;                               // Calculate Apparent Power 1  1480 is  number of samples
-     //if (debug==1) {Serial.print(emonPi.power1); Serial.print(" ");delay(5);} 
+      ct1.calcVI(no_of_half_wavelengths,timeout); emonPi.power1=ct1.realPower;
+      emonPi.Vrms=ct1.Vrms*100;
+    }
+    else 
+    {
+      emonPi.power1 = ct1.calcIrms(no_of_samples)*Vrms;                               // Calculate Apparent Power 1  1480 is  number of samples
+      emonPi.Vrms=Vrms*100;
+    }  
 
-    }
+
+  
+   if (ACAC)                                                                       // Read from CT 2
+   {
+     ct2.calcVI(no_of_half_wavelengths,timeout); emonPi.power2=ct2.realPower;
+     emonPi.Vrms=ct2.Vrms*100;
+   }
+   else 
+   {
+     emonPi.power2 = ct2.calcIrms(no_of_samples)*Vrms;                               // Calculate Apparent Power 1  1480 is  number of samples
+     emonPi.Vrms=Vrms*100;
+   }
+
+  //if (debug==1) {Serial.print(emonPi.power1); Serial.print(" ");delay(5);}   
+   // if (debug==1) {Serial.print(emonPi.power2); Serial.print(" ");delay(5);}  
     
-    if (CT2) 
-    {
-     if (ACAC) 
-     {
-       ct2.calcVI(no_of_half_wavelengths,timeout); emonPi.power2=ct2.realPower;
-       emonPi.Vrms=ct2.Vrms*100;
-     }
-     else
-       emonPi.power2 = ct2.calcIrms(no_of_samples)*Vrms;                               // Calculate Apparent Power 1  1480 is  number of samples
-    // if (debug==1) {Serial.print(emonPi.power2); Serial.print(" ");delay(5);}  
-    }
 
     if (DS18B20_STATUS==1) 
     {
@@ -255,10 +272,10 @@ void loop()
     
     if (pulseCount)                                                       // if the ISR has counted some pulses, update the total count
     {
-      cli();                                                             // Disable interrupt just in case pulse comes in while we are updating the count
+      cli();                                                              // Disable interrupt just in case pulse comes in while we are updating the count
       emonPi.pulseCount += pulseCount;
       pulseCount = 0;
-      sei();                                                            // Re-enable interrupts
+      sei();                                                              // Re-enable interrupts
     }     
     
     /*Serial.print(emonPi.power1); Serial.print(" ");
@@ -266,17 +283,24 @@ void loop()
     Serial.print(emonPi.Vrms); Serial.print(" ");
     Serial.println(emonPi.temp);
     */
-    send_emonpi_serial();                                        //Send emonPi data to Pi serial using struct packet structure
+    send_emonpi_serial();                                             //Send emonPi data to Pi serial using struct packet structure
     
-    last_sample = millis();                               //Record time of sample  
+    last_sample = millis();                                           //Record time of sample  
     
     } // end sample
-
-  
     
- 
 } // end loop---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+void single_LED_flash()
+{
+  digitalWrite(LEDpin, HIGH);  delay(50); digitalWrite(LEDpin, LOW);
+}
+
+void double_LED_flash()
+{
+  digitalWrite(LEDpin, HIGH);  delay(25); digitalWrite(LEDpin, LOW);
+  digitalWrite(LEDpin, HIGH);  delay(25); digitalWrite(LEDpin, LOW);
+}
 
 
 

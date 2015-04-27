@@ -14,21 +14,23 @@ void serial_print_startup(){
   Serial.print("CT 1 Cal: "); Serial.println(Ical1);
   Serial.print("CT 2 Cal: "); Serial.println(Ical2);
   Serial.print("VRMS AC ~");
-  Serial.print(vrms,0); Serial.println("V");
+  Serial.print(vrms); Serial.println("V");
 
   if (ACAC) 
   {
     lcd.print("AC Wave Detected");
     Serial.println("AC Wave Detected - Real Power calc enabled");
-    if (USA==TRUE) Serial.println("USA mode"); 
+    if (USA==TRUE) Serial.print("USA mode > "); 
     Serial.print("Vcal: "); Serial.println(Vcal);
+    Serial.print("Vrms: "); Serial.print(Vrms); Serial.println("V");
     Serial.print("Phase Shift: "); Serial.println(phase_shift);
   }
   else 
   {
-    lcd.print("AC NOT Detected");
+   lcd.print("AC NOT Detected");
    Serial.println("AC NOT detected - Apparent Power calc enabled");
-   Serial.print("Assuming VRMS:"); Serial.print(Vrms); Serial.println("V");
+   if (USA==TRUE) Serial.println("USA mode"); 
+   Serial.print("Assuming VRMS: "); Serial.print(Vrms); Serial.println("V");
  }  
 
 lcd.setCursor(0, 1); lcd.print("Detected ");
