@@ -2,13 +2,15 @@
 
 The guide details how to use the emonPi, walking through setting up the software, accessing the emonPi measurement data, recording the data locally on the emonpi and forwarding the data to a remove server such as emoncms.org
 
-Connect up 5V DC power via mini-USB socket (at least 1.2A adapter recomeded) and Ethernet to the emonpi, the emonpi LCD display will start by cycling through information about what is connected to the emonPi, how many CT current sensors, AC voltage measurement adatper and temperature sensors. This information is being provided by the ATmega328 microcontroller on the emonPi. Once the Raspberry Pi has booted up it will take over control of the LCD and show the status of Ethernet connectivity. With Ethernet connected it will show the IP address of the emonPi on your local network.
+Connect up 5V DC power via mini-USB socket (at least 1.2A adapter recomeded) and Ethernet to the emonPi, the emonPi LCD display will start by cycling through information about what is connected to the emonPi, how many CT current sensors, AC voltage measurement adatper and temperature sensors. This information is being provided by the ATmega328 microcontroller on the emonPi. Once the Raspberry Pi has booted up it will take over control of the LCD and show the status of Ethernet connectivity. With Ethernet connected it will show the IP address of the emonPi on your local network.
 
 Enter the IP address shown in your web browser address bar.
 
 This will bring up the emonPi Emoncms login. Select register to create a user, enter a username, email and password twice to create the administrator account.
 
-Development: create custom emonPi login without email address requirement, emonpi graphic and title, and automatic single account creation (automatically disable ability to create further accounts)
+    Development: create custom emonPi login without email address requirement, emonpi graphic and title, and automatic single account creation (automatically disable ability to create further accounts)
+
+# NEED TO ADD DOCS TO SETUP WIFI
 
 ![Create account](files/guide-createaccount.png)
 
@@ -18,7 +20,7 @@ In the top navigation menu click on *Nodes* to bring up a live view of the emonp
 
 ![EmonPi nodes](files/guide-nodes.png)
 
-Under the hood here we have data being sent in [JeeLabs RF12 Packet Format](http://jeelabs.org/2011/06/09/rf12-packet-format-and-design/) from the ATmega328 on the emonPi shield to the Pi's internal serial port on the GPIO (/dev/ttyAMA0). On the Pi the data is read from the serial port and decoaded using a Python script called [emonHub](https://github.com/emonhub/emonhub/) and then forwarded using MQTT to the local installation of Emoncms which provides the GUI, data storage and visualisation. The important thing to note is that the information for decoding, scaling and naming the node data is stored in the emonhub.conf configuration file. emonHub also handles forwarding the data to a remote Emoncms server e.g [http://emoncms.org](http://emoncms.org)
+Under the hood here we have data being sent in [JeeLabs RF12 Packet Format](http://jeelabs.net/projects/jeelib/wiki/RF12demo#Output-format) from the ATmega328 on the emonPi shield board to the Pi's internal serial port on the GPIO (/dev/ttyAMA0). On the Pi the data is read from the serial port and decoaded using a Python script called [emonHub](https://github.com/emonhub/emonhub/) and then forwarded using MQTT to the local installation of Emoncms which provides the GUI, data storage and visualisation. The important thing to note is that the information for decoding, scaling and naming the node data is stored in the emonhub.conf configuration file. emonHub also handles forwarding the data to a remote Emoncms server e.g [http://emoncms.org](http://emoncms.org)
 
 The emonhub.conf configuration file can be accessed from within Emoncms by clicking on the EmonHub tab in the top menu. 
 
