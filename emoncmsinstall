@@ -95,6 +95,8 @@ sudo cp /var/www/emoncms/run/feedwriter /etc/init.d/
 sudo chmod 755 /etc/init.d/feedwriter
 sudo update-rc.d feedwriter defaults
 
+echo "<?php header('Location: ../emoncms'); ?>" > /var/www/index.php
+
 echo "Installing Emonhub"
 
 cd
