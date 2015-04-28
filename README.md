@@ -10,6 +10,12 @@ emonPi - Raspberry Pi Energy Monitoring Unit
 
 [Software User Guide](https://github.com/openenergymonitor/emonpi/blob/master/userguide.md)
 
+**Secure your emonpi user password**
+
+    passwd
+
+enter current password (raspberry) and replace with new password of your choice.
+
 ## Overview: 
 http://openenergymonitor.org/emon/modules/emonPi
 
