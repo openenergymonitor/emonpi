@@ -1,30 +1,30 @@
-# Using the EmonPi
+# Using the emonPi
 
-The guide details how to use the EmonPi, walking through setting up the software, accessing the emonpi measurement data, recording the data locally on the emonpi and forwarding the data to a remove server such as emoncms.org
+The guide details how to use the emonPi, walking through setting up the software, accessing the emonPi measurement data, recording the data locally on the emonpi and forwarding the data to a remove server such as emoncms.org
 
-Connect up power and ethernet to the emonpi, the emonpi LCD display will start by cycling through information about what is connected to the emonpi shield, how many CT's and temperature sensors. This information is being provided by the ATMega328 on board. Once the raspberrypi has booted up it will take over control of the LCD and show the status of ethernet connectivity. With Ethernet connected it will show the IP address of the emonpi on your local network.
+Connect up 5V DC power via mini-USB socket (at least 1.2A adapter recomeded) and Ethernet to the emonpi, the emonpi LCD display will start by cycling through information about what is connected to the emonPi, how many CT current sensors, AC voltage measurement adatper and temperature sensors. This information is being provided by the ATmega328 microcontroller on the emonPi. Once the Raspberry Pi has booted up it will take over control of the LCD and show the status of Ethernet connectivity. With Ethernet connected it will show the IP address of the emonPi on your local network.
 
-Enter the IP address shown in your browser address bar.
+Enter the IP address shown in your web browser address bar.
 
-This will bring up the emonpi login. Select register to create a user, enter a username, email and password twice to create the administrator account.
+This will bring up the emonPi Emoncms login. Select register to create a user, enter a username, email and password twice to create the administrator account.
 
-Development: create custom emonpi login without email address requirement, emonpi graphic and title, and automatic single account creation (automatically disable ability to create further accounts)
+Development: create custom emonPi login without email address requirement, emonpi graphic and title, and automatic single account creation (automatically disable ability to create further accounts)
 
 ![Create account](files/guide-createaccount.png)
 
 Once logged in you will see the user profile page on which you can change your username, password and other user settings. 
 
-In the top navigation menu click on *Nodes* to bring up a live view of the emonpi measurement data *node 15* by default and any other nodes on the default rfm69 network (433Mhz, group 210). The emonpi data should refresh every 5 seconds.
+In the top navigation menu click on *Nodes* to bring up a live view of the emonpi measurement data *node 15* by default and any other nodes on the default RFM69 network (433Mhz, group 210). The emonPi data should refresh every 5 seconds.
 
 ![EmonPi nodes](files/guide-nodes.png)
 
-Under the hood here we have data being read from the emonpi shield serial connection with a piece of software called emonhub and then forwarded using MQTT to the local installation of emoncms which provides the GUI, data storage and visualisation. The important thing to note is that the information for decoding, scaling and naming the node data is stored in the emonhub.conf configuration file.
+Under the hood here we have data being sent in [JeeLabs RF12 Packet Format](http://jeelabs.org/2011/06/09/rf12-packet-format-and-design/) from the ATmega328 on the emonPi shield to the Pi's internal serial port on the GPIO (/dev/ttyAMA0). On the Pi the data is read from the serial port and decoaded using a Python script called [emonHub](https://github.com/emonhub/emonhub/) and then forwarded using MQTT to the local installation of Emoncms which provides the GUI, data storage and visualisation. The important thing to note is that the information for decoding, scaling and naming the node data is stored in the emonhub.conf configuration file. emonHub also handles forwarding the data to a remote Emoncms server e.g [http://emoncms.org](http://emoncms.org)
 
-The emonhub.conf configuration file can be accessed from within emoncms by clicking on the EmonHub tab in the top menu. 
+The emonhub.conf configuration file can be accessed from within Emoncms by clicking on the EmonHub tab in the top menu. 
 
 ![emonhubconf.png](files/emonhubconf.png)
 
-You can also view the emonhub log using the in-browser log viewer, click on log viewer to bring up a snapshot of the emonhub log.
+You can view the emonhub log using the in-browser log viewer, click on log viewer to bring up a snapshot of the emonhub log. This is useful for debugging. 
 
 ![emonhubconf.png](files/emonhubconf.png)
 
@@ -46,9 +46,9 @@ Scrolling down to the bottom of the file you will see the node definition:
             
 If you wish to change the variable and node names, units or any of the other properties, change them here and click 'save'. The new configuration will then appear on the Nodes page within 5 seconds.
 
-**EmonPi RFM69 Radio config**
+**emonPi RFM69 Radio config**
 
-Near the top of emonhub.conf there is a section labeled RFM2Pi, The first part of the settings here specify the serial port to which the emonpi shield is connect and its baud rate. The second part contains the radio group, frequency and baseid settings which can be changed if your radio module is an 868Mhz module or that you wish to run your radio network on a different group.
+Near the top of emonhub.conf there is a section labeled RFM2Pi, The first part of the settings here specify the serial port to which the emonpi shield is connect and its baud rate. The second part contains the radio group, frequency and base node ID settings which can be changed if your radio module is an 868Mhz module or that you wish to use a different network group.
 
     ### This interfacer manages the RFM2Pi module
     [[RFM2Pi]]
@@ -95,7 +95,7 @@ Click save and check using the emonhub log viewer if data is being sent and the 
 
 ### Logging data locally on the emonpi
 
-The emonpi measurement data and data recieved from wireless nodes can be logged locally to the emonpi SD card. To record a particular node:variable click on the spanner icon next to the variable you wish to log and select the log to feed option, if your unsure which engine type to use use the default option. The interval determines the how often the data is recorded, a large interval will mean less disk space is used up but at the expense of detail.
+The emonPi's local measurement data and data recieved via RF from other wireless nodes (e.g. emonTx, emonTH etc.) can be logged locally to the emonPi's SD card. To record a particular node variable click on the spanner icon next to the variable you wish to log and select the log to feed option, if your unsure which engine type to use use the default option. The interval determines the how often the data is recorded, a large interval will mean less disk space is used up but at the expense of detail.
 
 The power to kwh option creates a feed that records the accumulating kwh used or generated calculated from the power value in this case. Accumulating kwh feeds can be used to create a bar graph of daily use or generation values.
 
@@ -108,6 +108,15 @@ The feeds page shows the feeds created, in the example below CT1 was house power
 Clicking on the eye icon will show the data recorded using the data viewer. The data can be exported as CSV data both from the feeds page and from the data viewer.
 
 ### Troubleshooting
+
+#### SSH Access
+
+To debug further than viewing the emonHub logfile SSH access wil be needed. 
+
+The default username is 'pi' and password 'raspberry'. 
+
+We recomend you change the password once logged in using $passwd
+
 
 #### Nodes page is not updating
 
@@ -128,7 +137,7 @@ Check that emonhub is running, if new items appear in the emonhub log when the l
     2015-04-27 17:19:28,312 DEBUG    RFM2Pi     1811 adding frame to buffer => [1430155168, 15, 77, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     2015-04-27 17:19:28,314 DEBUG    RFM2Pi     1811 Sent to channel' : ToEmonCMS
 
-Check that emoncms-nodes-service is running. The emoncms-nodes-service is a service that subscribes to the MQTT emonhub/rx topic created by emonhub and inserts/updates the data in emoncms. This service can be checked by logging in to the raspberrypi via SSH.
+Check that emoncms-nodes-service is running. The emoncms-nodes-service is a service that subscribes to the MQTT emonhub/rx topic created by emonhub and inserts/updates the data in emoncms. This service can be checked by logging in to the raspberrypi via SSH. 
 
     sudo service emoncms-nodes-service status
     
@@ -156,7 +165,7 @@ If its not running, start it with:
 
     sudo service feedwriter start
 
-#### EmonPi LCD is not updating
+#### emonPi LCD is not updating
 
 Check that the emonPiLCD service is running:
 
