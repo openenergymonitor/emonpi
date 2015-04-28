@@ -81,6 +81,10 @@ To send data to emoncms.org or other remote server add the following lines in th
             sub_channels = ToEmonCMS,
             url = http://emoncms.org
             apikey = YOUR EMONCMS WRITE APIKEY
+            senddata = 1
+            sendstatus = 0
+            
+**Note:** 'sendstatus' can be used to send a ping including your home WAN ip address every 60s to the emoncms myip module that's available under extra's in emoncms.org. This can be useful if your recording data locally and want to access your home pi remotely assuming port forwarding is enabled in your home router.
             
 Click save and check using the emonhub log viewer if data is being sent and the response is an 'ok' from the remote emoncms server:
 
