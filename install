@@ -1,5 +1,9 @@
 #!/bin/bash
 
+echo "update"
+sudo apt-get update -y
+sudo apt-get upgrade -y
+
 echo "deleting unused software"
 sudo apt-get purge -y wolfram-engine minecraft-pi sonic-pi scratch
 sudo apt-get autoremove -y
@@ -27,6 +31,20 @@ sudo rm /etc/profile.d/raspi-config.sh
 
 echo "install LCD"
 sudo /home/pi/emonpi/lcd/install
+
+echo "Move log directory to temporary partition"
+
+sudo cp /etc/default/rcS /etc/default/rcS.orig
+sudo sh -c "echo 'RAMTMP=yes' >> /etc/default/rcS"
+sudo mv /etc/fstab /etc/fstab.orig
+sudo sh -c "echo 'tmpfs           /tmp            tmpfs   nodev,nosuid,size=30M,mode=1777       0    0' >> /etc/fstab"
+sudo sh -c "echo 'tmpfs           /var/log        tmpfs   nodev,nosuid,size=30M,mode=1777       0    0' >> /etc/fstab"
+sudo sh -c "echo 'proc            /proc           proc    defaults                              0    0' >> /etc/fstab"
+sudo sh -c "echo '/dev/mmcblk0p1  /boot           vfat    defaults                              0    2' >> /etc/fstab"
+sudo sh -c "echo '/dev/mmcblk0p2  /               ext4    defaults,noatime                      0    1' >> /etc/fstab"
+sudo sh -c "echo ' ' >> /etc/fstab"
+sudo mv /etc/mtab /etc/mtab.orig
+sudo ln -s /proc/self/mounts /etc/mtab
 
 
 

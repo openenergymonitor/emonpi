@@ -19,6 +19,10 @@ sudo apt-get -y install mysql-server
 # All other apt-get packages
 sudo apt-get install -y apache2 mysql-client php5 libapache2-mod-php5 php5-mysql php5-curl php-pear php5-dev php5-mcrypt git-core redis-server build-essential ufw ntp python-serial python-configobj mosquitto mosquitto-clients python-pip python-dev screen sysstat minicom
 
+sed 's/\/var\/log\/apache2/\/var\/log/' /etc/apache2/envvars > /tmp/apache2envvars
+sudo cp /tmp/apache2envvars /etc/apache2/envvars
+sudo service apache2 restart
+
 # Redis and log4php
 sudo pecl install redis
 sudo pear channel-discover pear.apache.org/log4php
@@ -94,6 +98,9 @@ sudo chmod 664 /home/pi/data/emoncms.conf
 sudo cp /var/www/emoncms/run/feedwriter /etc/init.d/
 sudo chmod 755 /etc/init.d/feedwriter
 sudo update-rc.d feedwriter defaults
+
+sudo rm /var/www/index.html
+echo "<?php header('Location: ../emoncms'); ?>" > /var/www/index.php
 
 echo "Installing Emonhub"
 
