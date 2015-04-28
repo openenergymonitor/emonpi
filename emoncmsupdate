@@ -1,0 +1,67 @@
+#!/bin/bash
+
+echo
+echo "Emoncms updater"
+echo
+
+echo "Checking emoncms directory"
+cd /var/www/emoncms
+var=`git status`
+if [[ "$var" == *"nothing to commit (working directory clean)"* ]]
+then
+    echo "No local changes, running git pull to fetch update"
+    git pull
+else
+    echo "There are changes in your emoncms directory, update skipped"
+fi
+
+echo
+echo "Checking emoncms development directory"
+cd /home/pi/development
+var=`git status`
+if [[ "$var" == *"nothing to commit (working directory clean)"* ]]
+then
+    echo "No local changes"
+    echo "Copying over nodes, app, wifi, config modules from emoncms directory"
+
+    sudo rm -rf /home/pi/development/Modules/nodes
+    sudo rm -rf /home/pi/development/Modules/app
+    sudo rm -rf /home/pi/development/Modules/wifi
+    sudo rm -rf /home/pi/development/Modules/config
+    
+    sudo cp -r /var/www/emoncms/Modules/nodes /home/pi/development/Modules
+    sudo cp -r /var/www/emoncms/Modules/app /home/pi/development/Modules
+    sudo cp -r /var/www/emoncms/Modules/wifi /home/pi/development/Modules
+    sudo cp -r /var/www/emoncms/Modules/config /home/pi/development/Modules
+    
+    echo "Checking for local changes to nodes, app, wifi & config modules"
+    res=`git status`
+    if [[ "$res" == *"nothing to commit (working directory clean)"* ]]
+    then
+        echo "There are no local changes"
+        echo "Running git pull to fetch any available updates"
+        git pull
+        
+        echo "Copying nodes, app, wifi & config modules back to /var/www/emoncms"
+        rm -rf /var/www/emoncms/Modules/nodes
+        rm -rf /var/www/emoncms/Modules/app
+        rm -rf /var/www/emoncms/Modules/wifi
+        rm -rf /var/www/emoncms/Modules/config
+        
+        cp -r /home/pi/development/Modules/nodes /var/www/emoncms/Modules
+        cp -r /home/pi/development/Modules/app /var/www/emoncms/Modules
+        cp -r /home/pi/development/Modules/wifi /var/www/emoncms/Modules
+        cp -r /home/pi/development/Modules/config /var/www/emoncms/Modules
+    else
+        echo "There are local changes to nodes, app, wifi & config modules. Update skipped"
+    fi
+    
+else
+    echo "There are changes in your emoncms development directory, update skipped"
+fi
+
+echo
+
+sudo service emonhub restart
+sudo service emoncms-nodes-service restart
+sudo service feedwriter restart
