@@ -14,6 +14,11 @@ import re
 import paho.mqtt.client as mqtt
 
 # ------------------------------------------------------------------------------------
+# Number of LCD display pages
+# ------------------------------------------------------------------------------------
+max_number_pages = 3
+
+# ------------------------------------------------------------------------------------
 # Start Logging
 # ------------------------------------------------------------------------------------
 import logging
@@ -83,6 +88,11 @@ class Background(threading.Thread):
             if (now-last5s)>=5.0:
                 last5s = now
 
+                # LCD Auto Advance
+                buttoninput.press_num = buttoninput.press_num +1
+                if buttoninput.press_num>max_number_pages: buttoninput.press_num = 0
+
+
                 # Ethernet
                 # --------------------------------------------------------------------------------
                 eth0 = "ip addr show eth0 | grep inet | awk '{print $2}' | cut -d/ -f1 | head -n1"
@@ -123,7 +133,7 @@ class Background(threading.Thread):
                     iwconfig = p.communicate()[0]
                     tmp = re.findall('(?<=Signal level=)\w+',iwconfig)
                     if len(tmp)>0: signallevel = tmp[0]
-                    
+
                 r.set("wlan:signallevel",signallevel)
                 logger.info("background: wlan "+str(signallevel))
                 
@@ -171,7 +181,7 @@ class ButtonInput():
         self.pressed = False
     def buttonPress(self,channel):
         self.press_num = self.press_num + 1
-        if self.press_num>4: self.press_num = 0
+        if self.press_num>max_number_pages: self.press_num = 0
         self.pressed = True
         logger.info("lcd button press "+str(self.press_num))
                     
@@ -238,6 +248,10 @@ mqttc.on_disconnect = on_disconnect
 mqttc.on_message = on_message
 
 last1s = time.time() - 1.0
+
+# Start LCD on first page 
+buttoninput.press_num = 0 
+
 while 1:
 
     now = time.time()
