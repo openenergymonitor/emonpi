@@ -34,7 +34,7 @@ logger = logging.getLogger("EmonPiLCD")
 logger.addHandler(loghandler)    
 logger.setLevel(logging.INFO)
 
-logger.info("EmonPiLCD Start")
+logger.info("emonPiLCD Start")
 # ------------------------------------------------------------------------------------
 
 r = redis.Redis(host='localhost', port=6379, db=0)
@@ -123,15 +123,9 @@ class Background(threading.Thread):
                     iwconfig = p.communicate()[0]
                     tmp = re.findall('(?<=Signal level=)\w+',iwconfig)
                     if len(tmp)>0: signallevel = tmp[0]
-                    tmp = re.findall('(?<=Link Quality=)\w+',iwconfig)
-                    if len(tmp)>0: linklevel = tmp[0]
-                    tmp = re.findall('(?<=Noise level=)\w+',iwconfig)
-                    if len(tmp)>0: noiselevel = tmp[0]
-
+                    
                 r.set("wlan:signallevel",signallevel)
-                r.set("wlan:linklevel",linklevel)
-                r.set("wlan:noiselevel",noiselevel)
-                logger.info("background: wlan "+str(signallevel)+" "+str(linklevel)+" "+str(noiselevel))
+                logger.info("background: wlan "+str(signallevel))
                 
             # this loop runs a bit faster so that ctrl-c exits are fast
             time.sleep(0.1)
@@ -267,37 +261,27 @@ while 1:
         
         if buttoninput.press_num==0:
                 
-            if int(r.get("eth:active")):
-                lcd_string1 = "Ethernet: YES"
-                lcd_string2 = r.get("eth:ip")
+            if (int(r.get("wlan:active")) == 0):
+                lcd_string1 = "Eth: CONNECTED"
+                lcd_string2 = "IP: "+r.get("eth:ip")
             else:
-                lcd_string1 = "Ethernet: NO"
-                lcd_string2 = ""
+                lcd_string1 = "Eth: DISCONNECTED"
+                lcd_string2 = "IP: N/A"
                 
         elif buttoninput.press_num==1:
                 
             if int(r.get("wlan:active")):
-                lcd_string1 = "WLAN: YES  "+str(r.get("wlan:signallevel"))+"%"
-                lcd_string2 = r.get("wlan:ip")
+                lcd_string1 = "WIFI: CONNECTED  "+str(r.get("wlan:signallevel"))+"%"
+                lcd_string2 = "IP: "+ r.get("wlan:ip")
             else:
-                lcd_string1 = "WLAN: NO"
-                lcd_string2 = ""
+                lcd_string1 = "WIFI: DISCONNECTED"
+                lcd_string2 = "IP: N/A"
                 
-            
         elif buttoninput.press_num==2:
-            lcd_string1 = "Link|Sig|Noise"
-            if int(r.get("wlan:active")):
-                lcd_string2 = str(r.get("wlan:linklevel"))+"% "
-                lcd_string2 += str(r.get("wlan:signallevel"))+"% "
-                lcd_string2 += str(r.get("wlan:noiselevel"))+"%"
-            else:
-                lcd_string2 = ""
-
-        elif buttoninput.press_num==3:
 		    lcd_string1 = datetime.now().strftime('%b %d %H:%M')
 		    lcd_string2 =  'Uptime %.2f days' % (float(r.get("uptime"))/86400)
 		    
-        elif buttoninput.press_num==4: 
+        elif buttoninput.press_num==3: 
             basedata = r.get("basedata")
             if basedata is not None:
                 basedata = basedata.split(",")
