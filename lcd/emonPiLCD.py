@@ -251,6 +251,8 @@ last1s = time.time() - 1.0
 
 # Start LCD on first page 
 buttoninput.press_num = 0 
+buttonPress_time = time.time() 
+
 
 while 1:
 
@@ -265,14 +267,21 @@ while 1:
             time.sleep(1.0)
     
     mqttc.loop(0)
+
+    if (now - buttonPress_time) > 120: #turn backight off afer x seconds 
+        backlight = False
+        lcd.backlight(0) 	
+    else: backlight = True
         
     # ----------------------------------------------------------
     # UPDATE EVERY 1's
     # ----------------------------------------------------------
-    if (now-last1s)>=1.0 or buttoninput.pressed:
+    if ((now-last1s)>=1.0 and backlight) or buttoninput.pressed:
         last1s = now
+        # Record time of button press
+        if (buttoninput.pressed == True): buttonPress_time = now
         buttoninput.pressed = False
-        
+
         if buttoninput.press_num==0:
                 
             if (int(r.get("wlan:active")) == 0):
@@ -313,6 +322,8 @@ while 1:
         else:
             logger.info("shutdown button pressed")
             shutdown()
+
+
     
     time.sleep(0.1)
     
