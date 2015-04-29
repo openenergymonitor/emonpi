@@ -14,6 +14,11 @@ import re
 import paho.mqtt.client as mqtt
 
 # ------------------------------------------------------------------------------------
+# LCD backlight timeout in seconds
+# ------------------------------------------------------------------------------------
+backlight_timeout=120
+
+# ------------------------------------------------------------------------------------
 # Number of LCD display pages
 # ------------------------------------------------------------------------------------
 max_number_pages = 3
@@ -267,8 +272,9 @@ while 1:
             time.sleep(1.0)
     
     mqttc.loop(0)
-
-    if (now - buttonPress_time) > 120: #turn backight off afer x seconds 
+    
+    #turn backight off afer x seconds 
+    if (now - buttonPress_time) > backlight_timeout: 
         backlight = False
         lcd.backlight(0) 	
     else: backlight = True
