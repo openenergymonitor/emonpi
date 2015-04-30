@@ -79,7 +79,7 @@ git clone https://github.com/emoncms/app.git
 git clone https://github.com/emoncms/config.git
 git clone https://github.com/emoncms/wifi.git
 
-mv /var/www/emoncms/Modules/input/input_menu.php /var/www/emoncms/Modules/input/input_menu_hidden.php
+rm /var/www/emoncms/Modules/input/input_menu.php
 
 if [ ! -f /etc/sudoers.d/wifi ]; then 
 	sudo mv /home/pi/emonpi/wifi /etc/sudoers.d/wifi
