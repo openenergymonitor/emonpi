@@ -73,14 +73,13 @@ cd /var/www
 git clone -b low-write https://github.com/emoncms/emoncms.git
 cp /var/www/emoncms/default.settings.php /var/www/emoncms/settings.php
 
-cd
-git clone https://github.com/emoncms/development.git
-cp -r /home/pi/development/Modules/wifi /var/www/emoncms/Modules
-cp -r /home/pi/development/Modules/nodes /var/www/emoncms/Modules
-cp -r /home/pi/development/Modules/config /var/www/emoncms/Modules
-cp -r /home/pi/development/Modules/app /var/www/emoncms/Modules
+cd /var/www/emoncms/Modules
+git clone https://github.com/emoncms/nodes.git
+git clone https://github.com/emoncms/app.git
+git clone https://github.com/emoncms/config.git
+git clone https://github.com/emoncms/wifi.git
 
-rm -rf /var/www/emoncms/Modules/input
+mv /var/www/emoncms/Modules/input/input_menu.php /var/www/emoncms/Modules/input/input_menu_hidden.php
 
 if [ ! -f /etc/sudoers.d/wifi ]; then 
 	sudo mv /home/pi/emonpi/wifi /etc/sudoers.d/wifi
