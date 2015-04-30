@@ -70,7 +70,7 @@ sudo chown www-data:root /home/pi/data/phptimeseries
 
 sudo chown pi /var/www
 cd /var/www
-git clone -b low-write-v8.5 https://github.com/emoncms/emoncms.git
+git clone -b low-write https://github.com/emoncms/emoncms.git
 cp /var/www/emoncms/default.settings.php /var/www/emoncms/settings.php
 
 cd
