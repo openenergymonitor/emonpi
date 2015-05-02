@@ -15,13 +15,11 @@ import paho.mqtt.client as mqtt
 
 # ------------------------------------------------------------------------------------
 # LCD backlight timeout in seconds
+# 0: always on
 # ------------------------------------------------------------------------------------
-backlight_timeout=120
+backlight_timeout=0
 
-# ------------------------------------------------------------------------------------
-# Number of LCD display pages
-# ------------------------------------------------------------------------------------
-max_number_pages = 3
+page = 0
 
 # ------------------------------------------------------------------------------------
 # Start Logging
@@ -92,11 +90,6 @@ class Background(threading.Thread):
             # ----------------------------------------------------------
             if (now-last5s)>=5.0:
                 last5s = now
-
-                # LCD Auto Advance
-                buttoninput.press_num = buttoninput.press_num +1
-                if buttoninput.press_num>max_number_pages: buttoninput.press_num = 0
-
 
                 # Ethernet
                 # --------------------------------------------------------------------------------
@@ -178,17 +171,6 @@ def shutdown():
         lcd.backlight(0) 											# backlight zero must be the last call to the LCD to keep the backlight off 
         call('halt', shell=False)
         sys.exit() #end script 
-
-class ButtonInput():
-    def __init__(self):
-        GPIO.add_event_detect(16, GPIO.RISING, callback=self.buttonPress, bouncetime=1000) 
-        self.press_num = 0
-        self.pressed = False
-    def buttonPress(self,channel):
-        self.press_num = self.press_num + 1
-        if self.press_num>max_number_pages: self.press_num = 0
-        self.pressed = True
-        logger.info("lcd button press "+str(self.press_num))
                     
 def get_uptime():
 
@@ -227,6 +209,15 @@ def on_message(client, userdata, msg):
         basedata = msg.payload.split(",")
         r.set("basedata",msg.payload)
 
+class ButtonInput():
+    def __init__(self):
+        GPIO.add_event_detect(16, GPIO.RISING, callback=self.buttonPress, bouncetime=1000) 
+        self.press_num = 0
+        self.pressed = False
+    def buttonPress(self,channel):
+        self.pressed = True
+        logger.info("lcd button press "+str(self.press_num))
+        
 signal.signal(signal.SIGINT, sigint_handler)
 
 # Use Pi board pin numbers as these as always consistent between revisions 
@@ -253,11 +244,8 @@ mqttc.on_disconnect = on_disconnect
 mqttc.on_message = on_message
 
 last1s = time.time() - 1.0
-
-# Start LCD on first page 
-buttoninput.press_num = 0 
-buttonPress_time = time.time() 
-
+lastpagechange = time.time()
+autopagechange = True
 
 while 1:
 
@@ -273,44 +261,51 @@ while 1:
     
     mqttc.loop(0)
     
-    #turn backight off afer x seconds 
-    if (now - buttonPress_time) > backlight_timeout: 
-        backlight = False
-        lcd.backlight(0) 	
-    else: backlight = True
-        
+    # lcd.backlight(0)
+    
+    if buttoninput.pressed:
+        if autopagechange:
+            autopagechange = False
+            lcd_string1 = "AUTO PAGE CHANGE"
+            lcd_string2 = "OFF"
+            updatelcd()
+            time.sleep(2.0)
+        else:
+            page = page + 1
+            if page>4: page = 0
+    
+    if autopagechange and (now-lastpagechange)>10:
+        page = page + 1
+        if page>3: page = 0
+        lastpagechange = now
+    
     # ----------------------------------------------------------
     # UPDATE EVERY 1's
     # ----------------------------------------------------------
-    if ((now-last1s)>=1.0 and backlight) or buttoninput.pressed:
+    if (now-last1s)>=1.0 or buttoninput.pressed:
         last1s = now
-        # Record time of button press
-        if (buttoninput.pressed == True): buttonPress_time = now
-        buttoninput.pressed = False
 
-        if buttoninput.press_num==0:
-                
+        if page==0:  
             if (int(r.get("wlan:active")) == 0):
-                lcd_string1 = "Eth: CONNECTED"
+                lcd_string1 = "Ethernet: YES"
                 lcd_string2 = "IP: "+r.get("eth:ip")
             else:
-                lcd_string1 = "Eth: DISCONNECTED"
-                lcd_string2 = "IP: N/A"
+                lcd_string1 = "Ethernet:"
+                lcd_string2 = "NOT CONNECTED"
                 
-        elif buttoninput.press_num==1:
-                
+        elif page==1:
             if int(r.get("wlan:active")):
-                lcd_string1 = "WIFI: CONNECTED  "+str(r.get("wlan:signallevel"))+"%"
+                lcd_string1 = "WIFI: YES  "+str(r.get("wlan:signallevel"))+"%"
                 lcd_string2 = "IP: "+ r.get("wlan:ip")
             else:
-                lcd_string1 = "WIFI: DISCONNECTED"
-                lcd_string2 = "IP: N/A"
+                lcd_string1 = "WIFI:"
+                lcd_string2 = "NOT CONNECTED"
                 
-        elif buttoninput.press_num==2:
+        elif page==2:
 		    lcd_string1 = datetime.now().strftime('%b %d %H:%M')
 		    lcd_string2 =  'Uptime %.2f days' % (float(r.get("uptime"))/86400)
 		    
-        elif buttoninput.press_num==3: 
+        elif page==3: 
             basedata = r.get("basedata")
             if basedata is not None:
                 basedata = basedata.split(",")
@@ -319,6 +314,11 @@ while 1:
             else:
                 lcd_string1 = 'Power 1: ...'
                 lcd_string2 = 'Power 2: ...'
+                
+        elif page==4:
+            autopagechange = True
+            lcd_string1 = "AUTO PAGE CHANGE"
+            lcd_string2 =  "ON"
         
         logger.info("main lcd_string1: "+lcd_string1)
         logger.info("main lcd_string2: "+lcd_string2)
@@ -329,8 +329,7 @@ while 1:
             logger.info("shutdown button pressed")
             shutdown()
 
-
-    
+    buttoninput.pressed = False
     time.sleep(0.1)
     
 GPIO.cleanup()
