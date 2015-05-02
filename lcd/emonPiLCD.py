@@ -139,11 +139,25 @@ class Background(threading.Thread):
             time.sleep(0.1)
             
 def sigint_handler(signal, frame):
-    """Catch SIGINT (Ctrl+C)."""
+    lcd_string1 = "LCD SCRIPT"
+    lcd_string2 =  "STOPPED"
+    lcd.lcd_display_string( string_lenth(lcd_string1, 16),1)
+    lcd.lcd_display_string( string_lenth(lcd_string2, 16),2) 
+    time.sleep(1)
     logger.info("ctrl+c exit received")
     background.stop = True;
     sys.exit(0)
-
+    
+def sigterm_handler(signal, frame):
+    lcd_string1 = "LCD SCRIPT"
+    lcd_string2 =  "STOPPED"
+    lcd.lcd_display_string( string_lenth(lcd_string1, 16),1)
+    lcd.lcd_display_string( string_lenth(lcd_string2, 16),2) 
+    time.sleep(1)
+    logger.info("sigterm received")
+    background.stop = True;
+    sys.exit(0)
+    
 def shutdown():
     while (GPIO.input(11) == 1):
         lcd_string1 = "emonPi Shutdown"
@@ -219,6 +233,7 @@ class ButtonInput():
         logger.info("lcd button press "+str(self.press_num))
         
 signal.signal(signal.SIGINT, sigint_handler)
+signal.signal(signal.SIGTERM,sigterm_handler)
 
 # Use Pi board pin numbers as these as always consistent between revisions 
 GPIO.setmode(GPIO.BOARD)                                 
@@ -331,6 +346,13 @@ while 1:
 
     buttoninput.pressed = False
     time.sleep(0.1)
+
+
+lcd_string1 = "LCD SCRIPT EXIT"
+lcd_string2 =  ""
+lcd.lcd_display_string( string_lenth(lcd_string1, 16),1)
+lcd.lcd_display_string( string_lenth(lcd_string2, 16),2) 
+time.sleep(1)
     
 GPIO.cleanup()
 logging.shutdown()
