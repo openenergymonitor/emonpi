@@ -109,6 +109,27 @@ The feeds page shows the feeds created, in the example below CT1 was house power
 
 Clicking on the eye icon will show the data recorded using the data viewer. The data can be exported as CSV data both from the feeds page and from the data viewer.
 
+### Sending control packets
+
+The new nodes module and emonhub MQTT implementation has been designed to make it as easy to send data over the RFM12/69 network as to receive it. This can be used to send control packets to wireless nodes that may be radiator controllers, thermostats or lights.
+
+To send a packet the first step is to add a node definition to the emonhub.conf file that includes information on the format of the data being sent out [[[tx]]] in additon to being received [[[rx]]]:
+
+    [[1]]
+        nodename = Thermostat
+        firmware = open thermostat concept
+        hardware = open thermostat concept
+        [[[rx]]]
+            names = temperature, humidity
+            units = C,%
+            datacode = h
+            scales = 0.01,0.01
+        [[[tx]]]
+            names = setpoint, hysteresis
+            units = C,C
+            scales = 0.01,0.01
+            datacode = h
+
 ### Troubleshooting
 
 #### SSH Access
