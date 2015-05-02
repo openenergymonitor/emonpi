@@ -130,6 +130,26 @@ To send a packet the first step is to add a node definition to the emonhub.conf 
             scales = 0.01,0.01
             datacode = h
 
+The resultant node looks like this on the nodes page with both the rx and tx sections shown:
+
+![Control node example](files/controlnode.png)
+
+To send a packet a HTTP POST request needs to be sent to the nodes api of the form:
+
+    request method: POST
+    request url: /nodes/1/tx/values
+    request body: 18.5,0.5
+    
+There nodes API documentation has a helper that can be used to generate and send this request for testing. In the POST /nodes/nodeid section in the box with content /nodes/10/rx/values change it to /nodes/1/tx/values and the value box to 18.5,0.5 and then click on OK to send the request.
+
+You can check that the control packet reached emonhub by checking the emonhub log which should look similar to this:
+
+    2015-05-02 06:43:18,136 DEBUG    MQTT       295 sent TX packet: 1,58,7,50,0,s
+    2015-05-02 06:43:18,139 DEBUG    MQTT       295 Sent to channel' : ToRFM12
+    2015-05-02 06:43:19,005 DEBUG    RFM2Pi     confirmed sent packet size: -> 5 b
+    
+
+
 ### Troubleshooting
 
 #### SSH Access
