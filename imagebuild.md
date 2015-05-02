@@ -145,3 +145,14 @@ Install software stack:
     git clone https://github.com/openenergymonitor/emonpi.git
     ./install
     ./emoncmsinstall
+
+
+Add wifi check script to run every minute to check wifi is connected. 
+
+    sudo cp /home/pi/emonpi/wifi-check /usr/local/bin/wifi-check
+    sudo chmod +x /usr/local/bin/wifi-check
+    sudo crontab -e
+  
+add:
+
+    * * * * * /usr/local/bin/wifi-check > /tmp/wificheck.log 2>&1
