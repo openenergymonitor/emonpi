@@ -53,6 +53,9 @@ while not redisready:
     try:
         r.client_list()
         redisready = True
+        
+        
+        
     except redis.ConnectionError:
         logger.info("waiting for redis-server to start...")
         time.sleep(1.0)
@@ -270,6 +273,7 @@ while 1:
         logger.info("Connecting to MQTT Server")
         try:
             mqttc.connect("127.0.0.1", "1883", 60)
+            lcd = lcddriver.lcd()
         except:
             logger.info("Could not connect...")
             time.sleep(1.0)
@@ -346,13 +350,6 @@ while 1:
 
     buttoninput.pressed = False
     time.sleep(0.1)
-
-
-lcd_string1 = "LCD SCRIPT EXIT"
-lcd_string2 =  ""
-lcd.lcd_display_string( string_lenth(lcd_string1, 16),1)
-lcd.lcd_display_string( string_lenth(lcd_string2, 16),2) 
-time.sleep(1)
     
 GPIO.cleanup()
 logging.shutdown()
