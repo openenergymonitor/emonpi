@@ -94,6 +94,9 @@ git clone https://github.com/emoncms/wifi.git
 
 rm /var/www/emoncms/Modules/input/input_menu.php
 
+sudo mv /etc/wpa_supplicant/wpa_supplicant.conf /home/pi/data
+sudo ln -s /home/pi/data/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf
+
 echo "Add wifi commands from 'wifi' file to sudoers.d"
 if [ ! -f /etc/sudoers.d/wifi ]; then 
 	sudo mv /home/pi/emonpi/wifi /etc/sudoers.d/wifi
