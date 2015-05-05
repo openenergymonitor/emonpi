@@ -12,11 +12,13 @@
 # which will become useful soon
 
 # MYSQL INSTALL WITHOUT PASSWORD PROMPT
+echo "MYSQL INSTALL WITHOUT PASSWORD PROMPT"
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password raspberry'
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password raspberry'
 sudo apt-get -y install mysql-server
 
 # All other apt-get packages
+echo "Install required packages"
 sudo apt-get install -y apache2 mysql-client php5 libapache2-mod-php5 php5-mysql php5-curl php-pear php5-dev php5-mcrypt git-core redis-server build-essential ufw ntp python-serial python-configobj mosquitto mosquitto-clients python-pip python-dev screen sysstat minicom
 
 sed 's/\/var\/log\/apache2/\/var\/log/' /etc/apache2/envvars > /tmp/apache2envvars
@@ -24,30 +26,37 @@ sudo cp /tmp/apache2envvars /etc/apache2/envvars
 sudo service apache2 restart
 
 # Redis and log4php
+echo "Pear install Redis and log4php"
 sudo pecl install redis
 sudo pear channel-discover pear.apache.org/log4php
 sudo pear install log4php/Apache_log4php
 
 # Add pecl modules to php5 config
+echo "Add pecl modules to php5 config"
 sudo sh -c 'echo "extension=redis.so" > /etc/php5/apache2/conf.d/20-redis.ini'
 sudo sh -c 'echo "extension=redis.so" > /etc/php5/cli/conf.d/20-redis.ini'
 
 # MOD REWRITE
+echo "MOD REWRITE"
 sudo a2enmod rewrite
 
 # Change allow override
+echo "Change 'AllowOverride All' apache2 setting"
 sed '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/sites-enabled/000-default > /tmp/000-default
 sudo cp /tmp/000-default /etc/apache2/sites-enabled/000-default
 
 # Custom log
+echo "custom log"
 sed 's/CustomLog/# CustomLog/' /etc/apache2/sites-enabled/000-default > /tmp/000-default
 sudo cp /tmp/000-default /etc/apache2/sites-enabled/000-default
 
 # Custom log vhosts
+echo "custom log vhosts"
 sed 's/CustomLog/# CustomLog/' /etc/apache2/conf.d/other-vhosts-access-log > /tmp/other-vhosts-access-log
 sudo cp /tmp/other-vhosts-access-log /etc/apache2/conf.d/other-vhosts-access-log
 
 # Comment out save settings in redis
+echo "Comment out save settings in redis"
 sed 's/logfile \/var\/log\/redis\/redis-server.log/# logfile \/var\/log\/redis\/redis-server.log/' /etc/redis/redis.conf > /tmp/redis.conf
 sudo cp /tmp/redis.conf /etc/redis/redis.conf
 
@@ -59,20 +68,24 @@ sed 's/save 60 10000/# save 60 10000/' /etc/redis/redis.conf > /tmp/redis.conf
 sudo cp /tmp/redis.conf /etc/redis/redis.conf
 
 # MYSQL database
+echo "create emoncms MYSQL database"
 mysql -u root -e "create database emoncms" -praspberry
 
 # Create data repositories for emoncms feed engine's
+echo "Create data repositories for emoncms feed engine's"
 sudo mkdir /home/pi/data
 sudo mkdir /home/pi/data/phpfina
 sudo mkdir /home/pi/data/phptimeseries
 sudo chown www-data:root /home/pi/data/phpfina
 sudo chown www-data:root /home/pi/data/phptimeseries
 
+echo "git clone emoncms repo into /var/www/"
 sudo chown pi /var/www
 cd /var/www
 git clone -b low-write https://github.com/emoncms/emoncms.git
 cp /var/www/emoncms/default.settings.php /var/www/emoncms/settings.php
 
+echo "git clone emoncms modules repo into /var/www/Modules"
 cd /var/www/emoncms/Modules
 git clone https://github.com/emoncms/nodes.git
 git clone https://github.com/emoncms/app.git
@@ -81,24 +94,47 @@ git clone https://github.com/emoncms/wifi.git
 
 rm /var/www/emoncms/Modules/input/input_menu.php
 
+echo "Add wifi commands from 'wifi' file to sudoers.d"
 if [ ! -f /etc/sudoers.d/wifi ]; then 
 	sudo mv /home/pi/emonpi/wifi /etc/sudoers.d/wifi
 	sudo chown root:root /etc/sudoers.d/wifi
 	sudo chmod 0440
 fi
 
+echo "Add wifi-check script to /user/local/bin"
+sudo cp /home/pi/emonpi/wifi-check /usr/local/bin/wifi-check
+sudo chmod +x /usr/local/bin/wifi-check
 
+echo "Add wifi-check script to /user/local/bin"
+sudo cp /home/pi/emonpi/wifi-check /usr/local/bin/wifi-check
+sudo chmod +x /usr/local/bin/wifi-check
+
+echo "Install wifi-check script crontab entry"
+# Add crontab entry to run wifi check script ever 5min
+crontab -l > mycron #write out current crontab
+# Check crontab entry does not already exist, if not add new entry
+if ! grep -Fxq "*/5 * * * * /usr/local/bin/wifi-check > /tmp/wificheck.log 2>&1" mycron ; then
+        echo " */5 * * * * /usr/local/bin/wifi-check > /tmp/wificheck.log 2>&1" >> mycron  #echo new cron into cronfile
+        crontab mycron #install new cron file
+fi
+rm mycron
+
+
+
+echo "move emoncms.conf to RW partition home/pi/data"
 cd /home/pi
 > emoncms.conf
 sudo mv /home/pi/emoncms.conf /home/pi/data/emoncms.conf
 sudo chown pi:www-data /home/pi/data/emoncms.conf
 sudo chmod 664 /home/pi/data/emoncms.conf
 
+echo "install emoncms feedwriter script to run at boot in /etc/init.d"
 sudo cp /var/www/emoncms/run/feedwriter /etc/init.d/
 sudo chmod 755 /etc/init.d/feedwriter
 sudo update-rc.d feedwriter defaults
 
 sudo rm /var/www/index.html
+echo "set emoncms folder http redirect"
 echo "<?php header('Location: ../emoncms'); ?>" > /var/www/index.php
 
 echo "Installing Emonhub"
@@ -134,5 +170,8 @@ sudo service emoncms-nodes-service start
 #sudo rpi-serial-console disable
 #rpi-serial-console status
 
+echo "restart redis"
 sudo service redis-server restart
+echo "restart apache2"
 sudo service apache2 restart
+echo "Emoncms install script done!"
