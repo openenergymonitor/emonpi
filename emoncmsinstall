@@ -105,10 +105,6 @@ echo "Add wifi-check script to /user/local/bin"
 sudo cp /home/pi/emonpi/wifi-check /usr/local/bin/wifi-check
 sudo chmod +x /usr/local/bin/wifi-check
 
-echo "Add wifi-check script to /user/local/bin"
-sudo cp /home/pi/emonpi/wifi-check /usr/local/bin/wifi-check
-sudo chmod +x /usr/local/bin/wifi-check
-
 echo "Install wifi-check script crontab entry"
 # Add crontab entry to run wifi check script ever 5min
 crontab -l > mycron #write out current crontab
