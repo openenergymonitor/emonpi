@@ -18,7 +18,7 @@ import paho.mqtt.client as mqtt
 # 0: always on
 # 300: off after 3 min
 # ------------------------------------------------------------------------------------
-backlight_timeout=300
+backlight_timeout=5
 
 page = 0
 
