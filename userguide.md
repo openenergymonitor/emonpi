@@ -59,8 +59,8 @@ Near the top of emonhub.conf there is a section labeled RFM2Pi, The first part o
             com_port = /dev/ttyAMA0
             com_baud = 38400
         [[[runtimesettings]]]
-            pub_channels = ToEmonCMS,
-            sub_channels = ToRFM12,
+            pubchannels = ToEmonCMS,
+            subchannels = ToRFM12,
             
             # datacode = B #(default:h)
             # scale = 100 #(default:1)
@@ -79,8 +79,8 @@ To send data to emoncms.org or other remote server add the following lines in th
         Type = EmonHubEmoncmsHTTPInterfacer
         [[[init_settings]]]
         [[[runtimesettings]]]
-            pub_channels = ToRFM12,
-            sub_channels = ToEmonCMS,
+            pubchannels = ToRFM12,
+            subchannels = ToEmonCMS,
             url = http://emoncms.org
             apikey = YOUR EMONCMS WRITE APIKEY
             senddata = 1
