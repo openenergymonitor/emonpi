@@ -153,6 +153,6 @@ Add wifi check script to run every minute to check wifi is connected.
     sudo chmod +x /usr/local/bin/wifi-check
     sudo crontab -e
   
-add:
+add to crontab to run every 5 min:
 
-    * * * * * /usr/local/bin/wifi-check > /tmp/wificheck.log 2>&1
+    */5 * * * * /usr/local/bin/wifi-check > /tmp/wificheck.log 2>&1
