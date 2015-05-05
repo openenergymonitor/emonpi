@@ -16,11 +16,18 @@ import paho.mqtt.client as mqtt
 # ------------------------------------------------------------------------------------
 # LCD backlight timeout in seconds
 # 0: always on
-# 300: off after 3 min
+# 300: off after 5 min
 # ------------------------------------------------------------------------------------
-backlight_timeout=5
+backlight_timeout = 300
 
+# ------------------------------------------------------------------------------------
+# emonPi Node ID (default 5)
+# ------------------------------------------------------------------------------------
+emonPi_nodeID = 5
+
+# Default Startup Page
 page = 0
+max_number_pages = 3
 
 # ------------------------------------------------------------------------------------
 # Start Logging
@@ -39,7 +46,7 @@ else:
     loghandler = logging.handlers.RotatingFileHandler("/var/log/emonPiLCD",'a', 5000 * 1024, 1)
 
 loghandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
-logger = logging.getLogger("EmonPiLCD")
+logger = logging.getLogger("emonPiLCD")
 logger.addHandler(loghandler)    
 logger.setLevel(logging.INFO)
 
@@ -223,7 +230,7 @@ def on_disconnect(client, userdata, rc):
 def on_message(client, userdata, msg):
     topic_parts = msg.topic.split("/")
     logger.info("MQTT RX: "+msg.topic+" "+msg.payload)
-    if topic_parts[2]=="15":
+    if int(topic_parts[2])==emonPi_nodeID:
         basedata = msg.payload.split(",")
         r.set("basedata",msg.payload)
 
@@ -263,8 +270,7 @@ mqttc.on_disconnect = on_disconnect
 mqttc.on_message = on_message
 
 last1s = time.time() - 1.0
-lastpagechange = time.time()
-autopagechange = True
+buttonPress_time = time.time()
 
 while 1:
 
@@ -280,29 +286,23 @@ while 1:
             time.sleep(1.0)
     
     mqttc.loop(0)
-    
-    # lcd.backlight(0)
-    
+
     if buttoninput.pressed:
-        if autopagechange:
-            autopagechange = False
-            lcd_string1 = "AUTO PAGE CHANGE"
-            lcd_string2 = "OFF"
-            updatelcd()
-            time.sleep(2.0)
-        else:
-            page = page + 1
-            if page>4: page = 0
+        if backlight == True: page = page + 1
+        if page>max_number_pages: page = 0
+        buttonPress_time = time.time()
+
+        #turn backight off afer x seconds 
+    if (now - buttonPress_time) > backlight_timeout: 
+        backlight = False
+        lcd.backlight(0)    
+    else: backlight = True
     
-    if autopagechange and (now-lastpagechange)>10:
-        page = page + 1
-        if page>3: page = 0
-        lastpagechange = now
     
     # ----------------------------------------------------------
     # UPDATE EVERY 1's
     # ----------------------------------------------------------
-    if (now-last1s)>=1.0 or buttoninput.pressed:
+    if ((now-last1s)>=1.0 and backlight) or buttoninput.pressed:
         last1s = now
 
         if page==0:  
@@ -337,17 +337,14 @@ while 1:
             else:
                 lcd_string1 = 'Power 1: ...'
                 lcd_string2 = 'Power 2: ...'
-                
-        elif page==4:
-            autopagechange = True
-            lcd_string1 = "AUTO PAGE CHANGE"
-            lcd_string2 =  "ON"
         
         logger.info("main lcd_string1: "+lcd_string1)
         logger.info("main lcd_string2: "+lcd_string2)
         
+        # If Shutdown button is not pressed update LCD
         if (GPIO.input(11) == 0):
             updatelcd()
+        # If Shutdown button is pressed initiate shutdown sequence 
         else:
             logger.info("shutdown button pressed")
             shutdown()
