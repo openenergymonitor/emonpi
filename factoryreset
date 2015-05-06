@@ -16,7 +16,7 @@ sudo chown pi:www-data /home/pi/data/emoncms.conf
 sudo chmod 664 /home/pi/data/emoncms.conf
 
 echo "emonhub.conf reset"
-sudo cp /home/pi/hub/conf/emonhub.conf /home/pi/data/emonhub.conf
+sudo cp /home/pi/emonhub/conf/emonhub.conf /home/pi/data/emonhub.conf
 sudo chown pi:www-data /home/pi/data/emonhub.conf
 sudo chmod 664 /home/pi/data/emonhub.conf
 
