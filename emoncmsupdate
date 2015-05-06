@@ -19,6 +19,9 @@ git pull origin master
 cd /var/www/emoncms/Modules/wifi
 git pull origin master
 
+cd /home/pi/emonhub
+git pull origin emon-pi
+
 sudo service emonhub restart
 sudo service emoncms-nodes-service restart
 sudo service feedwriter restart
