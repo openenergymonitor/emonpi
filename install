@@ -46,5 +46,20 @@ sudo sh -c "echo ' ' >> /etc/fstab"
 sudo mv /etc/mtab /etc/mtab.orig
 sudo ln -s /proc/self/mounts /etc/mtab
 
+echo "move /etc/resolv.conf to RW data partition to allow updating of DNS nameservers"
 
+# create sim link of resolv.conf and resolv.conf.dhclient-new in RW /data to /etc
+cp /etc/resolv.conf /home/pi/data/
+sudo rm /etc/resolv.conf 
+sudo ln -s /home/pi/data/resolv.conf /etc/resolv.conf
+
+# Create resolv.conf.dhclient-new file and symlink to /etc
+touch /home/pi/data/resolv.conf.dhclient-new
+sudo ln -s /home/pi/data/resolv.conf.dhclient-new /etc/resolv.conf.dhclient-new
+
+# make backup of  dhclient-script
+sudo cp /sbin/dhclient-script /sbin/dhclient-script_original
+
+# copy modified dhclient-script
+sudo cp /home/pi/emonpi/dhclient-script /sbin/dhclient-script
 
