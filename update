@@ -4,6 +4,8 @@ if [ ! -f /tmp/emonpiupdate ]; then
     exit
 fi
 
+rpi-rw
+
 cd /home/pi/emonpi
 git pull
 
@@ -11,3 +13,5 @@ git pull
 /home/pi/emonpi/emoncmsupdate
 
 sudo rm /tmp/emonpiupdate
+
+rpi-ro
