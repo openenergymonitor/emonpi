@@ -4,6 +4,10 @@ if [ ! -f /tmp/emonpiupdate ]; then
     exit
 fi
 
+cd /home/pi/emonpi
+git pull
+
+/home/pi/emonpi/emonpiupdate
 /home/pi/emonpi/emoncmsupdate
 
 sudo rm /tmp/emonpiupdate
