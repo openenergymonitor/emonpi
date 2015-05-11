@@ -31,6 +31,8 @@ sudo service emonhub restart
 sudo service emoncms-nodes-service restart
 sudo service feedwriter restart
 
+sudo service emonPiLCD restart
+
 echo
 echo "Emoncms update finished"
 echo "================================="
