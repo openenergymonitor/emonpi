@@ -1,7 +1,12 @@
 #!/bin/bash
 
 echo
-echo "Emoncms updater"
+echo "================================="
+echo "Emoncms update started"
+echo 
+
+date
+
 echo
 
 cd /var/www/emoncms
@@ -25,3 +30,8 @@ git pull origin emon-pi
 sudo service emonhub restart
 sudo service emoncms-nodes-service restart
 sudo service feedwriter restart
+
+echo
+echo "Emoncms update finished"
+echo "================================="
+echo
