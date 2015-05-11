@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ ! -f /tmp/emonpiupdate ]; then
+    exit
+fi
+
+/home/pi/emonpi/emoncmsupdate
+
+sudo rm /tmp/emonpiupdate
