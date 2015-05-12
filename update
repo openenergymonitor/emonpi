@@ -1,5 +1,12 @@
 #!/bin/bash
 
+LOCK=/tmp/updatelock
+if [ -f $LOCK ]; then
+  echo Job is already running\!
+  exit 6
+fi
+touch $LOCK
+
 if [ ! -f /tmp/emonpiupdate ]; then
     exit
 fi
@@ -15,3 +22,5 @@ git pull
 sudo rm /tmp/emonpiupdate
 
 rpi-ro
+
+rm $LOCK
