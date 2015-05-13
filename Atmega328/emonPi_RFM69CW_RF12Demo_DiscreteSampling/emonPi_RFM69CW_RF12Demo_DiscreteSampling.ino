@@ -55,7 +55,7 @@ EnergyMonitor ct1, ct2;
 #include <LiquidCrystal_I2C.h>                                        // https://github.com/openenergymonitor/LiquidCrystal_I2C1602V1
 LiquidCrystal_I2C lcd(0x27,16,2);                                     // LCD I2C address to 0x27, 16x2 line display
 
-const byte firmware_version = 11;                                    //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
+const byte firmware_version = 12;                                    //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
 boolean debug =                   TRUE; 
@@ -70,7 +70,7 @@ const int TIME_BETWEEN_READINGS=  5000;                             // Time betw
 
 const float Ical1=                90.9;                             // (2000 turns / 22 Ohm burden) = 90.9
 const float Ical2=                90.9;                                 
-float Vcal_EU=                    268.97;                             // (230V x 13) / (9V x 1.2) = 276.9 Calibration for UK AC-AC adapter 77DB-06-09 
+float Vcal_EU=                    265.42;                             // (230V x 13) / (9V x 1.2) = 276.9 Calibration for UK AC-AC adapter 77DB-06-09 
 //const float Vcal=               260;                                // Calibration for EU AC-AC adapter 77DE-06-09 
 const float Vcal_USA=             130.0;                              // Calibration for US AC-AC adapter 77DA-10-09
 boolean USA=                      FALSE; 
@@ -174,8 +174,8 @@ void setup()
   if (RF_STATUS==1) RF_Setup(); 
   byte numSensors =  check_for_DS18B20();                               // check for presence of DS18B20 and return number of sensors 
   emonPi_LCD_Startup(); 
+  delay(1500);  
   CT_Detect();
-  delay(2000);                                                          // Startup emonPi LCD and print startup notice
   serial_print_startup();
 
   if (DS18B20_STATUS==0) attachInterrupt(emonPi_int1, onPulse, FALLING);  // Attach pulse counting interrupt on RJ45 (Dig 3 / INT 1) only if no temperature sensors are detected as they use the same port and can conflict
