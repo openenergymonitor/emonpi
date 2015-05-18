@@ -10,15 +10,6 @@ emonPi - Raspberry Pi Energy Monitoring Unit
 
 [Setup Guide](http://openenergymonitor.org/emon/modules/emonpi)
 
-**Secure your emonpi SSH user password**
-
-After login in via SSH, run:
-
-    passwd
-
-enter current password (raspberry) and replace with new password of your choice.
-
-
 
 ## Technical:
 
