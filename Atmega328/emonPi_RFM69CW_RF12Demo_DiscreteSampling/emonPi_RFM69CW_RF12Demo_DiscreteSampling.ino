@@ -31,8 +31,7 @@
 
 
 Change Log:
-V1.0 First release 
-V1.1 Add sample from both CT's as default and set 110V VRMS for apparent power when US calibration is set e.g '2p'
+https://github.com/openenergymonitor/emonpi/blob/master/Atmega328/emonPi_RFM69CW_RF12Demo_DiscreteSampling/compiled/CHANGE%20LOG.md
 
 
 */
