@@ -54,7 +54,7 @@ EnergyMonitor ct1, ct2;
 #include <LiquidCrystal_I2C.h>                                        // https://github.com/openenergymonitor/LiquidCrystal_I2C1602V1
 LiquidCrystal_I2C lcd(0x27,16,2);                                     // LCD I2C address to 0x27, 16x2 line display
 
-const byte firmware_version = 12;                                    //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
+const byte firmware_version = 13;                                    //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
 boolean debug =                   TRUE; 
@@ -121,6 +121,7 @@ int temp[MaxOnewire];
 } PayloadTX;                                                    // create JeeLabs RF packet structure - a neat way of packaging data for RF comms
 PayloadTX emonPi; 
 
+static int intRFtime = 600000;                                  // Call rf12_initialize every 10min to restore RF http://openenergymonitor.org/emon/node/5549
 //-------------------------------------------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -132,12 +133,14 @@ byte CT_count, Vrms;
 unsigned long last_sample=0;                                     // Record millis time of last discrete sample
 byte flag;                                                       // flag to record shutdown push button press
 volatile byte pulseCount = 0;
+unsigned long now =0;
 
 // RF Global Variables 
 static byte stack[RF12_MAXDATA+4], top, sendLen, dest;           // RF variables 
 static char cmd;
 static word value;                                               // Used to store serial input
 long unsigned int start_press=0;                                 // Record time emonPi shutdown push switch is pressed
+unsigned long lastRFInit = 0;                                    // Record time last RF with initialized
 
 const char helpText1[] PROGMEM =                                 // Available Serial Commands 
 "\n"
@@ -199,6 +202,7 @@ void setup()
 //-------------------------------------------------------------------------------------------------------------------------------------------
 void loop()
 {
+  now = millis();
  
   if (USA==TRUE) 
   {
@@ -231,7 +235,7 @@ void loop()
   }
 
  
-  if ((millis() - last_sample) > TIME_BETWEEN_READINGS)
+  if ((now - last_sample) > TIME_BETWEEN_READINGS)
   {
     single_LED_flash();                                                            // single flash of LED on local CT sample
     
@@ -284,7 +288,7 @@ void loop()
     */
     send_emonpi_serial();                                             //Send emonPi data to Pi serial using struct packet structure
     
-    last_sample = millis();                                           //Record time of sample  
+    last_sample = now;                                           //Record time of sample  
     
     } // end sample
     
