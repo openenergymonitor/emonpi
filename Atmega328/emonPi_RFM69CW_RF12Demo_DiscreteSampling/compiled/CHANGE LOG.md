@@ -20,4 +20,5 @@ Make firmware version return command 'v' return firmware version and RFM setting
 https://github.com/openenergymonitor/emonpi/commit/fa4474571cffa45d03483ce9da32f021dd2df91a
 
 # V1.5 (27/05/15)
-Change pulse count to be stored as unsigned long datatype and move the end of struct to avoid problems if older decoder is used with this new firmware. Add new variable power 1 + power 2 as third item in the struc
+Change pulse count to be stored as unsigned long datatype and move the end of struct to avoid problems if older decoder is used with this new firmware. Add new variable power 1 + power 2 as third item in the struct. This will be useful for US installs and Solar PV type 2 installations to provide a feed for consumption (solar PV + grid import / export)
+https://github.com/openenergymonitor/emonpi/commit/c427cd2bdfce7b3c535388d1ee53cc45183edf9c
