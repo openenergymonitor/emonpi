@@ -14,3 +14,6 @@ https://github.com/openenergymonitor/emonpi/commit/41987f1e21b3687b8b0ac6b9f5f51
 # V1.3 (21/05/15)
 1.3 firmware dev, add RF init ever 10min to keep RF alive
 https://github.com/openenergymonitor/emonpi/commit/96b59c38c045a44e6dea3c1a5e048d038380e88a
+
+# V1.4 (27/05/15)
+Make firmware version return command 'v' return firmware version and RFM setting all on one line
