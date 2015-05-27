@@ -17,3 +17,4 @@ https://github.com/openenergymonitor/emonpi/commit/96b59c38c045a44e6dea3c1a5e048
 
 # V1.4 (27/05/15)
 Make firmware version return command 'v' return firmware version and RFM setting all on one line
+https://github.com/openenergymonitor/emonpi/commit/fa4474571cffa45d03483ce9da32f021dd2df91a
