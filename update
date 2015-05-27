@@ -13,6 +13,8 @@ touch $LOCK
 
 rpi-rw
 
+cat /dev/null >  /var/log/emonpiupdate.log 
+
 cd /home/pi/emonpi
 git checkout master
 git pull origin master
