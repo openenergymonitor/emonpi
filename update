@@ -14,7 +14,8 @@ touch $LOCK
 rpi-rw
 
 cd /home/pi/emonpi
-git pull
+git checkout master
+git pull origin master
 
 /home/pi/emonpi/emonpiupdate
 /home/pi/emonpi/emoncmsupdate
