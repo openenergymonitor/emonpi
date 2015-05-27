@@ -54,7 +54,7 @@ EnergyMonitor ct1, ct2;
 #include <LiquidCrystal_I2C.h>                                        // https://github.com/openenergymonitor/LiquidCrystal_I2C1602V1
 LiquidCrystal_I2C lcd(0x27,16,2);                                     // LCD I2C address to 0x27, 16x2 line display
 
-const byte firmware_version = 14;                                    //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
+const byte firmware_version = 15;                                    //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
 boolean debug =                   TRUE; 
@@ -115,9 +115,10 @@ int networkGroup = 210;
 typedef struct { 
 int power1;
 int power2;
-int pulseCount;                                               
+int power1_plus_2;                                                    
 int Vrms; 
 int temp[MaxOnewire]; 
+unsigned long pulseCount;  
 } PayloadTX;                                                    // create JeeLabs RF packet structure - a neat way of packaging data for RF comms
 PayloadTX emonPi; 
 
@@ -262,6 +263,9 @@ void loop()
      emonPi.power2 = ct2.calcIrms(no_of_samples)*Vrms;                               // Calculate Apparent Power 1  1480 is  number of samples
      emonPi.Vrms=Vrms*100;
    }
+
+
+   emonPi.power1_plus_2=emonPi.power1 + emonPi.power2;                            //Create power 1 plus power 2 variable for US and solar PV installs
 
   //if (debug==1) {Serial.print(emonPi.power1); Serial.print(" ");delay(5);}   
    // if (debug==1) {Serial.print(emonPi.power2); Serial.print(" ");delay(5);}  
