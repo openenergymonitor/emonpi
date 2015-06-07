@@ -309,7 +309,7 @@ while 1:
         if page==0:  
             if int(r.get("eth:active")):
                 lcd_string1 = "Ethernet: YES"
-                lcd_string2 = "IP:"+r.get("eth:ip")
+                lcd_string2 = r.get("eth:ip")
             else:
             	if int(r.get("wlan:active")): 
             		page=page+1
@@ -320,7 +320,7 @@ while 1:
         elif page==1:
             if int(r.get("wlan:active")):
                 lcd_string1 = "WIFI: YES  "+str(r.get("wlan:signallevel"))+"%"
-                lcd_string2 = "IP:"+ r.get("wlan:ip")
+                lcd_string2 = r.get("wlan:ip")
             else:
                 lcd_string1 = "WIFI:"
                 lcd_string2 = "NOT CONNECTED"
