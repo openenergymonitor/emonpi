@@ -1,6 +1,5 @@
 void RF_Setup(){
 	//--------------------------------------------------Initalize RF and send out RF test packets--------------------------------------------------------------------------------------------  
-  //NEED TO ADD RF MODULE AUTO DETECTION 
   delay(10);
   rf12_initialize(nodeID, RF_freq, networkGroup);                          // initialize RFM12B/rfm69CW
    for (int i=10; i>=0; i--)                                                                  //Send RF test sequence (for factory testing)
