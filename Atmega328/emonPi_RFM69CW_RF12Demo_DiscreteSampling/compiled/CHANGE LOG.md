@@ -1,8 +1,8 @@
 # Change Log
 
 # V1.6 (12/06/15)
-  * Fix interrupt pulse debouce issue by limiting min pulse width to 50ms (default for LED pulse output meters 
-  * Compile with latest JeeLib with fix for RF hang, remove RF reset added in V1.3
+  * Fix interrupt pulse debouce issue by limiting pulse width to 52ms min (50ms is default for LED pulse output meters) 
+  * Compile with latest JeeLib with fix for RF hang, remove RF reset added in V1.3 (bf179057ee1abc2cfa2965b454421203ac52c6c3)
   * Enable simultaneous pulse counting and temperature monitoring on single RJ45 using breakout
 
 # V1.5 (27/05/15)
