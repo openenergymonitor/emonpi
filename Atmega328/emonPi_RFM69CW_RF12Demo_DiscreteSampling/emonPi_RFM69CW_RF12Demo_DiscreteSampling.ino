@@ -54,7 +54,7 @@ EnergyMonitor ct1, ct2;
 #include <LiquidCrystal_I2C.h>                                        // https://github.com/openenergymonitor/LiquidCrystal_I2C1602V1
 LiquidCrystal_I2C lcd(0x27,16,2);                                     // LCD I2C address to 0x27, 16x2 line display
 
-const byte firmware_version = 16;                                    //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
+const byte firmware_version = 17;                                    //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
 boolean debug =                   TRUE; 
@@ -216,6 +216,10 @@ void loop()
     Vcal = Vcal_EU;
     Vrms = Vrms_EU;
   }
+  
+  // Update Vcal
+  ct1.voltage(0, Vcal, phase_shift);                       // ADC pin, Calibration, phase_shift
+  ct2.voltage(0, Vcal, phase_shift);                       // ADC pin, Calibration, phase_shift
 
   if (digitalRead(shutdown_switch_pin) == 0 ) 
     digitalWrite(emonpi_GPIO_pin, HIGH);                                          // if emonPi shutdown butten pressed then send signal to the Pi on GPIO 11
