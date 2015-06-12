@@ -54,7 +54,7 @@ EnergyMonitor ct1, ct2;
 #include <LiquidCrystal_I2C.h>                                        // https://github.com/openenergymonitor/LiquidCrystal_I2C1602V1
 LiquidCrystal_I2C lcd(0x27,16,2);                                     // LCD I2C address to 0x27, 16x2 line display
 
-const byte firmware_version = 15;                                    //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
+const byte firmware_version = 16;                                    //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
 boolean debug =                   TRUE; 
@@ -73,7 +73,7 @@ float Vcal_EU=                    265.42;                             // (230V x
 //const float Vcal=               260;                                // Calibration for EU AC-AC adapter 77DE-06-09 
 const float Vcal_USA=             130.0;                              // Calibration for US AC-AC adapter 77DA-10-09
 boolean USA=                      FALSE; 
-
+const byte min_pulsewidth= 52;                                // minimum width of interrupt pulse (default pulse output meters = 50ms)
 
 const float phase_shift=          1.7;
 const int no_of_samples=          1480; 
@@ -132,9 +132,10 @@ double Vcal, vrms;
 boolean CT1, CT2, ACAC, DS18B20_STATUS;
 byte CT_count, Vrms;                                             
 unsigned long last_sample=0;                                     // Record millis time of last discrete sample
-byte flag;                                                       // flag to record shutdown push button press
+byte flag;                                                                         // flag to record shutdown push button press
 volatile byte pulseCount = 0;
 unsigned long now =0;
+unsigned long pulsetime=0;                                      // Record time of interrupt pulse          
 
 // RF Global Variables 
 static byte stack[RF12_MAXDATA+4], top, sendLen, dest;           // RF variables 
@@ -181,7 +182,7 @@ void setup()
   CT_Detect();
   serial_print_startup();
 
-  if (DS18B20_STATUS==0) attachInterrupt(emonPi_int1, onPulse, FALLING);  // Attach pulse counting interrupt on RJ45 (Dig 3 / INT 1) only if no temperature sensors are detected as they use the same port and can conflict
+  attachInterrupt(emonPi_int1, onPulse, FALLING);  // Attach pulse counting interrupt on RJ45 (Dig 3 / INT 1) 
   emonPi.pulseCount = 0;                                                  // Reset Pulse Count 
    
   
@@ -267,7 +268,7 @@ void loop()
 
    emonPi.power1_plus_2=emonPi.power1 + emonPi.power2;                            //Create power 1 plus power 2 variable for US and solar PV installs
 
-  //if (debug==1) {Serial.print(emonPi.power1); Serial.print(" ");delay(5);}   
+  //Serial.print(emonPi.pulseCount); Serial.print(" ");delay(5);
    // if (debug==1) {Serial.print(emonPi.power2); Serial.print(" ");delay(5);}  
     
 

@@ -1,5 +1,10 @@
 # Change Log
 
+# V1.6 (12/06/15)
+  * Fix interrupt pulse debouce issue by limiting min pulse width to 50ms (default for LED pulse output meters 
+  * Compile with latest JeeLib with fix for RF hang, remove RF reset added in V1.3
+  * Enable simultaneous pulse counting and temperature monitoring on single RJ45 using breakout
+
 # V1.5 (27/05/15)
   * Change pulse count to be stored as unsigned long datatype
   * Add new variable power 1 + power 2 as third item in the node struct. This will be useful for US installs and Solar PV type 2 installations to provide a feed for consumption (solar PV + grid import / export)
