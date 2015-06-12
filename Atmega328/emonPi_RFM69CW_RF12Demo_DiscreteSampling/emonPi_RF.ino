@@ -16,12 +16,6 @@ void RF_Setup(){
 
 boolean RF_Rx_Handle(){
   
-        if ((now-lastRFInit)>intRFtime)
-          {
-            lastRFInit = now;
-            rf12_initialize(nodeID, RF_freq, networkGroup);
-          }
-
 	if (rf12_recvDone()) {						//if RF Packet is received 
 	    byte n = rf12_len;
 	    if (rf12_crc == 0)							//Check packet is good

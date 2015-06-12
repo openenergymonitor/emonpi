@@ -142,7 +142,6 @@ static byte stack[RF12_MAXDATA+4], top, sendLen, dest;           // RF variables
 static char cmd;
 static word value;                                               // Used to store serial input
 long unsigned int start_press=0;                                 // Record time emonPi shutdown push switch is pressed
-unsigned long lastRFInit = 0;                                    // Record time last RF with initialized
 
 const char helpText1[] PROGMEM =                                 // Available Serial Commands 
 "\n"
