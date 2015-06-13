@@ -73,7 +73,7 @@ float Vcal_EU=                    265.42;                             // (230V x
 //const float Vcal=               260;                                // Calibration for EU AC-AC adapter 77DE-06-09 
 const float Vcal_USA=             130.0;                              // Calibration for US AC-AC adapter 77DA-10-09
 boolean USA=                      FALSE; 
-const byte min_pulsewidth= 52;                                // minimum width of interrupt pulse (default pulse output meters = 50ms)
+const byte min_pulsewidth= 110;                              // minimum width of interrupt pulse (default pulse output meters = 100ms)
 
 const float phase_shift=          1.7;
 const int no_of_samples=          1480; 
