@@ -191,8 +191,9 @@ def shutdown():
         lcd.lcd_display_string( string_lenth(lcd_string2, 16),2) 
         time.sleep(2)
         lcd.lcd_clear()
-        lcd.lcd_display_string( string_lenth("Power", 16),1)
-        lcd.lcd_display_string( string_lenth("Off", 16),2)
+        lcd.lcd_display_string( string_lenth("Wait 30s...", 16),1)
+        lcd.lcd_display_string( string_lenth("Before Unplug!", 16),2)
+        time.sleep(4)
         lcd.backlight(0) 											# backlight zero must be the last call to the LCD to keep the backlight off 
         call('halt', shell=False)
         sys.exit() #end script 
