@@ -48,7 +48,7 @@ The topic emonhub/tx/nodeid is used to send data from emoncms or other applicati
 
 ### emonPi LCD
 
-The emonOPi LCD script subscribes to the emonhub/rx/# topics directly in order to print the power values to the emonPi LCD display.
+The emonPi LCD script subscribes to the emonhub/rx/# topics directly in order to print the power values to the emonPi LCD display.
 
 ### Low-write-v8.5 emoncms on the emonpi
 
