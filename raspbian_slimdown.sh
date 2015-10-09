@@ -38,8 +38,5 @@ wolfram-engine
 
 # Remove packages
 for i in $pkgs; do
-	echo apt-get -y remove --purge $i
+	echo apt-get -y remove $i
 done
-
-# Remove automatically installed dependency packages
-echo apt-get -y autoremove
