@@ -4,8 +4,8 @@ The emonPi shield is an ATmega328 (with Arduino Uno serial bootloader) based ene
 
 On the Raspberry Pi the serial port that connects to the emonpi shield is read by emonhub, from emonhub's perspective the emonpi shield appears as any other wireless node. Node data read from the serial port looks like this:
 
-    OK 10 0 100 0 200 0 100          (emontx data received via rfm69 transceiver)
-    OK 15 0 1 0 2 0 3                (emonpi shield data generated on the shield)
+    OK 10 0 100 0 200 0 100          (emonTx V3 data received via rfm69i transceiver)
+    OK 5 0 1 0 2 0 3                 (emonpi shield data generated on the shield)
 
 The source of the data is distinguished by the node ID, which is the first number after the OK. Every number after the OK and the nodeid is a byte value 0 - 256.
 
