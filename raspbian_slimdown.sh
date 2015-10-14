@@ -1,7 +1,8 @@
 # Slim down Raspbian by removing GUI and education packages we don't use
 # based on http://blog.samat.org/2015/02/05/slimming-an-existing-raspbian-install/
+# frees 137Mb
 
-# Run by:
+# Execute:
 # $ sh ./raspbian_slimdown.sh | sudo sh
 
 # GUI-related packages
