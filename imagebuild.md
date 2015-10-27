@@ -46,28 +46,6 @@ Steps for creating 3rd partition for data using fdisk and mkfs:
     
 **Note:** *We create here an ext2 filesystem with a blocksize of 1024 bytes instead of the default 4096 bytes. A lower block size results in significant write load reduction when using an application like emoncms that only makes small but frequent and across many files updates to disk. Ext2 is choosen because it supports multiple linux user ownership options which are needed for the mysql data folder. Ext2 is non-journaling which reduces the write load a little although it may make data recovery harder vs Ext4, The data disk size is small however and the downtime from running fsck is perhaps less critical.*
     
-Now that your loged in to your pi, the first step is to edit the _inittab_ and _boot cmdline config_ file to allow the python gateway which we will install next to use the serial port, type:
-
-    sudo nano /etc/inittab
-
-At the bottom of the file comment out the line, by adding a ‘#’ at beginning:
-
-    # T0:23:respawn:/sbin/getty -L ttyAMA0 115200 vt100
-
-[Ctrl+X] then [y] then [Enter] to save and exit
-
-Edit boot cmdline.txt
-
-    sudo nano /boot/cmdline.txt
-
-replace the line:
-
-    dwc_otg.lpm_enable=0 console=ttyAMA0,115200 kgdboc=ttyAMA0,115200 console=tty1 
-    root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline rootwait
-
-with:
-
-    dwc_otg.lpm_enable=0 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline rootwait
     
 Create a directory that will be a mount point for the rw data partition
 
