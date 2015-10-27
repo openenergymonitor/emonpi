@@ -45,20 +45,21 @@ sudo ln -s /home/pi/data/resolv.conf.dhclient-new /etc/resolv.conf.dhclient-new
 # make backup of  dhclient-script
 sudo cp /sbin/dhclient-script /sbin/dhclient-script_original
 
-echo "Move log directory to temporary partition"
-sudo cp /etc/default/rcS /etc/default/rcS.orig
-sudo sh -c "echo 'RAMTMP=yes' >> /etc/default/rcS"
+# Best do these steps manually: https://github.com/openenergymonitor/emonpi/blob/master/imagebuild.md
+#echo "Move log directory to temporary partition"
+#sudo cp /etc/default/rcS /etc/default/rcS.orig
+#sudo sh -c "echo 'RAMTMP=yes' >> /etc/default/rcS"
 
-echo "setup /etc/fstab to make file system read-only be default"
-sudo mv /etc/fstab /etc/fstab.orig
-sudo sh -c "echo 'tmpfs           /tmp            tmpfs   nodev,nosuid,size=30M,mode=1777       0    0' >> /etc/fstab"
-sudo sh -c "echo 'tmpfs           /var/log        tmpfs   nodev,nosuid,size=30M,mode=1777       0    0' >> /etc/fstab"
-sudo sh -c "echo 'proc            /proc           proc    defaults                              0    0' >> /etc/fstab"
-sudo sh -c "echo '/dev/mmcblk0p1  /boot           vfat    defaults                              0    2' >> /etc/fstab"
-sudo sh -c "echo '/dev/mmcblk0p2  /               ext4    defaults,noatime                      0    1' >> /etc/fstab"
-sudo sh -c "echo ' ' >> /etc/fstab"
-sudo mv /etc/mtab /etc/mtab.orig
-sudo ln -s /proc/self/mounts /etc/mtab
+#echo "setup /etc/fstab to make file system read-only be default"
+#sudo mv /etc/fstab /etc/fstab.orig
+#sudo sh -c "echo 'tmpfs           /tmp            tmpfs   nodev,nosuid,size=30M,mode=1777       0    0' >> /etc/fstab"
+#sudo sh -c "echo 'tmpfs           /var/log        tmpfs   nodev,nosuid,size=30M,mode=1777       0    0' >> /etc/fstab"
+#sudo sh -c "echo 'proc            /proc           proc    defaults                              0    0' >> /etc/fstab"
+#sudo sh -c "echo '/dev/mmcblk0p1  /boot           vfat    defaults                              0    2' >> /etc/fstab"
+#sudo sh -c "echo '/dev/mmcblk0p2  /               ext4    defaults,noatime                      0    1' >> /etc/fstab"
+#sudo sh -c "echo ' ' >> /etc/fstab"
+#sudo mv /etc/mtab /etc/mtab.orig
+#sudo ln -s /proc/self/mounts /etc/mtab
 
 # copy modified dhclient-script
 sudo cp /home/pi/emonpi/dhclient-script /sbin/dhclient-script
