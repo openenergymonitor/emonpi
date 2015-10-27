@@ -1,6 +1,6 @@
 #!/bin/bash
 
-
+# Emoncms V9 emonPi Install 
 
 # -----------------------------------------------------------------------------------------------
 # INSTALL APT-GET DEPENDENCIES
@@ -27,12 +27,14 @@ sudo service apache2 restart
 
 # Redis and log4php
 echo "Pear install Redis and log4php"
-sudo pecl install redis
-sudo pear channel-discover pear.apache.org/log4php
+sudo pear channel-discover pear.swiftmailer.org
+sudo pecl install channel://pecl.php.net/dio-0.0.6 redis swift/swift log4php
 sudo pear install log4php/Apache_log4php
 
 # Add pecl modules to php5 config
 echo "Add pecl modules to php5 config"
+sudo sh -c 'echo "extension=dio.so" > /etc/php5/apache2/conf.d/20-dio.ini'
+sudo sh -c 'echo "extension=dio.so" > /etc/php5/cli/conf.d/20-dio.ini'
 sudo sh -c 'echo "extension=redis.so" > /etc/php5/apache2/conf.d/20-redis.ini'
 sudo sh -c 'echo "extension=redis.so" > /etc/php5/cli/conf.d/20-redis.ini'
 
@@ -42,13 +44,13 @@ sudo a2enmod rewrite
 
 # Change allow override
 echo "Change 'AllowOverride All' apache2 setting"
-sed '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/sites-enabled/000-default > /tmp/000-default
-sudo cp /tmp/000-default /etc/apache2/sites-enabled/000-default
+sed '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf > /tmp/apache2.conf
+sudo cp /tmp/apache2.conf /etc/apache2/apache2.conf
 
 # Custom log
 echo "custom log"
-sed 's/CustomLog/# CustomLog/' /etc/apache2/sites-enabled/000-default > /tmp/000-default
-sudo cp /tmp/000-default /etc/apache2/sites-enabled/000-default
+sed 's/CustomLog/# CustomLog/' /etc/apache2/apache2.conf > /tmp/apache2.conf
+sudo cp /tmp/apache2.conf /etc/apache2/sites-enabled/apache2.conf
 
 # Custom log vhosts
 echo "custom log vhosts"
@@ -75,8 +77,10 @@ mysql -u root -e "create database emoncms" -praspberry
 echo "Create data repositories for emoncms feed engine's"
 sudo mkdir /home/pi/data
 sudo mkdir /home/pi/data/phpfina
+sudo mkdir /home/pi/data/phpfiwa
 sudo mkdir /home/pi/data/phptimeseries
 sudo chown www-data:root /home/pi/data/phpfina
+sudo chown www-data:root /home/pi/data/phpfiwa
 sudo chown www-data:root /home/pi/data/phptimeseries
 
 echo "git clone emoncms repo into /var/www/"
@@ -145,9 +149,9 @@ sudo rm /var/www/index.html
 echo "set emoncms folder http redirect"
 echo "<?php header('Location: ../emoncms'); ?>" > /var/www/index.php
 
-echo "Installing Emonhub"
-cd
-git clone https://github.com/openenergymonitor/emonhub.git && emonhub/install
+#echo "Installing Emonhub"
+#cd
+#git clone https://github.com/openenergymonitor/emonhub.git && emonhub/install
 sudo service emonhub stop
 sudo chown pi:www-data /home/pi/data/emonhub.conf
 sudo chmod 664 /home/pi/data/emonhub.conf
