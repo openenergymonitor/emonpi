@@ -13,11 +13,11 @@ touch $LOCK
 
 rpi-rw
 
-cat /dev/null >  /var/log/emonpiupdate.log 
+cat /dev/null >  /var/log/emonpiupdate.log
 
 cd /home/pi/emonpi
-git checkout master
-git pull origin master
+git checkout development #master
+git pull origin development #master
 
 /home/pi/emonpi/emonpiupdate
 /home/pi/emonpi/emoncmsupdate
