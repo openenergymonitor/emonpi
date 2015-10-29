@@ -10,8 +10,8 @@ sudo apt-get autoremove -y
 sudo apt-get clean
 
 echo "Set hostname to emonpi"
-sudo sed -i 's/raspberrypi/emonpi/' /etc/hosts
-sudo sed -i 's/raspberrypi/emonpi/' /etc/hostname
+sudo sed -i 's/beaglebone/emonpi/' /etc/hosts
+sudo sed -i 's/beaglebone/emonpi/' /etc/hostname
 
 
 echo "enable serial uploads with avrdue and autoreset & install minicom & enable use of serial port"
@@ -22,25 +22,25 @@ git clone https://github.com/openenergymonitor/avrdude-rpi.git ~/avrdude-rpi && 
 #sudo apt-get install python-pip -y
 #pip install ino
 
-echo "disable the raspi-config auto run"
-sudo rm /etc/profile.d/raspi-config.sh
+#echo "disable the raspi-config auto run"
+#sudo rm /etc/profile.d/raspi-config.sh
 
 # Only used when emonPi is used without LCD, run either LCD service or shutdwn service. LCD script also handles shutdown 
 # echo "install shutdown service"
 # sudo /home/pi/emonpi/shutdownpi/install
 
 echo "install LCD"
-sudo /home/pi/emonpi/lcd/install
+sudo /home/debian/emonpi/lcd/install
 
 echo "move /etc/resolv.conf to RW data partition to allow updating of DNS nameservers"
 # create sim link of resolv.conf and resolv.conf.dhclient-new in RW /data to /etc
-cp /etc/resolv.conf /home/pi/data/
+cp /etc/resolv.conf /home/debian/data/
 sudo rm /etc/resolv.conf 
-sudo ln -s /home/pi/data/resolv.conf /etc/resolv.conf
+sudo ln -s /home/debian/data/resolv.conf /etc/resolv.conf
 
 # Create resolv.conf.dhclient-new file and symlink to /etc
-touch /home/pi/data/resolv.conf.dhclient-new
-sudo ln -s /home/pi/data/resolv.conf.dhclient-new /etc/resolv.conf.dhclient-new
+touch /home/debian/data/resolv.conf.dhclient-new
+sudo ln -s /home/debian/data/resolv.conf.dhclient-new /etc/resolv.conf.dhclient-new
 
 # make backup of  dhclient-script
 sudo cp /sbin/dhclient-script /sbin/dhclient-script_original
@@ -62,5 +62,5 @@ sudo cp /sbin/dhclient-script /sbin/dhclient-script_original
 #sudo ln -s /proc/self/mounts /etc/mtab
 
 # copy modified dhclient-script
-sudo cp /home/pi/emonpi/dhclient-script /sbin/dhclient-script
+sudo cp /home/debian/emonpi/dhclient-script /sbin/dhclient-script
 
