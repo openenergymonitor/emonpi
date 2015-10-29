@@ -15,12 +15,12 @@ rpi-rw
 
 cat /dev/null >  /var/log/emonpiupdate.log 
 
-cd /home/pi/emonpi
+cd /home/debian/emonpi
 git checkout master
 git pull origin master
 
-/home/pi/emonpi/emonpiupdate
-/home/pi/emonpi/emoncmsupdate
+/home/debian/emonpi/emonpiupdate
+/home/debian/emonpi/emoncmsupdate
 
 sudo rm /tmp/emonpiupdate
 
