@@ -73,14 +73,14 @@ mysql -u root -e "create database emoncms" -praspberry
 
 # Create data repositories for emoncms feed engine's
 echo "Create data repositories for emoncms feed engine's"
-sudo mkdir /home/pi/data
-sudo mkdir /home/pi/data/phpfina
-sudo mkdir /home/pi/data/phptimeseries
-sudo chown www-data:root /home/pi/data/phpfina
-sudo chown www-data:root /home/pi/data/phptimeseries
+sudo mkdir /home/debian/data
+sudo mkdir /home/debian/data/phpfina
+sudo mkdir /home/debian/data/phptimeseries
+sudo chown www-data:root /home/debian/data/phpfina
+sudo chown www-data:root /home/debian/data/phptimeseries
 
 echo "git clone emoncms repo into /var/www/"
-sudo chown pi /var/www
+sudo chown debian /var/www
 cd /var/www
 git clone -b low-write https://github.com/emoncms/emoncms.git
 cp /var/www/emoncms/default.settings.php /var/www/emoncms/settings.php
@@ -94,18 +94,18 @@ git clone https://github.com/emoncms/wifi.git
 
 rm /var/www/emoncms/Modules/input/input_menu.php
 
-sudo mv /etc/wpa_supplicant/wpa_supplicant.conf /home/pi/data
-sudo ln -s /home/pi/data/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf
+sudo mv /etc/wpa_supplicant/wpa_supplicant.conf /home/debian/data
+sudo ln -s /home/debian/data/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf
 
 echo "Add wifi commands from 'wifi' file to sudoers.d"
 if [ ! -f /etc/sudoers.d/wifi ]; then 
-	sudo mv /home/pi/emonpi/wifi /etc/sudoers.d/wifi
+	sudo mv /home/debian/emonpi/wifi /etc/sudoers.d/wifi
 	sudo chown root:root /etc/sudoers.d/wifi
 	sudo chmod 0440
 fi
 
 echo "Add wifi-check script to /user/local/bin"
-sudo cp /home/pi/emonpi/wifi-check /usr/local/bin/wifi-check
+sudo cp /home/debian/emonpi/wifi-check /usr/local/bin/wifi-check
 sudo chmod +x /usr/local/bin/wifi-check
 
 echo "Install wifi-check script crontab entry, every 5 min"
@@ -122,19 +122,19 @@ echo "Install Emoncms update cron entry, every 1 min"
 # Add crontab entry to run wifi check script ever 5min
 crontab -l > mycron #write out current crontab
 # Check crontab entry does not already exist, if not add new entry
-if ! grep -Fxq " * * * * * /home/pi/emonpi/update >> /var/log/emonpiupdate.log 2>&1" mycron ; then
-        echo " * * * * * /home/pi/emonpi/update >> /var/log/emonpiupdate.log 2>&1" >> mycron  #echo new cron into cronfile
+if ! grep -Fxq " * * * * * /home/debian/emonpi/update >> /var/log/emonpiupdate.log 2>&1" mycron ; then
+        echo " * * * * * /home/debian/emonpi/update >> /var/log/emonpiupdate.log 2>&1" >> mycron  #echo new cron into cronfile
         crontab mycron #install new cron file
 fi
 rm mycron
 
 
-echo "move emoncms.conf to RW partition home/pi/data"
-cd /home/pi
+echo "move emoncms.conf to RW partition home/debian/data"
+cd /home/debian
 > emoncms.conf
-sudo mv /home/pi/emoncms.conf /home/pi/data/emoncms.conf
-sudo chown pi:www-data /home/pi/data/emoncms.conf
-sudo chmod 664 /home/pi/data/emoncms.conf
+sudo mv /home/debian/emoncms.conf /home/debian/data/emoncms.conf
+sudo chown debian:www-data /home/debian/data/emoncms.conf
+sudo chmod 664 /home/debian/data/emoncms.conf
 
 echo "install emoncms feedwriter script to run at boot in /etc/init.d"
 sudo cp /var/www/emoncms/run/feedwriter /etc/init.d/
@@ -149,8 +149,8 @@ echo "Installing Emonhub"
 cd
 git clone https://github.com/openenergymonitor/emonhub.git && emonhub/install
 sudo service emonhub stop
-sudo chown pi:www-data /home/pi/data/emonhub.conf
-sudo chmod 664 /home/pi/data/emonhub.conf
+sudo chown debian:www-data /home/debian/data/emonhub.conf
+sudo chmod 664 /home/debian/data/emonhub.conf
 sudo service emonhub start
 
 sudo cp /var/www/emoncms/Modules/nodes/emoncms-nodes-service /etc/init.d/
