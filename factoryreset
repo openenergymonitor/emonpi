@@ -9,26 +9,26 @@ sudo service feedwriter stop
 sudo service redis-server restart
 
 echo "emoncms.conf reset"
-cd /home/pi
+cd /home/debian
 > emoncms.conf
-sudo mv /home/pi/emoncms.conf /home/pi/data/emoncms.conf
-sudo chown pi:www-data /home/pi/data/emoncms.conf
-sudo chmod 664 /home/pi/data/emoncms.conf
+sudo mv /home/debian/emoncms.conf /home/debian/data/emoncms.conf
+sudo chown debian:www-data /home/debian/data/emoncms.conf
+sudo chmod 664 /home/debian/data/emoncms.conf
 
 echo "emonhub.conf reset"
-sudo cp /home/pi/emonhub/conf/emonhub.conf /home/pi/data/emonhub.conf
-sudo chown pi:www-data /home/pi/data/emonhub.conf
-sudo chmod 664 /home/pi/data/emonhub.conf
+sudo cp /home/debian/emonhub/conf/emonhub.conf /home/debian/data/emonhub.conf
+sudo chown debian:www-data /home/debian/data/emonhub.conf
+sudo chmod 664 /home/debian/data/emonhub.conf
 
 echo "deleting phpfina and phptimeseries data"
-sudo rm -rf /home/pi/data/phpfina
-sudo rm -rf /home/pi/data/phptimeseries
+sudo rm -rf /home/debian/data/phpfina
+sudo rm -rf /home/debian/data/phptimeseries
 
 echo "creating new phpfina and phptimeseries folders"
-sudo mkdir /home/pi/data/phpfina
-sudo mkdir /home/pi/data/phptimeseries
-sudo chown www-data:root /home/pi/data/phpfina
-sudo chown www-data:root /home/pi/data/phptimeseries
+sudo mkdir /home/debian/data/phpfina
+sudo mkdir /home/debian/data/phptimeseries
+sudo chown www-data:root /home/debian/data/phpfina
+sudo chown www-data:root /home/debian/data/phptimeseries
 
 echo "deleting mysql emoncms database"
 mysql -u root -e "drop database emoncms" -praspberry
