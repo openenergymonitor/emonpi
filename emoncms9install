@@ -77,24 +77,32 @@ mysql -u root -e "create database emoncms" -praspberry
 echo "Create data repositories for emoncms feed engine's"
 sudo mkdir /home/pi/data
 sudo mkdir /home/pi/data/phpfina
-sudo mkdir /home/pi/data/phpfiwa
 sudo mkdir /home/pi/data/phptimeseries
 sudo chown www-data:root /home/pi/data/phpfina
-sudo chown www-data:root /home/pi/data/phpfiwa
 sudo chown www-data:root /home/pi/data/phptimeseries
 
 echo "git clone emoncms repo into /var/www/"
 sudo chown pi /var/www
 cd /var/www
-git clone -b 9.0 https://github.com/emoncms/emoncms.git
-cp /var/www/emoncms/default.settings.php /var/www/emoncms/settings.php
+git clone https://github.com/emoncms/emoncms.git
+cd /var/www/emoncms && git checkout 9.0
+
+cp /var/www/emoncms/default.emonpi.settings.php /var/www/emoncms/settings.php
 
 echo "git clone emoncms modules repo into /var/www/Modules"
 cd /var/www/emoncms/Modules
-git clone -b 9.0 https://github.com/emoncms/nodes.git
-git clone -b 9.0 https://github.com/emoncms/app.git
-git clone -b 9.0 https://github.com/emoncms/config.git
-git clone -b 9.0 https://github.com/emoncms/wifi.git
+
+git clone https://github.com/emoncms/nodes.git
+cd /var/www/emoncms/Modules/app && git checkout 9.0
+
+git clone https://github.com/emoncms/app.git
+cd /var/www/emoncms/Modules/nodes && git checkout 9.0
+
+git clone https://github.com/emoncms/config.git
+cd /var/www/emoncms/Modules/config && git checkout 9.0
+
+git clone https://github.com/emoncms/wifi.git
+cd /var/www/emoncms/Modules/wifi && git checkout 9.0
 
 rm /var/www/emoncms/Modules/input/input_menu.php
 
@@ -141,8 +149,9 @@ sudo chown pi:www-data /home/pi/data/emoncms.conf
 sudo chmod 664 /home/pi/data/emoncms.conf
 
 echo "install emoncms feedwriter script to run at boot in /etc/init.d"
-sudo cp /var/www/emoncms/run/feedwriter /etc/init.d/
-sudo chmod 755 /etc/init.d/feedwriter
+cd /etc/init.d && sudo ln -s /var/www/emoncms/scripts/feedwriter
+sudo chown root:root /var/www/emoncms/scripts/feedwriter
+sudo chmod 755 /var/www/emoncms/scripts/feedwriter
 sudo update-rc.d feedwriter defaults
 
 sudo rm /var/www/index.html
