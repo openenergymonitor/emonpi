@@ -15,11 +15,20 @@ rpi-rw
 
 cat /dev/null >  /var/log/emonpiupdate.log
 
+echo "Starting emonPi Update >"
+echo date
+
+echo "Update emonPi Git"
 cd /home/pi/emonpi
 git checkout development #master
 git pull origin development #master
 
+echo "Start emonPi Atmega328 firmware update:"
+# Run emonPi update script to update firmware on Atmega328 on emonPi Shield using avrdude
 /home/pi/emonpi/emonpiupdate
+
+echo "Start emoncms update:"
+# Run emoncms update script to pull in latest emoncms & emonhub updates  
 /home/pi/emonpi/emoncmsupdate
 
 sudo rm /tmp/emonpiupdate
