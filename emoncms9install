@@ -91,19 +91,22 @@ cp /var/www/emoncms/default.emonpi.settings.php /var/www/emoncms/settings.php
 
 echo "git clone emoncms modules repo into /var/www/Modules"
 cd /var/www/emoncms/Modules
-
 git clone https://github.com/emoncms/nodes.git
 cd /var/www/emoncms/Modules/app && git checkout 9.0
 
+cd /var/www/emoncms/Modules
 git clone https://github.com/emoncms/app.git
 cd /var/www/emoncms/Modules/nodes && git checkout 9.0
 
+cd /var/www/emoncms/Modules
 git clone https://github.com/emoncms/config.git
 cd /var/www/emoncms/Modules/config && git checkout 9.0
 
+cd /var/www/emoncms/Modules
 git clone https://github.com/emoncms/wifi.git
 cd /var/www/emoncms/Modules/wifi && git checkout 9.0
 
+cd
 rm /var/www/emoncms/Modules/input/input_menu.php
 
 sudo mv /etc/wpa_supplicant/wpa_supplicant.conf /home/pi/data
