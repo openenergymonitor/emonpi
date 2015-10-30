@@ -21,7 +21,7 @@ void emonPi_startup()                                                     //emon
   pinMode(emonpi_GPIO_pin, OUTPUT);                     //Connected to RasPi GPIO pin 17
   digitalWrite(emonpi_GPIO_pin, LOW);
   
-  pinMode(emonPi_int1_pin, INPUT);                          // Set RJ45 interrupt pin to input (INT 1)
+  pinMode(emonPi_int1_pin, INPUT_PULLUP);               // Set RJ45 interrupt pulse counting pin to input (INT 1) and pullup
 
   Serial.begin(BAUD_RATE);
   Serial.print("emonPi V"); Serial.println(firmware_version*0.1); 

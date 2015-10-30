@@ -1,5 +1,8 @@
 # Change Log
 
+# V1.8 (30/10/15)
+  * Enable pulse count INT1 internal pull-up to fix spurious pulse count readings
+ 
 # V1.7 (12/06/15)
   * Fix bug which stopped USA AC-AC Vcal from being applied at runtime
 
