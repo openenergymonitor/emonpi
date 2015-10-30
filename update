@@ -16,9 +16,9 @@ rpi-rw
 cat /dev/null >  /var/log/emonpiupdate.log
 
 echo "Starting emonPi Update >"
-echo date
+date
 
-echo "Update emonPi Git"
+echo "Update emonPi git:"
 cd /home/pi/emonpi
 git checkout development #master
 git pull origin development #master
