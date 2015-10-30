@@ -17,6 +17,7 @@ cat /dev/null >  /var/log/emonpiupdate.log
 
 echo "Starting emonPi Update >"
 date
+printf "\n\n"
 
 echo "Update emonPi git:"
 cd /home/pi/emonpi
