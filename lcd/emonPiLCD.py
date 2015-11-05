@@ -109,7 +109,7 @@ class Background(threading.Thread):
                 eth0ip = p.communicate()[0][:-1]
                 
                 ethactive = 1
-                if eth0ip=="" or eth0ip==False:
+                if eth0ip=="" or eth0ip==False or (eth0ip[:1].isdigit()!=1):
                     ethactive = 0
                     
                 r.set("eth:active",ethactive)
@@ -123,7 +123,7 @@ class Background(threading.Thread):
                 wlan0ip = p.communicate()[0][:-1]
                 
                 wlanactive = 1
-                if wlan0ip=="" or wlan0ip==False:
+                if wlan0ip=="" or wlan0ip==False or (wlan0ip[:1].isdigit()!=1):
                     wlanactive = 0
                     
                 r.set("wlan:active",wlanactive)
@@ -160,10 +160,6 @@ def sigint_handler(signal, frame):
     sys.exit(0)
     
 def sigterm_handler(signal, frame):
-    lcd_string1 = "LCD SCRIPT"
-    lcd_string2 =  "STOPPED"
-    lcd.lcd_display_string( string_lenth(lcd_string1, 16),1)
-    lcd.lcd_display_string( string_lenth(lcd_string2, 16),2) 
     time.sleep(1)
     logger.info("sigterm received")
     background.stop = True;
