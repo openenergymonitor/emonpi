@@ -10,22 +10,22 @@ date
 echo
 
 cd /var/www/emoncms
-git pull origin low-write
+git pull
 
 cd /var/www/emoncms/Modules/nodes
-git pull origin master
+git pull
 
 cd /var/www/emoncms/Modules/app
-git pull origin master
+git pull
 
 cd /var/www/emoncms/Modules/config
 git pull origin master
 
 cd /var/www/emoncms/Modules/wifi
-git pull origin master
+git pull
 
 cd /home/pi/emonhub
-git pull origin emon-pi
+git pull
 
 if ! grep -q "V2.x_emonTH_DHT22_DS18B20_RFM69CW_Pulse" /home/pi/data/emonhub.conf ; then
   echo "Appending emonTH V2.x pulse counting node decoding additions to /home/pi/data/emonhub.conf..."
