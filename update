@@ -21,8 +21,7 @@ printf "\n\n"
 
 echo "Update emonPi git:"
 cd /home/pi/emonpi
-git checkout master
-git pull origin master
+git pull
 
 echo "Start emonPi Atmega328 firmware update:"
 # Run emonPi update script to update firmware on Atmega328 on emonPi Shield using avrdude
