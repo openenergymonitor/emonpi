@@ -161,6 +161,12 @@ sudo rm /var/www/index.html
 echo "set emoncms folder http redirect"
 echo "<?php header('Location: ../emoncms'); ?>" > /var/www/index.php
 
+echo "create emonpi update logfile"
+sudo touch /var/log/emonpiupdate.log
+sudo chown pi:www-data /var/log/emonpiupdate.log
+sudo chmod 664 /var/log/emonpiupdate.log
+  
+
 #echo "Installing Emonhub"
 #cd
 #git clone https://github.com/openenergymonitor/emonhub.git && emonhub/install
