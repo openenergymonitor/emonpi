@@ -1,0 +1,20 @@
+\n
+[[8]]
+    nodename = emonTx_3
+    firmware =V2_3_emonTxV3_4_DiscreteSampling
+    hardware = emonTx_(NodeID_DIP_Switch1:OFF)
+    [[[rx]]]
+       names = power1, power2, power3, power4, Vrms, temp1, temp2, temp3, temp4, temp5, temp6, pulse #Firmware V1.6
+       datacodes = h,h,h,h,h,h,h,h,h,h,h,L
+       scales = 1,1,1,1,0.01,0.1,0.1, 0.1,0.1,0.1,0.1,1 
+       units =W,W,W,W,V,C,C,C,C,C,C,p                   
+ 
+[[7]]
+    nodename = emonTx_4
+    firmware =V2_3_emonTxV3_4_DiscreteSampling
+    hardware = emonTx_(NodeID_DIP_Switch1:OFF)
+    [[[rx]]]
+       names = power1, power2, power3, power4, Vrms, temp1, temp2, temp3, temp4, temp5, temp6, pulse #Firmware V1.6
+       datacodes = h,h,h,h,h,h,h,h,h,h,h,L
+       scales = 1,1,1,1,0.01,0.1,0.1, 0.1,0.1,0.1,0.1,1 
+       units =W,W,W,W,V,C,C,C,C,C,C,p
