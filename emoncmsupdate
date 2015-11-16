@@ -35,6 +35,14 @@ else
   echo "emonTH V2.x pulse counting node decoding additions already appened to /home/pi/data/emonhub.conf"
 fi
 
+if ! grep -q "V2_3_emonTxV3_4_DiscreteSampling" /home/pi/data/emonhub.conf ; then
+  echo "Appending emonTx V2.3 pulse counting node decoding additions to /home/pi/data/emonhub.conf..."
+  echo -e "$(</home/pi/emonpi/emonhub.conf_emonTxaddition)" >> /home/pi/data/emonhub.conf
+  echo "..Done"
+else
+  echo "emonTx V2.3 pulse counting node decoding additions already appened to /home/pi/data/emonhub.conf"
+fi
+
 sudo service emonhub restart
 sudo service emoncms-nodes-service restart
 sudo service feedwriter restart
