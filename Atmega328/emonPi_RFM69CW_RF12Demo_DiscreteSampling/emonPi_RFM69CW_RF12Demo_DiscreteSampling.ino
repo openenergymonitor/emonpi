@@ -54,7 +54,7 @@ EnergyMonitor ct1, ct2;
 #include <LiquidCrystal_I2C.h>                                        // https://github.com/openenergymonitor/LiquidCrystal_I2C1602V1
 LiquidCrystal_I2C lcd(0x27,16,2);                                     // LCD I2C address to 0x27, 16x2 line display
 
-const byte firmware_version = 18;                                    //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
+const byte firmware_version = 19;                                    //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
 boolean debug =                   TRUE; 
@@ -121,8 +121,6 @@ int temp[MaxOnewire];
 unsigned long pulseCount;  
 } PayloadTX;                                                    // create JeeLabs RF packet structure - a neat way of packaging data for RF comms
 PayloadTX emonPi; 
-
-static int intRFtime = 600000;                                  // Call rf12_initialize every 10min to restore RF http://openenergymonitor.org/emon/node/5549
 //-------------------------------------------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------------------------------
 

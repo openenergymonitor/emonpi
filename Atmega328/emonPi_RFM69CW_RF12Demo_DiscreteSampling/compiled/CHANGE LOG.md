@@ -1,5 +1,8 @@
 # Change Log
 
+# V1.9 (16/11/15)
+  * Fix counting pulses faster than 110ms, strobed meter LED http://openenergymonitor.org/emon/node/11490
+
 # V1.8 (30/10/15)
   * Enable pulse count INT1 internal pull-up to fix spurious pulse count readings
  
