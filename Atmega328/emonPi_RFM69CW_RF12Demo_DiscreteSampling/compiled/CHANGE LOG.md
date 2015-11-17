@@ -1,5 +1,8 @@
 # Change Log
 
+# V1.0 (17/11/15)
+  * Don't print ACK's to serial 
+
 # V1.9 (16/11/15)
   * Fix counting pulses faster than 110ms, strobed meter LED http://openenergymonitor.org/emon/node/11490
 
