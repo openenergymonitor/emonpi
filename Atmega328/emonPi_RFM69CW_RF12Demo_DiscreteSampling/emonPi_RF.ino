@@ -37,7 +37,7 @@ boolean RF_Rx_Handle(){
 		    	Serial.println();
 
 	        if (RF12_WANTS_ACK==1) {
-	           Serial.print(" -> ack");
+	           // Serial.print(" -> ack");
 	           rf12_sendStart(RF12_ACK_REPLY, 0, 0);
 	       }
 
