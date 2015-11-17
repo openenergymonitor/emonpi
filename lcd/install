@@ -51,9 +51,12 @@ sudo i2cdetect -y 1
 echo 'Install emonPi Python LCD install scripts'
 
 echo 'Install Python pip and uptime module'
+sudo apt-get install python-rpi.gpio -y
 sudo apt-get install python-pip -y
+sudo apt-get install redis-server
 sudo pip install uptime
 sudo pip install redis
+sudo pip install paho-mqtt
 
 # create linked directoty for LCD scripts 
 sudo rm -r /usr/share/emonPiLCD
