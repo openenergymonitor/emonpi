@@ -1,4 +1,5 @@
 #!/bin/bash
+# Run with sudo ./install
 
 echo "update"
 sudo apt-get update -y
