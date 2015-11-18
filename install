@@ -67,7 +67,8 @@ sudo cp /home/pi/emonpi/dhclient-script /sbin/dhclient-script
 
 # Add startup message
 if ! grep -Fxq "The file system is in Read Only (RO) mode" /etc/motd ; then
-	sudo echo -e '/n The file system is in Read Only (RO) mode. If you need to make changes, use the command rpi-rw to put the file system in Read Write (RW) mode. Use rpi-ro to return to RO mode. The /home/pi/data directory is always in RW mode /n' >> /etc/motd
+	sudo echo " "
+	sudo echo -e "\nThe file system is in Read Only (RO) mode. If you need to make changes, use the command rpi-rw to put the file system in Read Write (RW) mode. Use rpi-ro to return to RO mode. The /home/pi/data directory is always in RW mode \n" >> /etc/motd
 	echo 'welcome message added to /etc/motd'
 else
 	echo 'welcome message already added to /etc/motd'
