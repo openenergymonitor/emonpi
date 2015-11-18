@@ -13,8 +13,19 @@ sudo apt-get clean
 sudo apt-get install -y iptables
 
 echo "Set hostname to emonpi"
-sudo sed -i 's/raspberrypi/emonpi/' /etc/hosts
-sudo sed -i 's/raspberrypi/emonpi/' /etc/hostname
+
+if grep -Fxq "raspberrypi" /etc/hosts ; then
+	sudo sed -i 's/raspberrypi/emonpi/' /etc/hosts
+	sudo sed -i 's/raspberrypi/emonpi/' /etc/hostname
+fi
+
+if grep -Fxq "minibian" /etc/hosts ; then
+	sudo sed -i 's/minibian/emonpi/' /etc/hosts
+	sudo sed -i 's/minibian/emonpi/' /etc/hostname
+fi	
+	
+	
+
 
 
 echo "enable serial uploads with avrdue and autoreset & install minicom & enable use of serial port"
