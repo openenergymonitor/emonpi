@@ -10,6 +10,8 @@ sudo apt-get purge -y wolfram-engine minecraft-pi sonic-pi scratch
 sudo apt-get autoremove -y
 sudo apt-get clean
 
+sudo apt-get install -y iptables
+
 echo "Set hostname to emonpi"
 sudo sed -i 's/raspberrypi/emonpi/' /etc/hosts
 sudo sed -i 's/raspberrypi/emonpi/' /etc/hostname
