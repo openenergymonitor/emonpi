@@ -2,9 +2,9 @@
 double calc_rms(int pin, int samples)                      //Used in emonPi startup to detect presence of AC wavefrom and estimate VRMS voltage
 {
   unsigned long sum = 0;
-  for (int i=0; i<samples; i++) // 178 samples takes about 20ms
+  for (int i=0; i<samples; i++)                           // 178 samples takes about 20ms
   {
-    int raw = (analogRead(0)-512);
+    int raw = (pin-512);
     sum += (unsigned long)raw * raw;
   }
   double rms = sqrt((double)sum / samples);
