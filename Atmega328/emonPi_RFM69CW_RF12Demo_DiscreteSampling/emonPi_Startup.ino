@@ -4,7 +4,7 @@ double calc_rms(int pin, int samples)                      //Used in emonPi star
   unsigned long sum = 0;
   for (int i=0; i<samples; i++)                           // 178 samples takes about 20ms
   {
-    int raw = (pin-512);
+    int raw = (analogRead(pin)-512);
     sum += (unsigned long)raw * raw;
   }
   double rms = sqrt((double)sum / samples);
