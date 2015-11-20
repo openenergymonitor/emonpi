@@ -1,7 +1,9 @@
 #!/bin/bash
 # Run with sudo ./install
 
-minibam = false
+# if using minibian https://minibianpi.wordpress.com/2015/11/12/minibian-jessie-2015-11-12-is-out/
+minibian = false
+
 echo "update"
 sudo apt-get update -y
 sudo apt-get upgrade -y
@@ -65,8 +67,8 @@ fi
 # use new dhclient script 
 sudo cp /home/pi/emonpi/dhclient-script /sbin/dhclient-script
 
-# if using minibam
-if [minibam = true]; then
+# if using minibian
+if [minibian = true]; then
 	sudo cp /home/pi/emonpi/dhclient-script_minibam /sbin/dhclient-script
 fi
 
