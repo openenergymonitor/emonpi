@@ -1,6 +1,6 @@
 # Change Log
 
-# V1.0 (17/11/15)
+# V2.0 (17/11/15)
   * Don't print ACK's to serial 
 
 # V1.9 (16/11/15)
