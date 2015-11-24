@@ -13,7 +13,10 @@ sudo apt-get purge -y wolfram-engine minecraft-pi sonic-pi scratch
 sudo apt-get autoremove -y
 sudo apt-get clean
 
-sudo apt-get install -y iptables wpasupplicant 
+# extra packeges needed if staring from lightweight minibam
+if [minibian = true]; then
+	sudo apt-get install -y iptables wpasupplicant strace nano
+fi
 
 echo "Set hostname to emonpi"
 
