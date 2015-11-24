@@ -29,12 +29,12 @@
 # this is a very common problem.  If once a min change */5 to *
 # once every 2 mins */5 to */2 ... 
 #
-# */5 * * * * /usr/local/bin/WiFi_Check 
+# */5 * * * * /usr/local/bin/wifi_Check 
 #
 ##################################################################
 # Settings
 # Where and what you want to call the Lockfile
-lockfile='/var/run/wifi-check.pid'
+lockfile='/tmp/wifi-check.pid'
 # Which Interface do you want to check/fix
 wlan='wlan0'
 ##################################################################
