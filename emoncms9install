@@ -164,7 +164,7 @@ echo "<?php header('Location: ../emoncms'); ?>" > /var/www/index.php
 echo "create emonpi update logfile"
 sudo touch /var/log/emonpiupdate.log
 sudo chown pi:www-data /var/log/emonpiupdate.log
-sudo chmod 664 /var/log/emonpiupdate.log
+sudo chmod 666 /var/log/emonpiupdate.log
 
 echo "create emoncms logfile"
 sudo touch /var/log/emoncms.log
