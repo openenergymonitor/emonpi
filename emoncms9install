@@ -137,8 +137,8 @@ echo "Install Emoncms update cron entry, every 1 min"
 # Add crontab entry to run wifi check script ever 5min
 crontab -l > mycron #write out current crontab
 # Check crontab entry does not already exist, if not add new entry
-if ! grep -Fxq " * * * * * /home/pi/emonpi/update >> /var/log/emonpiupdate.log 2>&1" mycron ; then
-        echo " * * * * * /home/pi/emonpi/update >> /var/log/emonpiupdate.log 2>&1" >> mycron  #echo new cron into cronfile
+if ! grep -Fxq " * * * * * /home/pi/emonpi/update >> /home/pi/data/emonpiupdate.log 2>&1" mycron ; then
+        echo " * * * * * /home/pi/emonpi/update >> /home/pi/data/emonpiupdate.log 2>&1" >> mycron  #echo new cron into cronfile
         crontab mycron #install new cron file
 fi
 rm mycron
@@ -162,9 +162,9 @@ echo "set emoncms folder http redirect"
 echo "<?php header('Location: ../emoncms'); ?>" > /var/www/index.php
 
 echo "create emonpi update logfile"
-sudo touch /var/log/emonpiupdate.log
-sudo chown pi:www-data /var/log/emonpiupdate.log
-sudo chmod 666 /var/log/emonpiupdate.log
+sudo touch /home/pi/data/emonpiupdate.log
+sudo chown pi:www-data /home/pi/data/emonpiupdate.log
+sudo chmod 666 /home/pi/data/emonpiupdate.log
 
 echo "create emoncms logfile"
 sudo touch /var/log/emoncms.log
