@@ -19,7 +19,7 @@ cd /var/www/emoncms/Modules/app
 git pull
 
 cd /var/www/emoncms/Modules/config
-git pull origin master
+git pull
 
 cd /var/www/emoncms/Modules/wifi
 git pull
