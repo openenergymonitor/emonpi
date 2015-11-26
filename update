@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# If update flag does not exit then exit
 if [ ! -f /tmp/emonpiupdate ]; then
     exit
 fi
@@ -11,12 +12,15 @@ if [ -f $LOCK ]; then
 fi
 touch $LOCK
 
+# Makke FS RW
 rpi-rw
 
-# Clear log file 
+# Clear log update file 
 cat /dev/null >  /home/pi/data/emonpiupdate.log
 
-echo "Starting emonPi Update >"
+echo "Starting emonPi Update >\n"
+
+# Date and time
 date
 printf "\n\n"
 
@@ -32,7 +36,12 @@ echo "Start emoncms update:"
 # Run emoncms update script to pull in latest emoncms & emonhub updates  
 /home/pi/emonpi/emoncmsupdate
 
+# Remove update flag now update has finished 
 sudo rm /tmp/emonpiupdate
+
+printf "\n...................\n"
+printf "emonPi update done\n\n"
+date
 
 rpi-ro
 
