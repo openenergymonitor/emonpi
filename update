@@ -13,6 +13,9 @@ touch $LOCK
 
 rpi-rw
 
+# Clear log file 
+cat /dev/null >  /home/pi/data/emonpiupdate.log
+
 echo "Starting emonPi Update >"
 date
 printf "\n\n"
