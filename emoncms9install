@@ -19,7 +19,8 @@ sudo apt-get -y install mysql-server
 
 # All other apt-get packages
 echo "Install required packages"
-sudo apt-get install -y apache2 mysql-client php5 libapache2-mod-php5 php5-mysql php5-curl php-pear php5-dev php5-mcrypt git-core redis-server build-essential ufw ntp python-serial python-configobj mosquitto mosquitto-clients python-pip python-dev screen sysstat minicom
+sudo apt-get install -y apache2 mysql-client php5 libapache2-mod-php5 php5-mysql php5-curl php-pear php5-dev php5-mcrypt git-core redis-server build-essential ufw ntp python-serial python-configobj python-pip python-dev screen sysstat minicom
+# Don't install mosquitto from Debian PPA, install newer version from mosquitto PPA. See emonHub install https://github.com/openenergymonitor/emonhub 
 
 sed 's/\/var\/log\/apache2/\/var\/log/' /etc/apache2/envvars > /tmp/apache2envvars
 sudo cp /tmp/apache2envvars /etc/apache2/envvars
