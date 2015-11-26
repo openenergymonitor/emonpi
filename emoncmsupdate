@@ -43,11 +43,10 @@ else
   echo "emonTx V2.3 pulse counting node decoding additions already appened to /home/pi/data/emonhub.conf"
 fi
 
-sudo service emonhub restart
-sudo service emoncms-nodes-service restart
-sudo service feedwriter restart
-
-sudo service emonPiLCD restart
+sudo /etc/init.d/emonhub restart
+sudo /etc/init.d/emoncms-nodes-service restart
+sudo /etc/init.d/feedwriter restart
+sudo /etc/init.d/emonPiLCD restart
 
 echo
 echo "Emoncms update finished"
