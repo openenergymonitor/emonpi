@@ -18,7 +18,7 @@ rpi-rw
 # Clear log update file 
 cat /dev/null >  /home/pi/data/emonpiupdate.log
 
-echo "Starting emonPi Update >\n"
+echo "Starting emonPi Update >"
 
 # Date and time
 date
