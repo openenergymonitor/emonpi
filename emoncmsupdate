@@ -11,22 +11,22 @@ echo
 
 cd /var/www/emoncms
 git pull
-
+echo
 cd /var/www/emoncms/Modules/nodes
 git pull
-
+echo
 cd /var/www/emoncms/Modules/app
 git pull
-
+echo
 cd /var/www/emoncms/Modules/config
 git pull
-
+echo
 cd /var/www/emoncms/Modules/wifi
 git pull
-
+echo
 cd /home/pi/emonhub
 git pull
-
+echo
 if ! grep -q "V2.x_emonTH_DHT22_DS18B20_RFM69CW_Pulse" /home/pi/data/emonhub.conf ; then
   echo "Appending emonTH V2.x pulse counting node decoding additions to /home/pi/data/emonhub.conf..."
   echo -e "$(</home/pi/emonpi/emonhub.conf_emonTHaddition)" >> /home/pi/data/emonhub.conf
@@ -42,10 +42,13 @@ if ! grep -q "V2_3_emonTxV3_4_DiscreteSampling" /home/pi/data/emonhub.conf ; the
 else
   echo "emonTx V2.3 pulse counting node decoding additions already appened to /home/pi/data/emonhub.conf"
 fi
-
+echo
 sudo /etc/init.d/emonhub restart
+echo
 sudo /etc/init.d/emoncms-nodes-service restart
+echo
 sudo /etc/init.d/feedwriter restart
+echo
 sudo /etc/init.d/emonPiLCD restart
 
 echo
