@@ -94,6 +94,8 @@ fi
 #sudo mv /etc/mtab /etc/mtab.orig
 #sudo ln -s /proc/self/mounts /etc/mtab
 
+echo "Install Read-only NTP time fix"
+git clone https://github.com/emonhub/ntp-backup.git ~/ntp-backup && ~/ntp-backup/install
 
 # Add startup message
 if ! grep -Fxq "The file system is in Read Only (RO) mode" /etc/motd ; then
