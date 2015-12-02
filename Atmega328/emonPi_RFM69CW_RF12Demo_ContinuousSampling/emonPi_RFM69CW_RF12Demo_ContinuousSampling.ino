@@ -223,13 +223,13 @@ void loop()
   if (EmonLibCM_Ready())   
   {
     if (EmonLibCM_ACAC) {
-      emonPi.Vrms = EmonLibCM_Vrms;
+      emonPi.Vrms = EmonLibCM_Vrms*100;
       emonPi.power1 = EmonLibCM_getRealPower(0);
       emonPi.power2 = EmonLibCM_getRealPower(1);
       // emonPi.wh1 = EmonLibCM_getWattHour(0);
       // emonPi.wh2 = EmonLibCM_getWattHour(1);
     } else {
-      emonPi.Vrms = Vrms;
+      emonPi.Vrms = Vrms*100;
       emonPi.power1 = Vrms * EmonLibCM_getIrms(0);
       emonPi.power2 = Vrms * EmonLibCM_getIrms(1);
       // emonPi.wh1 = 0;
