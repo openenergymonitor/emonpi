@@ -110,6 +110,18 @@ static void handleInput (char c) {
         if (value){
           if (value==1) USA=false;
           if (value==2) USA=true;
+          
+          if (USA==TRUE) 
+          {
+            Vcal = Vcal_USA;                                                       // Assume USA AC/AC adatper is being used, set calibration accordingly 
+            Vrms = Vrms_USA;
+          }
+          else 
+          {
+            Vcal = Vcal_EU;
+            Vrms = Vrms_EU;
+          }
+          EmonLibCM_voltageCal(Vcal*(3.3/1023));            // 260.4 * (3.3/1023)
         }
         break;
 

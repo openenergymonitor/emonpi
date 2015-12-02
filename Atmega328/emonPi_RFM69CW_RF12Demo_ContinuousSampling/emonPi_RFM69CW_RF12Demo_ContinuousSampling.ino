@@ -101,7 +101,7 @@ byte numSensors;
 //-------------------------------------------------------------------------------------------------------------------------------------------
 
 //-----------------------RFM12B / RFM69CW SETTINGS----------------------------------------------------------------------------------------------------
-byte RF_freq=RF12_433MHZ;                                        // Frequency of RF69CW module can be RF12_433MHZ, RF12_868MHZ or RF12_915MHZ. You should use the one matching the module you have.
+byte RF_freq = RF12_433MHZ;                                        // Frequency of RF69CW module can be RF12_433MHZ, RF12_868MHZ or RF12_915MHZ. You should use the one matching the module you have.
 byte nodeID = 5;                                                 // emonpi node ID
 int networkGroup = 210;  
 
@@ -200,21 +200,6 @@ void setup()
 void loop()
 {
   now = millis();
- 
-  if (USA==TRUE) 
-  {
-    Vcal = Vcal_USA;                                                       // Assume USA AC/AC adatper is being used, set calibration accordingly 
-    Vrms = Vrms_USA;
-  }
-  else 
-  {
-    Vcal = Vcal_EU;
-    Vrms = Vrms_EU;
-  }
-  
-  // Update Vcal
-  // ct1.voltage(0, Vcal, phase_shift);                       // ADC pin, Calibration, phase_shift
-  // ct2.voltage(0, Vcal, phase_shift);                       // ADC pin, Calibration, phase_shift
 
   if (digitalRead(shutdown_switch_pin) == 0 ) 
     digitalWrite(emonpi_GPIO_pin, HIGH);                                          // if emonPi shutdown butten pressed then send signal to the Pi on GPIO 11
