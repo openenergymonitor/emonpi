@@ -8,14 +8,16 @@ echo "update"
 sudo apt-get update -y
 sudo apt-get upgrade -y
 
-echo "deleting unused software"
-sudo apt-get purge -y wolfram-engine minecraft-pi sonic-pi scratch
-sudo apt-get autoremove -y
-sudo apt-get clean
+
 
 # extra packeges needed if staring from lightweight minibam
 if [minibian = true]; then
-	sudo apt-get install -y iptables wpasupplicant strace nano
+	sudo apt-get install -y iptables wpasupplicant strace nano dpkg
+else
+	echo "deleting unused software"
+	sudo apt-get purge -y wolfram-engine minecraft-pi sonic-pi scratch
+	sudo apt-get autoremove -y
+	sudo apt-get clean
 fi
 
 echo "Set hostname to emonpi"
