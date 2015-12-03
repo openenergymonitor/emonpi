@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Script to update new emonPi's to latest firmware and software the fist time they are booted up in the factory
+# Looks to see if /home/pi/data/emonpiupdate.log exists, if it does not then run update script 
+# To rc.local before exit 0 add:
+# /home/pi/emonpi/./firstbootupdate
+	
+if [ ! -f /home/pi/data/emonpiupdate.log ]; then 
+	echo "First Boot Update.."
+	printf "Checking interent connectivity...wait 5s\n"
+	sleep 30
+	WGET="/usr/bin/wget"
+	$WGET -q --tries=20 --timeout=5 http://www.google.com -O /tmp/google.idx &> /dev/null
+	if [ ! -s /tmp/google.idx ]; then
+  		echo "No Internet connection :-("
+	else
+   		echo "Internet connection detected running update.."
+   		connected=true
+	fi
+
+	if [ "$connected" = true ]; then
+		touch /tmp/emonpiupdate
+		/home/pi/emonpi/update 2>&1 >> /home/pi/data/emonpiupdate.log 2>&1
+	fi
+else
+	echo "Not first boot"
+	exit
+fi
+exit
