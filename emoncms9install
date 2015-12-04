@@ -131,7 +131,7 @@ crontab -l > mycron #write out current crontab
 # Check crontab entry does not already exist, if not add new entry
 if ! grep -Fxq "*/5 * * * * /usr/local/bin/wifi-check > /tmp/wificheck.log 2>&1" mycron ; then
         echo " */5 * * * * /usr/local/bin/wifi-check > /tmp/wificheck.log 2>&1" >> mycron  #echo new cron into cronfile
-        crontab mycron #install new cron file
+        sudo crontab mycron #install new cron file
 fi
 rm mycron
 
