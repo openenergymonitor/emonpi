@@ -16,17 +16,14 @@
 # Run emonPi Update of first factory boot
 /home/pi/emonpi/./firstbootupdate
 
-# OpenHAB headless optimize
-fbset -xres 16 -yres 16 -vyres 16 -depth 8 /opt/vc/bin/tvservice -o
-
 # Open openHAB port
--A INPUT -p tcp -m tcp --dport 8080 -j ACCEPT
+sudo iptables -A INPUT -p tcp -m tcp --dport 8080 -j ACCEPT
 
 # Open MQTT Port
--A INPUT -p tcp -m tcp --dport 1883 -j ACCEPT
+sudo iptables -A INPUT -p tcp -m tcp --dport 1883 -j ACCEPT
 
 # Open NodeRED port
--A INPUT -p tcp -m tcp --dport 1880 -j ACCEPT
+sudo iptables -A INPUT -p tcp -m tcp --dport 1880 -j ACCEPT
 
 # Start openHAB
 /etc/init.d/openhab start
