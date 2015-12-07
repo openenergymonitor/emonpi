@@ -61,14 +61,14 @@ const unsigned long BAUD_RATE=    38400;
 
 const byte Vrms_EU=               230;                               // Vrms for apparent power readings (when no AC-AC voltage sample is present)
 const byte Vrms_USA=              110;                               // USA apparent power VRMS  
-const int TIME_BETWEEN_READINGS=  5000;                             // Time between readings (mS)  
+const int TIME_BETWEEN_READINGS=  5;                             // Time between readings (mS)  
 
 
 //http://openenergymonitor.org/emon/buildingblocks/calibration
 
 const float Ical1=                90.9;                             // (2000 turns / 22 Ohm burden) = 90.9
 const float Ical2=                90.9;                                 
-float Vcal_EU=                    265.42;                             // (230V x 13) / (9V x 1.2) = 276.9 Calibration for UK AC-AC adapter 77DB-06-09 
+float Vcal_EU=                    260.4;                             // (230V x 13) / (9V x 1.2) = 276.9 Calibration for UK AC-AC adapter 77DB-06-09 
 //const float Vcal=               260;                                // Calibration for EU AC-AC adapter 77DE-06-09 
 const float Vcal_USA=             130.0;                              // Calibration for US AC-AC adapter 77DA-10-09
 boolean USA=                      FALSE; 
@@ -237,7 +237,7 @@ void loop()
     }
   }
   
-  if ((now - last_sample) > TIME_BETWEEN_READINGS)
+  if ((now - last_sample) > TIME_BETWEEN_READINGS*1000)
   {
     single_LED_flash();                                                            // single flash of LED on local CT sample
     emonPi.power1_plus_2=emonPi.power1 + emonPi.power2;                            // Create power 1 plus power 2 variable for US and solar PV installs
