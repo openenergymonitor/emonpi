@@ -25,8 +25,11 @@ sudo iptables -A INPUT -p tcp -m tcp --dport 1883 -j ACCEPT
 # Open NodeRED port
 sudo iptables -A INPUT -p tcp -m tcp --dport 1880 -j ACCEPT
 
+# Setup openHAB and emoncms logfiles 
 sudo mkdir /var/log/openhab
 sudo chmod 666 /var/log/openhab
+sudo touch /var/log/emoncms.log
+sudo chmod 666 /var/log/emoncms.log
 
 # Start openHAB
 /etc/init.d/openhab start
