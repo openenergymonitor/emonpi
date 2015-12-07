@@ -88,6 +88,7 @@ cd /var/www
 git clone https://github.com/emoncms/emoncms.git
 cd /var/www/emoncms && git checkout 9.0
 
+echo "Use default.emonpi.settings.php as settings.php"
 cp /var/www/emoncms/default.emonpi.settings.php /var/www/emoncms/settings.php
 
 echo "git clone emoncms modules repo into /var/www/Modules"
@@ -130,7 +131,7 @@ crontab -l > mycron #write out current crontab
 # Check crontab entry does not already exist, if not add new entry
 if ! grep -Fxq "*/5 * * * * /usr/local/bin/wifi-check > /tmp/wificheck.log 2>&1" mycron ; then
         echo " */5 * * * * /usr/local/bin/wifi-check > /tmp/wificheck.log 2>&1" >> mycron  #echo new cron into cronfile
-        crontab mycron #install new cron file
+        sudo crontab mycron #install new cron file
 fi
 rm mycron
 
@@ -142,6 +143,12 @@ if ! grep -Fxq " * * * * * /home/pi/emonpi/update >> /home/pi/data/emonpiupdate.
         crontab mycron #install new cron file
 fi
 rm mycron
+
+
+echo "Add rc.local entry to run factory update on first boot"
+if ! grep -Fxq "/home/pi/emonpi/./firstbootupdate" /etc/rc.local; then
+	sed -i -e '$i \/home/pi/emonpi/./firstbootupdate\n' /etc/rc.local
+
 
 
 echo "move emoncms.conf to RW partition home/pi/data"

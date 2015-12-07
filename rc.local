@@ -1,0 +1,34 @@
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+/usr/bin/printf "         My IP address is\033[0;31m `/sbin/ifconfig | grep "inet addr" | grep -v "127.0.0.1" | awk '{ print $2 }' | awk -F: '{ print $2 }'` \033[0m\n" > /dev/console
+
+# Run emonPi Update of first factory boot
+/home/pi/emonpi/./firstbootupdate
+
+# Open openHAB port
+sudo iptables -A INPUT -p tcp -m tcp --dport 8080 -j ACCEPT
+
+# Open MQTT Port
+sudo iptables -A INPUT -p tcp -m tcp --dport 1883 -j ACCEPT
+
+# Open NodeRED port
+sudo iptables -A INPUT -p tcp -m tcp --dport 1880 -j ACCEPT
+
+sudo mkdir /var/log/openhab
+sudo chmod 666 /var/log/openhab
+
+# Start openHAB
+/etc/init.d/openhab start
+
+exit 0
