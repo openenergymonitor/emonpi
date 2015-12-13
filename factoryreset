@@ -1,4 +1,6 @@
 #!/bin/bash
+# Run sudo su
+# ./factoryreset
 
 echo "Factory reset"
 
@@ -43,8 +45,10 @@ echo "Delete data/emonpiupdate.log"
 rm /home/pi/data/emonpiupdate.log
 
 echo "Clear bash history"
-/dev/null > ~/.bash_history
+cat /dev/null > ~/.bash_history
 
 sudo service emonhub start
 sudo service emoncms-nodes-service start
 sudo service feedwriter start
+
+exit
