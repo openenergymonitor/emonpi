@@ -43,6 +43,10 @@ echo "git pull /home/pi/emonhub"
 cd /home/pi/emonhub
 git pull
 
+echo "git pull /home/pi/oem_openHab"
+cd /home/pi/oem_openHab
+git pull
+
 echo
 
 if ! grep -q "V2.x_emonTH_DHT22_DS18B20_RFM69CW_Pulse" /home/pi/data/emonhub.conf ; then
