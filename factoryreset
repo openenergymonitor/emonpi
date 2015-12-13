@@ -36,6 +36,12 @@ mysql -u root -e "drop database emoncms" -praspberry
 echo "creating new mysql emoncms database"
 mysql -u root -e "create database emoncms" -praspberry
 
+echo "Delete data/emonpiupdate.log"
+rm /home/pi/data/emonpiupdate.log
+
+echo "Clear bash history"
+/dev/null > ~/.bash_history
+
 sudo service emonhub start
 sudo service emoncms-nodes-service start
 sudo service feedwriter start
