@@ -15,6 +15,9 @@ sudo mv /home/pi/emoncms.conf /home/pi/data/emoncms.conf
 sudo chown pi:www-data /home/pi/data/emoncms.conf
 sudo chmod 664 /home/pi/data/emoncms.conf
 
+echo "emonpi default settings"
+cp /var/www/emoncms/default.emonpi.settings.php /var/www/emoncms/settings.php
+
 echo "emonhub.conf reset"
 sudo cp /home/pi/emonhub/conf/emonhub.conf /home/pi/data/emonhub.conf
 sudo chown pi:www-data /home/pi/data/emonhub.conf
