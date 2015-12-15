@@ -72,13 +72,13 @@ if [ ! -f /sbin/dhclient-script_original ]; then
     sudo cp /sbin/dhclient-script /sbin/dhclient-script_original
 fi
 # use new dhclient script 
-sudo rm /sbin/dhclient-script
-sudo ln -s /home/pi/emonpi/dhclient-script /sbin/dhclient-script
+sudo cp /home/pi/emonpi/dhclient-script /sbin/dhclient-script
 
 # if using minibian
 if [minibian = true]; then
-	sudo ln -s /home/pi/emonpi/dhclient-script_minibam /sbin/dhclient-script
+	sudo cp /home/pi/emonpi/dhclient-script_minibam /sbin/dhclient-script
 fi
+sudo chmod a+x /sbin/dhclient-script
 
 # Best do these steps manually: https://github.com/openenergymonitor/emonpi/blob/master/imagebuild.md
 #echo "Move log directory to temporary partition"
@@ -106,6 +106,7 @@ sudo ln -s /home/pi/emonpi/fstab /etc/fstab
 echo "insall rc.local startup"
 sudo rm /etc/rc.local 
 sudo ln -s /home/pi/emonpi/rc.local /etc/rc.local
+sudo chmod a+x /etc/rc.local
 
 echo "Install Read-only NTP time fix"
 git clone https://github.com/emonhub/ntp-backup.git ~/ntp-backup && ~/ntp-backup/install
