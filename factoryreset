@@ -4,6 +4,8 @@
 
 echo "Factory reset"
 
+rpi-rw
+
 sudo service emonhub stop
 sudo service emoncms-nodes-service stop
 sudo service feedwriter stop
