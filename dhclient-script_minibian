@@ -107,7 +107,9 @@ make_resolv_conf() {
             chown --reference=/etc/resolv.conf $new_resolv_conf
             chmod --reference=/etc/resolv.conf $new_resolv_conf
 	fi
-        mv -f $new_resolv_conf /etc/resolv.conf
+        # mv -f $new_resolv_conf /etc/resolv.conf   # emonPi read-only changes
+	cat $new_resolv_conf  >  /etc/resolv.conf   # emonPi read-only changes
+	cat /dev/null > $new_resolv_conf	    # emonPi read-only changes
     fi
 }
 
