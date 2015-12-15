@@ -4,8 +4,9 @@
 # Looks to see if /home/pi/data/emonpiupdate.log exists, if it does not then run update script 
 # To rc.local before exit 0 add:
 # /home/pi/emonpi/./firstbootupdate
-	
-if [ ! -f /home/pi/data/emonpiupdate.log ]; then 
+
+# Check if update log file is empty if so then proceed to update	
+if [ ! -s /home/pi/data/emonpiupdate.log ]; then 
 	echo "First Boot Update.."
 	printf "Checking interent connectivity...wait 5s\n"
 	sleep 30
