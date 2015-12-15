@@ -104,19 +104,6 @@ if [ ! -f /etc/sudoers.d/wifi ]; then
 	sudo chmod 0440
 fi
 
-echo "Add wifi-check script to /user/local/bin"
-sudo cp /home/pi/emonpi/wifi-check /usr/local/bin/wifi-check
-sudo chmod +x /usr/local/bin/wifi-check
-
-echo "Install wifi-check script crontab entry, every 5 min"
-# Add crontab entry to run wifi check script ever 5min
-crontab -l > mycron #write out current crontab
-# Check crontab entry does not already exist, if not add new entry
-if ! grep -Fxq "*/5 * * * * /usr/local/bin/wifi-check > /tmp/wificheck.log 2>&1" mycron ; then
-        echo " */5 * * * * /usr/local/bin/wifi-check > /tmp/wificheck.log 2>&1" >> mycron  #echo new cron into cronfile
-        crontab mycron #install new cron file
-fi
-rm mycron
 
 echo "Install Emoncms update cron entry, every 1 min"
 # Add crontab entry to run wifi check script ever 5min
