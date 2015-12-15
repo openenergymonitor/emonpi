@@ -12,12 +12,14 @@ sudo apt-get upgrade -y
 
 # extra packeges needed if staring from lightweight minibam
 if [minibian = true]; then
-	sudo apt-get install -y iptables wpasupplicant strace nano dpkg
+	sudo apt-get install -y iptables wpasupplicant strace nano dpkg logrotate
+	sudo apt-get remove -y exim4-base
 else
 	echo "deleting unused software"
 	sudo apt-get purge -y wolfram-engine minecraft-pi sonic-pi scratch
 	sudo apt-get autoremove -y
 	sudo apt-get clean
+	sudo apt-get install -y logrotate
 fi
 
 echo "Set hostname to emonpi"
@@ -116,8 +118,7 @@ else
 	echo 'welcome message already added to /etc/motd'
 fi
 
-echo "Install & Setup Logrotate" 
-sudo apt-get install logrotate -f
+echo "Setup Logrotate" 
 sudo rm /etc/logrotate.conf
 sudo ln -s /home/pi/emonpi/logrotate.conf /etc/logrotate.conf
 sudo mv /etc/cron.daily/logrotate /etc/cron.hourly/logrotate
