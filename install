@@ -121,7 +121,9 @@ fi
 echo "Setup Logrotate" 
 sudo rm /etc/logrotate.conf
 sudo ln -s /home/pi/emonpi/logrotate.conf /etc/logrotate.conf
-sudo mv /etc/cron.daily/logrotate /etc/cron.hourly/logrotate
+sudo cp /home/pi/logrotate /etc/cron.hourly/logrotate
+sudo cp /dev/null /etc/cron.daily/logrotate
+
 
 echo "Add wifi-check script to /user/local/bin"
 sudo cp /home/pi/emonpi/wifi-check /usr/local/bin/wifi-check
