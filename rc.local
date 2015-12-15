@@ -30,8 +30,6 @@ sudo mkdir /var/log/openhab
 sudo chmod 666 /var/log/openhab
 sudo touch /var/log/emoncms.log
 sudo chmod 666 /var/log/emoncms.log
-sudo mkdir /var/log/exim4/
-sudo chmod 666 /var/log/exim4/
 
 # Start openHAB
 /etc/init.d/openhab start
