@@ -40,7 +40,8 @@ make_resolv_conf() {
     if [ -n "$new_domain_search" ] || [ -n "$new_domain_name" ] ||
        [ -n "$new_domain_name_servers" ]; then
         new_resolv_conf=/etc/resolv.conf.dhclient-new
-        rm -f $new_resolv_conf
+        #rm -f $new_resolv_conf
+        cat /dev/null > $new_resolv_conf             #emonPi read-only changes
 
         if [ -n "$new_domain_name" ]; then
             echo domain ${new_domain_name%% *} >>$new_resolv_conf
@@ -82,7 +83,8 @@ make_resolv_conf() {
     # DHCPv6
     elif [ -n "$new_dhcp6_domain_search" ] || [ -n "$new_dhcp6_name_servers" ]; then
         new_resolv_conf=/etc/resolv.conf.dhclient-new
-        rm -f $new_resolv_conf
+        #rm -f $new_resolv_conf
+        cat /dev/null > $new_resolv_conf            #emonPi read-only changes
 
         if [ -n "$new_dhcp6_domain_search" ]; then
             echo "search ${new_dhcp6_domain_search}" >> $new_resolv_conf
