@@ -96,6 +96,14 @@ fi
 #sudo mv /etc/mtab /etc/mtab.orig
 #sudo ln -s /proc/self/mounts /etc/mtab
 
+echo "install fstab"
+sudo rm /etc/fstab 
+sudo ln -s /home/pi/emonpi/fstab /etc/fstab
+
+echo "insall rc.local startup"
+sudo rm /etc/rc.local 
+sudo ln -s /home/pi/emonpi/rc.local /etc/rc.local
+
 echo "Install Read-only NTP time fix"
 git clone https://github.com/emonhub/ntp-backup.git ~/ntp-backup && ~/ntp-backup/install
 
@@ -107,4 +115,10 @@ if ! grep -Fxq "The file system is in Read Only (RO) mode" /etc/motd ; then
 else
 	echo 'welcome message already added to /etc/motd'
 fi
+
+echo "Install & Setup Logrotate" 
+sudo apt-get install logrotate -f
+sudo rm /etc/logrotate.conf
+sudo ln -s /home/pi/emonpi/logrotate.conf /etc/logrotate.conf
+sudo mv /etc/cron.daily/logrotate /etc/cron.hourly/logrotate
 
