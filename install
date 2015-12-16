@@ -124,6 +124,7 @@ fi
 echo "Setup Logrotate" 
 sudo rm /etc/logrotate.conf
 sudo ln -s /home/pi/emonpi/logrotate.conf /etc/logrotate.conf
+sudo chown root /etc/logrotate.conf
 sudo cp /home/pi/emonpi/logrotate /etc/cron.hourly/logrotate
 sudo cp /dev/null /etc/cron.daily/logrotate
 
