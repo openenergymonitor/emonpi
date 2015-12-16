@@ -121,12 +121,14 @@ else
 	echo 'welcome message already added to /etc/motd'
 fi
 
+# http://openenergymonitor.org/emon/node/11803
 echo "Setup Logrotate" 
 sudo rm /etc/logrotate.conf
 sudo ln -s /home/pi/emonpi/logrotate.conf /etc/logrotate.conf
 sudo chown root /etc/logrotate.conf
-sudo cp /home/pi/emonpi/logrotate /etc/cron.hourly/logrotate
-sudo cp /dev/null /etc/cron.daily/logrotate
+sudo ln -s /home/pi/emonpi/logrotate /etc/cron.hourly/logrotate
+sudo rm /etc/cron.daily/logrotate
+sudo touch /etc/cron.daily/logrotate
 
 
 echo "Add wifi-check script to /user/local/bin"
