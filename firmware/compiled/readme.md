@@ -1,7 +1,19 @@
 # Update or upload steps
 
-sudo service emonhub stop
+Update Atmega328 fimware on RasPi to latest.hex. In order of user friendliness:
 
-avrdude -v -c arduino -p ATMEGA328P -P /dev/ttyAMA0 -b 115200 -U flash:w:/home/pi/emonpi/Atmega328/emonPi_RFM69CW_RF12Demo_ContinuousSampling/compiled/emonPi_RFM69CW_RF12Demo_ContinuousSampling.cpp.hex
+## 1. Run emonPi update from local Emoncms 
 
-sudo service emonhub start
+[[http://openenergymonitor.org/emon/modules/emonpi#update]]
+
+## 2. Run update bash script
+
+	sudo /home/pi/emonpi/firmware/compiled/.update	
+
+## 3. Run avrdude manually
+
+	sudo service emonhub stop
+
+	avrdude -v -c arduino -p ATMEGA328P -P /dev/ttyAMA0 -b 115200 -U flash:w:/home/pi/emonpi/firmware/compiled/latest.hex
+	
+	sudo service emonhub start
