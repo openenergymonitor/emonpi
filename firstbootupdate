@@ -27,4 +27,8 @@ else
 	echo "Not first boot"
 	exit
 fi
+
+# set permissions on newly created logfile so emonpiupdate script an write to it
+sudo chmod 666 /home/pi/data/emonpiupdate.log
+
 exit
