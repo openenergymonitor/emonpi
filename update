@@ -12,11 +12,18 @@ if [ -f $LOCK ]; then
 fi
 touch $LOCK
 
-# Makke FS RW
+# Make FS RW
 rpi-rw
 
-# Clear log update file 
+# Clear log update file
 cat /dev/null >  /home/pi/data/emonpiupdate.log
+
+# Stop emonPi LCD servcice
+sudo service emonPiLCD stop
+
+# Display update message on LCD
+sudo /home/pi/emonpi/lcd/./emonPiLCD_update.py &
+
 
 echo "Starting emonPi Update >"
 echo
@@ -32,10 +39,17 @@ echo "Start emonPi Atmega328 firmware update:"
 # Run emonPi update script to update firmware on Atmega328 on emonPi Shield using avrdude
 /home/pi/emonpi/emonpiupdate
 echo
+
 echo "Start emoncms update:"
 # Run emoncms update script to pull in latest emoncms & emonhub updates  
 /home/pi/emonpi/emoncmsupdate
 echo
+
+echo
+sudo /etc/init.d/emonPiLCD start
+
+
+
 # Remove update flag now update has finished 
 sudo rm /tmp/emonpiupdate
 
@@ -46,6 +60,7 @@ echo
 
 rm $LOCK
 
+# Put file system back into read-only
 rpi-ro
 
 

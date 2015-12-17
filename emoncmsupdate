@@ -67,8 +67,6 @@ echo
 sudo /etc/init.d/emoncms-nodes-service restart
 echo
 sudo /etc/init.d/feedwriter restart
-echo
-sudo /etc/init.d/emonPiLCD restart
 
 echo
 echo "Emoncms update finished"
