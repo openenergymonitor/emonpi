@@ -51,7 +51,7 @@ max_number_pages = 5
 # ------------------------------------------------------------------------------------
 import logging
 import logging.handlers
-uselogfile = False
+uselogfile = True
 
 mqttc = False
 mqttConnected = False
@@ -60,7 +60,7 @@ basedata = []
 if not uselogfile:
     loghandler = logging.StreamHandler()
 else:
-    loghandler = logging.handlers.RotatingFileHandler("/var/log/emonPiLCD",'a', 5000 * 1024, 1)
+    loghandler = logging.handlers.RotatingFileHandler("/var/log/emonPiLCD",'a', 1024, 1)
 
 loghandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
 logger = logging.getLogger("emonPiLCD")
@@ -75,12 +75,11 @@ logger.info("emonPiLCD Start")
 # ------------------------------------------------------------------------------------
 
 lcd_status = subprocess.check_output(["/home/pi/emonpi/lcd/./emonPiLCD_detect.sh", "27"])
-logger.info("I2C LCD Detected on 0x27")
-print lcd_status
 
-if lcd_status == False:
+if lcd_status.rstrip() == 'False':
+    print "I2C LCD NOT DETECTED...exiting LCD script"
     logger.info("I2C LCD NOT DETECTED...exiting LCD script")
-    sys.exit()
+    sys.exit(1)
 else:
     logger.info("I2C LCD Detected on 0x27")
 

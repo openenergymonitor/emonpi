@@ -27,4 +27,3 @@ for i in $(seq 1 ${#data[@]}); do
 done
 
 echo "False"
-exit 1
