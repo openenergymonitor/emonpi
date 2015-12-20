@@ -1,10 +1,11 @@
 #!/usr/bin/env python
-import lcddriver
 from subprocess import *
+import lcddriver
 import time
 from datetime import datetime
 from datetime import timedelta
 from uptime import uptime
+import subprocess
 import threading
 import sys
 import RPi.GPIO as GPIO
@@ -67,6 +68,18 @@ logger.addHandler(loghandler)
 logger.setLevel(logging.INFO)
 
 logger.info("emonPiLCD Start")
+
+
+# ------------------------------------------------------------------------------------
+# Check to see if LCD is connected if not then stop here
+# ------------------------------------------------------------------------------------
+
+if subprocess.check_output(["./emonPiLCD_detect.sh", "27"]) == False:
+    sys.exit()
+else:
+    logger.info("I2C LCD Detected on 0x27")
+
+
 # ------------------------------------------------------------------------------------
 
 r = redis.Redis(host=redis_host, port=redis_port, db=0)
@@ -120,6 +133,8 @@ class Background(threading.Thread):
                 eth0 = "ip addr show eth0 | grep inet | awk '{print $2}' | cut -d/ -f1 | head -n1"
                 p = Popen(eth0, shell=True, stdout=PIPE)
                 eth0ip = p.communicate()[0][:-1]
+                logger.info(subprocess.check_output(eth0, shell = True))
+
                 
                 ethactive = 1
                 if eth0ip=="" or eth0ip==False or (eth0ip[:1].isdigit()!=1):
@@ -134,7 +149,7 @@ class Background(threading.Thread):
                 wlan0 = "ip addr show wlan0 | grep inet | awk '{print $2}' | cut -d/ -f1 | head -n1"
                 p = Popen(wlan0, shell=True, stdout=PIPE)
                 wlan0ip = p.communicate()[0][:-1]
-                
+
                 wlanactive = 1
                 if wlan0ip=="" or wlan0ip==False or (wlan0ip[:1].isdigit()!=1):
                     wlanactive = 0
