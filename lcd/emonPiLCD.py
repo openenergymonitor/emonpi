@@ -74,7 +74,11 @@ logger.info("emonPiLCD Start")
 # Check to see if LCD is connected if not then stop here
 # ------------------------------------------------------------------------------------
 
-if subprocess.check_output(["/home/pi/emonpi/lcd/./emonPiLCD_detect.sh", "27"]) == False:
+lcd_status = subprocess.check_output(["/home/pi/emonpi/lcd/./emonPiLCD_detect.sh", "27"])
+logger.info("I2C LCD Detected on 0x27")
+print lcd_status
+
+if lcd_status == False:
     logger.info("I2C LCD NOT DETECTED...exiting LCD script")
     sys.exit()
 else:
