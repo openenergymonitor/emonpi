@@ -28,7 +28,7 @@ mqtt_port = 1883
 mqtt_topic = "emonhub/rx/"+str(emonPi_nodeID)+"/values"
 
 # ------------------------------------------------------------------------------------
-# emonPi Node ID (default 5)
+# Redis Settings
 # ------------------------------------------------------------------------------------
 redis_host = 'localhost'
 redis_port = 6379
@@ -77,9 +77,6 @@ while not redisready:
     try:
         r.client_list()
         redisready = True
-        
-        
-        
     except redis.ConnectionError:
         logger.info("waiting for redis-server to start...")
         time.sleep(1.0)
@@ -286,12 +283,11 @@ while 1:
     if not mqttConnected:
         logger.info("Connecting to MQTT Server")
         try:
-            #connect
             mqttc.username_pw_set(mqtt_user, mqtt_passwd)
             mqttc.connect(mqtt_host, mqtt_port, 60)
         except:
             logger.info("Could not connect...")
-            time.sleep(1.0)
+            time.sleep(5.0)
     
     mqttc.loop(0)
 
@@ -324,6 +320,10 @@ while 1:
             	else:
             		lcd_string1 = "Ethernet:"
             		lcd_string2 = "NOT CONNECTED"
+            		
+            if mqttConnected == False:
+                lcd_string1 = 'ERROR: MQTT'
+                lcd_string2 = 'Not connected'
                 
         elif page==1:
             if int(r.get("wlan:active")):
@@ -332,46 +332,41 @@ while 1:
             else:
                 lcd_string1 = "WIFI:"
                 lcd_string2 = "NOT CONNECTED"
+            
+            if mqttConnected == False:
+                lcd_string1 = 'ERROR: MQTT'
+                lcd_string2 = 'Not connected'
                 
         elif page==2:
             basedata = r.get("basedata")
-            if basedata is not None:
+            if (basedata is not None) & (mqttConnected ==True) :
                 basedata = basedata.split(",")
                 lcd_string1 = 'Power 1: '+str(basedata[0])+"W"
                 lcd_string2 = 'Power 2: '+str(basedata[1])+"W"
-            else:
-                lcd_string1 = 'ERROR: MQTT'
-                lcd_string2 = 'Not connected?'
 
         elif page==3:
             basedata = r.get("basedata")
-            if basedata is not None:
+            if (basedata is not None) & (mqttConnected ==True) :
                 basedata = basedata.split(",")
                 lcd_string1 = 'VRMS: '+str(basedata[3])+"V"
                 if (int(basedata[4]) != 0):
                     lcd_string2 = 'Temp 1: '+str(basedata[4])+" C"
                 else:
                    lcd_string2 = 'Temp1: ...'
-            else:
-                lcd_string1 = 'ERROR: MQTT'
-                lcd_string2 = 'Not connected?'
         
         elif page==4:
             basedata = r.get("basedata")
-            if basedata is not None:
+            if (basedata is not None) & (mqttConnected ==True) :
                 basedata = basedata.split(",")
                 lcd_string1 = 'VRMS: '+str(basedata[3])+"V"
                 if (int(basedata[4]) != 0):
                     lcd_string2 = 'Temp 1: '+str(basedata[4])+" C"
                 else:
                    lcd_string2 = 'Temp1: ...'
-            else:
-                lcd_string1 = 'ERROR: MQTT'
-                lcd_string2 = 'Not connected?'
         
         elif page==5:
             basedata = r.get("basedata")
-            if basedata is not None:
+            if (basedata is not None) & (mqttConnected ==True) :
                 basedata = basedata.split(",")
                 if (int(basedata[5]) != 0):
                     lcd_string1 = 'Temp 2: '+str(basedata[5])+"C"
@@ -381,9 +376,7 @@ while 1:
                     lcd_string2 = 'Pulse '+str(basedata[10])+"p"
                 else:
                     lcd_string2 = 'Pulse: ...'
-            else:
-                lcd_string1 = 'ERROR: MQTT'
-                lcd_string2 = 'Not connected?'
+
             
         
         logger.info("main lcd_string1: "+lcd_string1)
