@@ -79,7 +79,7 @@ lcd_status = subprocess.check_output(["/home/pi/emonpi/lcd/./emonPiLCD_detect.sh
 
 if lcd_status.rstrip() == 'False':
     print "I2C LCD NOT DETECTED...exiting LCD script"
-    logger.info("I2C LCD NOT DETECTED...exiting LCD script")
+    logger.error("I2C LCD NOT DETECTED...exiting LCD script")
     sys.exit(1)
 else:
     logger.info("I2C LCD Detected on 0x27")
@@ -96,7 +96,7 @@ while not redisready:
         r.client_list()
         redisready = True
     except redis.ConnectionError:
-        logger.info("waiting for redis-server to start...")
+        logger.error("waiting for redis-server to start...")
         time.sleep(1.0)
 
 background = False
@@ -110,7 +110,6 @@ class Background(threading.Thread):
     def run(self):
         last1s = time.time() - 2.0
         last5s = time.time() - 6.0
-        logger.info("Starting background thread")
         # Loop until we stop is false (our exit signal)
         while not self.stop:
             now = time.time()
@@ -138,16 +137,13 @@ class Background(threading.Thread):
                 eth0 = "ip addr show eth0 | grep inet | awk '{print $2}' | cut -d/ -f1 | head -n1"
                 p = Popen(eth0, shell=True, stdout=PIPE)
                 eth0ip = p.communicate()[0][:-1]
-                logger.info(subprocess.check_output(eth0, shell = True))
 
-                
                 ethactive = 1
                 if eth0ip=="" or eth0ip==False or (eth0ip[:1].isdigit()!=1):
                     ethactive = 0
                     
                 r.set("eth:active",ethactive)
                 r.set("eth:ip",eth0ip)
-                logger.info("background: eth:"+str(int(ethactive))+" "+eth0ip)
                 
                 # Wireless LAN
                 # ----------------------------------------------------------------------------------
@@ -161,7 +157,6 @@ class Background(threading.Thread):
                     
                 r.set("wlan:active",wlanactive)
                 r.set("wlan:ip",wlan0ip)
-                logger.info("background: wlan:"+str(int(wlanactive))+" "+wlan0ip)
                 
                 # ----------------------------------------------------------------------------------
         
@@ -177,7 +172,6 @@ class Background(threading.Thread):
                     if len(tmp)>0: signallevel = tmp[0]
 
                 r.set("wlan:signallevel",signallevel)
-                logger.info("background: wlan "+str(signallevel))
                 
             # this loop runs a bit faster so that ctrl-c exits are fast
             time.sleep(0.1)
@@ -198,12 +192,10 @@ def shutdown():
         lcd_string2 = "5.."
         lcd.lcd_display_string( string_lenth(lcd_string1, 16),1)
         lcd.lcd_display_string( string_lenth(lcd_string2, 16),2)
-        logger.info("main lcd_string1: "+lcd_string1)
         time.sleep(1)
         for x in range(4, 0, -1):
             lcd_string2 += "%d.." % (x)
             lcd.lcd_display_string( string_lenth(lcd_string2, 16),2)
-            logger.info("main lcd_string2: "+lcd_string2)
             time.sleep(1)
             
             if (GPIO.input(11) == 0):
@@ -242,18 +234,15 @@ def on_connect(client, userdata, flags, rc):
     if rc:
         mqttConnected = False
     else:
-        logger.info("MQTT Connection UP")
         mqttConnected = True
         mqttc.subscribe(mqtt_topic)
     
 def on_disconnect(client, userdata, rc):
     global mqttConnected
-    logger.info("MQTT Connection DOWN")
     mqttConnected = False
 
 def on_message(client, userdata, msg):
     topic_parts = msg.topic.split("/")
-    logger.info("MQTT RX: "+msg.topic+" "+msg.payload)
     if int(topic_parts[2])==emonPi_nodeID:
         basedata = msg.payload.split(",")
         r.set("basedata",msg.payload)
@@ -306,7 +295,7 @@ while 1:
             mqttc.username_pw_set(mqtt_user, mqtt_passwd)
             mqttc.connect(mqtt_host, mqtt_port, 60)
         except:
-            logger.info("Could not connect...")
+            logger.error("Could not connect to MQTT...")
             time.sleep(5.0)
     
     mqttc.loop(0)
@@ -315,10 +304,14 @@ while 1:
         if backlight == True: page = page + 1
         if page>max_number_pages: page = 0
         buttonPress_time = time.time()
+        logger.info("Mode button pressed")
+        logger.info("Page: "+str(page))
+        logger.info("Data: "+str(basedata))
 
         #turn backight off afer x seconds
     if (now - buttonPress_time) > backlight_timeout:
         backlight = False
+        logger.info("Backlight off")
         lcd.backlight(0)
         if GPIO.input(11) == 1: shutdown() #ensure shutdown button works when backlight is off
     else: backlight = True
@@ -396,11 +389,6 @@ while 1:
                     lcd_string2 = 'Pulse '+str(basedata[10])+"p"
                 else:
                     lcd_string2 = 'Pulse: ...'
-
-            
-        
-        logger.info("main lcd_string1: "+lcd_string1)
-        logger.info("main lcd_string2: "+lcd_string2)
         
         # If Shutdown button is not pressed update LCD
         if (GPIO.input(11) == 0):
