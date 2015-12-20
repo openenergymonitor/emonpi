@@ -41,7 +41,7 @@ echo "Start emonPi Atmega328 firmware update:"
 echo
 
 echo "Start emoncms update:"
-# Run emoncms update script to pull in latest emoncms & emonhub updates  
+# Run emoncms update script to pull in latest emoncms & emonhub updates
 /home/pi/emonpi/emoncmsupdate
 echo
 
@@ -50,7 +50,7 @@ sudo /etc/init.d/emonPiLCD start
 
 
 
-# Remove update flag now update has finished 
+# Remove update flag now update has finished
 sudo rm /tmp/emonpiupdate
 
 printf "\n...................\n"
