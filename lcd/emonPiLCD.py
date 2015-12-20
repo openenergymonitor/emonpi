@@ -14,20 +14,36 @@ import re
 import paho.mqtt.client as mqtt
 
 # ------------------------------------------------------------------------------------
+# emonPi Node ID (default 5)
+# ------------------------------------------------------------------------------------
+emonPi_nodeID = 5
+
+# ------------------------------------------------------------------------------------
+# MQTT Settings
+# ------------------------------------------------------------------------------------
+mqtt_user = "emonpi"
+mqtt_passwd = "emonpimqtt2016"
+mqtt_host = "127.0.0.1"
+mqtt_port = 1883
+mqtt_topic = "emonhub/rx/"+str(emonPi_nodeID)+"/values"
+
+# ------------------------------------------------------------------------------------
+# emonPi Node ID (default 5)
+# ------------------------------------------------------------------------------------
+redis_host = 'localhost'
+redis_port = 6379
+
+
+# ------------------------------------------------------------------------------------
 # LCD backlight timeout in seconds
 # 0: always on
 # 300: off after 5 min
 # ------------------------------------------------------------------------------------
 backlight_timeout = 300
 
-# ------------------------------------------------------------------------------------
-# emonPi Node ID (default 5)
-# ------------------------------------------------------------------------------------
-emonPi_nodeID = 5
-
 # Default Startup Page
 page = 0
-max_number_pages = 3
+max_number_pages = 5
 
 # ------------------------------------------------------------------------------------
 # Start Logging
@@ -47,13 +63,13 @@ else:
 
 loghandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
 logger = logging.getLogger("emonPiLCD")
-logger.addHandler(loghandler)    
+logger.addHandler(loghandler)
 logger.setLevel(logging.INFO)
 
 logger.info("emonPiLCD Start")
 # ------------------------------------------------------------------------------------
 
-r = redis.Redis(host='localhost', port=6379, db=0)
+r = redis.Redis(host=redis_host, port=redis_port, db=0)
 
 # We wait here until redis has successfully started up
 redisready = False
@@ -134,7 +150,7 @@ class Background(threading.Thread):
         
                 signallevel = 0
                 linklevel = 0
-                noiselevel = 0        
+                noiselevel = 0
 
                 if wlanactive:
                     # wlan link status
@@ -150,17 +166,11 @@ class Background(threading.Thread):
             time.sleep(0.1)
             
 def sigint_handler(signal, frame):
-    lcd_string1 = "LCD SCRIPT"
-    lcd_string2 =  "STOPPED"
-    lcd.lcd_display_string( string_lenth(lcd_string1, 16),1)
-    lcd.lcd_display_string( string_lenth(lcd_string2, 16),2) 
-    time.sleep(1)
     logger.info("ctrl+c exit received")
     background.stop = True;
     sys.exit(0)
     
 def sigterm_handler(signal, frame):
-    time.sleep(1)
     logger.info("sigterm received")
     background.stop = True;
     sys.exit(0)
@@ -175,7 +185,7 @@ def shutdown():
         time.sleep(1)
         for x in range(4, 0, -1):
             lcd_string2 += "%d.." % (x)
-            lcd.lcd_display_string( string_lenth(lcd_string2, 16),2) 
+            lcd.lcd_display_string( string_lenth(lcd_string2, 16),2)
             logger.info("main lcd_string2: "+lcd_string2)
             time.sleep(1)
             
@@ -184,15 +194,15 @@ def shutdown():
         lcd_string2="SHUTDOWN NOW!"
         background.stop = True
         lcd.lcd_display_string( string_lenth(lcd_string1, 16),1)
-        lcd.lcd_display_string( string_lenth(lcd_string2, 16),2) 
+        lcd.lcd_display_string( string_lenth(lcd_string2, 16),2)
         time.sleep(2)
         lcd.lcd_clear()
         lcd.lcd_display_string( string_lenth("Wait 30s...", 16),1)
         lcd.lcd_display_string( string_lenth("Before Unplug!", 16),2)
         time.sleep(4)
-        lcd.backlight(0) 											# backlight zero must be the last call to the LCD to keep the backlight off 
+        lcd.backlight(0) 											# backlight zero must be the last call to the LCD to keep the backlight off
         call('halt', shell=False)
-        sys.exit() #end script 
+        sys.exit() #end script
                     
 def get_uptime():
 
@@ -204,9 +214,9 @@ def string_lenth(string, length):
 		string += ' ' * (16 - len(string))
 	return (string)
 
-# write to I2C LCD 
+# write to I2C LCD
 def updatelcd():
-    # line 1- make sure string is 16 characters long to fill LED 
+    # line 1- make sure string is 16 characters long to fill LED
     lcd.lcd_display_string( string_lenth(lcd_string1, 16),1)
     lcd.lcd_display_string( string_lenth(lcd_string2, 16),2) # line 2
     
@@ -217,7 +227,7 @@ def on_connect(client, userdata, flags, rc):
     else:
         logger.info("MQTT Connection UP")
         mqttConnected = True
-        mqttc.subscribe("emonhub/rx/#")
+        mqttc.subscribe(mqtt_topic)
     
 def on_disconnect(client, userdata, rc):
     global mqttConnected
@@ -233,7 +243,7 @@ def on_message(client, userdata, msg):
 
 class ButtonInput():
     def __init__(self):
-        GPIO.add_event_detect(16, GPIO.RISING, callback=self.buttonPress, bouncetime=1000) 
+        GPIO.add_event_detect(16, GPIO.RISING, callback=self.buttonPress, bouncetime=1000)
         self.press_num = 0
         self.pressed = False
     def buttonPress(self,channel):
@@ -243,10 +253,10 @@ class ButtonInput():
 signal.signal(signal.SIGINT, sigint_handler)
 signal.signal(signal.SIGTERM,sigterm_handler)
 
-# Use Pi board pin numbers as these as always consistent between revisions 
-GPIO.setmode(GPIO.BOARD)                                 
+# Use Pi board pin numbers as these as always consistent between revisions
+GPIO.setmode(GPIO.BOARD)
 #emonPi LCD push button Pin 16 GPIO 23
-GPIO.setup(16, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)    
+GPIO.setup(16, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 #emonPi Shutdown button, Pin 11 GPIO 17
 GPIO.setup(11, GPIO.IN)
 
@@ -276,8 +286,9 @@ while 1:
     if not mqttConnected:
         logger.info("Connecting to MQTT Server")
         try:
-            mqttc.connect("127.0.0.1", "1883", 60)
-            lcd = lcddriver.lcd()
+            #connect
+            mqttc.username_pw_set(mqtt_user, mqtt_passwd)
+            mqttc.connect(mqtt_host, mqtt_port, 60)
         except:
             logger.info("Could not connect...")
             time.sleep(1.0)
@@ -289,10 +300,10 @@ while 1:
         if page>max_number_pages: page = 0
         buttonPress_time = time.time()
 
-        #turn backight off afer x seconds 
-    if (now - buttonPress_time) > backlight_timeout: 
+        #turn backight off afer x seconds
+    if (now - buttonPress_time) > backlight_timeout:
         backlight = False
-        lcd.backlight(0) 
+        lcd.backlight(0)
         if GPIO.input(11) == 1: shutdown() #ensure shutdown button works when backlight is off
     else: backlight = True
     
@@ -303,12 +314,12 @@ while 1:
     if ((now-last1s)>=1.0 and backlight) or buttoninput.pressed:
         last1s = now
 
-        if page==0:  
+        if page==0:
             if int(r.get("eth:active")):
                 lcd_string1 = "Ethernet: YES"
                 lcd_string2 = r.get("eth:ip")
             else:
-            	if int(r.get("wlan:active")): 
+            	if int(r.get("wlan:active")):
             		page=page+1
             	else:
             		lcd_string1 = "Ethernet:"
@@ -323,18 +334,57 @@ while 1:
                 lcd_string2 = "NOT CONNECTED"
                 
         elif page==2:
-		    lcd_string1 = datetime.now().strftime('%b %d %H:%M')
-		    lcd_string2 =  'Uptime %.2f days' % (float(r.get("uptime"))/86400)
-		    
-        elif page==3: 
             basedata = r.get("basedata")
             if basedata is not None:
                 basedata = basedata.split(",")
                 lcd_string1 = 'Power 1: '+str(basedata[0])+"W"
                 lcd_string2 = 'Power 2: '+str(basedata[1])+"W"
             else:
-                lcd_string1 = 'Power 1: ...'
-                lcd_string2 = 'Power 2: ...'
+                lcd_string1 = 'ERROR: MQTT'
+                lcd_string2 = 'Not connected?'
+
+        elif page==3:
+            basedata = r.get("basedata")
+            if basedata is not None:
+                basedata = basedata.split(",")
+                lcd_string1 = 'VRMS: '+str(basedata[3])+"V"
+                if (int(basedata[4]) != 0):
+                    lcd_string2 = 'Temp 1: '+str(basedata[4])+" C"
+                else:
+                   lcd_string2 = 'Temp1: ...'
+            else:
+                lcd_string1 = 'ERROR: MQTT'
+                lcd_string2 = 'Not connected?'
+        
+        elif page==4:
+            basedata = r.get("basedata")
+            if basedata is not None:
+                basedata = basedata.split(",")
+                lcd_string1 = 'VRMS: '+str(basedata[3])+"V"
+                if (int(basedata[4]) != 0):
+                    lcd_string2 = 'Temp 1: '+str(basedata[4])+" C"
+                else:
+                   lcd_string2 = 'Temp1: ...'
+            else:
+                lcd_string1 = 'ERROR: MQTT'
+                lcd_string2 = 'Not connected?'
+        
+        elif page==5:
+            basedata = r.get("basedata")
+            if basedata is not None:
+                basedata = basedata.split(",")
+                if (int(basedata[5]) != 0):
+                    lcd_string1 = 'Temp 2: '+str(basedata[5])+"C"
+                else:
+                    lcd_string1 = 'Temp2: ...'
+                if (int(basedata[10]) != 0):
+                    lcd_string2 = 'Pulse '+str(basedata[10])+"p"
+                else:
+                    lcd_string2 = 'Pulse: ...'
+            else:
+                lcd_string1 = 'ERROR: MQTT'
+                lcd_string2 = 'Not connected?'
+            
         
         logger.info("main lcd_string1: "+lcd_string1)
         logger.info("main lcd_string2: "+lcd_string2)
@@ -342,7 +392,7 @@ while 1:
         # If Shutdown button is not pressed update LCD
         if (GPIO.input(11) == 0):
             updatelcd()
-        # If Shutdown button is pressed initiate shutdown sequence 
+        # If Shutdown button is pressed initiate shutdown sequence
         else:
             logger.info("shutdown button pressed")
             shutdown()
