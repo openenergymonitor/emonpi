@@ -17,7 +17,7 @@ import paho.mqtt.client as mqtt
 # ------------------------------------------------------------------------------------
 # emonPi Node ID (default 5)
 # ------------------------------------------------------------------------------------
-emonPi_nodeID = 5
+emonPi_nodeID = 6
 
 # ------------------------------------------------------------------------------------
 # MQTT Settings
@@ -389,6 +389,10 @@ while 1:
                     lcd_string2 = 'Pulse '+str(basedata[10])+"p"
                 else:
                     lcd_string2 = 'Pulse: ...'
+        
+        elif page==6:
+            lcd_string1 = datetime.now().strftime('%b %d %H:%M')
+            lcd_string2 =  'Uptime %.2f days' % (float(r.get("uptime"))/86400)
         
         # If Shutdown button is not pressed update LCD
         if (GPIO.input(11) == 0):
