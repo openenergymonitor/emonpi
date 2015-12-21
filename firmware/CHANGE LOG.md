@@ -1,5 +1,8 @@
 # Change Log
 
+# V3.0 Dec/Jan 15
+  * Continuous sampling using emonLibCM https://github.com/openenergymonitor/EmonLibCM
+
 # V2.0 (17/11/15)
   * Don't print ACK's to serial 
 
