@@ -6,9 +6,9 @@ echo "Factory reset"
 
 rpi-rw
 
-sudo service emonhub stop
-sudo service emoncms-nodes-service stop
-sudo service feedwriter stop
+sudo /etc/init.d/emonhub stop
+sudo /etc/init.d/emoncms-nodes-service stop
+sudo /etc/init.d/feedwriter stop
 
 sudo service redis-server restart
 
@@ -46,15 +46,19 @@ mysql -u root -e "create database emoncms" -praspberry
 echo "Delete data/emonpiupdate.log"
 rm /home/pi/data/emonpiupdate.log
 
-echo "Clear bash history"
-cat /dev/null > ~/.bash_history
+echo "Delete backup data"
+rm /home/pi/data/emonpibackup.log
+rm /home/pi/data/backup.tar.gz   
 
 echo "clear WiFi config /etc/wpa_supplicant/wpa_supplicant.conf"
 echo "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev" > /etc/wpa_supplicant/wpa_supplicant.conf
 echo "update_config=1" >> /etc/wpa_supplicant/wpa_supplicant.conf
 
-sudo service emonhub start
-sudo service emoncms-nodes-service start
-sudo service feedwriter start
+echo "Clear bash history"
+cat /dev/null > ~/.bash_history
+
+sudo /etc/init.d/emonhub start
+sudo /etc/init.d/emoncms-nodes-service start
+sudo /etc/init.d/service feedwriter start
 
 exit

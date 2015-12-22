@@ -67,6 +67,10 @@ echo "Start emoncms update:"
 echo
 
 echo
+echo "Restart openHAB"
+sudo /etc/init.d/openhab restart
+
+echo "Start emonPi LCD service"
 sudo /etc/init.d/emonPiLCD start
 
 
