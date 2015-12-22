@@ -77,7 +77,7 @@ then
 else
         cd /home/lcdtest/
         #download this configuration file inside this
-        sudo wget https://raw.githubusercontent.com/GreatLakesEnergy/emonpi/master/lcd/lcddriver.py
+        sudo wget https://raw.githubusercontent.com/GreatLakesEnergy/emonpi/beaglebone/lcd/lcddriver.py
         echo "lcd driver file addeded"
 
 fi
@@ -88,7 +88,7 @@ then
 else
         cd /home/lcdtest/
         #download this configuration file inside this
-        sudo wget https://raw.githubusercontent.com/GreatLakesEnergy/emonpi/master/lcd/i2c_lib.py
+        sudo wget https://raw.githubusercontent.com/GreatLakesEnergy/emonpi/beaglebone/lcd/i2c_lib.py
         echo "i2c library file addeded"
 
 fi
@@ -99,7 +99,7 @@ then
 else
         cd /home/lcdtest/
         #download this configuration file inside this
-        sudo wget https://raw.githubusercontent.com/GreatLakesEnergy/emonpi/master/lcd/lcd_test.py
+        sudo wget https://raw.githubusercontent.com/GreatLakesEnergy/emonpi/beaglebone/lcd/lcd_test.py
         echo "lcd test file addeded"
 fi
 
