@@ -37,6 +37,10 @@ echo "git pull /var/www/emoncms/Modules/wifi"
 cd /var/www/emoncms/Modules/wifi
 git pull
 
+echo "git pull /var/www/emoncms/Modules/dashboard"
+cd /var/www/emoncms/Modules/dashboard
+git pull
+
 echo
 
 if ! grep -q "V2.x_emonTH_DHT22_DS18B20_RFM69CW_Pulse" /home/pi/data/emonhub.conf ; then
