@@ -1,70 +1,108 @@
 #!/bin/bash
 
-# Run script as root $ sudo ./install 
+# Run script as root $ sudo ./install
 # Reboot required for I2C modules enable to take effect
 
-# emonPi - Raspberry Pi Energy Monitoring 
-# Part of the OpenEnergyMonitor.org project 
+# Part of the OpenEnergyMonitor.org project
 
-echo "Enable I2C module" 
+echo "Enable I2C module"
 
-# Black list method is not used in newer versions of Raspbien 
-#if ! grep -Fxq "#blacklist i2c-bcm2708" /etc/modprobe.d/raspi-blacklist.conf ; then
-#	sudo sed -i 's/blacklist i2c-bcm2708/#blacklist i2c-bcm2708/' /etc/modprobe.d/raspi-blacklist.conf
-#	echo 'I2C module enabled in /etc/modprobe.d/raspi-blacklist.conf'
+#if ! grep -Fxq "BB-I2C1" /sys/devices/bone_capemgr.9/slots ; then
+#       echo 'i2c 2 is not enabled, Enabling...'
+#       sudo echo '@reboot sudo echo BB-I2C1 >> /sys/devices/bone_capemgr.9/slots' >>tempcrontab.txt
+#        echo 'i2c 2 now is enabled'
+#
 #else
-#	echo 'I2C already enabled in /etc/modprobe.d/raspi-blacklist.conf'
+
+#       echo 'i2c 2 already enabled'
 #fi
 
-if ! grep -Fxq "i2c-bcm2708" /etc/modules ; then
-	sudo echo 'i2c-bcm2708' >> /etc/modules
-	echo 'i2c-bcm2708 enabled in /etc/modules'
+cd /sys/devices/bone_capemgr.9/
+file=slots
+
+i2c_ports=`grep -c "BB-I2C1" "$file"`
+
+if [ $i2c_ports -eq 1 ]
+then
+        echo "I2C 2 is already enabled"
 else
-	echo 'i2c-bcm2708 already enabled in /etc/modules'
+        echo "i2c 2 is enabling..."
+        sudo echo BB-I2C1 >> /sys/devices/bone_capemgr.9/slots
+
+fi
+#---------------------------------------------------------------------------------------------
+echo "Enable I2C on boot"
+
+sudo touch /root/tempcrontab.txt
+cd /root/
+file=tempcrontab.txt
+
+i2c_on_boot=`grep -c "@reboot sudo echo BB-I2C1 >> /sys/devices/bone_capemgr.9/slots" "$file"`
+
+if [ $i2c_on_boot -eq 1 ]
+then
+        echo "Code line exist"
+        crontab -l >tempcrontab.txt
+        #sudo echo '@reboot sudo echo BB-I2C1 >> /sys/devices/bone_capemgr.9/slots' >> /root/tempcrontab.txt
+        crontab tempcrontab.txt
+else
+        echo "Adding the code line....."
+        crontab -l >tempcrontab.txt
+        sudo echo '@reboot sudo echo BB-I2C1 >> /sys/devices/bone_capemgr.9/slots' >> /root/tempcrontab.txt
+
+        crontab tempcrontab.txt
+
 fi
 
- 
-
-if ! grep -Fxq "i2c-dev" /etc/modules ; then
-	sudo echo 'i2c-dev' >> /etc/modules
-	echo 'i2c-dev enabled in /etc/modules'
-else
-	echo 'i2c-dev already enabled in /etc/modules'
-fi
-
-if ! grep -Fxq "dtparam=i2c_arm=on" /boot/config.txt ; then
-	sudo echo 'dtparam=i2c_arm=on' >> //boot/config.txt
-	echo 'tparam=i2c_arm=on added to /boot/config.txt'
-else
-	echo 'tparam=i2c_arm=on already added to /boot/config.txt'
-fi
+#---------------------------------------------------------------------------------------------------
 
 
-
-echo 'Intall Python I2C Tools'
+echo 'Install Python I2C Tools'
 sudo apt-get install python-smbus i2c-tools -y
 
 echo 'Attemp to search for LCD I2C address:'
-# Use port 1 for 512Mb RAM pi (rev2 B, B+ & 2) or port 0 for older 256Mb RAM pi Model B (rev1)
-sudo i2cdetect -y 1
+# Use port 2 for bbb
+#sudo i2cdetect -r 2
 
 echo 'Install emonPi Python LCD install scripts'
 
 echo 'Install Python pip and uptime module'
-sudo apt-get install python-pip -y
-sudo pip install uptime
-sudo pip install redis
+sudo apt-get update
+sudo apt-get install build-essential python-dev python-smbus python-pip git
+sudo pip install Adafruit_BBIO
+sudo mkdir /home/lcdtest
+if [ -f /home/lcdtest/lcddriver.py ]
+then
+        echo "lcd driver file already installed"
+else
+        cd /home/lcdtest/
+        #download this configuration file inside this
+        sudo wget https://raw.githubusercontent.com/GreatLakesEnergy/emonpi/master/lcd/lcddriver.py
+        echo "lcd driver file addeded"
 
-# create linked directoty for LCD scripts 
-sudo rm -r /usr/share/emonPiLCD
-sudo ln -s /home/pi/emonpi/lcd/ /usr/share/emonPiLCD
+fi
 
-# create linked init service script 
-sudo rm -f /etc/init.d/emonPiLCD
-sudo ln -s /home/pi/emonpi/lcd/emonPiLCD /etc/init.d/emonPiLCD
+if [ -f /home/lcdtest/i2c_lib.py ]
+then
+        echo "i2c library file already installed"
+else
+        cd /home/lcdtest/
+        #download this configuration file inside this
+        sudo wget https://raw.githubusercontent.com/GreatLakesEnergy/emonpi/master/lcd/i2c_lib.py
+        echo "i2c library file addeded"
 
-# launch at startup 
-sudo update-rc.d emonPiLCD defaults 99
+fi
 
-echo 'emonPi I2C LCD installed...please reboot to take effect'
+if [ -f /home/lcdtest/lcd_test.py ]
+then
+        echo "lcd test file already installed"
+else
+        cd /home/lcdtest/
+        #download this configuration file inside this
+        sudo wget https://raw.githubusercontent.com/GreatLakesEnergy/emonpi/master/lcd/lcd_test.py
+        echo "lcd test file addeded"
+fi
+
+
+echo 'I2C LCD installed...please reboot to take effect'
 
