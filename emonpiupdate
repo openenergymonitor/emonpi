@@ -4,7 +4,7 @@ echo "================================="
 echo "EmonPi update started"
 echo "================================="
 
-sudo service emonhub stop
+sudo /etc/init.d/emonhub stop
 
 echo "Start ATmega328 serial upload using avrdude with emonPi_latest.hex"
 
