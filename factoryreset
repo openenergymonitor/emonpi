@@ -59,6 +59,6 @@ cat /dev/null > ~/.bash_history
 
 sudo /etc/init.d/emonhub start
 sudo /etc/init.d/emoncms-nodes-service start
-sudo /etc/init.d/service feedwriter start
+sudo /etc/init.d/feedwriter start
 
-exit
+exit 0
