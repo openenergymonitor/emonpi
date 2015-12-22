@@ -31,9 +31,30 @@ echo
 date
 echo
 
-echo "Update emonPi git:"
+echo "git pull /home/pi/emonpi"
 cd /home/pi/emonpi
 git pull
+
+echo "git pull /home/pi/RFM2Pi"
+cd /home/pi/RFM2Pi
+git pull
+
+echo "git pull /home/pi/emonhub"
+cd /home/pi/emonhub
+git pull
+
+echo "git pull /home/pi/oem_openHab"
+cd /home/pi/oem_openHab
+git pull
+
+echo "git pull /home/pi/oem_node-red"
+cd /home/pi/oem_node-red
+git pull
+
+echo "git pull /var/www/emoncms/usefulscripts"
+cd /home/pi/usefulscripts
+git pull
+
 echo
 echo "Start emonPi Atmega328 firmware update:"
 # Run emonPi update script to update firmware on Atmega328 on emonPi Shield using avrdude
