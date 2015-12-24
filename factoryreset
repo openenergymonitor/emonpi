@@ -57,8 +57,7 @@ echo "update_config=1" >> /etc/wpa_supplicant/wpa_supplicant.conf
 echo "Clear bash history"
 cat /dev/null > ~/.bash_history
 
-sudo /etc/init.d/emonhub start
-sudo /etc/init.d/emoncms-nodes-service start
-sudo /etc/init.d/feedwriter start
+echo "Shutting down..."
+sudo halt
 
 exit 0
