@@ -71,7 +71,7 @@ lcd.setCursor(0, 1); lcd.print("Detected ");
   delay(2000);
   
   lcd.clear();
-  lcd.print("Raspberry Pi"); lcd.print(numSensors); 
+  lcd.print("Raspberry Pi");
   lcd.setCursor(0, 1); lcd.print("Booting..."); 
    
    
