@@ -62,6 +62,8 @@ sudo /etc/init.d/emoncms-nodes-service restart
 echo
 sudo /etc/init.d/feedwriter restart
 
+sudo /etc/init.d/openhab restart
+
 echo
 echo "Emoncms update finished"
 echo "================================="

@@ -67,10 +67,10 @@ echo "Start emoncms update:"
 echo
 
 echo
-echo "Restart openHAB"
-sudo /etc/init.d/openhab restart
-
+# Wait for update to finish 
+sleep 30
 echo "Start emonPi LCD service"
+
 sudo /etc/init.d/emonPiLCD start
 
 
