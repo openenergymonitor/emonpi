@@ -311,7 +311,6 @@ while 1:
         #turn backight off afer x seconds
     if (now - buttonPress_time) > backlight_timeout:
         backlight = False
-        logger.info("Backlight off")
         lcd.backlight(0)
         if GPIO.input(11) == 1: shutdown() #ensure shutdown button works when backlight is off
     else: backlight = True
