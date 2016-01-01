@@ -380,7 +380,7 @@ while 1:
             basedata = r.get("basedata")
             if (basedata is not None) & (mqttConnected ==True) :
                 basedata = basedata.split(",")
-                if (int(basedata[5]) != 0):
+                if (basedata[5] != 0):
                     lcd_string1 = 'Temp 2: '+str(basedata[5])+"C"
                 else:
                     lcd_string1 = 'Temp2: ...'
