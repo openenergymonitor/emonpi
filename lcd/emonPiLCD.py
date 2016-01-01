@@ -361,7 +361,7 @@ while 1:
             if (basedata is not None) & (mqttConnected ==True) :
                 basedata = basedata.split(",")
                 lcd_string1 = 'VRMS: '+str(basedata[3])+"V"
-                if (int(basedata[4]) != 0):
+                if (basedata[4] != 0):
                     lcd_string2 = 'Temp 1: '+str(basedata[4])+" C"
                 else:
                    lcd_string2 = 'Temp1: ...'
@@ -371,7 +371,7 @@ while 1:
             if (basedata is not None) & (mqttConnected ==True) :
                 basedata = basedata.split(",")
                 lcd_string1 = 'VRMS: '+str(basedata[3])+"V"
-                if (int(basedata[4]) != 0):
+                if (basedata[4] != 0):
                     lcd_string2 = 'Temp 1: '+str(basedata[4])+" C"
                 else:
                    lcd_string2 = 'Temp1: ...'
@@ -384,7 +384,7 @@ while 1:
                     lcd_string1 = 'Temp 2: '+str(basedata[5])+"C"
                 else:
                     lcd_string1 = 'Temp2: ...'
-                if (int(basedata[10]) != 0):
+                if (basedata[10] != 0):
                     lcd_string2 = 'Pulse '+str(basedata[10])+"p"
                 else:
                     lcd_string2 = 'Pulse: ...'
