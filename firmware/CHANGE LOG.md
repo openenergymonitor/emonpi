@@ -1,5 +1,8 @@
 # Change Log
 
+# V3.1 Jan 15
+ * Display "Rasberry Pi Booting" message at startup
+
 # V3.0 Dec/Jan 15
   * Continuous sampling using emonLibCM https://github.com/openenergymonitor/EmonLibCM
 
