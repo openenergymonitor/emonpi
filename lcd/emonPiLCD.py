@@ -332,10 +332,6 @@ while 1:
             	else:
             		lcd_string1 = "Ethernet:"
             		lcd_string2 = "NOT CONNECTED"
-            		
-            if mqttConnected == False:
-                lcd_string1 = 'ERROR: MQTT'
-                lcd_string2 = 'Not connected'
                 
         elif page==1:
             if int(r.get("wlan:active")):
@@ -344,10 +340,6 @@ while 1:
             else:
                 lcd_string1 = "WIFI:"
                 lcd_string2 = "NOT CONNECTED"
-            
-            if mqttConnected == False:
-                lcd_string1 = 'ERROR: MQTT'
-                lcd_string2 = 'Not connected'
                 
         elif page==2:
             basedata = r.get("basedata")
@@ -355,6 +347,9 @@ while 1:
                 basedata = basedata.split(",")
                 lcd_string1 = 'Power 1: '+str(basedata[0])+"W"
                 lcd_string2 = 'Power 2: '+str(basedata[1])+"W"
+            if mqttConnected == False:
+                lcd_string1 = 'ERROR: MQTT'
+                lcd_string2 = 'Not connected'
         
         elif page==3:
             basedata = r.get("basedata")
@@ -365,6 +360,9 @@ while 1:
                     lcd_string2 = 'Temp 1: '+str(basedata[4])+" C"
                 else:
                    lcd_string2 = 'Temp1: ...'
+            if mqttConnected == False:
+                lcd_string1 = 'ERROR: MQTT'
+                lcd_string2 = 'Not connected'
         
         elif page==4:
             basedata = r.get("basedata")
@@ -378,6 +376,9 @@ while 1:
                     lcd_string2 = 'Pulse '+str(basedata[10])+"p"
                 else:
                     lcd_string2 = 'Pulse: ...'
+            if mqttConnected == False:
+                lcd_string1 = 'ERROR: MQTT'
+                lcd_string2 = 'Not connected'
         
         elif page==5:
             lcd_string1 = datetime.now().strftime('%b %d %H:%M')
