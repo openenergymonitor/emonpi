@@ -44,7 +44,7 @@ backlight_timeout = 300
 
 # Default Startup Page
 page = 0
-max_number_pages = 6
+max_number_pages = 5
 
 # ------------------------------------------------------------------------------------
 # Start Logging
@@ -355,7 +355,7 @@ while 1:
                 basedata = basedata.split(",")
                 lcd_string1 = 'Power 1: '+str(basedata[0])+"W"
                 lcd_string2 = 'Power 2: '+str(basedata[1])+"W"
-
+        
         elif page==3:
             basedata = r.get("basedata")
             if (basedata is not None) & (mqttConnected ==True) :
@@ -370,16 +370,6 @@ while 1:
             basedata = r.get("basedata")
             if (basedata is not None) & (mqttConnected ==True) :
                 basedata = basedata.split(",")
-                lcd_string1 = 'VRMS: '+str(basedata[3])+"V"
-                if (basedata[4] != 0):
-                    lcd_string2 = 'Temp 1: '+str(basedata[4])+" C"
-                else:
-                   lcd_string2 = 'Temp1: ...'
-        
-        elif page==5:
-            basedata = r.get("basedata")
-            if (basedata is not None) & (mqttConnected ==True) :
-                basedata = basedata.split(",")
                 if (basedata[5] != 0):
                     lcd_string1 = 'Temp 2: '+str(basedata[5])+"C"
                 else:
@@ -389,7 +379,7 @@ while 1:
                 else:
                     lcd_string2 = 'Pulse: ...'
         
-        elif page==6:
+        elif page==5:
             lcd_string1 = datetime.now().strftime('%b %d %H:%M')
             lcd_string2 =  'Uptime %.2f days' % (float(r.get("uptime"))/86400)
         
