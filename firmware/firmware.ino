@@ -122,7 +122,7 @@ double Vcal, vrms;
 boolean CT1, CT2, ACAC, DS18B20_STATUS;
 byte CT_count, Vrms;                                             
 unsigned long last_sample=0;                                     // Record millis time of last discrete sample
-byte flag;                                                                         // flag to record shutdown push button press
+byte flag;                                                       // flag to record shutdown push button press
 volatile byte pulseCount = 0;
 unsigned long now =0;
 unsigned long pulsetime=0;                                      // Record time of interrupt pulse          
@@ -223,16 +223,28 @@ void loop()
   {
     if (EmonLibCM_ACAC) {
       emonPi.Vrms = EmonLibCM_Vrms*100;
-      emonPi.power1 = EmonLibCM_getRealPower(0);
-      emonPi.power2 = EmonLibCM_getRealPower(1);
-      // emonPi.wh1 = EmonLibCM_getWattHour(0);
-      // emonPi.wh2 = EmonLibCM_getWattHour(1);
+      
+      if (CT1) {
+        emonPi.power1 = EmonLibCM_getRealPower(0);
+        // emonPi.wh1 = EmonLibCM_getWattHour(0);
+      }
+      if (CT2) {
+        emonPi.power2 = EmonLibCM_getRealPower(1);
+        // emonPi.wh2 = EmonLibCM_getWattHour(1);
+      }
+      
+           
     } else {
       emonPi.Vrms = Vrms*100;
-      emonPi.power1 = Vrms * EmonLibCM_getIrms(0);
-      emonPi.power2 = Vrms * EmonLibCM_getIrms(1);
-      // emonPi.wh1 = 0;
+      if (CT1) {
+        emonPi.power1 = Vrms * EmonLibCM_getIrms(0);
+        // emonPi.wh1 = 0;
+      }
+      
+      if (CT2) {
+        emonPi.power2 = Vrms * EmonLibCM_getIrms(1);
       // emonPi.wh2 = 0;
+      }
     }
   }
   
