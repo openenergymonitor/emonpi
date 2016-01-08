@@ -11,34 +11,40 @@ echo
 
 echo "git pull /var/www/emoncms"
 cd /var/www/emoncms
+git branch
 git pull
 
 echo
 
 echo "git pull /var/www/emoncms/Modules/nodes"
 cd /var/www/emoncms/Modules/nodes
+git branch
 git pull
 
 echo
 
 echo "git pull /var/www/emoncms/Modules/app"
 cd /var/www/emoncms/Modules/app
+git branch
 git pull
 
 echo
 
 echo "git pull /var/www/emoncms/Modules/config"
 cd /var/www/emoncms/Modules/config
+git branch
 git pull
 
 echo
 
 echo "git pull /var/www/emoncms/Modules/wifi"
 cd /var/www/emoncms/Modules/wifi
+git branch
 git pull
 
 echo "git pull /var/www/emoncms/Modules/dashboard"
 cd /var/www/emoncms/Modules/dashboard
+git branch
 git pull
 
 echo
