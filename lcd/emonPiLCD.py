@@ -101,11 +101,10 @@ logger.info("SD card image build version: " + sd_image_version)
 r = redis.Redis(host=redis_host, port=redis_port, db=0)
 
 # We wait here until redis has successfully started up
-redisready = False
-while not redisready:
+while True:
     try:
         r.client_list()
-        redisready = True
+        break
     except redis.ConnectionError:
         logger.error("waiting for redis-server to start...")
         time.sleep(1.0)
