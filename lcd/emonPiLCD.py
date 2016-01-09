@@ -3,8 +3,6 @@ from subprocess import *
 import lcddriver
 import time
 from datetime import datetime
-from datetime import timedelta
-from uptime import uptime
 import subprocess
 import threading
 import sys
@@ -134,8 +132,6 @@ class Background(threading.Thread):
                 # Get uptime
                 with open('/proc/uptime', 'r') as f:
                     seconds = float(f.readline().split()[0])
-                    array = str(timedelta(seconds = seconds)).split('.')
-                    string = array[0]
                     r.set("uptime",seconds)
 
             # ----------------------------------------------------------
@@ -173,8 +169,6 @@ class Background(threading.Thread):
                 # ----------------------------------------------------------------------------------
 
                 signallevel = 0
-                linklevel = 0
-                noiselevel = 0
 
                 if wlanactive:
                     # wlan link status
@@ -260,7 +254,6 @@ def on_disconnect(client, userdata, rc):
 def on_message(client, userdata, msg):
     topic_parts = msg.topic.split("/")
     if int(topic_parts[2])==emonPi_nodeID:
-        basedata = msg.payload.split(",")
         r.set("basedata",msg.payload)
 
 class ButtonInput():
