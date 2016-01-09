@@ -1,5 +1,5 @@
 import i2c_lib
-from time import *
+from time import sleep
 
 # LCD Address
 ADDRESS = 0x27
