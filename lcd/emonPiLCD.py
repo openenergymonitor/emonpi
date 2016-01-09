@@ -12,6 +12,8 @@ import paho.mqtt.client as mqtt
 import socket
 import fcntl
 import struct
+import logging
+import logging.handlers
 
 # ------------------------------------------------------------------------------------
 # emonPi Node ID (default 5)
@@ -48,8 +50,6 @@ max_number_pages = 6
 # ------------------------------------------------------------------------------------
 # Start Logging
 # ------------------------------------------------------------------------------------
-import logging
-import logging.handlers
 uselogfile = True
 
 mqttc = False
