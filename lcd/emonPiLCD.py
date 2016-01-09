@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from subprocess import *
 import lcddriver
 import time
 from datetime import datetime
@@ -9,8 +8,10 @@ import sys
 import RPi.GPIO as GPIO
 import signal
 import redis
-import re
 import paho.mqtt.client as mqtt
+import socket
+import fcntl
+import struct
 
 # ------------------------------------------------------------------------------------
 # emonPi Node ID (default 5)
@@ -118,6 +119,7 @@ class Background(threading.Thread):
         self.stop = False
 
     def run(self):
+        ipaddress = IPAddress()
         last1s = time.time() - 2.0
         last5s = time.time() - 6.0
         # Loop until we stop is false (our exit signal)
@@ -142,29 +144,17 @@ class Background(threading.Thread):
 
                 # Ethernet
                 # --------------------------------------------------------------------------------
-                eth0 = "ip addr show eth0 | grep inet | awk '{print $2}' | cut -d/ -f1 | head -n1"
-                p = Popen(eth0, shell=True, stdout=PIPE)
-                eth0ip = p.communicate()[0][:-1]
+                eth0ip = ipaddress.get_ip_address('eth0')
 
-                ethactive = 1
-                if eth0ip=="" or eth0ip==False or (eth0ip[:1].isdigit()!=1):
-                    ethactive = 0
-
-                r.set("eth:active",ethactive)
-                r.set("eth:ip",eth0ip)
+                r.set("eth:active", bool(eth0ip))
+                r.set("eth:ip", eth0ip)
 
                 # Wireless LAN
                 # ----------------------------------------------------------------------------------
-                wlan0 = "ip addr show wlan0 | grep inet | awk '{print $2}' | cut -d/ -f1 | head -n1"
-                p = Popen(wlan0, shell=True, stdout=PIPE)
-                wlan0ip = p.communicate()[0][:-1]
+                wlan0ip = ipaddress.get_ip_address('wlan0')
 
-                wlanactive = 1
-                if wlan0ip=="" or wlan0ip==False or (wlan0ip[:1].isdigit()!=1):
-                    wlanactive = 0
-
-                r.set("wlan:active",wlanactive)
-                r.set("wlan:ip",wlan0ip)
+                r.set("wlan:active", bool(wlan0ip))
+                r.set("wlan:ip", wlan0ip)
 
                 # ----------------------------------------------------------------------------------
 
@@ -172,15 +162,31 @@ class Background(threading.Thread):
 
                 if wlanactive:
                     # wlan link status
-                    p = Popen("/sbin/iwconfig wlan0", shell=True, stdout=PIPE)
-                    iwconfig = p.communicate()[0]
-                    tmp = re.findall('(?<=Signal level=)\w+',iwconfig)
-                    if len(tmp)>0: signallevel = tmp[0]
+                    with open('/proc/net/wireless', 'r') as f:
+                        wireless = f.readlines()
+                    signals = [x.split()[3] for x in wireless if x.strip().startswith('wlan0')]
+                    if signals:
+                        signallevel = signals[0]
 
-                r.set("wlan:signallevel",signallevel)
-
+                r.set("wlan:signallevel", signallevel)
+                
             # this loop runs a bit faster so that ctrl-c exits are fast
             time.sleep(0.1)
+            
+
+class IPAddress(object):
+    def __init__(self):
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+    def get_ip_address(self, ifname):
+        try:
+            return socket.inet_ntoa(fcntl.ioctl(
+                self.sock.fileno(),
+                0x8915,  # SIOCGIFADDR
+                struct.pack('256s', ifname[:15])
+            )[20:24])
+        except Exception:
+            return ''
 
 def sigint_handler(signal, frame):
     logger.info("ctrl+c exit received")
