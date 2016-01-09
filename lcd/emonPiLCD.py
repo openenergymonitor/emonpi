@@ -205,42 +205,40 @@ def shutdown():
     while GPIO.input(11) == 1:
         lcd_string1 = "emonPi Shutdown"
         lcd_string2 = "5.."
-        lcd.lcd_display_string(string_lenth(lcd_string1, 16), 1)
-        lcd.lcd_display_string(string_lenth(lcd_string2, 16), 2)
+        lcd.lcd_display_string(string_length(lcd_string1), 1)
+        lcd.lcd_display_string(string_length(lcd_string2), 2)
         time.sleep(1)
         for x in range(4, 0, -1):
             lcd_string2 += "%d.." % (x)
-            lcd.lcd_display_string(string_lenth(lcd_string2, 16), 2)
+            lcd.lcd_display_string(string_length(lcd_string2), 2)
             time.sleep(1)
 
             if GPIO.input(11) == 0:
                 return
         lcd_string2 = "SHUTDOWN NOW!"
         background.stop = True
-        lcd.lcd_display_string(string_lenth(lcd_string1, 16), 1)
-        lcd.lcd_display_string(string_lenth(lcd_string2, 16), 2)
+        lcd.lcd_display_string(string_length(lcd_string1), 1)
+        lcd.lcd_display_string(string_length(lcd_string2), 2)
         time.sleep(2)
         lcd.lcd_clear()
-        lcd.lcd_display_string(string_lenth("Wait 30s...", 16), 1)
-        lcd.lcd_display_string(string_lenth("Before Unplug!", 16), 2)
+        lcd.lcd_display_string(string_length("Wait 30s..."), 1)
+        lcd.lcd_display_string(string_length("Before Unplug!"), 2)
         time.sleep(4)
         lcd.backlight(0) 											# backlight zero must be the last call to the LCD to keep the backlight off
         subprocess.call('halt', shell=False)
         sys.exit()  # end script
 
 
-def string_lenth(string, length):
+def string_length(string):
     # Add blank characters to end of string to make up to length long
-    if len(string) < 16:
-        string += ' ' * (16 - len(string))
-    return string
+    return '%-16s' % string
 
 
 # write to I2C LCD
 def updatelcd():
     # line 1- make sure string is 16 characters long to fill LED
-    lcd.lcd_display_string(string_lenth(lcd_string1, 16), 1)
-    lcd.lcd_display_string(string_lenth(lcd_string2, 16), 2)  # line 2
+    lcd.lcd_display_string(string_length(lcd_string1), 1)
+    lcd.lcd_display_string(string_length(lcd_string2), 2)  # line 2
 
 
 def on_connect(client, userdata, flags, rc):
