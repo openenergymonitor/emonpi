@@ -67,7 +67,7 @@ echo 'Attemp to search for LCD I2C address:'
 echo 'Install emonPi Python LCD install scripts'
 
 echo 'Install Python pip and uptime module'
-sudo apt-get update
+#sudo apt-get update
 sudo apt-get install build-essential python-dev python-smbus python-pip git
 sudo pip install Adafruit_BBIO
 sudo mkdir /home/lcdtest
@@ -102,9 +102,6 @@ else
         sudo wget https://raw.githubusercontent.com/GreatLakesEnergy/emonpi/beaglebone/lcd/lcd_test.py
         echo "lcd test file addeded"
 fi
-
-
-
 
 echo 'I2C LCD installed...please reboot to take effect'
 
