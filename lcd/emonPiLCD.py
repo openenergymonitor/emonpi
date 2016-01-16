@@ -13,6 +13,8 @@ import struct
 import logging
 import logging.handlers
 import atexit
+import os
+import select
 
 # ------------------------------------------------------------------------------------
 # emonPi Node ID (default 5)
@@ -67,29 +69,26 @@ class IPAddress(object):
 
 
 def shutdown(lcd):
-    while GPIO.input(11) == 1:
-        lcd.display_line(0, "emonPi Shutdown")
-        lcd.display_line(1, "5..")
+    lcd.display_line(0, "emonPi Shutdown")
+    for x in range(1, 6):
+        lcd.display_line(1, ''.join(str(y) + '..' for y in range(5, 5-x, -1)))
         lcd.updatelcd()
         time.sleep(1)
-        for x in range(1, 6):
-            lcd.display_line(1, ''.join(str(y) + '..' for y in range(5, 5-x, -1)))
-            lcd.updatelcd()
-            time.sleep(1)
 
-            if GPIO.input(11) == 0:
-                return
-        lcd.display_line(1, "SHUTDOWN NOW!")
-        lcd.updatelcd()
-        time.sleep(2)
-        lcd.lcd_clear()
-        lcd.display_line(0, "Wait 30s...")
-        lcd.display_line(1, "Before Unplug!")
-        lcd.updatelcd()
-        time.sleep(4)
-        lcd.backlight(0) 											# backlight zero must be the last call to the LCD to keep the backlight off
-        subprocess.call('halt', shell=False)
-        sys.exit(0)  # end script
+        if GPIO.input(11) == 0:
+            return
+    lcd.display_line(1, "SHUTDOWN NOW!")
+    lcd.updatelcd()
+    time.sleep(2)
+    lcd.lcd_clear()
+    lcd.display_line(0, "Wait 30s...")
+    lcd.display_line(1, "Before Unplug!")
+    lcd.updatelcd()
+    time.sleep(4)
+    # backlight zero must be the last call to the LCD to keep the backlight off
+    lcd.backlight(0)
+    subprocess.call('halt', shell=False)
+    sys.exit(0)  # end script
 
 
 class LCD(object):
@@ -131,15 +130,17 @@ class LCD(object):
 
 
 class ButtonInput(object):
-    def __init__(self, logger):
+    def __init__(self, logger, fd):
         GPIO.add_event_detect(16, GPIO.RISING, callback=self.buttonPress, bouncetime=1000)
         self.logger = logger
         self.press_num = 0
         self.pressed = False
+        self.fd = fd
 
     def buttonPress(self, channel):
         self.pressed = True
         self.logger.info("lcd button press " + str(self.press_num))
+        self.fd.write('1')
 
 
 def main():
@@ -183,7 +184,11 @@ def main():
     # emonPi Shutdown button, Pin 11 GPIO 17
     GPIO.setup(11, GPIO.IN)
 
-    buttoninput = ButtonInput(logger)
+    # Create a pipe with no buffering, make the read end non-blocking and pass the other to the ButtonInput class
+    pipe = os.pipe()
+    pipe = (os.fdopen(pipe[0], 'r', 0), os.fdopen(pipe[1], 'w', 0))
+    fcntl.fcntl(pipe[0], fcntl.F_SETFL, os.O_NONBLOCK)
+    buttoninput = ButtonInput(logger, pipe[1])
 
     logger.info("Connecting to redis server...")
 
@@ -222,7 +227,6 @@ def main():
     # time to show Build version
     time.sleep(3)
 
-    last1s = time.time() - 1.0
     buttonPress_time = time.time()
     page = 0
 
@@ -250,116 +254,116 @@ def main():
             logger.info("Page: " + str(page))
             logger.info("Data: " + r.get("basedata"))
 
-        # ----------------------------------------------------------
-        # UPDATE EVERY 1s
-        # ----------------------------------------------------------
-        if now - last1s >= 1.0:
-            last1s = now
+        # Get system parameters and store in redis
+        # Get uptime
+        with open('/proc/uptime', 'r') as f:
+            seconds = float(f.readline().split()[0])
+            r.set('uptime', seconds)
 
-            # Get system parameters and store in redis
-            # Get uptime
-            with open('/proc/uptime', 'r') as f:
-                seconds = float(f.readline().split()[0])
-                r.set('uptime', seconds)
+        # Update ethernet
+        eth0ip = ipaddress.get_ip_address('eth0')
 
-            # Update ethernet
-            eth0ip = ipaddress.get_ip_address('eth0')
+        r.set("eth:active", bool(eth0ip))
+        r.set("eth:ip", eth0ip)
 
-            r.set("eth:active", bool(eth0ip))
-            r.set("eth:ip", eth0ip)
+        # Update wifi
+        wlan0ip = ipaddress.get_ip_address('wlan0')
 
-            # Update wifi
-            wlan0ip = ipaddress.get_ip_address('wlan0')
+        r.set("wlan:active", bool(wlan0ip))
+        r.set("wlan:ip", wlan0ip)
 
-            r.set("wlan:active", bool(wlan0ip))
-            r.set("wlan:ip", wlan0ip)
+        signallevel = 0
+        if wlan0ip:
+            # wlan link status
+            with open('/proc/net/wireless', 'r') as f:
+                wireless = f.readlines()
+            signals = [x.split()[3] for x in wireless if x.strip().startswith('wlan0')]
+            if signals:
+                signallevel = signals[0].partition('.')[0]
+        r.set("wlan:signallevel", signallevel)
 
-            signallevel = 0
-            if wlan0ip:
-                # wlan link status
-                with open('/proc/net/wireless', 'r') as f:
-                    wireless = f.readlines()
-                signals = [x.split()[3] for x in wireless if x.strip().startswith('wlan0')]
-                if signals:
-                    signallevel = signals[0].partition('.')[0]
-            r.set("wlan:signallevel", signallevel)
-
-            # Now display the appropriate LCD page
-            if page == 0:
-                if eth0ip:
-                    lcd.display_line(0, "Ethernet: YES")
-                    lcd.display_line(1, eth0ip)
-                elif ipaddress.get_ip_address('wlan0'):
-                    page += 1
-                else:
-                    lcd.display_line(0, "Ethernet:")
-                    lcd.display_line(1, "NOT CONNECTED")
-
-            if page == 1:
-                if wlan0ip:
-                    lcd.display_line(0, "WIFI: YES  " + str(signallevel) + "%")
-                    lcd.display_line(1, wlan0ip)
-                else:
-                    lcd.display_line(0, "WIFI:")
-                    lcd.display_line(1, "NOT CONNECTED")
-
-            elif page == 2:
-                basedata = r.get("basedata")
-                if basedata is not None:
-                    basedata = basedata.split(",")
-                    lcd.display_line(0, 'Power 1: ' + str(basedata[0]) + "W")
-                    lcd.display_line(1, 'Power 2: ' + str(basedata[1]) + "W")
-                else:
-                    lcd.display_line(0, 'ERROR: MQTT')
-                    lcd.display_line(1, 'Not connected')
-
-            elif page == 3:
-                basedata = r.get("basedata")
-                if basedata is not None:
-                    basedata = basedata.split(",")
-                    lcd.display_line(0, 'VRMS: ' + str(basedata[3]) + "V")
-                    if basedata[4] != 0:
-                        lcd.display_line(1, 'Temp 1: ' + str(basedata[4]) + " C")
-                    else:
-                        lcd.display_line(1, 'Temp1: ...')
-                else:
-                    lcd.display_line(0, 'ERROR: MQTT')
-                    lcd.display_line(1, 'Not connected')
-
-            elif page == 4:
-                basedata = r.get("basedata")
-                if basedata is not None:
-                    basedata = basedata.split(",")
-                    if basedata[5] != 0:
-                        lcd.display_line(0, 'Temp 2: ' + str(basedata[5]) + "C")
-                    else:
-                        lcd.display_line(0, 'Temp2: ...')
-                    if basedata[10] != 0:
-                        lcd.display_line(1, 'Pulse ' + str(basedata[10]) + "p")
-                    else:
-                        lcd.display_line(1, 'Pulse: ...')
-                else:
-                    lcd.display_line(0, 'ERROR: MQTT')
-                    lcd.display_line(1, 'Not connected')
-
-            elif page == 5:
-                lcd.display_line(0, datetime.now().strftime('%b %d %H:%M'))
-                lcd.display_line(1, 'Uptime %.2f days' % (seconds / 86400))
-
-            elif page == 6:
-                lcd.display_line(0, "emonPi Build:")
-                lcd.display_line(1, sd_image_version[:-1])
-
-            # If Shutdown button is not pressed update LCD
-            if GPIO.input(11) == 0:
-                lcd.updatelcd()
-            # If Shutdown button is pressed initiate shutdown sequence
+        # Now display the appropriate LCD page
+        if page == 0:
+            if eth0ip:
+                lcd.display_line(0, "Ethernet: YES")
+                lcd.display_line(1, eth0ip)
+            elif ipaddress.get_ip_address('wlan0'):
+                page += 1
             else:
-                logger.info("shutdown button pressed")
-                shutdown(lcd)
+                lcd.display_line(0, "Ethernet:")
+                lcd.display_line(1, "NOT CONNECTED")
+
+        if page == 1:
+            if wlan0ip:
+                lcd.display_line(0, "WIFI: YES  " + str(signallevel) + "%")
+                lcd.display_line(1, wlan0ip)
+            else:
+                lcd.display_line(0, "WIFI:")
+                lcd.display_line(1, "NOT CONNECTED")
+
+        elif page == 2:
+            basedata = r.get("basedata")
+            if basedata is not None:
+                basedata = basedata.split(",")
+                lcd.display_line(0, 'Power 1: ' + str(basedata[0]) + "W")
+                lcd.display_line(1, 'Power 2: ' + str(basedata[1]) + "W")
+            else:
+                lcd.display_line(0, 'ERROR: MQTT')
+                lcd.display_line(1, 'Not connected')
+
+        elif page == 3:
+            basedata = r.get("basedata")
+            if basedata is not None:
+                basedata = basedata.split(",")
+                lcd.display_line(0, 'VRMS: ' + str(basedata[3]) + "V")
+                if basedata[4] != 0:
+                    lcd.display_line(1, 'Temp 1: ' + str(basedata[4]) + " C")
+                else:
+                    lcd.display_line(1, 'Temp1: ...')
+            else:
+                lcd.display_line(0, 'ERROR: MQTT')
+                lcd.display_line(1, 'Not connected')
+
+        elif page == 4:
+            basedata = r.get("basedata")
+            if basedata is not None:
+                basedata = basedata.split(",")
+                if basedata[5] != 0:
+                    lcd.display_line(0, 'Temp 2: ' + str(basedata[5]) + "C")
+                else:
+                    lcd.display_line(0, 'Temp2: ...')
+                if basedata[10] != 0:
+                    lcd.display_line(1, 'Pulse ' + str(basedata[10]) + "p")
+                else:
+                    lcd.display_line(1, 'Pulse: ...')
+            else:
+                lcd.display_line(0, 'ERROR: MQTT')
+                lcd.display_line(1, 'Not connected')
+
+        elif page == 5:
+            lcd.display_line(0, datetime.now().strftime('%b %d %H:%M'))
+            lcd.display_line(1, 'Uptime %.2f days' % (seconds / 86400))
+
+        elif page == 6:
+            lcd.display_line(0, "emonPi Build:")
+            lcd.display_line(1, sd_image_version[:-1])
+
+        # If Shutdown button is not pressed update LCD
+        if GPIO.input(11) == 0:
+            lcd.updatelcd()
+        # If Shutdown button is pressed initiate shutdown sequence
+        else:
+            logger.info("shutdown button pressed")
+            shutdown(lcd)
 
         buttoninput.pressed = False
-        time.sleep(0.1)
+        # Wait up to one second or until the button is pressed.
+        read, _, _ = select.select([pipe[0]], [], [], 1)
+        if read:  # pipe is readable, consume the byte.
+            try:
+                read[0].read(1)
+            except IOError:
+                pass
 
 if __name__ == '__main__':
     main()
