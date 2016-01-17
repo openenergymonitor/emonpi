@@ -50,8 +50,8 @@ git pull
 echo
 
 echo "Copy new default.emonpi.settings.php to settings.php & make backup old.emonpi.settings.php"
-cp /var/www/emoncms/settings.php /var/www/emoncms/old.settings.php
-cp /var/www/emoncms/default.emonpi.settings.php /var/www/emoncms/settings.php
+sudo cp /var/www/emoncms/settings.php /var/www/emoncms/old.settings.php
+sudo cp /var/www/emoncms/default.emonpi.settings.php /var/www/emoncms/settings.php
 
 # Append new nodes to emonHub.conf
 if ! grep -q "V2.x_emonTH_DHT22_DS18B20_RFM69CW_Pulse" /home/pi/data/emonhub.conf ; then
