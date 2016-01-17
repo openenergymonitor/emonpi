@@ -161,6 +161,7 @@ def main():
 
     # Now check the LCD and initialise the object
     lcd = LCD(logger)
+    backlight = False
 
     # ------------------------------------------------------------------------------------
     # Discover & display emonPi SD card image version
@@ -238,11 +239,9 @@ def main():
         now = time.time()
 
         # turn backight off after backlight_timeout seconds
-        if now - buttonPress_time > backlight_timeout:
+        if now - buttonPress_time > backlight_timeout and backlight:
             backlight = False
             lcd.backlight(0)
-        else:
-            backlight = True
 
         if buttoninput.pressed:
             if backlight:
@@ -250,6 +249,8 @@ def main():
             if page > max_number_pages:
                 page = 0
             buttonPress_time = now
+            backlight = True
+            lcd.backlight(1)
             logger.info("Mode button pressed")
             logger.info("Page: " + str(page))
             logger.info("Data: " + r.get("basedata"))
