@@ -13,7 +13,7 @@ sudo apt-get upgrade -y
 # extra packeges needed if staring from lightweight minibam
 # wireless-regdb iw crda are used to fix "Calling CRDA to update world regulatory domain" error messages due to missing packages in Jessie https://www.raspberrypi.org/forums/viewtopic.php?f=28&t=122067
 if [minibian = true]; then
-	sudo apt-get install -y iptables wpasupplicant strace nano dpkg logrotate wireless-regdb iw crda
+	sudo apt-get install -y iptables wpasupplicant strace nano dpkg logrotate wireless-regdb iw crda firmware-brcm80211 firmware-ralink apt-utils
 	sudo apt-get remove -y exim4-base
 else
 	echo "deleting unused software"
