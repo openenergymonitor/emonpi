@@ -161,7 +161,8 @@ def main():
 
     # Now check the LCD and initialise the object
     lcd = LCD(logger)
-    backlight = False
+    lcd.backlight(1)
+    backlight = True
 
     # ------------------------------------------------------------------------------------
     # Discover & display emonPi SD card image version
@@ -210,6 +211,7 @@ def main():
         topic_parts = msg.topic.split("/")
         if int(topic_parts[2]) == emonPi_nodeID:
             r.set("basedata", msg.payload)
+
     def on_connect(client, userdata, flags, rc):
         mqttc.subscribe(mqtt_topic)
     mqttc = mqtt.Client()
@@ -249,8 +251,9 @@ def main():
             if page > max_number_pages:
                 page = 0
             buttonPress_time = now
-            backlight = True
-            lcd.backlight(1)
+            if not backlight:
+                backlight = True
+                lcd.backlight(1)
             logger.info("Mode button pressed")
             logger.info("Page: " + str(page))
             logger.info("Data: " + r.get("basedata"))
