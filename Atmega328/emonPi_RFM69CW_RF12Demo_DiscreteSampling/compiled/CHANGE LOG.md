@@ -1,5 +1,8 @@
 # Change Log
 
+# V2.1 (20/1/16)
+  * Allow use of group 0
+
 # V2.0 (17/11/15)
   * Don't print ACK's to serial 
 

@@ -100,7 +100,7 @@ static void handleInput (char c) {
         break;
     
       case 'g': // set network group
-        if (value){
+        if (value>=0){
           networkGroup = value;
           if (RF_STATUS==1) rf12_initialize(nodeID, RF_freq, networkGroup);
         }
