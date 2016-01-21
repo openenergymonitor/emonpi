@@ -151,7 +151,7 @@ echo "set emoncms folder http redirect"
 echo "<?php header('Location: ../emoncms'); ?>" > /var/www/index.php
 
 echo "Installing Emonhub"
-cd
+cd /home/debian/
 git clone -b $BRANCH  https://github.com/GreatLakesEnergy/emonhub.git && emonhub/install
 sudo service emonhub stop
 sudo chown debian:www-data /home/debian/data/emonhub.conf
