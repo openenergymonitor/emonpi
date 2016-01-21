@@ -6,6 +6,9 @@ echo "Factory reset"
 
 rpi-rw
 
+ans=n 
+read -p "Reboot when reset complete (y/n)? Else shutdown " -t 5 ans 
+
 sudo /etc/init.d/emonhub stop
 sudo /etc/init.d/emoncms-nodes-service stop
 sudo /etc/init.d/feedwriter stop
@@ -57,7 +60,15 @@ echo "update_config=1" >> /etc/wpa_supplicant/wpa_supplicant.conf
 echo "Clear bash history"
 cat /dev/null > ~/.bash_history
 
-echo "Shutting down..."
-sudo halt
+echo 
+if [[ "$ans" == "" ]] ; then ans=n;fi 
+echo answer given is $ans 
+if [[ "$ans" == "n" ]] ;then 
+echo "Shutting down Raspberry Pi"; 
+sudo halt; 
+else 
+echo "REBOOTING Raspberry Pi"; 
+sudo init 6 
+fi
 
 exit 0

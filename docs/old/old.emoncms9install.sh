@@ -85,8 +85,7 @@ sudo chown www-data:root /home/pi/data/phptimeseries
 echo "git clone emoncms repo into /var/www/"
 sudo chown pi /var/www
 cd /var/www
-git clone https://github.com/emoncms/emoncms.git
-cd /var/www/emoncms && git checkout 9.0
+git clone -b stable https://github.com/emoncms/emoncms.git
 
 echo "Use default.emonpi.settings.php as settings.php"
 cp /var/www/emoncms/default.emonpi.settings.php /var/www/emoncms/settings.php
