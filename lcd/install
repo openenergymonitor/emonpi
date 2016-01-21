@@ -63,9 +63,16 @@ echo 'Attemp to search for LCD I2C address:'
 # Use port 2 for bbb
 #sudo i2cdetect -r 2
 echo 'Install emonPi Python LCD install scripts'
-echo 'Install Python pip and uptime module'
-sudo apt-get update
-sudo apt-get install build-essential python-dev python-smbus python-pip git
-sudo pip install Adafruit_BBIO
+if [ -f /etc/init.d/emonPiLCD ]
+then
+	echo "/etc/init.d/emonPiLCD already exists doing nothing"
+else
+	echo "copying daemon script /etc/init.d/emonPiLCD"
+	sudo cp /home/debian/emonpi/lcd/emonPiLCD /etc/init.d/emonPiLCD
+fi
+
+echo "Starting LCD script"
+sudo service emonPiLCD start
+
 echo 'I2C LCD installed...please reboot to take effect'
 
