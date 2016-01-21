@@ -49,9 +49,9 @@ sed '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverri
 sudo cp /tmp/apache2.conf /etc/apache2/apache2.conf
 
 # Custom log
-echo "custom log"
-sed 's/CustomLog/# CustomLog/' /etc/apache2/apache2.conf > /tmp/apache2.conf
-sudo cp /tmp/apache2.conf /etc/apache2/sites-enabled/apache2.conf
+#echo "custom log"
+#sed 's/CustomLog/# CustomLog/' /etc/apache2/apache2.conf > /tmp/apache2.conf
+#sudo cp /tmp/apache2.conf /etc/apache2/sites-enabled/apache2.conf
 
 # Custom log vhosts
 echo "custom log vhosts"
