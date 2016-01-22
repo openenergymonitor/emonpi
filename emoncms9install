@@ -88,7 +88,7 @@ echo "git clone emoncms repo into /var/www/"
 sudo chown debian /var/www
 cd /var/www
 git clone -b beaglebonebla https://github.com/GreatLakesEnergy/emoncms.git
-cp /var/www/emoncms/default.settings.php /var/www/emoncms/settings.php
+cp /var/www/emoncms/default.emonpi.settings.php /var/www/emoncms/settings.php
 
 echo "git clone emoncms modules repo into /var/www/Modules"
 cd /var/www/emoncms/Modules
