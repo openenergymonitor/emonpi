@@ -1,0 +1,4 @@
+#!/bin/sh
+sudo mount -o remount,ro /dev/mmcblk0p2  /
+echo "Filesystem is locked - Read Only access"
+echo "type ' rpi-rw ' to unlock"
