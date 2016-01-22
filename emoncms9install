@@ -92,10 +92,10 @@ cp /var/www/emoncms/default.settings.php /var/www/emoncms/settings.php
 
 echo "git clone emoncms modules repo into /var/www/Modules"
 cd /var/www/emoncms/Modules
-git clone -b beaglebonebla https://github.com/emoncms/nodes.git
-git clone -b beaglebonebla https://github.com/emoncms/app.git
-git clone -b beaglebonebla https://github.com/emoncms/config.git
-git clone -b beaglebonebla https://github.com/emoncms/wifi.git
+git clone -b 9.0 https://github.com/emoncms/nodes.git
+git clone -b 9.0 https://github.com/emoncms/app.git
+git clone -b 9.0 https://github.com/emoncms/config.git
+git clone -b 9.0 https://github.com/emoncms/wifi.git
 
 rm /var/www/emoncms/Modules/input/input_menu.php
 
