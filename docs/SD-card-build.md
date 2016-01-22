@@ -11,7 +11,7 @@ Forum discussion:
 - Base image RASPBIAN JESSIE LITE 2015-11-21 (Kernel 4.1)
 - 4GB SD card size, partitions can be expanded if required (8GB SD card shipped with emonPi)
 
-1. emonPi specific changes 
+1. Initial setup
 2. Root filesystem read-only with RW data partition (~/data)
 3. Low write mode & optimisations
 4. emonPi LCD service & serial port (/dev/ttyAMA0)
@@ -28,7 +28,14 @@ Forum discussion:
 
 
 
-# 1. emonPi specific changes 
+# 1. Initial Setup
+
+## Update and install core packages 
+
+	sudo apt-get update -y
+	sudo apt-get upgrade -y
+	sudo apt-get install git-core -y
+	git clone https://github.com/openenergymonitor/emonpi
 
 ## Change password, set international options & expand Filesystem
 
