@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # /sbin/dhclient-script
+
 # Modifed to support read-only file system on emonPi
+# Based on Raspbian Wheezy 2015-05-05
 # /etc/resolv.conf and /etc/resolv.conf.dhclient-new to RW data partition and sym link to /etc
 
 # touch /home/pi/data/resolv.conf.dhclient-new
