@@ -22,6 +22,10 @@ sudo apt-get -y install mysql-server
 echo "Install required packages"
 sudo apt-get install -y apache2 mysql-client php5 libapache2-mod-php5 php5-mysql php5-curl php-pear php5-dev php5-mcrypt git-core redis-server build-essential ufw ntp python-serial python-configobj mosquitto mosquitto-clients python-pip python-dev screen sysstat minicom
 
+#Makesymbolik link and copy libwebsockets so the mosquitto is happy
+echo "libwebsockets to /usr/lib/"
+ln -s  /usr/lib/libwebsockets.so.4.0.0 /usr/lib/libwebsockets.so.3
+
 sed 's/\/var\/log\/apache2/\/var\/log/' /etc/apache2/envvars > /tmp/apache2envvars
 sudo cp /tmp/apache2envvars /etc/apache2/envvars
 sudo service apache2 restart
