@@ -36,6 +36,7 @@ Forum discussion:
 	sudo apt-get upgrade -y
 	sudo apt-get install git-core -y
 	git clone https://github.com/openenergymonitor/emonpi
+    git clone https://github.com/openenergymonitor/RFM2Pi
 
 ## Change password, set international options & expand Filesystem
 
