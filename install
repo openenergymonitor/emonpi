@@ -10,8 +10,8 @@ sudo apt-get autoremove -y
 sudo apt-get clean
 
 echo "Set hostname to emonpi"
-sudo sed -i 's/beaglebone/emonpi/' /etc/hosts
-sudo sed -i 's/beaglebone/emonpi/' /etc/hostname
+sudo sed -i 's/beaglebone/emonpi/g' /etc/hosts
+sudo sed -i 's/beaglebone/emonpi/g' /etc/hostname
 
 
 echo "enable serial uploads with avrdue and autoreset & install minicom & enable use of serial port"
