@@ -15,6 +15,7 @@ sudo sed -i 's/beaglebone/emonpi/' /etc/hostname
 
 
 echo "enable serial uploads with avrdue and autoreset & install minicom & enable use of serial port"
+cd /home/debian/
 git clone https://github.com/openenergymonitor/avrdude-rpi.git ~/avrdude-rpi && ~/avrdude-rpi/install
 
 #echo "install ino Arduino compile tool"
