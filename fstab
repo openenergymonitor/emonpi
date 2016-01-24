@@ -1,7 +1,6 @@
 tmpfs           /tmp            tmpfs   nodev,nosuid,size=30M,mode=1777 0  0
 tmpfs           /var/log        tmpfs   nodev,nosuid,size=50M,mode=1777 0  0
-tmpfs           /var/lib/dhcp   tmpfs   nodev,nosuid,size=1M,mode=1777 0  0
-tmpfs           /var/lib/openhab tmpfs  nodev,nosuid,size=40M,mode=1777 0  0
+tmpfs           /var/lib        tmpfs   nodev,nosuid,size=150M,mode=1777 0  0
 proc            /proc           proc    defaults 0 0
 /dev/mmcblk0p1  /boot           vfat    defaults,noatime,nodiratime 0 2
 /dev/mmcblk0p2  /               ext4    defaults,ro,noatime,nodiratime,errors=remount-ro 0 1
