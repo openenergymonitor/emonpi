@@ -13,13 +13,14 @@ Forum discussion:
 
 1. Initial setup
 2. Root filesystem read-only with RW data partition (~/data)
-3. Low write mode & optimisations
-4. emonPi LCD service & serial port (/dev/ttyAMA0)
+4. Serial port (/dev/ttyAMA0) 
+5. emonPi LCD service 
 5. emonHub
 6. Mosquitto MQTT server with authentication
 7. Emoncms V9 Core (stable branch)
 8. Emoncms install & configure modules: node, app, dashboards, wifi
 8. Emoncms logger & logrotate
+3. Low write mode optimisations
 9. Emoncms MQTT service
 10. Emoncms export / import module
 10. LightWave RF MQTT OKK transmitter
@@ -62,16 +63,52 @@ From 'raspberrypi' to 'emonpi2016'
 # 2. Root filesystem read-only with RW data partition (~/data)
 
 
-Follow Raspberry Pi Emoncms Read-Only guide: 
-
-[https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/read-only.md](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/read-only.md)
+[Follow Raspberry Pi Emoncms Read-Only guide](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/read-only.md)
 
 
 
-# 3. Low write mode & optimisations
+
+# 3. Serial port (/dev/ttyAMA0) 
+
+To allow the emonPi to communicate with the RasPi via serial we need to disconnect the terminal console from /tty/AMA0. 
+
+## Use custom cmdline.txt
+
+	sudo mv /boot/cmdline.txt /boot/original.cmdline.txt
+	sudo cp /home/pi/emonpi/cmdline.txt /boot/
+
+This changes the  a custom cmdline.txt file:
+
+From:
+	
+	dwc_otg.lpm_enable=0 console=ttyAMA0,115200 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait
+
+To:
+	
+	wc_otg.lpm_enable=0 console=tty1 elevator=noop root=/dev/mmcblk0p2 rootfstype=ext4 fsck.repair=yes rootwait
+
+ELEVATOR explination 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Low write mode & optimisations
 
 [Related forum discussion thread](http://openenergymonitor.org/emon/node/11695)
 
-Follow Raspberry Pi Emoncms Low-Write guide: 
 
-[https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md)
+
+Since we have enabled read-only the first part of the [Raspberry Pi Emoncms Low-Write guide](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md) does not apply we can dive stright into the second parts from   
+[Setting up logging on read-only FS](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md#setup-logfile-environment) onwards 
