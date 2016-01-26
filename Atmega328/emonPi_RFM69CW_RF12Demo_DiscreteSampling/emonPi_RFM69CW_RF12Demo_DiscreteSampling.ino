@@ -33,6 +33,17 @@
 Change Log:
 https://github.com/openenergymonitor/emonpi/blob/master/Atmega328/emonPi_RFM69CW_RF12Demo_DiscreteSampling/compiled/CHANGE%20LOG.md
 
+emonhub.conf node decoder:
+
+[[5]]
+    nodename = emonPi
+    firmware = emonPi_RFM69CW_RF12Demo_DiscreteSampling.ino
+    hardware = emonpi
+    [[[rx]]]
+        names = power1,power2,power1_plus_power2,Vrms,T1,T2,T3,T4,T5,T6,pulseCount
+        datacodes = h, h, h, h, h, h, h, h, h, h, L
+        scales = 1,1,1,0.01,0.1,0.1,0.1,0.1,0.1,0.1,1
+        units = W,W,W,V,C,C,C,C,C,C,p
 
 */
 
