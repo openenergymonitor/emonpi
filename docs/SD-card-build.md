@@ -113,7 +113,7 @@ Restart and test if I2C LCD is detected, it should be on address `0x27`:
 
 # 5. Install mosquitto MQTT & emonHub 
 
-## Install & configure mosquitto mqtt service (required for emoHub)
+## Install & configure mosquitto MQTT server (required for emonHub)
 ```
 wget http://repo.mosquitto.org/debian/mosquitto-repo.gpg.key
 sudo apt-key add mosquitto-repo.gpg.key
