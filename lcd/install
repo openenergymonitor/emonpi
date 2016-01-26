@@ -1,10 +1,17 @@
 #!/bin/bash
 
 # Run script as root $ sudo ./install 
-# Reboot required for I2C modules enable to take effect
+# Reboot required for I2C  enable to take effect
 
 # emonPi - Raspberry Pi Energy Monitoring 
 # Part of the OpenEnergyMonitor.org project 
+
+echo 'Install Python pip, Python I2C Tools and uptime module'
+sudo apt-get update
+sudo apt-get install python-smbus i2c-tools python-rpi.gpio python-pip redis-server -y
+sudo pip install uptime
+sudo pip install redis
+sudo pip install paho-mqtt
 
 echo "Enable I2C module" 
 
@@ -16,20 +23,19 @@ echo "Enable I2C module"
 #	echo 'I2C already enabled in /etc/modprobe.d/raspi-blacklist.conf'
 #fi
 
-if ! grep -Fxq "i2c-bcm2708" /etc/modules ; then
-	sudo echo 'i2c-bcm2708' >> /etc/modules
-	echo 'i2c-bcm2708 enabled in /etc/modules'
+if ! grep -Fxq "i2c-bcm2708" /etc/ ; then
+	sudo echo 'i2c-bcm2708' >> /etc/
+	echo 'i2c-bcm2708 enabled in /etc/'
 else
-	echo 'i2c-bcm2708 already enabled in /etc/modules'
+	echo 'i2c-bcm2708 already enabled in /etc/'
 fi
 
- 
 
-if ! grep -Fxq "i2c-dev" /etc/modules ; then
-	sudo echo 'i2c-dev' >> /etc/modules
-	echo 'i2c-dev enabled in /etc/modules'
+if ! grep -Fxq "i2c-dev" /etc/ ; then
+	sudo echo 'i2c-dev' >> /etc/
+	echo 'i2c-dev enabled in /etc/'
 else
-	echo 'i2c-dev already enabled in /etc/modules'
+	echo 'i2c-dev already enabled in /etc/'
 fi
 
 if ! grep -Fxq "dtparam=i2c_arm=on" /boot/config.txt ; then
@@ -39,24 +45,6 @@ else
 	echo 'tparam=i2c_arm=on already added to /boot/config.txt'
 fi
 
-
-
-echo 'Intall Python I2C Tools'
-sudo apt-get install python-smbus i2c-tools -y
-
-echo 'Attemp to search for LCD I2C address:'
-# Use port 1 for 512Mb RAM pi (rev2 B, B+ & 2) or port 0 for older 256Mb RAM pi Model B (rev1)
-sudo i2cdetect -y 1
-
-echo 'Install emonPi Python LCD install scripts'
-
-echo 'Install Python pip and uptime module'
-sudo apt-get install python-rpi.gpio -y
-sudo apt-get install python-pip -y
-sudo apt-get install redis-server
-sudo pip install uptime
-sudo pip install redis
-sudo pip install paho-mqtt
 
 # create linked directoty for LCD scripts 
 sudo rm -r /usr/share/emonPiLCD
@@ -70,4 +58,8 @@ sudo ln -s /home/pi/emonpi/lcd/emonPiLCD /etc/init.d/emonPiLCD
 sudo update-rc.d emonPiLCD defaults 99
 
 echo 'emonPi I2C LCD installed...please reboot to take effect'
+
+echo 'After reboot attempt to search for LCD I2C address: $sudo i2cdetect -y 1'
+# Use port 1 for 512Mb RAM pi (rev2 B, B+ & 2) or port 0 for older 256Mb RAM pi Model B (rev1)
+sudo i2cdetect -y 1
 
