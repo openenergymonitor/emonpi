@@ -166,7 +166,8 @@ Check log file:
 
 Successful log output shows data being received from emonPi (node 5) and posted to MQTT:
 
-```pi@emonpi:~ $ cat /var/log/emonhub/emonhub.log 
+```
+pi@emonpi:~ $ cat /var/log/emonhub/emonhub.log 
 2016-01-26 10:54:58,325 INFO     MainThread EmonHub emonHub 'emon-pi' variant v1.1
 2016-01-26 10:54:58,326 INFO     MainThread Opening hub...
 2016-01-26 10:54:58,327 INFO     MainThread Logging level set to DEBUG
