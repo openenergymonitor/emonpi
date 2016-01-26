@@ -61,8 +61,11 @@ echo "Start emonPi Atmega328 firmware update:"
 /home/pi/emonpi/emonpiupdate
 echo
 
-echo "Running emonhub automatic node addition script"
-/home/pi/emonhub/conf/nodes/emonpi_auto_add_nodes.sh
+echo
+echo "Start emonhub update script:"
+# Run emonPi update script to update firmware on Atmega328 on emonPi Shield using avrdude
+/home/pi/emonpi/emonhubupdate
+echo
 
 echo "Start emoncms update:"
 # Run emoncms update script to pull in latest emoncms & emonhub updates
