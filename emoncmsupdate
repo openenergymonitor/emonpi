@@ -54,17 +54,19 @@ sudo cp /var/www/emoncms/settings.php /var/www/emoncms/old.settings.php
 sudo cp /var/www/emoncms/default.emonpi.settings.php /var/www/emoncms/settings.php
 
 # Append new nodes to emonHub.conf
-if ! grep -q "V2.x_emonTH_DHT22_DS18B20_RFM69CW_Pulse" /home/pi/data/emonhub.conf ; then
-  echo "Appending emonTH V2.x pulse counting node decoding additions to /home/pi/data/emonhub.conf..."
-  echo -e "$(</home/pi/emonpi/emonhub.conf_emonTHaddition)" >> /home/pi/data/emonhub.conf
-  echo "..Done"
-fi
+# moved to main update script and changed to check for nodeid
 
-if ! grep -q "V2_3_emonTxV3_4_DiscreteSampling" /home/pi/data/emonhub.conf ; then
-  echo "Appending emonTx V2.3 pulse counting node decoding additions to /home/pi/data/emonhub.conf..."
-  echo -e "$(</home/pi/emonpi/emonhub.conf_emonTxaddition)" >> /home/pi/data/emonhub.conf
-  echo "..Done"
-fi
+# if ! grep -q "V2.x_emonTH_DHT22_DS18B20_RFM69CW_Pulse" /home/pi/data/emonhub.conf ; then
+#  echo "Appending emonTH V2.x pulse counting node decoding additions to /home/pi/data/emonhub.conf..."
+#  echo -e "$(</home/pi/emonpi/emonhub.conf_emonTHaddition)" >> /home/pi/data/emonhub.conf
+#  echo "..Done"
+# fi
+
+# if ! grep -q "V2_3_emonTxV3_4_DiscreteSampling" /home/pi/data/emonhub.conf ; then
+#  echo "Appending emonTx V2.3 pulse counting node decoding additions to /home/pi/data/emonhub.conf..."
+#  echo -e "$(</home/pi/emonpi/emonhub.conf_emonTxaddition)" >> /home/pi/data/emonhub.conf
+#  echo "..Done"
+#fi
 
 echo
 sudo /etc/init.d/emonhub restart
