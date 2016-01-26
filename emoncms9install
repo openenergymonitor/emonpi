@@ -10,6 +10,7 @@
 # Install all dependencies
 # There are a few extra things in here such as mosquitto
 # which will become useful soon
+BRANCH="beaglebone"
 
 # MYSQL INSTALL WITHOUT PASSWORD PROMPT
 echo "MYSQL INSTALL WITHOUT PASSWORD PROMPT"
@@ -20,6 +21,10 @@ sudo apt-get -y install mysql-server
 # All other apt-get packages
 echo "Install required packages"
 sudo apt-get install -y apache2 mysql-client php5 libapache2-mod-php5 php5-mysql php5-curl php-pear php5-dev php5-mcrypt git-core redis-server build-essential ufw ntp python-serial python-configobj mosquitto mosquitto-clients python-pip python-dev screen sysstat minicom
+
+#Makesymbolik link and copy libwebsockets so the mosquitto is happy
+echo "libwebsockets to /usr/lib/"
+ln -s  /usr/lib/libwebsockets.so.4.0.0 /usr/lib/libwebsockets.so.3
 
 sed 's/\/var\/log\/apache2/\/var\/log/' /etc/apache2/envvars > /tmp/apache2envvars
 sudo cp /tmp/apache2envvars /etc/apache2/envvars
@@ -87,8 +92,8 @@ sudo chown www-data:root /home/debian/data/phptimeseries
 echo "git clone emoncms repo into /var/www/"
 sudo chown debian /var/www
 cd /var/www
-git clone -b 9.0 https://github.com/emoncms/emoncms.git
-cp /var/www/emoncms/default.settings.php /var/www/emoncms/settings.php
+git clone -b 9.0 https://github.com/GreatLakesEnergy/emoncms.git
+cp /var/www/emoncms/default.emonpi.settings.php /var/www/emoncms/settings.php
 
 echo "git clone emoncms modules repo into /var/www/Modules"
 cd /var/www/emoncms/Modules
@@ -150,9 +155,9 @@ sudo rm /var/www/index.html
 echo "set emoncms folder http redirect"
 echo "<?php header('Location: ../emoncms'); ?>" > /var/www/index.php
 
-#echo "Installing Emonhub"
-#cd
-#git clone https://github.com/openenergymonitor/emonhub.git && emonhub/install
+echo "Installing Emonhub"
+cd /home/debian/
+git clone -b $BRANCH  https://github.com/GreatLakesEnergy/emonhub.git && emonhub/install
 sudo service emonhub stop
 sudo chown debian:www-data /home/debian/data/emonhub.conf
 sudo chmod 664 /home/debian/data/emonhub.conf

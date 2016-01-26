@@ -59,7 +59,28 @@ sudo apt-get install python-smbus i2c-tools -y
 echo 'Attemp to search for LCD I2C address:'
 # Use port 2 for bbb
 #sudo i2cdetect -r 2
+<<<<<<< HEAD
 echo 'I2C for LCD is enabled; reboot to take effect'
+=======
+echo 'Install emonPi Python LCD install scripts'
+if [ -f /etc/init.d/emonPiLCD ]
+then
+	echo "/etc/init.d/emonPiLCD already exists doing nothing"
+else
+	echo "copying daemon script /etc/init.d/emonPiLCD"
+	sudo cp /home/debian/emonpi/lcd/emonPiLCD /etc/init.d/emonPiLCD
+	echo "updating rc scripts for auto-start"
+	sudo update-rc.d emonPiLCD start
+	echo "updating rc scripts to enable start"
+	sudo update-rc.d emonPiLCD enable
+fi
+
+
+echo "Starting LCD script"
+sudo service emonPiLCD start
+
+echo 'I2C LCD installed...please reboot to take effect'
+>>>>>>> 20cb293fa0994be60f525bc669965e715e2f092a
 
 if [ -f /etc/init.d/emonPiLCD ]
 then

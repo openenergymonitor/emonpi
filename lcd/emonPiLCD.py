@@ -8,7 +8,6 @@ from uptime import uptime
 import threading
 import sys
 import Adafruit_BBIO.GPIO as GPIO
-lcd = lcddriver.lcd()
 import signal
 import redis
 import re
@@ -19,25 +18,29 @@ import paho.mqtt.client as mqtt
 # 0: always on
 # 300: off after 5 min
 # ------------------------------------------------------------------------------------
-backlight_timeout = 300
+backlight_timeout = 180
 
 # ------------------------------------------------------------------------------------
 # emonPi Node ID (default 5)
 # ------------------------------------------------------------------------------------
 emonPi_nodeID = 10
+lcd = lcddriver.lcd()
 
 
 # Default Startup Page
 page = 0
 inc = 0
 GPIO_PORT = "P8_11"
-#in case we use a button to switch on/off 
+#in case we use a button to switch on/off
 GPIO_PORT_shutdown = "P8_12"
 GPIO.setup( GPIO_PORT,GPIO.IN)
 GPIO.setup( GPIO_PORT_shutdown,GPIO.IN)
 new_switch_state = GPIO.input(GPIO_PORT)
 shutdown_button =GPIO.input(GPIO_PORT_shutdown)
+
 max_number_pages = 3
+
+SHUTDOWN_TIME =3  # Shutdown after 3 second press
 
 # ------------------------------------------------------------------------------------
 # Start Logging
@@ -123,7 +126,6 @@ class Background(threading.Thread):
                 if eth0ip=="" or eth0ip==False:
                     ethactive = 0
 
-                    
                 r.set("eth:active",ethactive)
                 r.set("eth:ip",eth0ip)
                 logger.info("background: eth:"+str(int(ethactive))+" "+eth0ip)
@@ -147,7 +149,6 @@ class Background(threading.Thread):
                 signallevel = 0
                 linklevel = 0
                 noiselevel = 0
-        
 
                 if wlanactive:
                     # wlan link status
@@ -182,21 +183,11 @@ def sigterm_handler(signal, frame):
     background.stop = True;
     sys.exit(0)
 
-    
-def sigterm_handler(signal, frame):
-    lcd_string1 = "LCD SCRIPT"
-    lcd_string2 =  "STOPPED"
-    lcd.lcd_display_string( string_lenth(lcd_string1, 16),1)
-    lcd.lcd_display_string( string_lenth(lcd_string2, 16),2) 
-    time.sleep(1)
-    logger.info("sigterm received")
-    background.stop = True;
-    sys.exit(0)
-    
+
 
 def shutdown():
     while (shutdown_button == 1):
-        lcd_string1 = "emonPi Shutdown"
+        lcd_string1 = "RMC Shutdown"
         lcd_string2 = "5.."
         lcd.lcd_display_string( string_lenth(lcd_string1, 16),1)
         lcd.lcd_display_string( string_lenth(lcd_string2, 16),2)
@@ -219,7 +210,7 @@ def shutdown():
         lcd.lcd_display_string( string_lenth("Wait 30s...", 16),1)
         lcd.lcd_display_string( string_lenth("Before Unplug!", 16),2)
         time.sleep(4)
-        lcd.backlight(0)                                                                                        # backlight zero must be the last call to the LCD to keep the backlight off
+        lcd.backlight(0) 											# backlight zero must be the last call to the LCD to keep the backlight off
         call('halt', shell=False)
         sys.exit() #end script
 
@@ -263,10 +254,11 @@ def on_message(client, userdata, msg):
 
 class ButtonInput():
     def __init__(self):
-        GPIO.add_event_detect(GPIO_PORT, GPIO.RISING, callback=self.buttonPress, bouncetime=1000)
+        #GPIO.add_event_detect(GPIO_PORT, GPIO.RISING, callback=self.buttonPress, bouncetime=1000)
         self.press_num = 0
         self.pressed = False
     def buttonPress(self,channel):
+
         self.pressed = True
         logger.info("lcd button press "+str(self.press_num))
 
@@ -299,6 +291,27 @@ buttonPress_time = time.time()
 
 while 1:
 
+    logging.info("Starting main loop")
+
+
+    #while GPIO.input(GPIO_PORT) == GPIO.LOW:
+    #   time.sleep(0.1)
+    #   logging.info("button not pressed")
+
+    # Get the time button was pressed
+    button_down_time = time.time()
+    buttoninput.pressed = False
+
+    while GPIO.input(GPIO_PORT) == GPIO.HIGH:
+       backlight = True
+       time.sleep(0.1)
+       buttoninput.pressed = True
+
+       logging.info("Button Pressed")
+       if time.time() - button_down_time > SHUTDOWN_TIME:
+          logging.info("Button Pressed looong" )
+          shutdown_button = 1
+	  break
     now = time.time()
 
     if not mqttConnected:
@@ -342,7 +355,7 @@ while 1:
                         lcd_string1 = "Ethernet:"
                         lcd_string2 = "NOT CONNECTED"
 
-                
+
         elif page==1:
             if int(r.get("wlan:active")):
                 lcd_string1 = "WIFI: YES  "+str(r.get("wlan:signallevel"))+"%"
@@ -352,8 +365,8 @@ while 1:
                 lcd_string2 = "NOT CONNECTED"
 
         elif page==2:
-                    lcd_string1 = datetime.now().strftime('%b %d %H:%M')
-                    lcd_string2 =  'Uptime %.2f days' % (float(r.get("uptime"))/86400)
+		    lcd_string1 = datetime.now().strftime('%b %d %H:%M')
+		    lcd_string2 =  'Uptime %.2f days' % (float(r.get("uptime"))/86400)
 
         elif page==3:
             basedata = r.get("basedata")
@@ -371,7 +384,6 @@ while 1:
         # If Shutdown button is not pressed update LCD
         if (shutdown_button == 0):
             updatelcd()
-
         # If Shutdown button is pressed initiate shutdown sequence
         else:
             logger.info("shutdown button pressed")

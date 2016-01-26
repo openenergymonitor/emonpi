@@ -10,11 +10,12 @@ sudo apt-get autoremove -y
 sudo apt-get clean
 
 echo "Set hostname to emonpi"
-sudo sed -i 's/beaglebone/emonpi/' /etc/hosts
-sudo sed -i 's/beaglebone/emonpi/' /etc/hostname
+sudo sed -i 's/beaglebone/emonpi/g' /etc/hosts
+sudo sed -i 's/beaglebone/emonpi/g' /etc/hostname
 
 
 echo "enable serial uploads with avrdue and autoreset & install minicom & enable use of serial port"
+cd /home/debian/
 git clone https://github.com/openenergymonitor/avrdude-rpi.git ~/avrdude-rpi && ~/avrdude-rpi/install
 
 #echo "install ino Arduino compile tool"
@@ -35,15 +36,15 @@ sudo /home/debian/emonpi/lcd/install
 echo "move /etc/resolv.conf to RW data partition to allow updating of DNS nameservers"
 # create sim link of resolv.conf and resolv.conf.dhclient-new in RW /data to /etc
 cp /etc/resolv.conf /home/debian/data/
-sudo rm /etc/resolv.conf 
-sudo ln -s /home/debian/data/resolv.conf /etc/resolv.conf
+#sudo rm /etc/resolv.conf 
+#sudo ln -s /home/debian/data/resolv.conf /etc/resolv.conf
 
 # Create resolv.conf.dhclient-new file and symlink to /etc
-touch /home/debian/data/resolv.conf.dhclient-new
-sudo ln -s /home/debian/data/resolv.conf.dhclient-new /etc/resolv.conf.dhclient-new
+#touch /home/debian/data/resolv.conf.dhclient-new
+#sudo ln -s /home/debian/data/resolv.conf.dhclient-new /etc/resolv.conf.dhclient-new
 
 # make backup of  dhclient-script
-sudo cp /sbin/dhclient-script /sbin/dhclient-script_original
+#sudo cp /sbin/dhclient-script /sbin/dhclient-script_original
 
 # Best do these steps manually: https://github.com/openenergymonitor/emonpi/blob/master/imagebuild.md
 #echo "Move log directory to temporary partition"
