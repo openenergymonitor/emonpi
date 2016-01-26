@@ -213,6 +213,10 @@ Follow [Emoncms Raspbian Jessie install guide](https://github.com/emoncms/emoncm
 	* `sudo mkdir /home/pi/data/{phpfiwa,phpfina,phptimeseries}`
 	* `sudo chown www-data:root /home/pi/data/{phpfiwa,phpfina,phptimeseries}`
 
+## Move MYSQL database location 
+
+The MYSQL database for Emoncms is usually in `/var/lib`, since the emonPi runs the root FS as read-only we need to move the MYSQL database to the RW partition `home/pi/data/mysql`. Follow stepsL [Moving MYSQL database in Emoncms Read-only documentation](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/read-only.md#move-mysql-database)
+
 
 # 8. Low write mode Emoncms optimisations
 
@@ -242,9 +246,16 @@ After installing modules check and apply database updates in Emoncms Admin.
 
 Follow install instructions in [WiFi module Readme](https://github.com/emoncms/wifi/blob/9.0/README.md) to give web user permission to execute system WLAN commands. 
 
+Move `wpa_wpa_supplicant.conf` where wifi network authentication details are stored to RW partition with symlink back to /etc:
+
+	sudo mv /etc/wpa_supplicant/wpa_supplicant.conf /home/pi/data/wpa_supplicant.conf
+	sudo ln -s /home/pi/data/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf  
+
 ## Install wifi-check script
 
-Add wifi-check script to /user/local/bin
+To check if wifi is connected every 5min and re-initiate connection if not. 
+
+Add wifi-check script to `/user/local/bin`:
 
 	sudo ln -s /home/pi/emonpi/wifi-check /usr/local/bin/wifi-check
 
