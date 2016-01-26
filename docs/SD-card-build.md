@@ -18,10 +18,11 @@ Forum discussion:
 5. emonHub
 6. Mosquitto MQTT server with authentication
 7. Emoncms V9 Core (stable branch)
+3. Low write mode Emoncms optimisations
 8. Emoncms install & configure modules: node, app, dashboards, wifi
-8. Emoncms logger & logrotate
-3. Low write mode optimisations
 9. Emoncms MQTT service
+10. emonPi update script
+10. Open UFW ports
 10. Emoncms export / import module
 10. LightWave RF MQTT OKK transmitter
 12. openHab
@@ -96,24 +97,75 @@ Note changing `elevator=deadline` to `elevator=noop` disk scheduler. Noop that i
 	git clone https://github.com/openenergymonitor/avrdude-rpi.git ~/avrdude-rpi && ~/avrdude-rpi/install
 
 
+# 7. Install Emoncms V9 Core (stable branch)
+
+Follow [Emoncms Raspbian Jessie install guide](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/readme.md)
+
+## emonPi specific settings
+
+* MYSQL root password: `emonpimysql2016`
+* MYSQL `emoncms` user password: `emonpiemoncmsmysql2016`
+* Use emonPi default settings: 
+	* `cd /var/www/emoncms && cp default.emonpi.settings.php settings.php`
+* Create feed directories in RW partition `/home/pi/data` instead of `/var/lib`: 
+	* `sudo mkdir /home/pi/data/{phpfiwa,phpfina,phptimeseries}`
+	* `sudo chown www-data:root /home/pi/data/{phpfiwa,phpfina,phptimeseries}`
 
 
-
-
-
-
-
-
-
-
-
-
-
-# Low write mode & optimisations
+# 8. Low write mode Emoncms optimisations
 
 [Related forum discussion thread](http://openenergymonitor.org/emon/node/11695)
 
+Follow [Raspberry Pi Emoncms Low-Write guide](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md) from [Setting up logging on read-only FS](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md#setup-logfile-environment) onwards (we have earlier setup read-only mode):
+
+* [Setting up logging on read-only FS](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md#setup-logfile-environment)
+* [Move PHP sessions to tmpfs (RAM)](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md#move-php-sessions-to-tmpfs-ram)
+* [Configure Redis](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md#configure-redis)
 
 
-Since we have enabled read-only the first part of the [Raspberry Pi Emoncms Low-Write guide](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md) does not apply we can dive stright into the second parts from   
-[Setting up logging on read-only FS](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md#setup-logfile-environment) onwards 
+No need to [Enable Low-write mode in emoncms](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md#enable-low-write-mode-in-emoncms) since these chnages to `settings.php` are already set in `default.emonpi.settings.php` that we copied accross earlier. 
+
+# 9. Emoncms install & configure modules: node, app, dashboards, wifi
+
+```
+cd /var/www/emoncms/Modules
+git clone https://github.com/emoncms/dashboard.git
+git clone https://github.com/emoncms/app.git
+git clone https://github.com/emoncms/wifi.git
+git clone https://github.com/emoncms/nodes.git
+```
+After installing modules check and apply database updates in Emoncms Admin. 
+
+## Configure WiFi Module 
+
+Follow install instructions in [WiFi module Readme](https://github.com/emoncms/wifi/blob/9.0/README.md) to give web user permission to execute system WLAN commands. 
+
+## Install wifi-check script
+
+Add wifi-check script to /user/local/bin
+
+	sudo ln -s /home/pi/emonpi/wifi-check /usr/local/bin/wifi-check
+
+Make wifi check script run as root crontab every 5min:
+
+	sudo crontab -e 
+
+Add the line:
+
+	*/5 * * * * /usr/local/bin/wifi-check > /var/log/wificheck.log 2>&1" mycron ; 
+
+## Setup Nodes Module 
+
+Follow setup Readme in [Nodes Module repo](https://github.com/emoncms/nodes) to install `emoncms-nodes-service script`. 
+
+
+
+
+
+# emonPi Backup / Import
+
+[Forum Topic](http://openenergymonitor.org/emon/node/11843)
+
+# open ports 
+
+https://github.com/emoncms/emoncms/blob/low-write/docs/install.md#security
