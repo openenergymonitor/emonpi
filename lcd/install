@@ -55,7 +55,7 @@ sudo rm -f /etc/init.d/emonPiLCD
 sudo ln -s /home/pi/emonpi/lcd/emonPiLCD /etc/init.d/emonPiLCD
 
 # launch at startup 
-sudo update-rc.d emonPiLCD defaults 99
+sudo update-rc.d emonPiLCD defaults
 
 echo 'emonPi I2C LCD installed...please reboot to take effect'
 
