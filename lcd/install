@@ -1,9 +1,6 @@
 #!/bin/bash
 
 # Run script as root $ sudo ./install
-# Reboot required for I2C modules enable to take effect
-
-# Part of the OpenEnergyMonitor.org project
 
 echo "Enable I2C module"
 
@@ -62,10 +59,19 @@ sudo apt-get install python-smbus i2c-tools -y
 echo 'Attemp to search for LCD I2C address:'
 # Use port 2 for bbb
 #sudo i2cdetect -r 2
-echo 'Install emonPi Python LCD install scripts'
-echo 'Install Python pip and uptime module'
-sudo apt-get update
-sudo apt-get install build-essential python-dev python-smbus python-pip git
-sudo pip install Adafruit_BBIO
-echo 'I2C LCD installed...please reboot to take effect'
+echo 'I2C for LCD is enabled; reboot to take effect'
 
+if [ -f /etc/init.d/emonPiLCD ]
+then
+	echo "/etc/init.d/emonPiLCD akready exists doing nothing"
+else
+	echo "copying daemon script /etc/init.d/emonPiLCD"
+	sudo cp /home/debian/emonpi/lcd/emonPiLCD /etc/init.d/emonPiLCD
+	echo "updating rc scripts for auto-start"
+	sudo update-rc.d emonPiLCD start
+	echo "updating rc scripts to enable start"
+	sudo update-rc.d emonPiLCD enable
+fi
+echo "Starting LCD script"
+sudo service emonPiLCD start
+echo 'I2C LCD installed...please reboot to take effect'
