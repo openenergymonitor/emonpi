@@ -10,7 +10,7 @@ Forum discussion:
 - [Dec 22nd image beta based on Minibianpi (old beta, latest image is based on Raspbian Jessie Lite)](http://openenergymonitor.org/emon/node/11799)
 
 # Features  
-- Base image RASPBIAN JESSIE LITE 2015-11-21 (Kernel 4.1)
+- Base image **RASPBIAN JESSIE LITE 2015-11-21** (Kernel 4.1)
 - 4GB SD card size, partitions can be expanded if required (8GB SD card shipped with emonPi)
 
 1. Initial setup
@@ -21,11 +21,12 @@ Forum discussion:
 6. Mosquitto MQTT server with authentication
 7. Emoncms V9 Core (stable branch)
 3. Low write mode Emoncms optimisations
-8. Emoncms install & configure modules: node, app, dashboards, wifi
+8. Install & configure Emoncms modules
+0. Install emonPi update script
+10. Install emonPi update & import / export (emonPi backup) script
+
 9. Emoncms MQTT service
-10. emonPi update script
 10. Open UFW ports
-10. Emoncms export / import module
 10. LightWave RF MQTT OKK transmitter
 12. openHab
 12. nodeRED
@@ -213,6 +214,10 @@ Follow [Emoncms Raspbian Jessie install guide](https://github.com/emoncms/emoncm
 	* `sudo mkdir /home/pi/data/{phpfiwa,phpfina,phptimeseries}`
 	* `sudo chown www-data:root /home/pi/data/{phpfiwa,phpfina,phptimeseries}`
 
+## Move MYSQL database location 
+
+The MYSQL database for Emoncms is usually in `/var/lib`, since the emonPi runs the root FS as read-only we need to move the MYSQL database to the RW partition `home/pi/data/mysql`. Follow stepsL [Moving MYSQL database in Emoncms Read-only documentation](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/read-only.md#move-mysql-database)
+
 
 # 8. Low write mode Emoncms optimisations
 
@@ -221,6 +226,10 @@ Follow [Emoncms Raspbian Jessie install guide](https://github.com/emoncms/emoncm
 Follow [Raspberry Pi Emoncms Low-Write guide](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md) from [Setting up logging on read-only FS](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md#setup-logfile-environment) onwards (we have earlier setup read-only mode):
 
 * [Setting up logging on read-only FS](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md#setup-logfile-environment)
+	* After running install we want to use emonPi specific rc.local instead:
+		* `sudo rm /etc/rc.local`
+		* `sudo ln -s /home/pi/emonpi/emonpi/rc.local_jessieminimal /etc/rc.local`
+
 * [Move PHP sessions to tmpfs (RAM)](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md#move-php-sessions-to-tmpfs-ram)
 * [Configure Redis](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md#configure-redis)
 
@@ -235,6 +244,7 @@ git clone https://github.com/emoncms/dashboard.git
 git clone https://github.com/emoncms/app.git
 git clone https://github.com/emoncms/wifi.git
 git clone https://github.com/emoncms/nodes.git
+git clone https://github.com/emoncms/config
 ```
 After installing modules check and apply database updates in Emoncms Admin. 
 
@@ -242,9 +252,16 @@ After installing modules check and apply database updates in Emoncms Admin.
 
 Follow install instructions in [WiFi module Readme](https://github.com/emoncms/wifi/blob/9.0/README.md) to give web user permission to execute system WLAN commands. 
 
+Move `wpa_supplicant.conf` (file where WiFi network authentication details are stored) to RW partition with symlink back to /etc:
+
+	sudo mv /etc/wpa_supplicant/wpa_supplicant.conf /home/pi/data/wpa_supplicant.conf
+	sudo ln -s /home/pi/data/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf  
+
 ## Install wifi-check script
 
-Add wifi-check script to /user/local/bin
+To check if wifi is connected every 5min and re-initiate connection if not. 
+
+Add wifi-check script to `/user/local/bin`:
 
 	sudo ln -s /home/pi/emonpi/wifi-check /usr/local/bin/wifi-check
 
@@ -261,13 +278,69 @@ Add the line:
 Follow setup Readme in [Nodes Module repo](https://github.com/emoncms/nodes) to install `emoncms-nodes-service script`. 
 
 
+# 9. Install emonPi update & import / export (emonPi backup) script
+
+[emonPi Export Forum Topic discussion](http://openenergymonitor.org/emon/node/11843)
+
+Clone Emoncms scripts:
+
+	git clone https://github.com/emoncms/usefulscripts
+
+Add Pi user cron entry:
+
+	crontab -e
+
+Add the cron entries to check if emonpi update or emonpi backup has been triggered once every 60s:
+
+```
+MAILTO=""
+
+# # Run emonPi update script ever min, scrip exits unless update flag exists in /tmp
+ * * * * * /home/pi/emonpi/update >> /home/pi/data/emonpiupdate.log 2>&1
+
+* * * * * /home/pi/usefulscripts/emonpi-migrate/emonpi-export-wrapper.sh >> /home/pi/data/emonpibackup.log 2>&1
+```
+
+To enable triggering update on first factory boot (when emonpiupdate.log does not exist) add entry to `rc.local`:
+
+	/home/pi/emonpi/./firstbootupdate
+
+This line should be present already if the emonPi speicifc `rc.local` file has been symlinked into place, if not:
+
+	sudo rm /etc/rc.local
+	sudo ln -s /home/pi/emonpi/emonpi/rc.local_jessieminimal /etc/rc.local
+
+The `update` script looks for a flag in `/tmp/emonpiupdate` which is set when use clicks Update in Emoncms. If flag is present then the update script runs `emonpiupdate`, `emoncmsupdate` and `emonhubupdate` and logs to `~/data/emonpiupdate.log`. If log file is not present then update is ran on first (factory) boot.
+
+# 10. Emoncms MQTT service
 
 
+https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/MQTT.md
 
-# emonPi Backup / Import
-
-[Forum Topic](http://openenergymonitor.org/emon/node/11843)
 
 # open ports 
 
 https://github.com/emoncms/emoncms/blob/low-write/docs/install.md#security
+
+Apache web server
+
+	sudo ufw allow 80/tcp
+	sudo ufw allow 443/tcp
+
+SSH server 
+
+	sudo ufw allow 22/tcp
+
+Mosquitto MQTT
+
+	sudo ufw allow 1883/tcp
+
+OpenHAB
+
+	sudo ufw allow 8080/tcp
+
+NodeRed
+
+	sudo ufw allow 1880/tcp
+
+	sudo ufw enable
