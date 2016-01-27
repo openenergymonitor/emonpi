@@ -239,6 +239,7 @@ git clone https://github.com/emoncms/dashboard.git
 git clone https://github.com/emoncms/app.git
 git clone https://github.com/emoncms/wifi.git
 git clone https://github.com/emoncms/nodes.git
+git clone https://github.com/emoncms/config
 ```
 After installing modules check and apply database updates in Emoncms Admin. 
 
@@ -282,3 +283,26 @@ Follow setup Readme in [Nodes Module repo](https://github.com/emoncms/nodes) to 
 # open ports 
 
 https://github.com/emoncms/emoncms/blob/low-write/docs/install.md#security
+
+Apache web server
+
+	sudo ufw allow 80/tcp
+	sudo ufw allow 443/tcp
+
+SSH server 
+
+	sudo ufw allow 22/tcp
+
+Mosquitto MQTT
+
+	sudo ufw allow 1883/tcp
+
+OpenHAB
+
+	sudo ufw allow 8080/tcp
+
+NodeRed
+
+	sudo ufw allow 1880/tcp
+
+	sudo ufw enable
