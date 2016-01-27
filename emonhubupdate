@@ -1,0 +1,8 @@
+#!/bin/bash
+echo
+echo "================================="
+echo "EmonPi update started"
+echo "================================="
+
+echo "Running emonhub automatic node addition script"
+/home/pi/emonhub/conf/nodes/emonpi_auto_add_nodes.sh
