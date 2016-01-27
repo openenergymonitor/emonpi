@@ -21,11 +21,12 @@ Forum discussion:
 6. Mosquitto MQTT server with authentication
 7. Emoncms V9 Core (stable branch)
 3. Low write mode Emoncms optimisations
-8. Emoncms install & configure modules: node, app, dashboards, wifi
+8. Install & configure Emoncms modules
+0. Install emonPi update script
+10. Emoncms export / import module
 9. Emoncms MQTT service
 10. emonPi update script
 10. Open UFW ports
-10. Emoncms export / import module
 10. LightWave RF MQTT OKK transmitter
 12. openHab
 12. nodeRED
@@ -225,6 +226,10 @@ The MYSQL database for Emoncms is usually in `/var/lib`, since the emonPi runs t
 Follow [Raspberry Pi Emoncms Low-Write guide](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md) from [Setting up logging on read-only FS](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md#setup-logfile-environment) onwards (we have earlier setup read-only mode):
 
 * [Setting up logging on read-only FS](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md#setup-logfile-environment)
+	* After running install we want to use emonPi specific rc.local instead:
+		* `sudo rm /etc/rc.local`
+		* `sudo ln -s /home/pi/emonpi/emonpi/rc.local_jessieminimal /etc/rc.local`
+
 * [Move PHP sessions to tmpfs (RAM)](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md#move-php-sessions-to-tmpfs-ram)
 * [Configure Redis](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md#configure-redis)
 
@@ -273,12 +278,43 @@ Add the line:
 Follow setup Readme in [Nodes Module repo](https://github.com/emoncms/nodes) to install `emoncms-nodes-service script`. 
 
 
+# 9. Install emonPi update & import / export script
 
+[emonPi Export Forum Topic discussion](http://openenergymonitor.org/emon/node/11843)
 
+Clone Emoncms scripts:
+
+	git clone https://github.com/emoncms/usefulscripts
+
+Add Pi user cron entry:
+
+	crontab -e
+
+Add the cron entries to check if emonpi update or emonpi backup has been triggered once every 60s:
+
+```
+MAILTO=""
+
+# # Run emonPi update script ever min, scrip exits unless update flag exists in /tmp
+ * * * * * /home/pi/emonpi/update >> /home/pi/data/emonpiupdate.log 2>&1
+
+* * * * * /home/pi/usefulscripts/emonpi-migrate/emonpi-export-wrapper.sh >> /home/pi/data/emonpibackup.log 2>&1
+```
+
+To enable triggering update on first factory boot (when emonpiupdate.log does not exist) add entry to `rc.local`:
+
+	/home/pi/emonpi/./firstbootupdate
+
+This line should be present already if the emonPi speicifc `rc.local` file has been symlinked into place, if not:
+
+	sudo rm /etc/rc.local
+	sudo ln -s /home/pi/emonpi/emonpi/rc.local_jessieminimal /etc/rc.local
+
+The `update` script looks for a flag in `/tmp/emonpiupdate` which is set when use clicks Update in Emoncms. If flag is present then the update script runs `emonpiupdate`, `emoncmsupdate` and `emonhubupdate` and logs to `~/data/emonpiupdate.log`. If log file is not present then update is ran on first (factory) boot.
 
 # emonPi Backup / Import
 
-[Forum Topic](http://openenergymonitor.org/emon/node/11843)
+
 
 # open ports 
 
