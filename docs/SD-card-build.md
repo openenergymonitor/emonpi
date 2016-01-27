@@ -10,7 +10,7 @@ Forum discussion:
 - [Dec 22nd image beta based on Minibianpi (old beta, latest image is based on Raspbian Jessie Lite)](http://openenergymonitor.org/emon/node/11799)
 
 # Features  
-- Base image RASPBIAN JESSIE LITE 2015-11-21 (Kernel 4.1)
+- Base image **RASPBIAN JESSIE LITE 2015-11-21** (Kernel 4.1)
 - 4GB SD card size, partitions can be expanded if required (8GB SD card shipped with emonPi)
 
 1. Initial setup
@@ -23,9 +23,9 @@ Forum discussion:
 3. Low write mode Emoncms optimisations
 8. Install & configure Emoncms modules
 0. Install emonPi update script
-10. Emoncms export / import module
+10. Install emonPi update & import / export (emonPi backup) script
+
 9. Emoncms MQTT service
-10. emonPi update script
 10. Open UFW ports
 10. LightWave RF MQTT OKK transmitter
 12. openHab
@@ -252,7 +252,7 @@ After installing modules check and apply database updates in Emoncms Admin.
 
 Follow install instructions in [WiFi module Readme](https://github.com/emoncms/wifi/blob/9.0/README.md) to give web user permission to execute system WLAN commands. 
 
-Move `wpa_wpa_supplicant.conf` where wifi network authentication details are stored to RW partition with symlink back to /etc:
+Move `wpa_supplicant.conf` (file where WiFi network authentication details are stored) to RW partition with symlink back to /etc:
 
 	sudo mv /etc/wpa_supplicant/wpa_supplicant.conf /home/pi/data/wpa_supplicant.conf
 	sudo ln -s /home/pi/data/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf  
@@ -278,7 +278,7 @@ Add the line:
 Follow setup Readme in [Nodes Module repo](https://github.com/emoncms/nodes) to install `emoncms-nodes-service script`. 
 
 
-# 9. Install emonPi update & import / export script
+# 9. Install emonPi update & import / export (emonPi backup) script
 
 [emonPi Export Forum Topic discussion](http://openenergymonitor.org/emon/node/11843)
 
@@ -312,8 +312,10 @@ This line should be present already if the emonPi speicifc `rc.local` file has b
 
 The `update` script looks for a flag in `/tmp/emonpiupdate` which is set when use clicks Update in Emoncms. If flag is present then the update script runs `emonpiupdate`, `emoncmsupdate` and `emonhubupdate` and logs to `~/data/emonpiupdate.log`. If log file is not present then update is ran on first (factory) boot.
 
-# emonPi Backup / Import
+# 10. Emoncms MQTT service
 
+
+https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/MQTT.md
 
 
 # open ports 
