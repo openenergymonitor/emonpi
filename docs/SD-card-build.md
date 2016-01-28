@@ -22,12 +22,10 @@ Forum discussion:
 7. Emoncms V9 Core (stable branch)
 3. Low write mode Emoncms optimisations
 8. Install & configure Emoncms modules
-0. Install emonPi update script
 10. Install emonPi update & import / export (emonPi backup) script
-
-9. Emoncms MQTT service
-10. Open UFW ports
+9. Install Emoncms MQTT input service
 10. LightWave RF MQTT OKK transmitter
+10. Open UFW ports
 12. openHab
 12. nodeRED
 
@@ -278,7 +276,7 @@ Add the line:
 Follow setup Readme in [Nodes Module repo](https://github.com/emoncms/nodes) to install `emoncms-nodes-service script`. 
 
 
-# 9. Install emonPi update & import / export (emonPi backup) script
+# 10. Install emonPi update & import / export (emonPi backup) script
 
 [emonPi Export Forum Topic discussion](http://openenergymonitor.org/emon/node/11843)
 
@@ -312,13 +310,23 @@ This line should be present already if the emonPi speicifc `rc.local` file has b
 
 The `update` script looks for a flag in `/tmp/emonpiupdate` which is set when use clicks Update in Emoncms. If flag is present then the update script runs `emonpiupdate`, `emoncmsupdate` and `emonhubupdate` and logs to `~/data/emonpiupdate.log`. If log file is not present then update is ran on first (factory) boot.
 
-# 10. Emoncms MQTT service
+# 11. Install Emoncms MQTT input service
 
+To enable data posted to `nodes/#` topic to appear in Emoncms inputs e.g `nodes/emontx/power1 10` creates an input from emonTx node with power1 with value 10. 
 
-https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/MQTT.md
+[Follow install guide]( https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/MQTT.md)
 
+	sudo service mqtt_input start
 
-# open ports 
+[Forum Thread discussing emonhub MQTT support](http://openenergymonitor.org/emon/node/12091)
+
+Previously EmonHub posted decoded data to MQTT topic with CSV format to  `emonhub/rx/5/values 10,11,12` 
+
+# 12. Lightwave RF MQTT service 
+
+[Follow LightWave RF MQTT GitHub Repo Install Guide](https://github.com/openenergymonitor/lightwaverf-pi)
+ 
+# 13 Enable Firewall & open required ports 
 
 https://github.com/emoncms/emoncms/blob/low-write/docs/install.md#security
 
