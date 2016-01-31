@@ -17,12 +17,12 @@ emonPi - Raspberry Pi Energy Monitoring Unit
 
 [Hardware Technical Wiki](http://wiki.openenergymonitor.org/index.php?title=EmonPi)
 
-[Technical Software Stack Docs](https://github.com/openenergymonitor/emonpi/blob/master/software.md)
+[Technical Software Stack Docs](https://github.com/openenergymonitor/emonpi/blob/master/docs/software.md)
 
 
 ## Open-Hardware: 
 
-[Schematic & Board CAD Design Files](https://github.com/openenergymonitor/hardware/emonpi)
+[Schematic & Board CAD Design Files](https://github.com/openenergymonitor/Hardware/tree/master/emonPi)
 
 ## Community & Support
 [OpenEnergyMonitor Forums](http://openenergymonitor.org/emon/forum/)
