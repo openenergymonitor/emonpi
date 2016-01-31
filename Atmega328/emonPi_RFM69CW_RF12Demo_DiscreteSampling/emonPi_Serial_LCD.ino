@@ -68,6 +68,12 @@ lcd.setCursor(0, 1); lcd.print(F("Detected "));
   	lcd.print(F("Detected: ")); lcd.print(numSensors); 
     lcd.setCursor(0, 1); lcd.print(F("DS18B20 Temp")); 
   }
+  
+  delay(2000);
+  
+  lcd.clear();
+  lcd.print(F("Raspberry Pi"));
+  lcd.setCursor(0, 1); lcd.print(F("Booting...")); 
 
   if (RF_STATUS == 1){
     #if (RF69_COMPAT)

@@ -1,4 +1,4 @@
-# Change Log - emonPi Firmwarwe
+# Change Log
 
 # V3.2 (31/01/15) 
  * Reduction in SRAM memory usage thanks to F-macro serial string implementation

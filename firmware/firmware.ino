@@ -52,7 +52,7 @@ ISR(WDT_vect) { Sleepy::watchdogEvent(); }                            // Attache
 #include <LiquidCrystal_I2C.h>                                        // https://github.com/openenergymonitor/LiquidCrystal_I2C1602V1
 LiquidCrystal_I2C lcd(0x27,16,2);                                     // LCD I2C address to 0x27, 16x2 line display
 
-const byte firmware_version = 31;                                     //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
+const byte firmware_version = 32;                                     //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
 boolean debug =                   TRUE; 

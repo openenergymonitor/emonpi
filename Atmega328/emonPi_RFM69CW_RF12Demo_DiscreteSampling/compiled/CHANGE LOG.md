@@ -1,4 +1,9 @@
-# Change Log
+# Change Log - emonPi Discrete Sampling Firmware
+
+# V2.2 (30/01/15)
+ * Reduction in SRAM memory usage thanks to F-macro serial string implementation
+ * Display "Raspberry Pi Booting" message on LCD at startup
+ * Only sample from CT channels when CT is connected to that channel (fix noise readings when no CT connected)
 
 # V2.1 (20/1/16)
   * Allow use of group 0

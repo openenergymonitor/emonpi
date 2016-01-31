@@ -65,7 +65,7 @@ EnergyMonitor ct1, ct2;
 #include <LiquidCrystal_I2C.h>                                        // https://github.com/openenergymonitor/LiquidCrystal_I2C1602V1
 LiquidCrystal_I2C lcd(0x27,16,2);                                     // LCD I2C address to 0x27, 16x2 line display
 
-const byte firmware_version = 21;                                    //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
+const byte firmware_version = 22;                                    //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
 boolean debug =                   TRUE; 
@@ -253,27 +253,27 @@ void loop()
   {
     single_LED_flash();                                                            // single flash of LED on local CT sample
     
-    if (ACAC)                                                                      // Read from CT 1
+    if (ACAC && CT1)                                                                      // Read from CT 1
     {
       ct1.calcVI(no_of_half_wavelengths,timeout); emonPi.power1=ct1.realPower;
       emonPi.Vrms=ct1.Vrms*100;
     }
     else 
     {
-      emonPi.power1 = ct1.calcIrms(no_of_samples)*Vrms;                               // Calculate Apparent Power 1  1480 is  number of samples
+      if (CT1) emonPi.power1 = ct1.calcIrms(no_of_samples)*Vrms;                               // Calculate Apparent Power 1  1480 is  number of samples
       emonPi.Vrms=Vrms*100;
     }  
 
 
   
-   if (ACAC)                                                                       // Read from CT 2
+   if (ACAC && CT2)                                                                       // Read from CT 2
    {
      ct2.calcVI(no_of_half_wavelengths,timeout); emonPi.power2=ct2.realPower;
      emonPi.Vrms=ct2.Vrms*100;
    }
    else 
    {
-     emonPi.power2 = ct2.calcIrms(no_of_samples)*Vrms;                               // Calculate Apparent Power 1  1480 is  number of samples
+     if (CT2) emonPi.power2 = ct2.calcIrms(no_of_samples)*Vrms;                               // Calculate Apparent Power 1  1480 is  number of samples
      emonPi.Vrms=Vrms*100;
    }
 
