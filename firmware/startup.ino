@@ -24,9 +24,9 @@ void emonPi_startup()                                                     //emon
   pinMode(emonPi_int1_pin, INPUT_PULLUP);               // Set RJ45 interrupt pulse counting pin to input (INT 1) and pullup
 
   Serial.begin(BAUD_RATE);
-  Serial.print("emonPi V"); Serial.println(firmware_version*0.1); 
-  Serial.println("OpenEnergyMonitor.org");
-  Serial.println("startup...");
+  Serial.print(F("emonPi V")); Serial.println(firmware_version*0.1); 
+  Serial.println(F("OpenEnergyMonitor.org"));
+  Serial.println(F("startup..."));
 }
 
 

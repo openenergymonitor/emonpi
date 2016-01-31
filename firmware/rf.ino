@@ -19,10 +19,10 @@ boolean RF_Rx_Handle(){
 	    byte n = rf12_len;
 	    if (rf12_crc == 0)							//Check packet is good
 	    {
-	    	Serial.print("OK");
-	    	Serial.print(" ");							//Print RF packet to serial in struct format
+	    	Serial.print(F("OK"));
+	    	Serial.print(F(" "));							//Print RF packet to serial in struct format
 	    	Serial.print(rf12_hdr & 0x1F);				// Extract and print node ID
-	    	Serial.print(" ");
+	    	Serial.print(F(" "));
 	    	for (byte i = 0; i < n; ++i) {
 	      		Serial.print((word)rf12_data[i]);
 	      		Serial.print(' ');
@@ -30,9 +30,9 @@ boolean RF_Rx_Handle(){
 
 	      	#if RF69_COMPAT
 		    // display RSSI value after packet data e.g (-xx)
-		    Serial.print("(");
+		    Serial.print(F("("));
 		    Serial.print(-(RF69::rssi>>1));
-		    Serial.print(")");
+		    Serial.print(F(")"));
 			#endif
 		    	Serial.println();
 
@@ -142,20 +142,20 @@ static void handleInput (char c) {
     //Print Current RF config  
 
     if (RF_STATUS==1) {
-      Serial.print(' ');
+      Serial.print(F(" "));
 -     Serial.print((char) ('@' + (nodeID & RF12_HDR_MASK)));
--     Serial.print(" i");
+-     Serial.print(F(" i"));
       Serial.print(nodeID & RF12_HDR_MASK);   
-      Serial.print(" g");
+      Serial.print(F(" g"));
       Serial.print(networkGroup);
-      Serial.print(" @ ");
+      Serial.print(F(" @ "));
       Serial.print(RF_freq == RF12_433MHZ ? 433 :
                    RF_freq == RF12_868MHZ ? 868 :
                    RF_freq == RF12_915MHZ ? 915 : 0);
-      Serial.print(" MHz"); 
+      Serial.print(F(" MHz")); 
     }
-    Serial.print(" USA "); Serial.print(USA);
-    Serial.println(" ");
+    Serial.print(F(" USA ")); Serial.print(USA);
+    Serial.println(F(" "));
     
     }
   value = top = 0;
