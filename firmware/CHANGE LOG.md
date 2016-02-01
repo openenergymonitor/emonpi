@@ -1,9 +1,9 @@
 # Change Log
 
-# V3.1 Jan 15
+# V3.1 (31/01/16)
  * Display "Rasberry Pi Booting" message at startup & don't sample from CT input channel when no CT is physically connected to that input
 
-# V3.0 Dec/Jan 15
+# V3.0 December 2015
   * Continuous sampling using emonLibCM https://github.com/openenergymonitor/EmonLibCM
 
 # V2.0 (17/11/15)
