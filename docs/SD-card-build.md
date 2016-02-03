@@ -211,9 +211,12 @@ Follow [Raspberry Pi Emoncms Low-Write guide](https://github.com/emoncms/emoncms
 
 * [Move PHP sessions to tmpfs (RAM)](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md#move-php-sessions-to-tmpfs-ram)
 * [Configure Redis](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md#configure-redis)
+* Disable apache access log:
+	* `sudo nano /etc/apache2/conf-enabled/other-vhosts-access-log.conf`
+	* comment out the access log
 
 
-No need to [Enable Low-write mode in emoncms](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md#enable-low-write-mode-in-emoncms) since these changes to `settings.php` are already set in `default.emonpi.settings.php` that we copied earlier.
+No need to [Enable Low-write mode in emoncms](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md#enable-low-write-mode-in-emoncms) since these changes to `settings.php` are already set in `default.emonpi.settings.php` that we installed earlier.
 
 # 9. Emoncms install & configure modules: node, app, dashboards, wifi
 
