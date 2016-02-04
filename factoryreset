@@ -5,15 +5,17 @@
 echo "emonPi Factory reset script"
 
 if [[ $EUID -ne 0 ]]; then
-   echo "This script must be run as root"
+   echo "This script must be run as root: sudo su ./factoryreset"
    exit 1
 fi
 
 rpi-rw
 
 image_version=$(ls /boot | grep emonSD)
+echo "$image_version"
+image_date=${image_version:0:16}
 # Check first 14 characters of filename
-if [[ "${image_version:0:14}" == "emonSD-17Jun2015" ]]
+if [[ "$image_date" == "emonSD-17Jun2015" ]]
 then
   image="old"
   echo "$image image"
@@ -26,7 +28,7 @@ if [[ "${image_version:0:6}" == "emonSD" ]]
 then
     echo "Image version: $image_version"
 else
-    echo "Non OpenEnergyMonitor offical emonSD image, no gurantees this import will work :-/"
+    echo "Non OpenEnergyMonitor offical emonSD image, no gurantees this script will work :-/"
     read -p "Press any key to continue...or CTRL+C to exit " -n1 -s
 fi
 
