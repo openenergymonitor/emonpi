@@ -155,12 +155,11 @@ While in another shell window subscribe to that topic, if all is working we shou
 
 Install other EmonHub dependencies if they have not been installed already by emonPi LCD service
 ```
-sudo apt-get install python-pip
-sudo pip install paho-mqtt
-sudo pip install pydispatcher
+sudo apt-get install -y python-pip python-serial python-configobj”
+sudo pip install paho-mqtt pydispatcher
 ```
 
-## Install OpenEnergyMonitor (emon-pi) emonHub variant:
+## Install emonHub (emon-pi) variant:
 
 	git clone https://github.com/openenergymonitor/emonhub.git && emonhub/install
 
@@ -311,29 +310,16 @@ To enable data posted to base topic `emon/` topic to appear in Emoncms inputs e.
 
 [Follow LightWave RF MQTT GitHub Repo Install Guide](https://github.com/openenergymonitor/lightwaverf-pi)
 
-# 13 Enable Firewall & open required ports
+# 13 Open required ports & Enable Firewall
 
-https://github.com/emoncms/emoncms/blob/low-write/docs/install.md#security
+Apache web server `sudo ufw allow 80/tcp` and`sudo ufw allow 443/tcp`
+	
+SSH server: `sudo ufw allow 22/tcp`
 
-Apache web server
+Mosquitto MQTT: `sudo ufw allow 1883/tcp`
 
-	sudo ufw allow 80/tcp
-	sudo ufw allow 443/tcp
+OpenHAB: `sudo ufw allow 8080/tcp`
 
-SSH server
-
-	sudo ufw allow 22/tcp
-
-Mosquitto MQTT
-
-	sudo ufw allow 1883/tcp
-
-OpenHAB
-
-	sudo ufw allow 8080/tcp
-
-NodeRed
-
-	sudo ufw allow 1880/tcp
+NodeRed: `sudo ufw allow 1880/tcp`
 
 	sudo ufw enable
