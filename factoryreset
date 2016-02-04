@@ -6,8 +6,27 @@ echo "Factory reset"
 
 rpi-rw
 
-ans=n 
-read -p "Reboot when reset complete (y/n)? Else shutdown " -t 5 ans 
+image_version=$(ls /boot | grep emonSD)
+# Check first 14 characters of filename
+if [[ "${image_version:0:14}" == "emonSD-17Jun2015" ]]
+then
+  image="old"
+  echo "$image image"
+else
+  image="new"
+  echo "$image image"
+fi
+
+if [[ "${image_version:0:6}" == "emonSD" ]]
+then
+    echo "Image version: $image_version"
+else
+    echo "Non OpenEnergyMonitor offical emonSD image, no gurantees this import will work :-/"
+    read -p "Press any key to continue...or CTRL+C to exit " -n1 -s
+fi
+
+ans=n
+read -p "Reboot when reset complete (y/n)? Else shutdown " -t 5 ans
 
 sudo /etc/init.d/emonhub stop
 sudo /etc/init.d/emoncms-nodes-service stop
@@ -27,7 +46,18 @@ cp /var/www/emoncms/default.emonpi.settings.php /var/www/emoncms/settings.php
 
 echo "emonhub.conf reset"
 sudo cp /home/pi/emonhub/conf/emonhub.conf /home/pi/data/emonhub.conf
-sudo chown pi:www-data /home/pi/data/emonhub.conf
+
+if [[ $image == "old" ]]
+then    # Legacy image use emonhub.conf without MQTT authenitication
+   echo "Start with fresh config: copy LEGACY default emonhub.conf"
+   echo "/home/pi/emonhub/conf/old.default.emonhub.conf /home/pi/data/emonhub.conf"
+   cp /home/pi/emonhub/conf/old.default.emonhub.conf /home/pi/data/emonhub.conf
+else    # Newer Feb15+ image use latest emonhub.conf with MQTT node variable topic structure and MQTT authentication enabled
+   echo "Start with fresh config: copy NEW default emonpi emonhub.conf"
+   echo "cp /home/pi/emonhub/conf/emonpi.default.emonhub.conf /home/pi/data/emonhub.conf"
+   cp /home/pi/emonhub/conf/emonpi.default.emonhub.conf /home/pi/data/emonhub.conf
+fi
+
 sudo chmod 664 /home/pi/data/emonhub.conf
 
 echo "deleting phpfina and phptimeseries data"
@@ -41,17 +71,25 @@ sudo chown www-data:root /home/pi/data/phpfina
 sudo chown www-data:root /home/pi/data/phptimeseries
 
 echo "deleting mysql emoncms database"
-mysql -u root -e "drop database emoncms" -praspberry
+if [[ $image == "old" ]]
+then
+  mysql -u root -e "drop database emoncms" -praspberry
+  echo "creating new mysql emoncms database"
+  mysql -u root -e "create database emoncms" -praspberry
+else
+  mysql -u root -e "drop database emoncms" -pemonpimysql2016
+  echo "creating new mysql emoncms database"
+  mysql -u root -e "create database emoncms" -pemonpimysql2016
+fi
 
-echo "creating new mysql emoncms database"
-mysql -u root -e "create database emoncms" -praspberry
+
 
 echo "Delete data/emonpiupdate.log"
 rm /home/pi/data/emonpiupdate.log
 
 echo "Delete backup data"
-rm /home/pi/data/emonpibackup.log
-rm /home/pi/data/backup.tar.gz   
+rm /home/pi/data/*.log
+rm /home/pi/data/*.gz
 
 echo "clear WiFi config /etc/wpa_supplicant/wpa_supplicant.conf"
 echo "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev" > /etc/wpa_supplicant/wpa_supplicant.conf
@@ -60,15 +98,15 @@ echo "update_config=1" >> /etc/wpa_supplicant/wpa_supplicant.conf
 echo "Clear bash history"
 cat /dev/null > ~/.bash_history
 
-echo 
-if [[ "$ans" == "" ]] ; then ans=n;fi 
-echo answer given is $ans 
-if [[ "$ans" == "n" ]] ;then 
-echo "Shutting down Raspberry Pi"; 
-sudo halt; 
-else 
-echo "REBOOTING Raspberry Pi"; 
-sudo init 6 
+echo
+if [[ "$ans" == "" ]] ; then ans=n;fi
+echo answer given is $ans
+if [[ "$ans" == "n" ]] ;then
+echo "Shutting down Raspberry Pi";
+sudo halt;
+else
+echo "REBOOTING Raspberry Pi";
+sudo init 6
 fi
 
 exit 0
