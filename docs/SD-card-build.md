@@ -210,6 +210,7 @@ Follow [Raspberry Pi Emoncms Low-Write guide](https://github.com/emoncms/emoncms
 
 * [Move PHP sessions to tmpfs (RAM)](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md#move-php-sessions-to-tmpfs-ram)
 * [Configure Redis](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md#configure-redis)
+	* After redis config **Ensure all redis databases have been removed from `/var/lib/redis`**
 * Disable apache access log:
 	* `sudo nano /etc/apache2/conf-enabled/other-vhosts-access-log.conf`
 	* comment out the access log
@@ -313,7 +314,7 @@ To enable data posted to base topic `emon/` topic to appear in Emoncms inputs e.
 # 13 Open required ports & Enable Firewall
 
 Apache web server `sudo ufw allow 80/tcp` and`sudo ufw allow 443/tcp`
-	
+
 SSH server: `sudo ufw allow 22/tcp`
 
 Mosquitto MQTT: `sudo ufw allow 1883/tcp`

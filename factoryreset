@@ -33,7 +33,7 @@ else
 fi
 
 ans=n
-read -p "Reboot when reset complete (y/n)? Else shutdown " -t 5 ans
+read -p "Shutdown when complete (y/n)? Else rebooting in 5s " -t 5 ans
 
 sudo /etc/init.d/emonhub stop
 sudo /etc/init.d/emoncms-nodes-service stop
@@ -107,8 +107,7 @@ cat /dev/null > ~/.bash_history
 
 echo
 if [[ "$ans" == "" ]] ; then ans=n;fi
-echo answer given is $ans
-if [[ "$ans" == "n" ]] ;then
+if [[ "$ans" == "y" ]] ;then
 echo "Shutting down Raspberry Pi";
 sudo halt;
 else
