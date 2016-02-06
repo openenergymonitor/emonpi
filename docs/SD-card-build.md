@@ -319,8 +319,24 @@ SSH server: `sudo ufw allow 22/tcp`
 
 Mosquitto MQTT: `sudo ufw allow 1883/tcp`
 
+Redis: `sudo ufw allow 6379/tcp`
+
 OpenHAB: `sudo ufw allow 8080/tcp`
 
 NodeRed: `sudo ufw allow 1880/tcp`
 
 	sudo ufw enable
+
+# 14. Install NodeRED 
+
+[Follow OEM NodeRED install guide](https://github.com/openenergymonitor/oem_node-red) with OEM examples. 
+
+	sudo apt-get install nodered
+
+Make node-RED run at boot:
+	
+	sudo systemctl enable nodered.service
+
+# 15 Install openHAB
+
+[Follow OEM openHAB install guide](https://github.com/openenergymonitor/oem_openHab) with OEM examples. 
