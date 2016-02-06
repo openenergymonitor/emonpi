@@ -51,7 +51,7 @@ echo "git pull /home/pi/oem_node-red"
 cd /home/pi/oem_node-red
 git pull
 
-echo "git pull /var/www/emoncms/usefulscripts"
+echo "git pull /home/pi/usefulscripts"
 cd /home/pi/usefulscripts
 git pull
 
