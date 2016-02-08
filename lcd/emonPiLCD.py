@@ -88,19 +88,16 @@ else:
 # Discover & display emonPi SD card image version
 # ------------------------------------------------------------------------------------
     
-sd_image_version_full = subprocess.check_output(["$(ls /boot | grep emonSD)"])
-if not sd_image_version_full:
-    print "non emonSD emonPi image"
+sd_image_version = subprocess.check_output(["$(ls /boot | grep emonSD)"])
+if not sd_image_version:
     sd_image_version = "N/A"
-else:
-    print sd_image_version_full
-    logger.info = sd_image_version_full
-    sd_image_version = sd_image_version_full[0:16]
 
 lcd_string1 = "emonPi Build:
 lcd_string2 = sd_image_version
 lcd.lcd_display_string( string_lenth(lcd_string1, 16),1)
 lcd.lcd_display_string( string_lenth(lcd_string2, 16),2)
+logger.info(sd_image_version)
+print sd_image_version
 time.sleep(3)
 
 # ------------------------------------------------------------------------------------
