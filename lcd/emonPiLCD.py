@@ -88,17 +88,14 @@ else:
 # Discover & display emonPi SD card image version
 # ------------------------------------------------------------------------------------
     
-sd_image_version = subprocess.check_output(["$(ls /boot | grep emonSD)"])
+sd_image_version = subprocess.check_output("ls /boot | grep emonSD", shell=True)
 if not sd_image_version:
     sd_image_version = "N/A"
 
-lcd_string1 = "emonPi Build:
+lcd_string1 = "emonPi Build:"
 lcd_string2 = sd_image_version
-lcd.lcd_display_string( string_lenth(lcd_string1, 16),1)
-lcd.lcd_display_string( string_lenth(lcd_string2, 16),2)
 logger.info(sd_image_version)
-print sd_image_version
-time.sleep(3)
+print "SD card image build version: " + sd_image_version
 
 # ------------------------------------------------------------------------------------
 
@@ -283,14 +280,15 @@ GPIO.setup(11, GPIO.IN)
 
 time.sleep(1.0)
 
-lcd_string1 = ""
-lcd_string2 = ""
-
 background = Background()
 background.start()
 buttoninput = ButtonInput()
 
 lcd = lcddriver.lcd()
+
+# Display SD card version info set at startup
+lcd.lcd_display_string( string_lenth(lcd_string1, 16),1)
+lcd.lcd_display_string( string_lenth(lcd_string2, 16),2)
 
 mqttc = mqtt.Client()
 mqttc.on_connect = on_connect
@@ -299,6 +297,8 @@ mqttc.on_message = on_message
 
 last1s = time.time() - 1.0
 buttonPress_time = time.time()
+
+time.sleep(2)
 
 while 1:
 
