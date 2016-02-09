@@ -60,7 +60,7 @@ basedata = []
 if not uselogfile:
     loghandler = logging.StreamHandler()
 else:
-    loghandler = logging.handlers.RotatingFileHandler("/var/log/emonPiLCD.log",'a', 1000*1024, 1)
+    loghandler = logging.handlers.RotatingFileHandler("/var/log/emonpilcd.log",'a', 1000*1024, 1)
     # 1Mb Max log size
 
 loghandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
@@ -87,7 +87,7 @@ else:
 # ------------------------------------------------------------------------------------
 # Discover & display emonPi SD card image version
 # ------------------------------------------------------------------------------------
-    
+
 sd_image_version = subprocess.check_output("ls /boot | grep emonSD", shell=True)
 if not sd_image_version:
     sd_image_version = "N/A"
@@ -118,14 +118,14 @@ class Background(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
         self.stop = False
-        
+
     def run(self):
         last1s = time.time() - 2.0
         last5s = time.time() - 6.0
         # Loop until we stop is false (our exit signal)
         while not self.stop:
             now = time.time()
-            
+
             # ----------------------------------------------------------
             # UPDATE EVERY 1's
             # ----------------------------------------------------------
@@ -137,7 +137,7 @@ class Background(threading.Thread):
                     array = str(timedelta(seconds = seconds)).split('.')
                     string = array[0]
                     r.set("uptime",seconds)
-                    
+
             # ----------------------------------------------------------
             # UPDATE EVERY 5's
             # ----------------------------------------------------------
@@ -153,10 +153,10 @@ class Background(threading.Thread):
                 ethactive = 1
                 if eth0ip=="" or eth0ip==False or (eth0ip[:1].isdigit()!=1):
                     ethactive = 0
-                    
+
                 r.set("eth:active",ethactive)
                 r.set("eth:ip",eth0ip)
-                
+
                 # Wireless LAN
                 # ----------------------------------------------------------------------------------
                 wlan0 = "ip addr show wlan0 | grep inet | awk '{print $2}' | cut -d/ -f1 | head -n1"
@@ -166,12 +166,12 @@ class Background(threading.Thread):
                 wlanactive = 1
                 if wlan0ip=="" or wlan0ip==False or (wlan0ip[:1].isdigit()!=1):
                     wlanactive = 0
-                    
+
                 r.set("wlan:active",wlanactive)
                 r.set("wlan:ip",wlan0ip)
-                
+
                 # ----------------------------------------------------------------------------------
-        
+
                 signallevel = 0
                 linklevel = 0
                 noiselevel = 0
@@ -184,20 +184,20 @@ class Background(threading.Thread):
                     if len(tmp)>0: signallevel = tmp[0]
 
                 r.set("wlan:signallevel",signallevel)
-                
+
             # this loop runs a bit faster so that ctrl-c exits are fast
             time.sleep(0.1)
-            
+
 def sigint_handler(signal, frame):
     logger.info("ctrl+c exit received")
     background.stop = True;
     sys.exit(0)
-    
+
 def sigterm_handler(signal, frame):
     logger.info("sigterm received")
     background.stop = True;
     sys.exit(0)
-    
+
 def shutdown():
     while (GPIO.input(11) == 1):
         lcd_string1 = "emonPi Shutdown"
@@ -209,7 +209,7 @@ def shutdown():
             lcd_string2 += "%d.." % (x)
             lcd.lcd_display_string( string_lenth(lcd_string2, 16),2)
             time.sleep(1)
-            
+
             if (GPIO.input(11) == 0):
                 return
         lcd_string2="SHUTDOWN NOW!"
@@ -224,7 +224,7 @@ def shutdown():
         lcd.backlight(0) 											# backlight zero must be the last call to the LCD to keep the backlight off
         call('halt', shell=False)
         sys.exit() #end script
-                    
+
 def get_uptime():
 
     return string
@@ -240,7 +240,7 @@ def updatelcd():
     # line 1- make sure string is 16 characters long to fill LED
     lcd.lcd_display_string( string_lenth(lcd_string1, 16),1)
     lcd.lcd_display_string( string_lenth(lcd_string2, 16),2) # line 2
-    
+
 def on_connect(client, userdata, flags, rc):
     global mqttConnected
     if rc:
@@ -251,7 +251,7 @@ def on_connect(client, userdata, flags, rc):
         logger.info("Success! Connected to MQTT server")
         mqttc.subscribe(mqtt_topic)
         logger.info("Subscribing to topic: " + mqtt_topic)
-    
+
 def on_disconnect(client, userdata, rc):
     global mqttConnected
     mqttConnected = False
@@ -271,7 +271,7 @@ class ButtonInput():
     def buttonPress(self,channel):
         self.pressed = True
         logger.info("lcd button press "+str(self.press_num))
-        
+
 signal.signal(signal.SIGINT, sigint_handler)
 signal.signal(signal.SIGTERM,sigterm_handler)
 
@@ -316,7 +316,7 @@ while 1:
         except:
             logger.error("Could not connect to MQTT")
             time.sleep(5.0)
-    
+
     mqttc.loop(0)
 
     if buttoninput.pressed:
@@ -333,8 +333,8 @@ while 1:
         lcd.backlight(0)
         if GPIO.input(11) == 1: shutdown() #ensure shutdown button works when backlight is off
     else: backlight = True
-    
-    
+
+
     # ----------------------------------------------------------
     # UPDATE EVERY 1's
     # ----------------------------------------------------------
@@ -351,7 +351,7 @@ while 1:
             	else:
             		lcd_string1 = "Ethernet:"
             		lcd_string2 = "NOT CONNECTED"
-                
+
         elif page==1:
             if int(r.get("wlan:active")):
                 lcd_string1 = "WIFI: YES  "+str(r.get("wlan:signallevel"))+"%"
@@ -359,7 +359,7 @@ while 1:
             else:
                 lcd_string1 = "WIFI:"
                 lcd_string2 = "NOT CONNECTED"
-                
+
         elif page==2:
             basedata = r.get("basedata")
             if (basedata is not None) & (mqttConnected ==True) :
@@ -369,7 +369,7 @@ while 1:
             if mqttConnected == False:
                 lcd_string1 = 'ERROR: MQTT'
                 lcd_string2 = 'Not connected'
-        
+
         elif page==3:
             basedata = r.get("basedata")
             if (basedata is not None) & (mqttConnected ==True) :
@@ -382,7 +382,7 @@ while 1:
             if mqttConnected == False:
                 lcd_string1 = 'ERROR: MQTT'
                 lcd_string2 = 'Not connected'
-        
+
         elif page==4:
             basedata = r.get("basedata")
             if (basedata is not None) & (mqttConnected ==True) :
@@ -398,11 +398,11 @@ while 1:
             if mqttConnected == False:
                 lcd_string1 = 'ERROR: MQTT'
                 lcd_string2 = 'Not connected'
-        
+
         elif page==5:
             lcd_string1 = datetime.now().strftime('%b %d %H:%M')
             lcd_string2 =  'Uptime %.2f days' % (float(r.get("uptime"))/86400)
-        
+
         # If Shutdown button is not pressed update LCD
         if (GPIO.input(11) == 0):
             updatelcd()
@@ -413,6 +413,6 @@ while 1:
 
     buttoninput.pressed = False
     time.sleep(0.1)
-    
+
 GPIO.cleanup()
 logging.shutdown()
