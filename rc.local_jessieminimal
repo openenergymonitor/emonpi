@@ -9,7 +9,7 @@
 if ( mount | grep "on /var/log "| grep -q "^tmpfs " )
 then
 for i in "redis" "apache2" "mysql" "openhab" "logrotate"; do mkdir /var/log/"$i"; done
-for i in "emoncms.log" "mysql.log" "wificheck.log" "emonpilcd.log" "redis/redis-server.log" "mysql/error.log" ; do touch /var/log/"$i"; done
+for i in "emoncms.log" "mysql.log" "wificheck.log" "emonpilcd.log" "redis/redis-server.log" "service-runner.log" "mysql/error.log" ; do touch /var/log/"$i"; done
 for i in "emoncms.log" "mysql.log" "wificheck.log" "redis/redis-server.log" "mysql/error.log" "apache2" ; do ""chmod 666"" /var/log/"$i"; done
 chown root:adm /var/log/apache2
 chown -R redis:redis /var/log/redis
