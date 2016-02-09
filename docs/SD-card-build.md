@@ -163,9 +163,10 @@ sudo pip install paho-mqtt pydispatcher
 
 	git clone https://github.com/openenergymonitor/emonhub.git && emonhub/install
 
-The emon-pi variant of emonHub locates the config file in the RW partition `/home/pi/data/emonhub.conf`, this config file includes the default emonpi MQTT authentication details. Copy the latest default config file:
+The emon-pi variant of emonHub locates the config file in the RW partition `/home/pi/data/emonhub.conf`, this config file includes the default emonpi MQTT authentication details. Symlink the latest default config file:
 
-		cp ~/emonhub/conf/emonpi.default.emonhub.conf ~/data/emonhub.conf
+		sudo rm ~/data/emonhub.conf
+		sudo ln -s /home/pi/emonhub/conf/emonpi.default.emonhub.conf /home/pi/data/emonhub.conf
 
 		sudo service emonhub start
 
@@ -226,6 +227,9 @@ git clone https://github.com/emoncms/dashboard.git
 git clone https://github.com/emoncms/app.git
 git clone https://github.com/emoncms/wifi.git
 git clone https://github.com/emoncms/config
+
+cd /home/pi/
+git clone https://github.com/emoncms/backup
 ```
 ~~git clone https://github.com/emoncms/nodes.git~~ Deprecated in favour of Emoncms PHP MQTT input see `Install Emoncms MQTT input service`
 
@@ -256,15 +260,18 @@ Add the line:
 
 ``*/5 * * * * /usr/local/bin/wifi-check > /var/log/wificheck.log 2>&1" mycron ; ``
 
+## Setup emonPi Backup & import module
+
+Follow [instructions on emonPi backup module page](https://github.com/emoncms/backup) to symlink the Emoncms module from the folder in /home/pi/backup that also contains the backup shell scripts
+
 ~~## Setup Nodes Module~~
 
 ~~Follow setup Readme in [Nodes Module repo](https://github.com/emoncms/nodes) to install `emoncms-nodes-service script`.~~  Deprecated in favour of Emoncms PHP MQTT input see `Install Emoncms MQTT input service`
 
 
 
-# 10. Install emonPi update & import / export (emonPi backup) script
+# 10. Install emonPi update
 
-[emonPi Export Forum Topic discussion](http://openenergymonitor.org/emon/node/11843)
 
 Clone Emoncms scripts:
 
@@ -281,8 +288,6 @@ MAILTO=""
 
 # # Run emonPi update script ever min, scrip exits unless update flag exists in /tmp
  * * * * * /home/pi/emonpi/update >> /home/pi/data/emonpiupdate.log 2>&1
-
-* * * * * /home/pi/usefulscripts/emonpi-migrate/emonpi-export-wrapper.sh >> /home/pi/data/emonpibackup.log 2>&1
 ```
 
 To enable triggering update on first factory boot (when emonpiupdate.log does not exist) add entry to `rc.local`:
@@ -328,16 +333,14 @@ NodeRed: `sudo ufw allow 1880/tcp`
 
 	sudo ufw enable
 
-# 14. Install NodeRED 
+# 14. Install NodeRED
 
-[Follow OEM NodeRED install guide](https://github.com/openenergymonitor/oem_node-red) with OEM examples. 
+[Follow OEM NodeRED install guide](https://github.com/openenergymonitor/oem_node-red) with OEM examples.
 
 Default flows admin user: `emonpi` and password `emonpi2016`
 
-**Need to make default emonPi flow using new MQTT** 
+**Need to make default emonPi flow using new MQTT**
 
 # 15 Install openHAB
 
 [Follow OEM openHAB install guide](https://github.com/openenergymonitor/oem_openHab) with OEM examples
-
-
