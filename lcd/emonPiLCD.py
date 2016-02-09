@@ -94,8 +94,8 @@ if not sd_image_version:
 
 lcd_string1 = "emonPi Build:"
 lcd_string2 = sd_image_version
-logger.info(sd_image_version)
-print "SD card image build version: " + sd_image_version
+logger.info("SD card image build version: " + sd_image_version)
+
 
 # ------------------------------------------------------------------------------------
 
@@ -245,13 +245,17 @@ def on_connect(client, userdata, flags, rc):
     global mqttConnected
     if rc:
         mqttConnected = False
+        logger.error("Unable to connect to MQTT server")
     else:
         mqttConnected = True
+        logger.info("Success! Connected to MQTT server")
         mqttc.subscribe(mqtt_topic)
+        logger.info("Subscribing to topic: " + mqtt_topic)
     
 def on_disconnect(client, userdata, rc):
     global mqttConnected
     mqttConnected = False
+    logger.error("MQTT server disconnected")
 
 def on_message(client, userdata, msg):
     topic_parts = msg.topic.split("/")
@@ -305,12 +309,12 @@ while 1:
     now = time.time()
 
     if not mqttConnected:
-        logger.info("Connecting to MQTT Server")
+        logger.info("Connecting to MQTT Server: "+mqtt_host+" on port: "+str(mqtt_port)+" with user: "+mqtt_user)
         try:
             mqttc.username_pw_set(mqtt_user, mqtt_passwd)
             mqttc.connect(mqtt_host, mqtt_port, 60)
         except:
-            logger.error("Could not connect to MQTT...")
+            logger.error("Could not connect to MQTT")
             time.sleep(5.0)
     
     mqttc.loop(0)
