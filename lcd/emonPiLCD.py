@@ -60,7 +60,7 @@ basedata = []
 if not uselogfile:
     loghandler = logging.StreamHandler()
 else:
-    loghandler = logging.handlers.RotatingFileHandler("/var/log/emonPiLCD",'a', 1000*1024, 1)
+    loghandler = logging.handlers.RotatingFileHandler("/var/log/emonPiLCD.log",'a', 1000*1024, 1)
     # 1Mb Max log size
 
 loghandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
