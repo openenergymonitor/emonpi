@@ -333,14 +333,8 @@ def main():
             basedata = r.get("basedata")
             if basedata is not None:
                 basedata = basedata.split(",")
-                if basedata[5] != 0:
-                    lcd.display_line(0, 'Temp 2: ' + str(basedata[5]) + "C")
-                else:
-                    lcd.display_line(0, 'Temp2: ...')
-                if basedata[10] != 0:
-                    lcd.display_line(1, 'Pulse ' + str(basedata[10]) + "p")
-                else:
-                    lcd.display_line(1, 'Pulse: ...')
+                lcd.display_line(0, 'Temp 2: ' + str(basedata[5]) + "C")
+                lcd.display_line(1, 'Pulse ' + str(basedata[10]) + "p")
             else:
                 lcd.display_line(0, 'ERROR: MQTT')
                 lcd.display_line(1, 'Not connected')
