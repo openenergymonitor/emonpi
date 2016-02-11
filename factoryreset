@@ -91,12 +91,11 @@ fi
 
 
 
-echo "Delete data/emonpiupdate.log"
-rm /home/pi/data/emonpiupdate.log
-
-echo "Delete backup data"
+echo "Delete logs & backup data"
 rm /home/pi/data/*.log
 rm /home/pi/data/*.gz
+rm /home/pi/data/uploads/*.gz
+rm /home/pi/data/import/*
 
 echo "clear WiFi config /etc/wpa_supplicant/wpa_supplicant.conf"
 echo "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev" > /etc/wpa_supplicant/wpa_supplicant.conf
