@@ -95,7 +95,7 @@ echo "Delete logs & backup data"
 rm /home/pi/data/*.log
 rm /home/pi/data/*.gz
 rm /home/pi/data/uploads/*.gz
-rm /home/pi/data/import/*
+rm /home/pi/data/import -rf
 
 echo "clear WiFi config /etc/wpa_supplicant/wpa_supplicant.conf"
 echo "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev" > /etc/wpa_supplicant/wpa_supplicant.conf
