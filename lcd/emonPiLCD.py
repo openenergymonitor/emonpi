@@ -246,6 +246,7 @@ def main():
             lcd.backlight(0)
 
         if buttoninput.pressed:
+            buttoninput.pressed = False
             if backlight:
                 page += 1
             if page > max_number_pages:
@@ -360,7 +361,6 @@ def main():
             logger.info("shutdown button pressed")
             shutdown(lcd)
 
-        buttoninput.pressed = False
         # Wait up to one second or until the button is pressed.
         read, _, _ = select.select([pipe[0]], [], [], 1)
         if read:  # pipe is readable, consume the byte.
