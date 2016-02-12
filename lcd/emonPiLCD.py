@@ -93,7 +93,7 @@ if not sd_image_version:
     sd_image_version = "N/A"
 
 lcd_string1 = "emonPi Build:"
-lcd_string2 = sd_image_version
+lcd_string2 = sd_image_version[:16]
 logger.info("SD card image build version: " + sd_image_version)
 
 
@@ -302,7 +302,8 @@ mqttc.on_message = on_message
 last1s = time.time() - 1.0
 buttonPress_time = time.time()
 
-time.sleep(2)
+## time to show Build version
+time.sleep(5)
 
 while 1:
 
@@ -402,6 +403,10 @@ while 1:
         elif page==5:
             lcd_string1 = datetime.now().strftime('%b %d %H:%M')
             lcd_string2 =  'Uptime %.2f days' % (float(r.get("uptime"))/86400)
+        
+        elif page==6:
+            lcd_string1 = "emonPi Build:"
+	    lcd_string2 = sd_image_version[:16]
 
         # If Shutdown button is not pressed update LCD
         if (GPIO.input(11) == 0):
