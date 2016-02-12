@@ -38,13 +38,16 @@ read -p "Shutdown when complete (y/n)? Else rebooting in 5s " -t 5 ans
 sudo /etc/init.d/emonhub stop
 sudo /etc/init.d/emoncms-nodes-service stop
 sudo /etc/init.d/feedwriter stop
+sudo /etc/init.d/mqtt_input stop
 
 sudo service redis-server restart
 
+echo "remove old conf & backup files"
+sudo rm /home/pi/data/*.conf
+sudo rm /home/pi/data/*.sql
+
 echo "emoncms.conf reset"
-cd /home/pi
-> emoncms.conf
-sudo mv /home/pi/emoncms.conf /home/pi/data/emoncms.conf
+touch /home/pi/data/emoncms.conf
 sudo chown pi:www-data /home/pi/data/emoncms.conf
 sudo chmod 664 /home/pi/data/emoncms.conf
 
@@ -99,7 +102,7 @@ echo "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev" > /etc/wpa_suppli
 echo "update_config=1" >> /etc/wpa_supplicant/wpa_supplicant.conf
 
 echo "Clear bash history"
-cat /dev/null > ~/.bash_history
+history -c
 
 echo
 if [[ "$ans" == "" ]] ; then ans=n;fi
