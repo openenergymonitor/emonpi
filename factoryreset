@@ -62,7 +62,7 @@ else    # Newer Feb15+ image use latest emonhub.conf with MQTT node variable top
    cp /home/pi/emonhub/conf/emonpi.default.emonhub.conf /home/pi/data/emonhub.conf
 fi
 
-sudo chmod 664 /home/pi/data/emonhub.conf
+sudo chmod 666 /home/pi/data/emonhub.conf
 
 echo "deleting phpfina and phptimeseries data"
 sudo rm -rf /home/pi/data/phpfina
