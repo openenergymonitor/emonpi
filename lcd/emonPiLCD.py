@@ -44,7 +44,7 @@ backlight_timeout = 300
 
 # Default Startup Page
 page = 0
-max_number_pages = 5
+max_number_pages = 6
 
 # ------------------------------------------------------------------------------------
 # Start Logging
@@ -93,7 +93,7 @@ if not sd_image_version:
     sd_image_version = "N/A"
 
 lcd_string1 = "emonPi Build:"
-lcd_string2 = sd_image_version[:16]
+lcd_string2 = sd_image_version[:-1]
 logger.info("SD card image build version: " + sd_image_version)
 
 
@@ -406,7 +406,7 @@ while 1:
         
         elif page==6:
             lcd_string1 = "emonPi Build:"
-	    lcd_string2 = sd_image_version[:16]
+	    lcd_string2 = sd_image_version[:-1]
 
         # If Shutdown button is not pressed update LCD
         if (GPIO.input(11) == 0):
