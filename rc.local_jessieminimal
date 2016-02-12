@@ -9,15 +9,13 @@
 if ( mount | grep "on /var/log "| grep -q "^tmpfs " )
 then
 for i in "redis" "apache2" "mysql" "openhab" "logrotate"; do mkdir /var/log/"$i"; done
-for i in "emoncms.log" "mysql.log" "wificheck.log" "emonpilcd.log" "redis/redis-server.log" "service-runner.log" "mysql/error.log" ; do touch /var/log/"$i"; done
-for i in "emoncms.log" "mysql.log" "wificheck.log" "redis/redis-server.log" "mysql/error.log" "apache2" ; do ""chmod 666"" /var/log/"$i"; done
+for i in "emoncms.log" "mysql.log" "wificheck.log" "emonpilcd.log" "mqtt_input.log" "redis/redis-server.log" "service-runner.log" "mysql/error.log" ; do touch /var/log/"$i"; done
+for i in "emoncms.log" "mysql.log" "wificheck.log" "emonpilcd.log" "mqtt_input.log" "redis/redis-server.log" "service-runner.log" "mysql/error.log" "apache2" ; do ""chmod 666"" /var/log/"$i"; done
 chown root:adm /var/log/apache2
 chown -R redis:redis /var/log/redis
 chown -R mysql:adm /var/log/mysql
 chown -R openhab:openhab /var/log/openhab
 chown -R pi:pi /var/log/logrotate
-chown pi:pi /var/log/service-runner.log
-chown pi:pi /var/log/wificheck.log
 
 # Restart Apache & Redis, now the directories are defined
 service apache2 restart
@@ -27,5 +25,6 @@ fi
 # Run emonPi Update of first factory boot (~/data/emonpiupdate.log does not exist)
 /home/pi/emonpi/./firstbootupdate
 
+delay 5
 service mqtt_input restart
 exit 0
