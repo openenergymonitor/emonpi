@@ -16,6 +16,9 @@ chown -R redis:redis /var/log/redis
 chown -R mysql:adm /var/log/mysql
 chown -R openhab:openhab /var/log/openhab
 chown -R pi:pi /var/log/logrotate
+chown pi:pi /var/log/service-runner.log
+chown pi:pi /var/log/wificheck.log
+
 # Restart Apache & Redis, now the directories are defined
 service apache2 restart
 service redis-server restart
