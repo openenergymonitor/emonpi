@@ -43,21 +43,29 @@ echo "git pull /home/pi/emonhub"
 cd /home/pi/emonhub
 git pull
 
-echo "git pull /home/pi/oem_openHab"
-cd /home/pi/oem_openHab
-git pull
+if [ -d /home/pi/oem_openHab ]; then
+    echo "git pull /home/pi/oem_openHab"
+    cd /home/pi/oem_openHab
+    git pull
+fi
 
-echo "git pull /home/pi/oem_node-red"
-cd /home/pi/oem_node-red
-git pull
+if [ -d /home/pi/oem_node ]; then
+    echo "git pull /home/pi/oem_node-red"
+    cd /home/pi/oem_node-red
+    git pull
+fi
 
-echo "git pull /home/pi/usefulscripts"
-cd /home/pi/usefulscripts
-git pull
+if [ -d /home/pi/usefulscripts ]; then
+    echo "git pull /home/pi/usefulscripts"
+    cd /home/pi/usefulscripts
+    git pull
+fi
 
-echo "git pull /home/pi/backup"
-cd /home/pi/backup
-git pull
+if [ -d /home/pi/backup ]; then
+    echo "git pull /home/pi/backup"
+    cd /home/pi/backup
+    git pull
+fi
 
 echo
 echo "Start emonPi Atmega328 firmware update:"
