@@ -8,9 +8,15 @@ sudo /etc/init.d/emonhub stop
 
 echo "Start ATmega328 serial upload using avrdude with emonPi_latest.hex"
 
-# emonPi ATmega328 update
+# Discrete Sampling 
+echo "Discrete Sampling:"
+echo "avrdude -c arduino -p ATMEGA328P -P /dev/ttyAMA0 -b 115200 -U flash:w:/home/pi/emonpi/Atmega328/emonPi_RFM69CW_RF12Demo_DiscreteSampling/compiled/emonPi_latest.hex"
 avrdude -c arduino -p ATMEGA328P -P /dev/ttyAMA0 -b 115200 -U flash:w:/home/pi/emonpi/Atmega328/emonPi_RFM69CW_RF12Demo_DiscreteSampling/compiled/emonPi_latest.hex
 
+# Continuous Sampling
+#echo "Continuous Sampling:"
+#echo "avrdude -c arduino -p ATMEGA328P -P /dev/ttyAMA0 -b 115200 -U flash:w:/home/pi/emonpi/firmware/compiled/latest.hex"
+#avrdude -c arduino -p ATMEGA328P -P /dev/ttyAMA0 -b 115200 -U flash:w:/home/pi/emonpi/firmware/compiled/latest.hex
 
 # RFM12Pi with RFM12B update
 # avrdude -v -c arduino -p ATMEGA328P -P /dev/ttyAMA0 -b 38400 -U flash:w:/home/pi/RFM2Pi/firmware/RFM69CW_RF_Demo_ATmega328/RFM12_Demo_ATmega328.cpp.hex
