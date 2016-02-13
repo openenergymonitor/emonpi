@@ -58,7 +58,7 @@ echo
 sudo /etc/init.d/emonhub restart
 sudo /etc/init.d/feedwriter restart
 
-if [ -f /etc/init.d/emoncms-nodes-service]; then
+if [ -f /etc/init.d/emoncms-nodes-service ]; then
   sudo /etc/init.d/emoncms-nodes-service restart
 fi
 
