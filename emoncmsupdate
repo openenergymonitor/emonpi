@@ -16,10 +16,12 @@ git pull
 
 echo
 
-echo "git pull /var/www/emoncms/Modules/nodes"
-cd /var/www/emoncms/Modules/nodes
-git branch
-git pull
+if [ -d /var/www/emoncms/Modules/nodes ]; then
+  echo "git pull /var/www/emoncms/Modules/nodes"
+  cd /var/www/emoncms/Modules/nodes
+  git branch
+  git pull
+fi
 
 echo
 
