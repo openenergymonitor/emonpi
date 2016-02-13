@@ -54,13 +54,23 @@ sudo cp /var/www/emoncms/settings.php /var/www/emoncms/old.settings.php
 sudo cp /var/www/emoncms/default.emonpi.settings.php /var/www/emoncms/settings.php
 
 echo
+
 sudo /etc/init.d/emonhub restart
-echo
-sudo /etc/init.d/emoncms-nodes-service restart
-echo
 sudo /etc/init.d/feedwriter restart
-echo
+
+if [ -f /etc/init.d/emoncms-nodes-service restart ]; then
+sudo /etc/init.d/emoncms-nodes-service restart
+fi
+
+if [ -f /etc/init.d/openhab restart ]; then
 sudo /etc/init.d/openhab restart
+fi
+
+if [ -f /etc/init.d/mqtt_input restart ]; then
+sudo /etc/init.d/mqtt_input restart
+fi
+
+
 
 echo
 echo "Emoncms update finished"
