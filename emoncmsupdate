@@ -69,6 +69,8 @@ if [ -f /etc/init.d/openhab ]; then
 fi
 
 if [ -f /etc/init.d/mqtt_input ]; then
+  sudo /etc/init.d/mqtt_input start
+  sleep 1
   sudo /etc/init.d/mqtt_input restart
 fi
 
