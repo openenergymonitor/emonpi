@@ -190,8 +190,8 @@ Follow [Emoncms Raspbian Jessie install guide](https://github.com/emoncms/emoncm
 * Use emonPi default settings:
 	* `cd /var/www/emoncms && cp default.emonpi.settings.php settings.php`
 * Create feed directories in RW partition `/home/pi/data` instead of `/var/lib`:
-	* `sudo mkdir /home/pi/data/{phpfiwa,phpfina,phptimeseries}`
-	* `sudo chown www-data:root /home/pi/data/{phpfiwa,phpfina,phptimeseries}`
+	* `sudo mkdir /home/pi/data/{phpfina,phptimeseries}`
+	* `sudo chown www-data:root /home/pi/data/{phpfina,phptimeseries}`
 
 ## Move MYSQL database location
 
