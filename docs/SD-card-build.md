@@ -37,7 +37,7 @@ Forum discussion:
 
 	sudo apt-get update -y
 	sudo apt-get upgrade -y
-	sudo apt-get install git-core -y
+	cd /home/pi && sudo apt-get install git-core -y
 	git clone https://github.com/openenergymonitor/emonpi
     git clone https://github.com/openenergymonitor/RFM2Pi
 
@@ -207,7 +207,7 @@ Follow [Raspberry Pi Emoncms Low-Write guide](https://github.com/emoncms/emoncms
 * [Setting up logging on read-only FS](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md#setup-logfile-environment)
 	* After running install we want to use emonPi specific rc.local instead:
 		* `sudo rm /etc/rc.local`
-		* `sudo ln -s /home/pi/emonpi/emonpi/rc.local_jessieminimal /etc/rc.local`
+		* `sudo ln -s /home/pi/emonpi/rc.local_jessieminimal /etc/rc.local`
 
 * [Move PHP sessions to tmpfs (RAM)](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md#move-php-sessions-to-tmpfs-ram)
 * [Configure Redis](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md#configure-redis)
