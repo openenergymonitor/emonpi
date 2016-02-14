@@ -215,6 +215,9 @@ Follow [Raspberry Pi Emoncms Low-Write guide](https://github.com/emoncms/emoncms
 * Disable apache access log:
 	* `sudo nano /etc/apache2/conf-enabled/other-vhosts-access-log.conf`
 	* comment out the access log
+* Ensure apache error log goes to /var/log/apache2/error.log
+ 	*  `sudo nano /etc/apache2/envvars`
+ 	*  Ensure `export APACHE_LOG_DIR=/var/log/apache2/$SUFFIX`
 
 
 No need to [Enable Low-write mode in emoncms](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md#enable-low-write-mode-in-emoncms) since these changes to `settings.php` are already set in `default.emonpi.settings.php` that we installed earlier.
