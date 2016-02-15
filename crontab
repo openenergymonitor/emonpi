@@ -26,4 +26,4 @@ MAILTO=""
 # # Run emonPi update script ever min, scrip exits unless update flag exists in /tmp
  * * * * * /home/pi/emonpi/update >> /home/pi/data/emonpiupdate.log 2>&1
 
-* * * * * /home/pi/usefulscripts/emonpi-migrate/emonpi-export-wrapper.sh >> /home/pi/data/emonpibackup.log 2>&1
+* * * * * /home/pi/backup/service-runner >> /var/log/service-runner.log 2>&1
