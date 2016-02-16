@@ -61,20 +61,20 @@ then    # Legacy image use emonhub.conf without MQTT authenitication
    cp /home/pi/emonhub/conf/old.default.emonhub.conf /home/pi/data/emonhub.conf
    
    echo "Resetting emonPi pi user password to raspberry"
-   passwd pi<<EOF
-   raspberry
-   raspberry
-   EOF
+passwd pi<<EOF
+raspberry
+raspberry
+EOF
 else    # Newer Feb15+ image use latest emonhub.conf with MQTT node variable topic structure and MQTT authentication enabled
    echo "Start with fresh config: copy NEW default emonpi emonhub.conf"
    echo "cp /home/pi/emonhub/conf/emonpi.default.emonhub.conf /home/pi/data/emonhub.conf"
    cp /home/pi/emonhub/conf/emonpi.default.emonhub.conf /home/pi/data/emonhub.conf
    
    echo "Resetting emonPi pi user password to emonpi2016"
-   passwd pi<<EOF
-   emonpi2016
-   emonpi2016
-   EOF
+passwd pi<<EOF
+emonpi2016
+emonpi2016
+EOF
 fi
 sudo chown pi:www-data /home/pi/data/emonhub.conf
 sudo chmod 666 /home/pi/data/emonhub.conf
