@@ -2,12 +2,13 @@
 
 Glyn Hudson - January 2016
 
-# IN DEVELOPMENT
-
 This guide replaces the imagebuild.md (renamed to old.imagebuild.md) and emonPi install.sh script which has never really worked reliably (renamed to old.install.sh). The guide cites the [Emoncms Raspberry Pi install guides](https://github.com/emoncms/emoncms/tree/master/docs/RaspberryPi) exhaustively compiled by Paul Reed.
 
 Forum discussion:
-- [Dec 22nd image beta based on Minibianpi (old beta, latest image is based on Raspbian Jessie Lite)](http://openenergymonitor.org/emon/node/11799)
+- [Feb 16th 2016 - image beta built using this guide](http://openenergymonitor.org/emon/node/12189)
+- [Feb 12th 2016 - image alpha built using this guide - Issue with php5-redis](http://openenergymonitor.org/emon/node/12164)
+- [Dec 22nd 2015 - image beta based on Minibianpi (old beta, latest image is based on Raspbian Jessie Lite)](http://openenergymonitor.org/emon/node/11799)
+
 
 # Features  
 - Base image **RASPBIAN JESSIE LITE 2015-11-21** (Kernel 4.1)
@@ -181,7 +182,7 @@ We can check data is being posted to MQTT by subscribing to the base topic `emon
 # 7. Install Emoncms V9 Core (stable branch)
 =======
 
-Follow [Emoncms Raspbian Jessie install guide](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/readme.md)
+Follow [Emoncms Raspberry Pi Raspbian Jessie install guide](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/readme.md)
 
 ## emonPi specific settings
 
@@ -192,6 +193,20 @@ Follow [Emoncms Raspbian Jessie install guide](https://github.com/emoncms/emoncm
 * Create feed directories in RW partition `/home/pi/data` instead of `/var/lib`:
 	* `sudo mkdir /home/pi/data/{phpfina,phptimeseries}`
 	* `sudo chown www-data:root /home/pi/data/{phpfina,phptimeseries}`
+
+Note: at time of writing the version of `php5-redis` included in the Raspbian Jessie sources (2.2.5-1) caused Apache to crash (segmentation errrors in Apache error log). Installing the latest stable version (2.2.7) of php5-redis from github fixed the issue. This step probably won't be required in the future when the updated version of php5-redis makes it's way into the sources. The check the version in the sources: `sudo apt-cache show php5-redis`
+
+```
+git clone --branch 2.2.7 https://github.com/phpredis/phpredis
+cd phpredis
+(check the version we are about to install:)
+​cat php_redis.h | grep VERSION
+phpize
+./configure 
+sudo make 
+sudo make install
+```
+
 
 ## Move MYSQL database location
 
