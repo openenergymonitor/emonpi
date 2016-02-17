@@ -290,11 +290,6 @@ Follow [instructions on emonPi backup module page](https://github.com/emoncms/ba
 
 # 10. Install emonPi update
 
-
-Clone Emoncms scripts:
-
-	git clone https://github.com/emoncms/usefulscripts
-
 Add Pi user cron entry:
 
 	crontab -e
@@ -305,7 +300,7 @@ Add the cron entries to check if emonpi update or emonpi backup has been trigger
 MAILTO=""
 
 # # Run emonPi update script ever min, scrip exits unless update flag exists in /tmp
- * * * * * /home/pi/emonpi/update >> /home/pi/data/emonpiupdate.log 2>&1
+* * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1
 ```
 
 To enable triggering update on first factory boot (when emonpiupdate.log does not exist) add entry to `rc.local`:
