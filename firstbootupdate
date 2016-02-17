@@ -20,8 +20,7 @@ if [ ! -s /home/pi/data/emonpiupdate.log ]; then
 	fi
 
 	if [ "$connected" = true ]; then
-		touch /tmp/emonpiupdate
-		/home/pi/emonpi/update 2>&1 >> /home/pi/data/emonpiupdate.log 2>&1
+		/home/pi/emonpi/service-runner-update.sh 2>&1 >> /home/pi/data/emonpiupdate.log 2>&1
 	fi
 else
 	echo "Not first boot"
