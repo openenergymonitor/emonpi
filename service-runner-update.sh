@@ -1,11 +1,7 @@
 #!/bin/bash
 
-LOCK=/tmp/updatelock
-if [ -f $LOCK ]; then
-  echo Job is already running\!
-  exit 6
-fi
-touch $LOCK
+# emonPi update for use with service-runner add following entry to crontab:
+# * * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1 
 
 # Make FS RW
 rpi-rw
@@ -85,20 +81,11 @@ sleep 30
 echo "Start emonPi LCD service"
 
 sudo /etc/init.d/emonPiLCD start
-
-
-
-# Remove update flag now update has finished
-sudo rm /tmp/emonpiupdate
-
-printf "\n...................\n"
-printf "emonPi update done\n"
+echo
+rpi-ro
 date
 echo
-
-rm $LOCK
-
-# Put file system back into read-only
-rpi-ro
+printf "\n...................\n"
+printf "emonPi update done\n" # this text string is used by service runner to stop the log window polling, DO NOT CHANGE!
 
 

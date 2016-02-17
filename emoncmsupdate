@@ -60,14 +60,17 @@ echo
 sudo /etc/init.d/emonhub restart
 sudo /etc/init.d/feedwriter restart
 
+echo
 if [ -f /etc/init.d/emoncms-nodes-service ]; then
   sudo /etc/init.d/emoncms-nodes-service restart
 fi
 
+echo 
 if [ -f /etc/init.d/openhab ]; then
   sudo /etc/init.d/openhab restart
 fi
 
+echo
 if [ -f /etc/init.d/mqtt_input ]; then
   sudo /etc/init.d/mqtt_input start
   sleep 1
