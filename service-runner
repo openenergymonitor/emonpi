@@ -1,0 +1,25 @@
+#!/bin/bash
+
+scriptname=$(basename $0)
+pidfile="/tmp/${scriptname}"
+
+# lock it
+exec 200>$pidfile
+flock -n 200 || exit 1
+pid=$$
+echo $pid 1>&200
+
+while :
+do
+    for flag in /tmp/emoncms-flag*; do
+        if [ -f $flag ]; then
+            tmp=`cat $flag`
+            IFS=\> read script logfile <<< "$tmp"
+            echo "STARTING: $script > $logfile"
+            sudo rm $flag
+            $script > $logfile
+            echo "COMPLETE: $script > $logfile"
+        fi
+    done
+    sleep 1
+done
