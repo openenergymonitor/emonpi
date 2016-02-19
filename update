@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# If update flag does not exit then exit
+ if [ ! -f /tmp/emonpiupdate ]; then
+    exit
+ fi
+ 
 LOCK=/tmp/updatelock
 if [ -f $LOCK ]; then
   echo Job is already running\!
