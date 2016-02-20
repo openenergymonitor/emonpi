@@ -35,7 +35,6 @@ void CT_Detect(){
 //--------------------------------------------------Check for connected CT sensors--------------------------------------------------------------------------------------------------------- 
 if (analogRead(1) > 0) {CT1 = 1; CT_count++;} else CT1=0;              // check to see if CT is connected to CT1 input, if so enable that channel
 if (analogRead(2) > 0) {CT2 = 1; CT_count++;} else CT2=0;              // check to see if CT is connected to CT2 input, if so enable that channel
-if ( CT_count == 0) CT1=1;                                                                        // If no CT's are connected then by default read from CT1
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 //--------------------------------------------------Check for connected AC Adapter Sensor------------------------------------------------------------------------------------------------

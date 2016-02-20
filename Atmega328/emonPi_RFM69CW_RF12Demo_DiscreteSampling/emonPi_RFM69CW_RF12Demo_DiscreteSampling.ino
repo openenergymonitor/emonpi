@@ -65,7 +65,7 @@ EnergyMonitor ct1, ct2;
 #include <LiquidCrystal_I2C.h>                                        // https://github.com/openenergymonitor/LiquidCrystal_I2C1602V1
 LiquidCrystal_I2C lcd(0x27,16,2);                                     // LCD I2C address to 0x27, 16x2 line display
 
-const byte firmware_version = 22;                                    //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
+const byte firmware_version = 23;                                    //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
 boolean debug =                   TRUE; 
@@ -257,14 +257,11 @@ void loop()
     {
       ct1.calcVI(no_of_half_wavelengths,timeout); emonPi.power1=ct1.realPower;
       emonPi.Vrms=ct1.Vrms*100;
-    }
+   }
     else 
     {
       if (CT1) emonPi.power1 = ct1.calcIrms(no_of_samples)*Vrms;                               // Calculate Apparent Power 1  1480 is  number of samples
-      emonPi.Vrms=Vrms*100;
-    }  
-
-
+   }  
   
    if (ACAC && CT2)                                                                       // Read from CT 2
    {
@@ -274,11 +271,16 @@ void loop()
    else 
    {
      if (CT2) emonPi.power2 = ct2.calcIrms(no_of_samples)*Vrms;                               // Calculate Apparent Power 1  1480 is  number of samples
-     emonPi.Vrms=Vrms*100;
    }
-
-
-   emonPi.power1_plus_2=emonPi.power1 + emonPi.power2;                            //Create power 1 plus power 2 variable for US and solar PV installs
+   
+   emonPi.power1_plus_2=emonPi.power1 + emonPi.power2;                                       //Create power 1 plus power 2 variable for US and solar PV installs
+   
+   if ((ACAC==0) && (CT_count > 0)) emonPi.Vrms=Vrms*100;                                        // If no AC wave detected set VRMS constant         
+  
+   if ((ACAC==1) && (CT_count==0)) {                                                                        // If only AC-AC is connected then return just VRMS calculation 
+     ct1.calcVI(no_of_half_wavelengths,timeout);
+     emonPi.Vrms=ct1.Vrms*100;
+   }
 
   //Serial.print(emonPi.pulseCount); Serial.print(" ");delay(5);
    // if (debug==1) {Serial.print(emonPi.power2); Serial.print(" ");delay(5);}  
@@ -297,12 +299,14 @@ void loop()
       pulseCount = 0;
       sei();                                                              // Re-enable interrupts
     }     
-    
-    /*Serial.print(emonPi.power1); Serial.print(" ");
+    /*
+    Serial.print(CT1); Serial.print(" "); Serial.print(CT2); Serial.print(" "); Serial.print(ACAC); Serial.print(" "); Serial.println  (CT_count);
+    Serial.print(emonPi.power1); Serial.print(" ");
     Serial.print(emonPi.power2); Serial.print(" ");
     Serial.print(emonPi.Vrms); Serial.print(" ");
-    Serial.println(emonPi.temp);
+    Serial.println(emonPi.temp[1]);
     */
+    
     send_emonpi_serial();                                             //Send emonPi data to Pi serial using struct packet structure
     
     last_sample = now;                                           //Record time of sample  

@@ -1,5 +1,8 @@
 # Change Log - emonPi Discrete Sampling Firmware
 
+# V2.3 (20/02/15)
+ * Fix VRMS reading bug
+
 # V2.2 (30/01/15)
  * Reduction in SRAM memory usage thanks to F-macro serial string implementation
  * Display "Raspberry Pi Booting" message on LCD at startup
