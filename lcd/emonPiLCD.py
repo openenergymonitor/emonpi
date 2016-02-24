@@ -299,11 +299,12 @@ mqttc.on_connect = on_connect
 mqttc.on_disconnect = on_disconnect
 mqttc.on_message = on_message
 
+## time to show Build version
+time.sleep(3)
+
 last1s = time.time() - 1.0
 buttonPress_time = time.time()
 
-## time to show Build version
-time.sleep(5)
 
 while 1:
 
