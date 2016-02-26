@@ -89,6 +89,8 @@ echo
 sleep 30
 echo "Start emonPi LCD service"
 
+# Allow Pi LCD script to write to /var/log/emonpilcd.log
+sudo chown pi /var/log
 sudo /etc/init.d/emonPiLCD start
 
 
