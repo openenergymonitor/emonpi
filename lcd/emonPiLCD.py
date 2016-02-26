@@ -15,6 +15,11 @@ import re
 import paho.mqtt.client as mqtt
 
 # ------------------------------------------------------------------------------------
+# Log File
+# ------------------------------------------------------------------------------------
+logfile = "/var/log/emonpilcd.log"
+
+# ------------------------------------------------------------------------------------
 # emonPi Node ID (default 5)
 # ------------------------------------------------------------------------------------
 emonPi_nodeID = 5
@@ -60,7 +65,7 @@ basedata = []
 if not uselogfile:
     loghandler = logging.StreamHandler()
 else:
-    loghandler = logging.handlers.RotatingFileHandler("/var/log/emonpilcd.log",'a', 1000*1024, 1)
+    loghandler = logging.handlers.RotatingFileHandler(logfile,'a', 1000*1024, 1)
     # 1Mb Max log size
 
 loghandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
@@ -144,29 +149,30 @@ class Background(threading.Thread):
             if (now-last5s)>=5.0:
                 last5s = now
 
-                # Ethernet
+                # Ethernet eth0
                 # --------------------------------------------------------------------------------
-                eth0 = "ip addr show eth0 | grep inet | awk '{print $2}' | cut -d/ -f1 | head -n1"
-                p = Popen(eth0, shell=True, stdout=PIPE)
-                eth0ip = p.communicate()[0][:-1]
-
+                eth0ip = getip("eth0") #Returns '' if not configured
                 ethactive = 1
-                if eth0ip=="" or eth0ip==False or (eth0ip[:1].isdigit()!=1):
+                if eth0ip == False:
                     ethactive = 0
-
                 r.set("eth:active",ethactive)
                 r.set("eth:ip",eth0ip)
+		
+		# Hi-Link 3G Dongle - connects on eth1
+		# --------------------------------------------------------------------------------	
+                eth1ip = getip("eth1")
+                eth1active = 1
+                if eth1ip== False:
+                    eth1active = 0
+                r.set("3g:active",eth1active)
+                r.set("3g:ip",eth1ip)
 
                 # Wireless LAN
                 # ----------------------------------------------------------------------------------
-                wlan0 = "ip addr show wlan0 | grep inet | awk '{print $2}' | cut -d/ -f1 | head -n1"
-                p = Popen(wlan0, shell=True, stdout=PIPE)
-                wlan0ip = p.communicate()[0][:-1]
-
+                wlan0ip = getip("wlan0")
                 wlanactive = 1
-                if wlan0ip=="" or wlan0ip==False or (wlan0ip[:1].isdigit()!=1):
+                if wlan0ip== False:
                     wlanactive = 0
-
                 r.set("wlan:active",wlanactive)
                 r.set("wlan:ip",wlan0ip)
 
@@ -187,6 +193,21 @@ class Background(threading.Thread):
 
             # this loop runs a bit faster so that ctrl-c exits are fast
             time.sleep(0.1)
+
+# get IP address of network interface, returns '' if not configured. Returns eth0 IP by default
+cmd = ' '
+ip = ' '
+def getip( interface="eth0" ):
+   global ip
+   # returns 'down' if interface is down and '' if interface is up
+   ifdown = subprocess.check_output("ip a | grep -Eq ': "+interface+":.*state UP' || echo down", shell=True)
+   # If interface is NOT down then it must be up up >  get it's IP address   
+   if ifdown =='':
+      cmd = "ip addr show "+interface+" | grep inet | awk '{print $2}' | cut -d/ -f1 | head -n1" 
+      ip = subprocess.check_output(cmd, shell=True).rstrip()
+   else:
+      ip = False
+   return(ip)
 
 def sigint_handler(signal, frame):
     logger.info("ctrl+c exit received")
