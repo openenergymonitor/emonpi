@@ -8,6 +8,7 @@
 # Will only run if /var/log is mounted in tmpfs
 if ( mount | grep "on /var/log "| grep -q "^tmpfs " )
 then
+  chown -R pi /var/log
   for i in "redis" "apache2" "mysql" "openhab" "logrotate"; do mkdir /var/log/"$i"; done
   for i in "emoncms.log" "mysql.log" "wificheck.log" "emonpilcd.log" "mqtt_input.log" "redis/redis-server.log" "service-runner.log" "mysql/error.log" "apache2/error.log" ; do touch /var/log/"$i"; done
   for i in "emoncms.log" "mysql.log" "wificheck.log" "emonpilcd.log" "mqtt_input.log" "redis/redis-server.log" "service-runner.log" "mysql/error.log" "apache2/error.log" ; do ""chmod 666"" /var/log/"$i"; done
