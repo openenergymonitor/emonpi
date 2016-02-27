@@ -13,7 +13,13 @@ import signal
 import redis
 import re
 import paho.mqtt.client as mqtt
+import getip
 
+# ------------------------------------------------------------------------------------
+# Log File
+# ------------------------------------------------------------------------------------
+logfile = "/var/log/emonpilcd.log"
+print "Logging to: "+logfile
 # ------------------------------------------------------------------------------------
 # emonPi Node ID (default 5)
 # ------------------------------------------------------------------------------------
@@ -44,7 +50,7 @@ backlight_timeout = 300
 
 # Default Startup Page
 page = 0
-max_number_pages = 6
+max_number_pages = 7
 
 # ------------------------------------------------------------------------------------
 # Start Logging
@@ -60,7 +66,7 @@ basedata = []
 if not uselogfile:
     loghandler = logging.StreamHandler()
 else:
-    loghandler = logging.handlers.RotatingFileHandler("/var/log/emonpilcd.log",'a', 1000*1024, 1)
+    loghandler = logging.handlers.RotatingFileHandler(logfile,'a', 1000*1024, 1)
     # 1Mb Max log size
 
 loghandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
@@ -88,13 +94,16 @@ else:
 # Discover & display emonPi SD card image version
 # ------------------------------------------------------------------------------------
 
-sd_image_version = subprocess.check_output("ls /boot | grep emonSD", shell=True)
-if not sd_image_version:
-    sd_image_version = "N/A"
+sd_image_version= ''
+sd_card_image = subprocess.call("ls /boot | grep emonSD", shell=True)
+if not sd_card_image:
+   sd_image_version = subprocess.check_output("ls /boot | grep emonSD", shell=True)
+else:
+   sd_image_version = "N/A "
 
 lcd_string1 = "emonPi Build:"
 lcd_string2 = sd_image_version[:-1]
-logger.info("SD card image build version: " + sd_image_version)
+logger.info("SD card image build version: " + sd_image_version[:-1])
 
 
 # ------------------------------------------------------------------------------------
@@ -144,31 +153,35 @@ class Background(threading.Thread):
             if (now-last5s)>=5.0:
                 last5s = now
 
-                # Ethernet
+                # Ethernet eth0
                 # --------------------------------------------------------------------------------
-                eth0 = "ip addr show eth0 | grep inet | awk '{print $2}' | cut -d/ -f1 | head -n1"
-                p = Popen(eth0, shell=True, stdout=PIPE)
-                eth0ip = p.communicate()[0][:-1]
-
+                eth0ip = getip.getip("eth0") #Returns '' if not configured
                 ethactive = 1
-                if eth0ip=="" or eth0ip==False or (eth0ip[:1].isdigit()!=1):
+                if eth0ip == False:
                     ethactive = 0
-
                 r.set("eth:active",ethactive)
                 r.set("eth:ip",eth0ip)
+                #print "Eth0: "+str(ethactive)+" "+str(eth0ip)
+		
+		# Hi-Link 3G Dongle - connects on eth1
+		# --------------------------------------------------------------------------------
+                eth1ip = getip.getip("eth1")
+                eth1active = 1
+                if eth1ip== False:
+                    eth1active = 0
+                r.set("gsm:active",eth1active)
+                r.set("gsm:ip",eth1ip)
+                #print "Eth1: "+str(eth1active)+" "+str(eth1ip)
 
                 # Wireless LAN
                 # ----------------------------------------------------------------------------------
-                wlan0 = "ip addr show wlan0 | grep inet | awk '{print $2}' | cut -d/ -f1 | head -n1"
-                p = Popen(wlan0, shell=True, stdout=PIPE)
-                wlan0ip = p.communicate()[0][:-1]
-
+                wlan0ip = getip.getip("wlan0")
                 wlanactive = 1
-                if wlan0ip=="" or wlan0ip==False or (wlan0ip[:1].isdigit()!=1):
+                if wlan0ip== False:
                     wlanactive = 0
-
                 r.set("wlan:active",wlanactive)
                 r.set("wlan:ip",wlan0ip)
+                #print "wlan1: "+str(wlanactive)+" "+str(wlan0ip)
 
                 # ----------------------------------------------------------------------------------
 
@@ -270,7 +283,6 @@ class ButtonInput():
         self.pressed = False
     def buttonPress(self,channel):
         self.pressed = True
-        logger.info("lcd button press "+str(self.press_num))
 
 signal.signal(signal.SIGINT, sigint_handler)
 signal.signal(signal.SIGTERM,sigterm_handler)
@@ -325,9 +337,12 @@ while 1:
         if backlight == True: page = page + 1
         if page>max_number_pages: page = 0
         buttonPress_time = time.time()
+        logger.info(" ")
         logger.info("Mode button pressed")
-        logger.info("Page: "+str(page))
-        logger.info("Data: "+str(basedata))
+        logger.info("Page "+str(page)+":")
+        #logger.info("Data: "+str(basedata))
+        logger.info(lcd_string1)
+        logger.info(lcd_string2)
 
         #turn backight off afer x seconds
     if (now - buttonPress_time) > backlight_timeout:
@@ -348,21 +363,35 @@ while 1:
                 lcd_string1 = "Ethernet: YES"
                 lcd_string2 = r.get("eth:ip")
             else:
-            	if int(r.get("wlan:active")):
+                if int(r.get("wlan:active")) or int(r.get("gsm:active")):
             		page=page+1
             	else:
-            		lcd_string1 = "Ethernet:"
-            		lcd_string2 = "NOT CONNECTED"
-
+            	    lcd_string1 = "Ethernet:"
+            	    lcd_string2 = "NOT CONNECTED"
         elif page==1:
             if int(r.get("wlan:active")):
                 lcd_string1 = "WIFI: YES  "+str(r.get("wlan:signallevel"))+"%"
                 lcd_string2 = r.get("wlan:ip")
             else:
-                lcd_string1 = "WIFI:"
-                lcd_string2 = "NOT CONNECTED"
+                if int(r.get("eth:active")) or int(r.get("gsm:active")):
+                    page=page+1
+                else:
+                    lcd_string1 = "WIFI:"
+                    lcd_string2 = "NOT CONNECTED"
 
         elif page==2:
+            if int(r.get("gsm:active")):
+                lcd_string1 = "GSM: YES"
+                lcd_string2 = r.get("gsm:ip")
+            else:
+                if int(r.get("eth:active")) or int(r.get("wlan:active")):
+                    page=page+1
+                else:
+                    lcd_string1 = "GSM:"
+                    lcd_string2 = "NOT CONNECTED"
+              
+
+        elif page==3:
             basedata = r.get("basedata")
             if (basedata is not None) & (mqttConnected ==True) :
                 basedata = basedata.split(",")
@@ -372,7 +401,7 @@ while 1:
                 lcd_string1 = 'ERROR: MQTT'
                 lcd_string2 = 'Not connected'
 
-        elif page==3:
+        elif page==4:
             basedata = r.get("basedata")
             if (basedata is not None) & (mqttConnected ==True) :
                 basedata = basedata.split(",")
@@ -385,7 +414,7 @@ while 1:
                 lcd_string1 = 'ERROR: MQTT'
                 lcd_string2 = 'Not connected'
 
-        elif page==4:
+        elif page==5:
             basedata = r.get("basedata")
             if (basedata is not None) & (mqttConnected ==True) :
                 basedata = basedata.split(",")
@@ -401,11 +430,11 @@ while 1:
                 lcd_string1 = 'ERROR: MQTT'
                 lcd_string2 = 'Not connected'
 
-        elif page==5:
+        elif page==6:
             lcd_string1 = datetime.now().strftime('%b %d %H:%M')
             lcd_string2 =  'Uptime %.2f days' % (float(r.get("uptime"))/86400)
         
-        elif page==6:
+        elif page==7:
             lcd_string1 = "emonPi Build:"
 	    lcd_string2 = sd_image_version[:-1]
 
