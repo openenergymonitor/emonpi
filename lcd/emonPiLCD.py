@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+
+# pylint: disable=line-too-long
+
 import lcddriver
 import time
 from datetime import datetime
