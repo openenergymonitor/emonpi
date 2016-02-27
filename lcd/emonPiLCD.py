@@ -96,10 +96,14 @@ else:
 
 sd_image_version= ''
 sd_card_image = subprocess.call("ls /boot | grep emonSD", shell=True)
-if not sd_card_image:
+if not sd_card_image: #if emonSD file exists
    sd_image_version = subprocess.check_output("ls /boot | grep emonSD", shell=True)
 else:
-   sd_image_version = "N/A "
+    sd_card_image = subprocess.call("ls /boot | grep emonpi", shell=True)
+    if not sd_card_image:
+        sd_image_version = subprocess.check_output("ls /boot | grep emonpi", shell=True)
+    else:
+        sd_image_version = "N/A "
 
 lcd_string1 = "emonPi Build:"
 lcd_string2 = sd_image_version[:-1]
