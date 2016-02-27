@@ -337,9 +337,12 @@ while 1:
         if backlight == True: page = page + 1
         if page>max_number_pages: page = 0
         buttonPress_time = time.time()
+        logger.info(" ")
         logger.info("Mode button pressed")
-        logger.info("Page: "+str(page))
-        logger.info("Data: "+str(basedata))
+        logger.info("Page "+str(page)+":")
+        #logger.info("Data: "+str(basedata))
+        logger.info(lcd_string1)
+        logger.info(lcd_string2)
 
         #turn backight off afer x seconds
     if (now - buttonPress_time) > backlight_timeout:
