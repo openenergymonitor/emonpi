@@ -13,7 +13,10 @@ import signal
 import redis
 import re
 import paho.mqtt.client as mqtt
+
+# Local files
 import getip
+import gsmhuaweistatus
 
 # ------------------------------------------------------------------------------------
 # Log File
@@ -40,6 +43,11 @@ mqtt_topic = "emonhub/rx/"+str(emonPi_nodeID)+"/values"
 redis_host = 'localhost'
 redis_port = 6379
 
+# ------------------------------------------------------------------------------------
+# Huawei Hi-Link GSM/3G USB dongle IP address on eth1
+# ------------------------------------------------------------------------------------
+hilink_device_ip = '192.168.1.1'
+
 
 # ------------------------------------------------------------------------------------
 # LCD backlight timeout in seconds
@@ -51,6 +59,7 @@ backlight_timeout = 300
 # Default Startup Page
 page = 0
 max_number_pages = 7
+
 
 # ------------------------------------------------------------------------------------
 # Start Logging
@@ -173,9 +182,14 @@ class Background(threading.Thread):
                 eth1active = 1
                 if eth1ip== False:
                     eth1active = 0
+                else:
+                    if not gsmhuaweistatus.is_hilink(hilink_device_ip):
+                        eth1active = 0
+                    else:
+                        gsm_connection_status = gsmhuaweistatus.return_gsm_connection_status(hilink_device_ip)
+                        r.set("gsm:connection",gsm_connection_status[0])
+                        r.set("gsm:signal",gsm_connection_status[1])
                 r.set("gsm:active",eth1active)
-                r.set("gsm:ip",eth1ip)
-                #print "Eth1: "+str(eth1active)+" "+str(eth1ip)
 
                 # Wireless LAN
                 # ----------------------------------------------------------------------------------
@@ -385,14 +399,14 @@ while 1:
 
         elif page==2:
             if int(r.get("gsm:active")):
-                lcd_string1 = "GSM: YES"
-                lcd_string2 = r.get("gsm:ip")
+                lcd_string1 = str(r.get("gsm:connection"))
+                lcd_string2 = str(r.get("gsm:signal"))
             else:
                 if int(r.get("eth:active")) or int(r.get("wlan:active")):
                     page=page+1
                 else:
                     lcd_string1 = "GSM:"
-                    lcd_string2 = "NOT CONNECTED"
+                    lcd_string2 = "NO DEVICE"
               
 
         elif page==3:
