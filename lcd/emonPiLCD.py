@@ -13,6 +13,7 @@ import signal
 import redis
 import re
 import paho.mqtt.client as mqtt
+import getip
 
 # ------------------------------------------------------------------------------------
 # Log File
@@ -97,7 +98,7 @@ sd_image_version= ''
 sd_card_image = subprocess.call("ls /boot | grep emonSD", shell=True)
 if not sd_card_image:
    sd_image_version = subprocess.check_output("ls /boot | grep emonSD", shell=True)
-else: 
+else:
    sd_image_version = "N/A "
 
 lcd_string1 = "emonPi Build:"
@@ -154,30 +155,33 @@ class Background(threading.Thread):
 
                 # Ethernet eth0
                 # --------------------------------------------------------------------------------
-                eth0ip = getip("eth0") #Returns '' if not configured
+                eth0ip = getip.getip("eth0") #Returns '' if not configured
                 ethactive = 1
                 if eth0ip == False:
                     ethactive = 0
                 r.set("eth:active",ethactive)
                 r.set("eth:ip",eth0ip)
+                #print "Eth0: "+str(ethactive)+" "+str(eth0ip)
 		
 		# Hi-Link 3G Dongle - connects on eth1
-		# --------------------------------------------------------------------------------	
-                eth1ip = getip("eth1")
+		# --------------------------------------------------------------------------------
+                eth1ip = getip.getip("eth1")
                 eth1active = 1
                 if eth1ip== False:
                     eth1active = 0
                 r.set("gsm:active",eth1active)
                 r.set("gsm:ip",eth1ip)
+                #print "Eth1: "+str(eth1active)+" "+str(eth1ip)
 
                 # Wireless LAN
                 # ----------------------------------------------------------------------------------
-                wlan0ip = getip("wlan0")
+                wlan0ip = getip.getip("wlan0")
                 wlanactive = 1
                 if wlan0ip== False:
                     wlanactive = 0
                 r.set("wlan:active",wlanactive)
                 r.set("wlan:ip",wlan0ip)
+                #print "wlan1: "+str(wlanactive)+" "+str(wlan0ip)
 
                 # ----------------------------------------------------------------------------------
 
@@ -196,21 +200,6 @@ class Background(threading.Thread):
 
             # this loop runs a bit faster so that ctrl-c exits are fast
             time.sleep(0.1)
-
-# get IP address of network interface, returns '' if not configured. Returns eth0 IP by default
-cmd = ' '
-ip = ' '
-def getip( interface="eth0" ):
-   global ip
-   # returns 'down' if interface is down and '' if interface is up
-   ifdown = subprocess.check_output("ip a | grep -Eq ': "+interface+":.*state UP' || echo down", shell=True)
-   # If interface is NOT down then it must be up up >  get it's IP address   
-   if ifdown =='':
-      cmd = "ip addr show "+interface+" | grep inet | awk '{print $2}' | cut -d/ -f1 | head -n1" 
-      ip = subprocess.check_output(cmd, shell=True).rstrip()
-   else:
-      ip = False
-   return(ip)
 
 def sigint_handler(signal, frame):
     logger.info("ctrl+c exit received")
@@ -294,7 +283,6 @@ class ButtonInput():
         self.pressed = False
     def buttonPress(self,channel):
         self.pressed = True
-        logger.info("lcd button press "+str(self.press_num))
 
 signal.signal(signal.SIGINT, sigint_handler)
 signal.signal(signal.SIGTERM,sigterm_handler)
@@ -390,7 +378,7 @@ while 1:
 
         elif page==2:
             if int(r.get("gsm:active")):
-                lcd_string1 = "GMS: YES"
+                lcd_string1 = "GSM: YES"
                 lcd_string2 = r.get("gsm:ip")
             else:
                 if int(r.get("eth:active")) or int(r.get("wlan:active")):
