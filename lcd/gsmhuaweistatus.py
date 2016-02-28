@@ -118,13 +118,13 @@ def return_gsm_connection_status(device_ip):
         gsm_connection_status[1] = get_network_type(network_type) + ' Signal: ' + signal_level + '/5'
     return gsm_connection_status
 
-device_ip = '192.168.1.1'
-if len(sys.argv) == 2:
-    device_ip = sys.argv[1]
+#device_ip = '192.168.1.1'
+#if len(sys.argv) == 2:
+#    device_ip = sys.argv[1]
   
-if not is_hilink(device_ip):
-    print("No HiLink device")
-    sys.exit(-1)
+#if not is_hilink(device_ip):
+#    print("No HiLink device")
+#    sys.exit(-1)
 
 
 #connection_status = print_connection_status(device_ip)
