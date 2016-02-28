@@ -21,7 +21,7 @@ import gsmhuaweistatus
 # ------------------------------------------------------------------------------------
 # Log File
 # ------------------------------------------------------------------------------------
-logfile = "/var/log/emonpilcd.log"
+logfile = "/var/log/emonpilcd/emonpilcd.log"
 print "Logging to: "+logfile
 # ------------------------------------------------------------------------------------
 # emonPi Node ID (default 5)
