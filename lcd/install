@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Run script as root $ sudo ./install 
+# Run script as root $ sudo ./install
 # Reboot required for I2C  enable to take effect
 
-# emonPi - Raspberry Pi Energy Monitoring 
-# Part of the OpenEnergyMonitor.org project 
+# emonPi - Raspberry Pi Energy Monitoring
+# Part of the OpenEnergyMonitor.org project
 
 echo 'Install Python pip, Python I2C Tools and uptime module'
 sudo apt-get update
@@ -12,10 +12,11 @@ sudo apt-get install python-smbus i2c-tools python-rpi.gpio python-pip redis-ser
 sudo pip install uptime
 sudo pip install redis
 sudo pip install paho-mqtt
+sudo pip install xmltodict
 
-echo "Enable I2C module" 
+echo "Enable I2C module"
 
-# Black list method is not used in newer versions of Raspbien 
+# Black list method is not used in newer versions of Raspbien
 #if ! grep -Fxq "#blacklist i2c-bcm2708" /etc/modprobe.d/raspi-blacklist.conf ; then
 #	sudo sed -i 's/blacklist i2c-bcm2708/#blacklist i2c-bcm2708/' /etc/modprobe.d/raspi-blacklist.conf
 #	echo 'I2C module enabled in /etc/modprobe.d/raspi-blacklist.conf'
@@ -46,15 +47,15 @@ else
 fi
 
 
-# create linked directoty for LCD scripts 
+# create linked directoty for LCD scripts
 sudo rm -r /usr/share/emonPiLCD
 sudo ln -s /home/pi/emonpi/lcd/ /usr/share/emonPiLCD
 
-# create linked init service script 
+# create linked init service script
 sudo rm -f /etc/init.d/emonPiLCD
 sudo ln -s /home/pi/emonpi/lcd/emonPiLCD /etc/init.d/emonPiLCD
 
-# launch at startup 
+# launch at startup
 sudo update-rc.d emonPiLCD defaults
 
 echo 'emonPi I2C LCD installed...please reboot to take effect'

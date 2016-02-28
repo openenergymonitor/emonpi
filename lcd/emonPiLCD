@@ -14,6 +14,7 @@
 DIR=/usr/share/emonPiLCD
 DAEMON=$DIR/emonPiLCD.py
 DAEMON_NAME=emonPiLCD
+LOG_FILE_PATH=/var/log/emonpilcd
  
 # This next line determines what user the script runs as.
 # Root generally not recommended but necessary if you are using the Raspberry Pi GPIO from Python.
@@ -21,7 +22,12 @@ DAEMON_USER=root
  
 # The process ID of the script when it runs is stored here:
 PIDFILE=/var/run/$DAEMON_NAME.pid
- 
+
+
+	sudo mkdir -p $LOG_FILE_PATH
+	sudo chown -R pi $LOG_FILE_PATH
+        sudo chmod 666 -R $LOG_FILE_PATH
+
 . /lib/lsb/init-functions
  
 do_start () {

@@ -4,6 +4,9 @@ echo "================================="
 echo "EmonPi update started"
 echo "================================="
 
+# Needed for emonPi LCD Hi-Link 3G dongle support
+sudo pip install xmltodict
+
 sudo /etc/init.d/emonhub stop
 
 echo "Start ATmega328 serial upload using avrdude with emonPi_latest.hex"
