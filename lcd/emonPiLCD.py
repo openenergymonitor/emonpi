@@ -32,7 +32,7 @@ emonPi_nodeID = 5
 # MQTT Settings
 # ------------------------------------------------------------------------------------
 mqtt_user = "emonpi"
-mqtt_passwd = "emonpimqtt2016"
+mqtt_passwd = "brynawelon2016"
 mqtt_host = "127.0.0.1"
 mqtt_port = 1883
 mqtt_topic = "emonhub/rx/"+str(emonPi_nodeID)+"/values"

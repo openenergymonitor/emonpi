@@ -17,6 +17,9 @@ def getip( interface="eth0" ):
       ip = subprocess.check_output(cmd, shell=True).rstrip()
    else:
       ip = False
-   return(ip)
+   if ip=="" or ip==False or (ip[:1].isdigit()!=1):
+       return(False)
+   else: 
+      return(ip)
 
-#print getip("wlan0")
+#print getip("eth0")
