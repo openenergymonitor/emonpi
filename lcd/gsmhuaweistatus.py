@@ -23,7 +23,11 @@ def to_size(size):
 
 
 def is_hilink(device_ip):
-    r = requests.get('http://' + device_ip + '/api/device/information')
+    try:
+        r = requests.get(url='http://' + device_ip + '/api/device/information', timeout=(2.0,2.0))
+    except requests.exceptions.RequestException as e:
+        #print ("Error: "+str(e))
+        return False;
     if r.status_code != 200:
         return False
     d = xmltodict.parse(r.text, xml_attribs=True)
@@ -32,7 +36,11 @@ def is_hilink(device_ip):
     return True
 
 def call_api(device_ip, resource, xml_attribs=True):
-    r = requests.get('http://' + device_ip + resource)
+    try:
+        r = requests.get(url='http://' + device_ip + resource, timeout=(2.0,2.0))
+    except requests.exceptions.RequestException as e:
+        #print ("Error: "+str(e))
+        return False;
     if r.status_code == 200:
     	d = xmltodict.parse(r.text, xml_attribs=xml_attribs)
         if 'error' in d:
@@ -109,14 +117,19 @@ def get_network_type(type):
 
 gsm_connection_status = ['','']
 def return_gsm_connection_status(device_ip):
+    connection_status = False
     d = call_api(device_ip, '/api/monitoring/status')
-    connection_status = d['response']['ConnectionStatus']
-    signal_level = d['response']['SignalIcon']
-    network_type = d['response']['CurrentNetworkType']
-    gsm_connection_status[0] = get_connection_status(connection_status)
+    if d is not False:
+        connection_status = d['response']['ConnectionStatus']
+        signal_level = d['response']['SignalIcon']
+        network_type = d['response']['CurrentNetworkType']
+        gsm_connection_status[0] = get_connection_status(connection_status)
+    else:
+        return (['No HiLink','Device'])
     if connection_status == '901':
         gsm_connection_status[1] = get_network_type(network_type) + ' Signal: ' + signal_level + '/5'
     return gsm_connection_status
+
 
 #device_ip = '192.168.1.1'
 #if len(sys.argv) == 2:
@@ -127,7 +140,7 @@ def return_gsm_connection_status(device_ip):
 #    sys.exit(-1)
 
 
-#connection_status = print_connection_status(device_ip)
+print(return_gsm_connection_status('192.168.1.1'))
 #print('')
 #print_traffic_statistics(device_ip, connection_status)
 
