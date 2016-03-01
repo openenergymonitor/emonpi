@@ -19,6 +19,9 @@ import atexit
 import os
 import select
 
+# Local files
+import gsmhuaweistatus
+
 # ------------------------------------------------------------------------------------
 # emonPi Node ID (default 5)
 # ------------------------------------------------------------------------------------
@@ -39,6 +42,11 @@ mqtt_topic = "emonhub/rx/" + str(emonPi_nodeID) + "/values"
 redis_host = 'localhost'
 redis_port = 6379
 
+# ------------------------------------------------------------------------------------
+# Huawei Hi-Link GSM/3G USB dongle IP address on eth1
+# ------------------------------------------------------------------------------------
+hilink_device_ip = '192.168.1.1'
+
 
 # ------------------------------------------------------------------------------------
 # LCD backlight timeout in seconds
@@ -48,7 +56,7 @@ redis_port = 6379
 backlight_timeout = 300
 
 # Default Startup Page
-max_number_pages = 6
+max_number_pages = 7
 
 # ------------------------------------------------------------------------------------
 # Start Logging
@@ -144,7 +152,7 @@ def main():
     if not uselogfile:
         loghandler = logging.StreamHandler()
     else:
-        loghandler = logging.handlers.RotatingFileHandler("/var/log/emonPiLCD", 'a', 1000*1024, 1)
+        loghandler = logging.handlers.RotatingFileHandler("/var/log/emonpilcd/emonpilcd.log", 'a', 1000 * 1024, 1)
         # 1Mb Max log size
 
     loghandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
@@ -162,9 +170,17 @@ def main():
     # Discover & display emonPi SD card image version
     # ------------------------------------------------------------------------------------
 
-    sd_image_version = subprocess.check_output("ls /boot | grep emonSD", shell=True)
-    if not sd_image_version:
-        sd_image_version = "N/A"
+    sd_image_version = ''
+    sd_card_image = subprocess.call("ls /boot | grep emonSD", shell=True)
+    if not sd_card_image:  # if emonSD file exists
+        sd_image_version = subprocess.check_output("ls /boot | grep emonSD", shell=True)
+    else:
+        sd_card_image = subprocess.call("ls /boot | grep emonpi", shell=True)
+        if not sd_card_image:
+            sd_image_version = subprocess.check_output("ls /boot | grep emonpi", shell=True)
+        else:
+            sd_image_version = "N/A "
+    sd_image_version = sd_image_version.rstrip()
 
     lcd[0] = "emonPi Build:"
     lcd[1] = sd_image_version
@@ -179,7 +195,8 @@ def main():
     # emonPi Shutdown button, Pin 11 GPIO 17
     GPIO.setup(11, GPIO.IN)
 
-    # Create a pipe with no buffering, make the read end non-blocking and pass the other to the ButtonInput class
+    # Create a pipe with no buffering, make the read end non-blocking and pass
+    # the other to the ButtonInput class
     pipe = os.pipe()
     pipe = (os.fdopen(pipe[0], 'r', 0), os.fdopen(pipe[1], 'w', 0))
     fcntl.fcntl(pipe[0], fcntl.F_SETFL, os.O_NONBLOCK)
@@ -278,44 +295,52 @@ def main():
                 signallevel = signals[0].partition('.')[0]
         r.set("wlan:signallevel", signallevel)
 
+        # Update Hi-Link 3G Dongle - connects on eth1
+        if ipaddress.get_ip_address("eth1") and gsmhuaweistatus.is_hilink(hilink_device_ip):
+            gsm_connection_status = gsmhuaweistatus.return_gsm_connection_status(hilink_device_ip)
+            r.set("gsm:connection", gsm_connection_status[0])
+            r.set("gsm:signal", gsm_connection_status[1])
+            r.set("gsm:active", True)
+        else:
+            r.set("gsm:active", False)
+
         # Now display the appropriate LCD page
         if page == 0:
-            if eth0ip:
+            if r.get("eth:active"):
                 lcd[0] = "Ethernet: YES"
-                lcd[1] = eth0ip
-            elif ipaddress.get_ip_address('wlan0'):
+                lcd[1] = r.get("eth:ip")
+            elif r.get("wlan:active") or r.get("gsm:active"):
                 page += 1
             else:
                 lcd[0] = "Ethernet:"
                 lcd[1] = "NOT CONNECTED"
 
         if page == 1:
-            if wlan0ip:
-                lcd[0] = "WIFI: YES  " + str(signallevel) + "%"
-                lcd[1] = wlan0ip
+            if r.get("wlan:active"):
+                lcd[0] = "WIFI: YES  " + r.get("wlan:signallevel") + "%"
+                lcd[1] = r.get("wlan:ip")
+            elif r.get("gsm:active") or r.get("eth:active"):
+                page += 1
             else:
                 lcd[0] = "WIFI:"
                 lcd[1] = "NOT CONNECTED"
 
-        elif page == 2:
-            basedata = r.get("basedata")
-            if basedata is not None:
-                basedata = basedata.split(",")
-                lcd[0] = 'Power 1: ' + str(basedata[0]) + "W"
-                lcd[1] = 'Power 2: ' + str(basedata[1]) + "W"
+        if page == 2:
+            if r.get("gsm:active"):
+                lcd[0] = r.get("gsm:connection")
+                lcd[1] = r.get("gsm:signal")
+            elif r.get("eth:active") or r.get("wlan:active"):
+                page += 1
             else:
-                lcd[0] = 'ERROR: MQTT'
-                lcd[1] = 'Not connected'
+                lcd[0] = "GSM:"
+                lcd[1] = "NO DEVICE"
 
-        elif page == 3:
+        if page == 3:
             basedata = r.get("basedata")
             if basedata is not None:
                 basedata = basedata.split(",")
-                lcd[0] = 'VRMS: ' + str(basedata[3]) + "V"
-                if basedata[4] != 0:
-                    lcd[1] = 'Temp 1: ' + str(basedata[4]) + " C"
-                else:
-                    lcd[1] = 'Temp1: ...'
+                lcd[0] = 'Power 1: ' + basedata[0] + "W"
+                lcd[1] = 'Power 2: ' + basedata[1] + "W"
             else:
                 lcd[0] = 'ERROR: MQTT'
                 lcd[1] = 'Not connected'
@@ -324,19 +349,29 @@ def main():
             basedata = r.get("basedata")
             if basedata is not None:
                 basedata = basedata.split(",")
-                lcd[0] = 'Temp 2: ' + str(basedata[5]) + "C"
-                lcd[1] = 'Pulse ' + str(basedata[10]) + "p"
+                lcd[0] = 'VRMS: ' + basedata[3] + "V"
+                lcd[1] = 'Temp 1: ' + basedata[4] + " C"
             else:
                 lcd[0] = 'ERROR: MQTT'
                 lcd[1] = 'Not connected'
 
         elif page == 5:
+            basedata = r.get("basedata")
+            if basedata is not None:
+                basedata = basedata.split(",")
+                lcd[0] = 'Temp 2: ' + basedata[5] + "C"
+                lcd[1] = 'Pulse ' + basedata[10] + "p"
+            else:
+                lcd[0] = 'ERROR: MQTT'
+                lcd[1] = 'Not connected'
+
+        elif page == 6:
             lcd[0] = datetime.now().strftime('%b %d %H:%M')
             lcd[1] = 'Uptime %.2f days' % (seconds / 86400)
 
-        elif page == 6:
+        elif page == 7:
             lcd[0] = "emonPi Build:"
-            lcd[1] = sd_image_version[:-1]
+            lcd[1] = sd_image_version
 
         # If Shutdown button is pressed initiate shutdown sequence
         if GPIO.input(11) == 1:
