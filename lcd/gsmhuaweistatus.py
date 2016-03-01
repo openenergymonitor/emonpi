@@ -140,7 +140,7 @@ def return_gsm_connection_status(device_ip):
 #    sys.exit(-1)
 
 
-print(return_gsm_connection_status('192.168.1.1'))
+#print(return_gsm_connection_status('192.168.1.1'))
 #print('')
 #print_traffic_statistics(device_ip, connection_status)
 
