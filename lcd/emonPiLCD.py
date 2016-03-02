@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from subprocess import *
-import lcddriver
 import time
 from datetime import datetime
 from datetime import timedelta
@@ -15,6 +14,7 @@ import re
 import paho.mqtt.client as mqtt
 
 # Local files
+import lcddriver
 import getip
 import gsmhuaweistatus
 
@@ -175,7 +175,7 @@ class Background(threading.Thread):
                 r.set("eth:active",ethactive)
                 r.set("eth:ip",eth0ip)
                 #print "Eth0: "+str(ethactive)+" "+str(eth0ip)
-		
+
 		# Hi-Link 3G Dongle - connects on eth1
 		# --------------------------------------------------------------------------------
                 eth1ip = getip.getip("eth1")
@@ -203,18 +203,16 @@ class Background(threading.Thread):
 
                 # ----------------------------------------------------------------------------------
 
-                signallevel = 0
+                linkquality = 0
                 linklevel = 0
                 noiselevel = 0
 
                 if wlanactive:
-                    # wlan link status
-                    p = Popen("/sbin/iwconfig wlan0", shell=True, stdout=PIPE)
-                    iwconfig = p.communicate()[0]
-                    tmp = re.findall('(?<=Signal level=)\w+',iwconfig)
-                    if len(tmp)>0: signallevel = tmp[0]
-
-                r.set("wlan:signallevel",signallevel)
+                    iwconfig = subprocess.check_output("/sbin/iwconfig wlan0 | grep Quality", shell=True)
+                    tmp=iwconfig.split()
+                    linkquality=tmp[1].split('=')
+                    signallevel = linkquality[1]
+                    r.set("wlan:signallevel",linkquality[1])
 
             # this loop runs a bit faster so that ctrl-c exits are fast
             time.sleep(0.1)
@@ -388,7 +386,7 @@ while 1:
             	    lcd_string2 = "NOT CONNECTED"
         elif page==1:
             if int(r.get("wlan:active")):
-                lcd_string1 = "WIFI: YES  "+str(r.get("wlan:signallevel"))+"%"
+                lcd_string1 = "WiFi: "+r.get("wlan:signallevel")
                 lcd_string2 = r.get("wlan:ip")
             else:
                 if int(r.get("eth:active")) or int(r.get("gsm:active")):
@@ -407,7 +405,7 @@ while 1:
                 else:
                     lcd_string1 = "GSM:"
                     lcd_string2 = "NO DEVICE"
-              
+
 
         elif page==3:
             basedata = r.get("basedata")
@@ -451,7 +449,7 @@ while 1:
         elif page==6:
             lcd_string1 = datetime.now().strftime('%b %d %H:%M')
             lcd_string2 =  'Uptime %.2f days' % (float(r.get("uptime"))/86400)
-        
+
         elif page==7:
             lcd_string1 = "emonPi Build:"
 	    lcd_string2 = sd_image_version[:-1]
