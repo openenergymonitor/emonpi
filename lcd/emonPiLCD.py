@@ -17,7 +17,7 @@ import logging
 import logging.handlers
 import atexit
 import os
-import select
+from select import select
 
 # Local files
 import gsmhuaweistatus
@@ -152,8 +152,12 @@ def main():
     if not uselogfile:
         loghandler = logging.StreamHandler()
     else:
-        loghandler = logging.handlers.RotatingFileHandler("/var/log/emonpilcd/emonpilcd.log", 'a', 1000 * 1024, 1)
-        # 1Mb Max log size
+        logfile = "/var/log/emonpilcd/emonpilcd.log"
+        loghandler = logging.handlers.RotatingFileHandler(logfile,
+                                                          mode='a',
+                                                          maxBytes=1000 * 1024,
+                                                          backupCount=1,
+                                                         )
 
     loghandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
     logger = logging.getLogger("emonPiLCD")
@@ -379,7 +383,7 @@ def main():
             shutdown(lcd)
 
         # Wait up to one second or until the button is pressed.
-        read, _, _ = select.select([pipe[0]], [], [], 1)
+        read, _, _ = select([pipe[0]], [], [], 1)
         if read:  # pipe is readable, consume the byte.
             try:
                 read[0].read(1)
