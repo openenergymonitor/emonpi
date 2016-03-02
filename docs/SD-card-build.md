@@ -94,6 +94,11 @@ Note changing `elevator=deadline` to `elevator=noop` disk scheduler. Noop that i
 
 "Noop: Inserts all the incoming I/O requests to a First In First Out queue and implements request merging. Best used with storage devices that does not depend on mechanical movement to access data (yes, like our flash drives). Advantage here is that flash drives does not require reordering of multiple I/O requests unlike in normal hard drives" - [Full article](http://androidmodguide.blogspot.co.uk/p/io-schedulers.html). [Forum topic discussion](http://openenergymonitor.org/emon/node/11695).
 
+## Disable serial console boot
+
+ 	sudo systemctl stop serial-getty@ttyAMA0.service
+ 	sudo systemctl disable serial-getty@ttyAMA0.service
+
 ## Enable serial uploads with avrdude and autoreset
 
 	git clone https://github.com/openenergymonitor/avrdude-rpi.git ~/avrdude-rpi && ~/avrdude-rpi/install

@@ -2,7 +2,6 @@
 
 # pylint: disable=line-too-long
 
-import lcddriver
 import time
 from datetime import datetime
 import subprocess
@@ -20,6 +19,7 @@ import os
 from select import select
 
 # Local files
+import lcddriver
 import gsmhuaweistatus
 
 # ------------------------------------------------------------------------------------
@@ -318,7 +318,7 @@ def main():
             else:
                 lcd[0] = "Ethernet:"
                 lcd[1] = "NOT CONNECTED"
-
+            
         if page == 1:
             if eval(r.get("wlan:active")):
                 lcd[0] = "WIFI: YES  " + r.get("wlan:signallevel") + "%"
