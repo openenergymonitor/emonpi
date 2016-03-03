@@ -165,7 +165,7 @@ def main():
     logger.addHandler(loghandler)
     logger.setLevel(logging.INFO)
 
-    logger.info("emonPiLCD Start")
+    logger.info("emonPiLCD V2 Start")
 
     # Now check the LCD and initialise the object
     lcd = LCD(logger)
