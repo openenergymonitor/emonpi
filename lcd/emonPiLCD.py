@@ -270,7 +270,6 @@ def main():
                 lcd.backlight = 1
             logger.info("Mode button pressed")
             logger.info("Page: " + str(page))
-            logger.info("Data: " + r.get("basedata"))
 
         # Get system parameters and store in redis
         # Get uptime
@@ -318,7 +317,7 @@ def main():
             else:
                 lcd[0] = "Ethernet:"
                 lcd[1] = "NOT CONNECTED"
-            
+
         if page == 1:
             if eval(r.get("wlan:active")):
                 lcd[0] = "WIFI: YES  " + r.get("wlan:signallevel") + "%"
