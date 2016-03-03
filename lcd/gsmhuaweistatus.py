@@ -6,20 +6,19 @@
 # Tested with E3276, E3231,
 
 from __future__ import print_function
-import sys
 import xmltodict
 import requests
-import time
 import math
 
+
 def to_size(size):
-   if (size == 0):
-       return '0 Bytes'
-   size_name = ('Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB')
-   i = int(math.floor(math.log(size,1024)))
-   p = math.pow(1024,i)
-   s = round(size/p,2)
-   return '%s %s' % (s,size_name[i])
+    if (size == 0):
+        return '0 Bytes'
+    size_name = ('Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB')
+    i = int(math.floor(math.log(size, 1024)))
+    p = math.pow(1024, i)
+    s = round(size / p, 2)
+    return '%s %s' % (s, size_name[i])
 
 
 def is_hilink(device_ip):
@@ -32,8 +31,9 @@ def is_hilink(device_ip):
         return False
     d = xmltodict.parse(r.text, xml_attribs=True)
     if 'error' in d:
-        return False;
+        return False
     return True
+
 
 def call_api(device_ip, resource, xml_attribs=True):
     try:
@@ -42,12 +42,13 @@ def call_api(device_ip, resource, xml_attribs=True):
         #print ("Error: "+str(e))
         return False;
     if r.status_code == 200:
-    	d = xmltodict.parse(r.text, xml_attribs=xml_attribs)
+        d = xmltodict.parse(r.text, xml_attribs=xml_attribs)
         if 'error' in d:
             raise Exception('Received error code ' + d['error']['code'] + ' for URL ' + r.url)
         return d
     else:
-      raise Exception('Received status code ' + str(r.status_code) + ' for URL ' + r.url)
+        raise Exception('Received status code ' + str(r.status_code) + ' for URL ' + r.url)
+
 
 def get_connection_status(status):
     result = 'n/a'
@@ -68,6 +69,7 @@ def get_connection_status(status):
     elif status == '903':
         result = 'Disconnecting'
     return result
+
 
 def get_network_type(type):
     result = 'n/a'
@@ -115,7 +117,7 @@ def get_network_type(type):
         result = '3G'
     return result
 
-gsm_connection_status = ['','']
+gsm_connection_status = ['', '']
 def return_gsm_connection_status(device_ip):
     connection_status = False
     d = call_api(device_ip, '/api/monitoring/status')
@@ -130,7 +132,6 @@ def return_gsm_connection_status(device_ip):
         gsm_connection_status[1] = get_network_type(network_type) + ' Signal: ' + signal_level + '/5'
     return gsm_connection_status
 
-
 #device_ip = '192.168.1.1'
 #if len(sys.argv) == 2:
 #    device_ip = sys.argv[1]
@@ -143,11 +144,3 @@ def return_gsm_connection_status(device_ip):
 #print(return_gsm_connection_status('192.168.1.1'))
 #print('')
 #print_traffic_statistics(device_ip, connection_status)
-
-
-
-
-
-
-
-
