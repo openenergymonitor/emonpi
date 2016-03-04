@@ -12,6 +12,7 @@ sudo apt-get install python-smbus i2c-tools python-rpi.gpio python-pip redis-ser
 sudo pip install redis
 sudo pip install paho-mqtt
 sudo pip install xmltodict
+sudo pip install requests
 
 echo "Enable I2C module"
 
