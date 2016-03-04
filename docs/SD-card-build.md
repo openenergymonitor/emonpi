@@ -4,10 +4,9 @@ Glyn Hudson - January 2016
 
 This guide replaces the imagebuild.md (renamed to old.imagebuild.md) and emonPi install.sh script which has never really worked reliably (renamed to old.install.sh). The guide cites the [Emoncms Raspberry Pi install guides](https://github.com/emoncms/emoncms/tree/master/docs/RaspberryPi) exhaustively compiled by Paul Reed.
 
-Forum discussion:
-- [Feb 16th 2016 - image beta built using this guide](http://openenergymonitor.org/emon/node/12189)
-- [Feb 12th 2016 - image alpha built using this guide - Issue with php5-redis](http://openenergymonitor.org/emon/node/12164)
-- [Dec 22nd 2015 - image beta based on Minibianpi (old beta, latest image is based on Raspbian Jessie Lite)](http://openenergymonitor.org/emon/node/11799)
+[**User docs & setup gide**](https://openenergymonitor.org/emon/node/12288)
+
+[**Forum discussion & Changelog**](https://openenergymonitor.org/emon/node/12291)
 
 
 # Features  
@@ -29,6 +28,7 @@ Forum discussion:
 10. Open UFW ports
 12. openHab
 12. nodeRED
+13. 3G / GSM HiLink Huawei USB modem dongle support
 
 
 
@@ -250,6 +250,7 @@ git clone https://github.com/emoncms/dashboard.git
 git clone https://github.com/emoncms/app.git
 git clone https://github.com/emoncms/wifi.git
 git clone https://github.com/emoncms/config
+git clone https://github.com/emoncms/graph
 
 cd /home/pi/
 git clone https://github.com/emoncms/backup
@@ -359,6 +360,12 @@ Default flows admin user: `emonpi` and password `emonpi2016`
 
 **Need to make default emonPi flow using new MQTT**
 
-# 15 Install openHAB
+# 15. Install openHAB
 
 [Follow OEM openHAB install guide](https://github.com/openenergymonitor/oem_openHab) with OEM examples
+
+# 16. 3G / GSM HiLink Huawei USB modem dongle support
+
+[Follow Huawei Hi-Link RasPi setup guide](https://github.com/openenergymonitor/huawei-hilink-status/blob/master/README.md) to setup HiLink devices and useful status utility. The emonPiLCD now uses the same Huawei API to display GSM / 3G connection status and signal level on the LCD. 
+
+
