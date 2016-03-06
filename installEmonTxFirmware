@@ -1,0 +1,14 @@
+#!/bin/bash
+echo
+echo "================================="
+echo "EmonPi new firmware started"
+echo "================================="
+
+sudo service emonhub stop
+sudo service emonPiLCD stop
+
+echo "Start ATmega328 serial upload using avrdude "
+
+# emonPi/emonTxBase ATmega328 update
+avrdude -v -c arduino -p ATMEGA328P -P /dev/ttyO2 -b 115200  -U flash:w:/home/debian/emonpi/Atmega328/emonPi_RFM69CW_RF12Demo_DiscreteSampling/emonPi_RFM69CW_RF12Demo_DiscreteSampling.cpp.hex
+
