@@ -187,15 +187,14 @@ Add the following line to the bottom of the file:
 
 	net.ipv4.ip_forward=1
 
-Second, to enable NAT in the kernel, run the following commands:
-
+Second, to enable NAT in the kernel, run the following commands to bridge eth0 the wlan0:
 ```
 sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 sudo iptables -A FORWARD -i eth0 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT
 sudo iptables -A FORWARD -i wlan0 -o eth0 -j ACCEPT
 ```
 
-If bride is also required to eth1 (for 3G dongle) also add:
+If bridge is also required to eth1 (for 3G dongle) also add:
 ```
 sudo iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
 sudo iptables -A FORWARD -i eth1 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT
