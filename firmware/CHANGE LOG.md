@@ -1,6 +1,14 @@
 # Change Log - emonPi Firmwarwe
 
-# V3.2 (31/01/15) 
+# V3.3 (08/03/16
+ * Adjust Vcal_EU to improve VRMS voltage reading accuracy when using UK/EU AC-AC
+ * Compile with Arduino 1.6.7 with JeeLib 10th Sep 2015 f097c0039c926881d80a74bec7a7aa020de610ee
+ * Updated OneWire library to V2.3.2 & updated sensors.getAddress function
+
+Sketch uses 20,668 bytes (64%) of program storage space. Maximum is 32,256 bytes.
+Global variables use 1,070 bytes (52%) of dynamic memory, leaving 978 bytes for local variables. Maximum is 2,048 bytes.
+
+# V3.2 (31/01/16) 
  * Reduction in SRAM memory usage thanks to F-macro serial string implementation
 
 # V3.1 (31/01/16)

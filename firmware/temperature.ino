@@ -6,7 +6,7 @@ byte check_for_DS18B20()                                      //Setup and for pr
   
   byte j=0;                                        // search for one wire devices and
                                                    // copy to device address arrays.
-  while ((j < numSensors) && (oneWire.search(allAddress[j])))  j++;
+  while ( (j < numSensors) && (sensors.getAddress(allAddress[j], j)) )  j++;
   for(byte j=0;j<numSensors;j++) sensors.setResolution(allAddress[j], TEMPERATURE_PRECISION);      // and set the a to d conversion resolution of each.
   
   if (numSensors==0) DS18B20_STATUS=0; 

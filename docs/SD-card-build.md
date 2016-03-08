@@ -4,10 +4,9 @@ Glyn Hudson - January 2016
 
 This guide replaces the imagebuild.md (renamed to old.imagebuild.md) and emonPi install.sh script which has never really worked reliably (renamed to old.install.sh). The guide cites the [Emoncms Raspberry Pi install guides](https://github.com/emoncms/emoncms/tree/master/docs/RaspberryPi) exhaustively compiled by Paul Reed.
 
-Forum discussion:
-- [Feb 16th 2016 - image beta built using this guide](http://openenergymonitor.org/emon/node/12189)
-- [Feb 12th 2016 - image alpha built using this guide - Issue with php5-redis](http://openenergymonitor.org/emon/node/12164)
-- [Dec 22nd 2015 - image beta based on Minibianpi (old beta, latest image is based on Raspbian Jessie Lite)](http://openenergymonitor.org/emon/node/11799)
+[**User docs & setup gide**](https://openenergymonitor.org/emon/node/12288)
+
+[**Forum discussion & Changelog**](https://openenergymonitor.org/emon/node/12291)
 
 
 # Features  
@@ -29,6 +28,7 @@ Forum discussion:
 10. Open UFW ports
 12. openHab
 12. nodeRED
+13. 3G / GSM HiLink Huawei USB modem dongle support
 
 
 
@@ -71,7 +71,8 @@ From 'raspberrypi' to 'emonpi2016'
 
 
 
-# 3. Serial port setup (cmdline.txt edit)
+# 3. Serial port setup 
+
 
 To allow the emonPi to communicate with the RasPi via serial we need to disconnect the terminal console from /tty/AMA0.
 
@@ -103,9 +104,38 @@ Note changing `elevator=deadline` to `elevator=noop` disk scheduler. Noop that i
 
 	git clone https://github.com/openenergymonitor/avrdude-rpi.git ~/avrdude-rpi && ~/avrdude-rpi/install
 
-Test serial comms with:
+## Raspberry Pi 3 Compatibility 
+
+The emonPi communicates with the RasPi via GPIO 14/15 which on the Model B,B+ and Pi2 is mapped to UART0. However on the Pi3 these pins are mapped to UART1 since UART0 is now used for the bluetooth module. However UART1 is software UART and baud rate is dependant to clock speed which can change with the CPU load, undervoltage and temperature; therefore not stable enough. One hack is to force the CPU to a lower speed ( add `core_freq=250` to `/boot/cmdline.txt`)which cripples the Pi3 performace. A better solution for the emonPi is to disable BT and map UART1 back to UART0 (ttyAMA0) so we can talk to the emomPi in the same way as before.  
+
+Update to pull in latest firmware and device tree (DT) 
+```
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get dist-upgrade
+sudo rpi-update
+```
+
+To disable Pi3 Bluetooth and restore UART0/ttyAMA0 over GPIOs 14 & 15 modify:
+
+	sudo nano /boot/config.txt
+	
+Add to the end of the file
+
+	dtoverlay=pi3-disable-bt
+
+We also need to run to stop BT modem trying to use UART
+
+	sudo systemctl disable hciuart
+
+See [RasPi device tree commit](https://github.com/raspberrypi/firmware/commit/845eb064cb52af00f2ea33c0c9c54136f664a3e4) for `pi3-disable-bt` and [forum thread discussion](https://www.raspberrypi.org/forums/viewtopic.php?f=107&t=138223)
+	
+
+Reboot then test serial comms with:
 
 	sudo minicom -D /dev/ttyAMA0 -b38400
+	
+You should see data from emonPi ATmega328, sending serial `v` should result in emonPi returning it's firmware version and config settings. 
 
 # 4. emonPi LCD service
 
@@ -250,6 +280,7 @@ git clone https://github.com/emoncms/dashboard.git
 git clone https://github.com/emoncms/app.git
 git clone https://github.com/emoncms/wifi.git
 git clone https://github.com/emoncms/config
+git clone https://github.com/emoncms/graph
 
 cd /home/pi/
 git clone https://github.com/emoncms/backup
@@ -359,6 +390,12 @@ Default flows admin user: `emonpi` and password `emonpi2016`
 
 **Need to make default emonPi flow using new MQTT**
 
-# 15 Install openHAB
+# 15. Install openHAB
 
 [Follow OEM openHAB install guide](https://github.com/openenergymonitor/oem_openHab) with OEM examples
+
+# 16. 3G / GSM HiLink Huawei USB modem dongle support
+
+[Follow Huawei Hi-Link RasPi setup guide](https://github.com/openenergymonitor/huawei-hilink-status/blob/master/README.md) to setup HiLink devices and useful status utility. The emonPiLCD now uses the same Huawei API to display GSM / 3G connection status and signal level on the LCD. 
+
+

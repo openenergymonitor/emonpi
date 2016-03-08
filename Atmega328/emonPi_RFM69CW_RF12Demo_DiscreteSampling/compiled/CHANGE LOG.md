@@ -1,9 +1,18 @@
 # Change Log - emonPi Discrete Sampling Firmware
 
-# V2.3 (20/02/15)
- * Fix VRMS reading bug
+# V2.4 (8/03/16)
+ * Adjust Vcal_EU to improve VRMS voltage reading accuracy when using UK/EU AC-AC
+ * Compile with Arduino 1.6.7 with JeeLib 10th Sep 2015 f097c0039c926881d80a74bec7a7aa020de610ee
+ * Updated OneWire library to V2.3.2 & updated sensors.getAddress function
 
-# V2.2 (30/01/15)
+Sketch uses 19,460 bytes (60%) of program storage space. Maximum is 32,256 bytes.
+Global variables use 941 bytes (45%) of dynamic memory, leaving 1,107 bytes for local variables. Maximum is 2,048 bytes.
+
+# V2.3 (20/02/16)
+ * Fix VRMS reading bug
+ * Compile with Arduino 1.6.7
+
+# V2.2 (30/01/16)
  * Reduction in SRAM memory usage thanks to F-macro serial string implementation
  * Display "Raspberry Pi Booting" message on LCD at startup
  * Only sample from CT channels when CT is connected to that channel (fix noise readings when no CT connected)
