@@ -235,6 +235,9 @@ Thats it restart your emonpi/emonbase to finish and then connect to network emon
 # 11) Add a Real Time Clock (RTC)
 When running an emonPi in offline mode we recommend adding a hardware RTC to ensure the system time is always correct. See [emonPi Wiki](https://wiki.openenergymonitor.org/index.php/EmonPi#Adding_a_Real_Time_Clock_.28RTC.29)
 
+# Opperation 
+
+Once your up and running and connected to emonPi hotspot you should be able to browse to [http://192.168.42.1/emoncms](http://192.168.42.1/emoncms) to acess local Emoncms
 
 # Resources 
 Useful blogs, guides and forum threads that I used to work out how to set up the above:
