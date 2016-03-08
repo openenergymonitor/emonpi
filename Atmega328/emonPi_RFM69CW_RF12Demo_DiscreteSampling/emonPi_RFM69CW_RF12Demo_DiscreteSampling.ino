@@ -50,7 +50,7 @@ emonhub.conf node decoder:
 #define emonTxV3                                                      // Tell emonLib this is the emonPi V3 - don't read Vcc assume Vcc = 3.3V as is always the case on emonPi eliminates bandgap error and need for calibration http://harizanov.com/2013/09/thoughts-on-avr-adc-accuracy/
 #define RF69_COMPAT 1                                                 // Set to 1 if using RFM69CW or 0 is using RFM12B
 
-#include <JeeLib.h>                                                   // https://github.com/jcw/jeelib - Tested with JeeLib 3/11/14
+#include <JeeLib.h>                                                   // https://github.com/openenergymonitor/jeelib
 #include <avr/pgmspace.h>
 #include <util/parity.h>
 ISR(WDT_vect) { Sleepy::watchdogEvent(); }                            // Attached JeeLib sleep function to Atmega328 watchdog -enables MCU to be put into sleep mode inbetween readings to reduce power consumption 
