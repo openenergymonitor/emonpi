@@ -52,7 +52,7 @@ ISR(WDT_vect) { Sleepy::watchdogEvent(); }                            // Attache
 #include <LiquidCrystal_I2C.h>                                        // https://github.com/openenergymonitor/LiquidCrystal_I2C
 LiquidCrystal_I2C lcd(0x27,16,2);                                     // LCD I2C address to 0x27, 16x2 line display
 
-const byte firmware_version = 32;                                     //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
+const byte firmware_version = 33;                                     //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
 boolean debug =                   TRUE;
@@ -67,7 +67,7 @@ const int TIME_BETWEEN_READINGS=  5;                             // Time between
 
 const float Ical1=                90.9;                             // (2000 turns / 22 Ohm burden) = 90.9
 const float Ical2=                90.9;
-float Vcal_EU=                    260.4;                             // (230V x 13) / (9V x 1.2) = 276.9 Calibration for UK AC-AC adapter 77DB-06-09
+float Vcal_EU=                    256.8;                             // (230V x 13) / (9V x 1.2) = 276.9 Calibration for UK AC-AC adapter 77DB-06-09
 //const float Vcal=               260;                                // Calibration for EU AC-AC adapter 77DE-06-09
 const float Vcal_USA=             130.0;                              // Calibration for US AC-AC adapter 77DA-10-09
 boolean USA=                      FALSE;
