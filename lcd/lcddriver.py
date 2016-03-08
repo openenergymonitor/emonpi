@@ -51,11 +51,11 @@ Rw = 0b00000010  # Read/Write bit
 Rs = 0b00000001  # Register select bit
 
 
-class lcd:
+class lcd(object):
     # initializes objects and lcd
     def __init__(self):
         self.lcd_device = i2c_lib.i2c_device(ADDRESS)
-        self._backlight = 0
+        self._backlight = LCD_NOBACKLIGHT
 
         self.lcd_write(0x03)
         self.lcd_write(0x03)
