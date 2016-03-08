@@ -104,9 +104,19 @@ Note changing `elevator=deadline` to `elevator=noop` disk scheduler. Noop that i
 
 	git clone https://github.com/openenergymonitor/avrdude-rpi.git ~/avrdude-rpi && ~/avrdude-rpi/install
 
-## RasPi3 - /boot/confg.txt edit
+## Raspberry Pi 3 Compatibility 
 
-The emonPi communicates with the RasPi via GPIO 14/15 which on the Model B,B+ and Pi2 is mapped to UART0. However on the Pi3 these pins are mapped to UART1 since UART0 is now used for the bluetooth module. However UART1 is software UART and baud rate is dependant to clock speed which can change with the CPU load, undervoltage and temperature; therefore not stable enough. One hack is to force the CPU to a lower speed ( add `core_freq=250` to `/boot/cmdline.txt`)which cripples the Pi3 performace. A better solution for the emonPi is to disable BT and map UART1 back to UART0 (ttyAMA0) so we can talk to the emomPi in the same way as before.  Disable Pi3 Bluetooth and restore UART0/ttyAMA0 over GPIOs 14 & 15 modify:
+The emonPi communicates with the RasPi via GPIO 14/15 which on the Model B,B+ and Pi2 is mapped to UART0. However on the Pi3 these pins are mapped to UART1 since UART0 is now used for the bluetooth module. However UART1 is software UART and baud rate is dependant to clock speed which can change with the CPU load, undervoltage and temperature; therefore not stable enough. One hack is to force the CPU to a lower speed ( add `core_freq=250` to `/boot/cmdline.txt`)which cripples the Pi3 performace. A better solution for the emonPi is to disable BT and map UART1 back to UART0 (ttyAMA0) so we can talk to the emomPi in the same way as before.  
+
+Update to pull in latest firmware and device tree (DT) 
+```
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get dist-upgrade
+sudo rpi-update
+```
+
+To disable Pi3 Bluetooth and restore UART0/ttyAMA0 over GPIOs 14 & 15 modify:
 
 	sudo nano /boot/config.txt
 	
@@ -120,8 +130,6 @@ We also need to run to stop BT modem trying to use UART
 
 See [RasPi device tree commit](https://github.com/raspberrypi/firmware/commit/845eb064cb52af00f2ea33c0c9c54136f664a3e4) for `pi3-disable-bt` and [forum thread discussion](https://www.raspberrypi.org/forums/viewtopic.php?f=107&t=138223)
 	
-
-If using a Raspberry Pi 3 
 
 Reboot then test serial comms with:
 
