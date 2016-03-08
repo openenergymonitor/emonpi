@@ -7,12 +7,26 @@ echo "================================="
 sudo service emonhub stop
 sudo service emonPiLCD stop
 
+
+sudo apt-get install -y avrdude python-dev python-rpi.gpio minicom
+
+echo "install avrdude autoreset"
+
+sudo ln -s /home/debian/avrdude-rpi/autoreset /usr/bin/autoreset
+
+if [ ! -f /usr/bin/avrdude-original ]; then 
+	sudo mv /usr/bin/avrdude /usr/bin/avrdude-original
+fi
+
+sudo ln -s /home/debian/avrdude-rpi/avrdude-autoreset /usr/bin/avrdude
+
 echo "Start ATmega328 serial upload using avrdude "
 if [ -f /usr/bin/autoreset ]
 then
         echo "System is changing autoreset pin"
         echo "adding autoreset pin"
 		#bbb pin P9_15 to the reset pin of emonTx
+		#this file is from avrdude 
         sudo  sed -i "s/7/'P9_15'/g" /usr/bin/autoreset
         sudo sed -i "s/RPI.GPIO/Adafruit_BBIO.GPIO/g" /usr/bin/autoreset
         sudo sed -i "s/GPIO.setmode(GPIO.BOARD)/#GPIO.setmode(GPIO.BOARD)/g" /usr/bin/autoreset
@@ -22,5 +36,10 @@ avrdude -v -c arduino -p ATMEGA328P -P /dev/ttyO2 -b 115200  -U flash:w:/home/RM
 
 else
 
-         echo "Autoreset file does not exist"
+         echo "Autoreset file does not exist, install it"
+		 sudo apt-get install avrdude
+		 echo "run installEmonTxFirmware again"
 fi
+
+sudo service emonhub start
+sudo service emonPiLCD start
