@@ -10,7 +10,7 @@ rpi-rw
 cat /dev/null >  /home/pi/data/emonpiupdate.log
 
 # Stop emonPi LCD servcice
-sudo /etc/init.d/emonPiLCD stop
+sudo service emonPiLCD stop
 
 # Display update message on LCD
 sudo /home/pi/emonpi/lcd/./emonPiLCD_update.py
@@ -80,7 +80,7 @@ echo
 sleep 30
 echo "Start emonPi LCD service"
 
-sudo /etc/init.d/emonPiLCD start
+sudo service emonPiLCD start
 echo
 rpi-ro
 date
