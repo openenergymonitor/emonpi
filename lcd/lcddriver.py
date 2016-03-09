@@ -51,10 +51,11 @@ Rw = 0b00000010  # Read/Write bit
 Rs = 0b00000001  # Register select bit
 
 
-class lcd:
+class lcd(object):
     # initializes objects and lcd
     def __init__(self):
         self.lcd_device = i2c_lib.i2c_device(ADDRESS)
+        self._backlight = LCD_NOBACKLIGHT
 
         self.lcd_write(0x03)
         self.lcd_write(0x03)
@@ -67,22 +68,25 @@ class lcd:
         self.lcd_write(LCD_ENTRYMODESET | LCD_ENTRYLEFT)
         sleep(0.2)
 
+    @property
+    def backlight(self):
+        return self._backlight
+
+    @backlight.setter
+    def backlight(self, state):
+        self._backlight = state and LCD_BACKLIGHT or LCD_NOBACKLIGHT
+        self.lcd_device.write_cmd(self._backlight)
+
     # clocks EN to latch command
     def lcd_strobe(self, data):
-        self.lcd_device.write_cmd(data | En | LCD_BACKLIGHT)
+        self.lcd_device.write_cmd(data | En | self._backlight)
         sleep(.0005)
-        self.lcd_device.write_cmd(((data & ~En) | LCD_BACKLIGHT))
+        self.lcd_device.write_cmd(((data & ~En) | self._backlight))
         sleep(.0001)
 
     def lcd_write_four_bits(self, data):
-        self.lcd_device.write_cmd(data | LCD_BACKLIGHT)
+        self.lcd_device.write_cmd(data | self._backlight)
         self.lcd_strobe(data)
-
-    def backlight(self, state):  # for state, 1 = on, 0 = off
-        if state == 1:
-            self.lcd_device.write_cmd(LCD_BACKLIGHT)
-        elif state == 0:
-            self.lcd_device.write_cmd(LCD_NOBACKLIGHT)
 
     # write a command to lcd
     def lcd_write(self, cmd, mode=0):

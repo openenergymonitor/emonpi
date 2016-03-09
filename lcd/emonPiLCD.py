@@ -111,22 +111,28 @@ class LCD(object):
         else:
             logger.info("I2C LCD Detected on 0x27")
         self.lcd = lcddriver.lcd()
-        self._backlight = 0
+        self._display = ['', '']
 
     def __setitem__(self, line, string):
+        if not 0 <= line <= 1:
+            raise IndexError("line number out of range")
         # Format string to exactly the width of LCD
-        self.logger.debug("LCD line {0}: {1!s:<16.16}".format(line, string))
-        self.lcd.lcd_display_string('{0!s:<16.16}'.format(string), line + 1)
+        string = '{0!s:<16.16}'.format(string)
+        if string != self._display[line]:
+            self._display[line] = string
+            self.logger.debug("LCD line {0}: {1}".format(line, string))
+            self.lcd.lcd_display_string(string, line + 1)
 
     @property
     def backlight(self):
-        return self._backlight
+        return self.lcd.backlight
 
     @backlight.setter
     def backlight(self, state):
+        if not 0 <= state <= 1:
+            raise IndexError("backlight state out of range")
         self.logger.debug("LCD backlight: " + repr(state))
-        self._backlight = state
-        self.lcd.backlight(state)
+        self.lcd.backlight = state
 
     def lcd_clear(self):
         self.lcd.lcd_clear()
