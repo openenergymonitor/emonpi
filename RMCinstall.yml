@@ -19,8 +19,8 @@
      - redis-server
      - re
      - time
-     - avrdude
      - strace
+     - minicom
      tags:
      - packages
 
@@ -58,7 +58,7 @@
    - file: path=/home/debian/emonpi/install mode="u+x"
    - debug: msg="Executable permission is assigned to emonpi install file"
 
-   - file: path=/home/debian/emonpi/emon9install mode="u+x"
+   - file: path=/home/debian/emonpi/emoncms9install mode="u+x"
    - debug: msg="Executable permission is assigned  to emoncms9install file"
   
    - file: path=/home/debian/emonpi/emonfirmwareinstall mode="u+x"
