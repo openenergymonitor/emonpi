@@ -94,7 +94,7 @@ sudo chown debian /var/www
 cd /var/www
 #once i clone this install file, it comes with beaglebonebla instead of 9.0
 git clone -b 9.0 https://github.com/GreatLakesEnergy/emoncms.git
-cp /var/www/emoncms/default.emonpi.settings.php /var/www/emoncms/settings.phpls -l
+cp /var/www/emoncms/default.emonpi.settings.php /var/www/emoncms/settings.php
 
 echo "git clone emoncms modules repo into /var/www/Modules"
 cd /var/www/emoncms/Modules
