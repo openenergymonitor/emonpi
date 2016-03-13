@@ -7,41 +7,18 @@ echo "================================="
 sudo service emonhub stop
 sudo service emonPiLCD stop
 cd /home/debian/
-git clone https://github.com/GreatLakesEnergy/avrdude-rpi.git
-ln -s /home/debian/avrdude-rpi/avrdude-autoreset  /usr/bin/avrdude
-
-echo "install avrdude autoreset"
-
-sudo ln -s /home/debian/avrdude-rpi/autoreset /usr/bin/autoreset
-ln -s /usr/bin/avrdude-autoreset /usr/bin/avrdude
+Sudo apt-get install avrdude
+Cd /home/debian/ git clone https://github.com/GreatLakesEnergy/avrdude-rpi.git
+sudo  sed -i "s/7/'P9_15'/g" /usr/bin/autoreset
+sudo sed -i "s/RPi.GPIO/Adafruit_BBIO.GPIO/g" /usr/bin/autoreset
+sudo sed -i "s/GPIO.setmode(GPIO.BOARD)/#GPIO.setmode(GPIO.BOARD)/g" /usr/bin/autoreset
 if [ ! -f /usr/bin/avrdude-original ]; then
         sudo mv /usr/bin/avrdude /usr/bin/avrdude-original
 fi
-
-
-echo "Start ATmega328 serial upload using avrdude "
-if [ -f /usr/bin/autoreset ]
-then
-        echo "System is changing autoreset pin"
-        echo "adding autoreset pin"
-                #bbb pin P9_15 to the reset pin of emonTx
-
-        sudo  sed -i "s/7/'P9_15'/g" /usr/bin/autoreset
-        sudo sed -i "s/RPi.GPIO/Adafruit_BBIO.GPIO/g" /usr/bin/autoreset
-        sudo sed -i "s/GPIO.setmode(GPIO.BOARD)/#GPIO.setmode(GPIO.BOARD)/g" /usr/bin/autoreset
-        # emonPi/emonTxBase ATmega328 update
-
-
+sudo ln -s /home/debian/avrdude-rpi/avrdude-autoreset /usr/bin/avrdude
 
 avrdude -v -c arduino -p ATMEGA328P -P /dev/ttyO2 -b 115200  -U flash:w:/home/RMC/emonpi/Atmega328/emonPi_RFM69CW_RF12Demo_DiscreteSampling/emonPi_RFM69CW_RF12Demo_DiscreteSampling.cpp.hex
 
 
-else
-
-         echo "Autoreset file does not exist, install it"
-
-fi
-
 sudo service emonhub start
 sudo service emonPiLCD start
-
