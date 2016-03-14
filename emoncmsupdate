@@ -49,6 +49,12 @@ cd /var/www/emoncms/Modules/dashboard
 git branch
 git pull
 
+echo "git pull /var/www/emoncms/Modules/graph"
+cd /var/www/emoncms/Modules/graph
+git branch
+git pull
+
+
 echo
 
 echo "Copy new default.emonpi.settings.php to settings.php & make backup old.emonpi.settings.php"
