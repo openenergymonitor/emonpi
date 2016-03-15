@@ -49,6 +49,8 @@ cd /var/www/emoncms/Modules/dashboard
 git branch
 git pull
 
+echo 
+
 if [ -d /var/www/emoncms/Modules/graph ]; then
   echo "git pull /var/www/emoncms/Modules/graph"
   cd /var/www/emoncms/Modules/graph
