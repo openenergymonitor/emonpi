@@ -51,10 +51,12 @@ git pull
 
 if [ -d /var/www/emoncms/Modules/graph ]; then
   echo "git pull /var/www/emoncms/Modules/graph"
+  cd /var/www/emoncms/Modules/graph
   git branch
   git pull
 else
   echo "git clone https://github.com/emoncms/graph"
+  cd /var/www/emoncms/Modules
   git clone https://github.com/emoncms/graph
 fi
 
