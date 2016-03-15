@@ -49,10 +49,14 @@ cd /var/www/emoncms/Modules/dashboard
 git branch
 git pull
 
-echo "git pull /var/www/emoncms/Modules/graph"
-cd /var/www/emoncms/Modules/graph
-git branch
-git pull
+if [ -d /var/www/emoncms/Modules/graph ]; then
+  echo "git pull /var/www/emoncms/Modules/graph"
+  git branch
+  git pull
+else
+  echo "git clone https://github.com/emoncms/graph"
+  git clone https://github.com/emoncms/graph
+fi
 
 
 echo
