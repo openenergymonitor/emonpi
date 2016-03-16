@@ -72,7 +72,7 @@ sudo cp /var/www/emoncms/default.emonpi.settings.php /var/www/emoncms/settings.p
 echo
 
 echo "Update Emoncms database"
-php emoncmsdbupdate.php
+php /home/pi/emoncmsdbupdate.php
 
 echo "Restarting Services..."
 sudo /etc/init.d/emonhub restart
