@@ -1,7 +1,7 @@
 
 byte check_for_DS18B20()                                      //Setup and for presence of DS18B20, return number of sensors 
 {
-  digitalWrite(DS18B20_PWR, HIGH); delay(100); 
+  //digitalWrite(DS18B20_PWR, HIGH); delay(100); 
   sensors.begin();
   sensors.setWaitForConversion(false);             // disable automatic temperature conversion to reduce time spent awake, conversion will be implemented manually in sleeping 
                                                    // http://harizanov.com/2013/07/optimizing-ds18b20-code-for-low-power-applications/ 
@@ -14,7 +14,7 @@ byte check_for_DS18B20()                                      //Setup and for pr
                                                    // copy to device address arrays.
   while ((j < numSensors) && (oneWire.search(allAddress[j])))  j++;
   delay(500);
-  digitalWrite(DS18B20_PWR, LOW);
+  //digitalWrite(DS18B20_PWR, LOW);
   for(byte j=0;j<numSensors;j++) sensors.setResolution(allAddress[j], TEMPERATURE_PRECISION);      // and set the a to d conversion resolution of each.
   
   if (numSensors==0) DS18B20_STATUS=0; 

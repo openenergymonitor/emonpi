@@ -16,7 +16,7 @@ void emonPi_startup()                                                     //emon
   pinMode(LEDpin, OUTPUT); 
   digitalWrite(LEDpin,HIGH); 
 
-  pinMode(shutdown_switch_pin,INPUT_PULLUP);            //enable ATmega328 internal pull-up resistors 
+ // pinMode(shutdown_switch_pin,INPUT_PULLUP);            //enable ATmega328 internal pull-up resistors 
 
   pinMode(emonpi_GPIO_pin, OUTPUT);                     //Connected to RasPi GPIO pin 17
   digitalWrite(emonpi_GPIO_pin, LOW);
@@ -52,6 +52,7 @@ pinMode(A0, OUTPUT);
 analogWrite(A0, 255);   
 analogWrite(A0, 0);     // Pull input high low high then low to disburse any residual charge to avoid incorrectly detecting AC wave when not present 
 pinMode(A0,INPUT);
+
 delay(500);             //allow things to settle 
 
 // Calculate if there is an ACAC adapter on analog input 0

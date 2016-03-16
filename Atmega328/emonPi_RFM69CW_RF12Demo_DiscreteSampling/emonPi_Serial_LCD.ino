@@ -125,6 +125,7 @@ void send_emonpi_serial()  //Send emonPi data to Pi serial /dev/ttyAMA0 using st
   for (byte i = 0; i < sizeof(binarray); i++) {
     Serial.print(' ');
     Serial.print(binarray[i]);
+    //Serial.print("hey");
   }
   Serial.print(" (-0)");
   Serial.println();

@@ -142,13 +142,13 @@ static void handleInput (char c) {
       Serial.print(nodeID & RF12_HDR_MASK);   
       Serial.print(" g");
       //Serial.print(networkGroup);
-      
+      //Serial.println("hello");
       Serial.print(" @ ");
       Serial.print(RF_freq == RF12_433MHZ ? 433 :
                    RF_freq == RF12_868MHZ ? 868 :
                    RF_freq == RF12_915MHZ ? 915 : 0);
       Serial.print(" MHz"); 
-      Serial.print(" Wireless Data"); 
+     // Serial.print(" Wireless Data"); 
       
     }
     Serial.print(" USA "); Serial.print(USA);

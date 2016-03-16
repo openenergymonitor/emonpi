@@ -45,7 +45,7 @@ https://github.com/openenergymonitor/emonpi/blob/master/Atmega328/emonPi_RFM69CW
 ISR(WDT_vect) { Sleepy::watchdogEvent(); }                            // Attached JeeLib sleep function to Atmega328 watchdog -enables MCU to be put into sleep mode inbetween readings to reduce power consumption 
 
 #include "EmonLib.h"                                                  // Include EmonLib energy monitoring library https://github.com/openenergymonitor/EmonLib
-EnergyMonitor ct1, ct2, ct3, ct4;       
+EnergyMonitor ct1, ct2, ct3, ct4;      
 
 #include <OneWire.h>                                                  // http://www.pjrc.com/teensy/td_libs_OneWire.html
 #include <DallasTemperature.h>                                        // http://download.milesburton.com/Arduino/MaximTemperature/DallasTemperature_LATEST.zip
@@ -96,11 +96,11 @@ boolean RF_STATUS=                 1;                                  // Turn R
 //----------------------------emonPi V3 hard-wired connections--------------------------------------------------------------------------------------------------------------- 
 //const byte LEDpin=                     9;              // emonPi LED - on when HIGH  (for emonpi)
 const byte LEDpin=                     6;    //(from emontx)
-const byte DS18B20_PWR=            19;                             // DS18B20 Power  (from emontx)
+//const byte DS18B20_PWR=            19;                             // DS18B20 Power  (from emontx)
 const byte DIP_switch1=            8;                              // Voltage selection 230 / 110 V AC (default switch off 230V)  - switch off D8 is HIGH from internal pullup (from emontx)
-//const byte shutdown_switch_pin =       8;              // Push-to-make - Low when pressed   (for emonpi)
+//const byte shutdown_switch_pin =       8;              // Push-to-make - Low when pressed   (no need of this, we shutdown the system using bbb GPIO)
 const byte DIP_switch2=            9;                              // RF node ID (default no chance in node ID, switch on for nodeID -1) switch off D9 is HIGH from internal pullup (from emontx)
-const byte shutdown_switch_pin =       A6;              // Push-to-make - Low when pressed  (A6 randomly bcz it has nothing in emontx pinout, we will not shutdown using this)
+
 const byte emonpi_GPIO_pin=            4;              // Connected to Pi GPIO 17, used to activate Pi Shutdown when HIGH (we don`t need this)
 //const byte emonpi_OKK_Tx=              6;            // On-off keying transmission Pin - not populated by default 
 //const byte emonPi_RJ45_8_IO=           A3;           // RJ45 pin 8 - Analog 6 (D19) - Aux I/O
@@ -128,7 +128,10 @@ int power1;
 int power2;
 int power3;
 int power4;
-int power1_plus_2;                                                    
+//int power1_plus_2;
+//**************************************for DC voltage reading************* 
+int v_battery_bank;  
+//*************************************************************************                                                 
 int Vrms; 
 int temp[MaxOnewire]; 
 unsigned long pulseCount;  
@@ -172,21 +175,45 @@ const char helpText1[] PROGMEM =                                 // Available Se
 "  v          - Show firmware version\n"
 ;
 
+//*********************battery voltage reading**********************************************************************
+const byte v_battery_pin =    A5;
+
+//int v_battery_pin = A5;  //vout of voltage divider is connected to A5
+float vout = 0.0;      //output of voltage regulator
+float vin = 0;        //input voltage
+float R1 = 10005.0;     //Resistor in ohm for Max V=33
+float R2 = 1908.0;      //Resistor in ohm for Max V=33
+
+//float R1 = 10000.0;     //Resistor in ohm for Max V=52     
+//float R2 = 1063.0;      //Resistor in ohm for Max V=52
+int battery_value = 0;   //analog read 
+float previous_reading=0;
+float voltage=0;
+float  vin_new=0;
+float  vin_old=0;
+float  vout_old=0;
+
+unsigned long previousMillis = 0;        // will store last time turner pin was updated         
+const long interval = 2000; 
+
+//*****************************************************************************************************************
 //-------------------------------------------------------------------------------------------------------------------------------------------
 // SETUP ********************************************************************************************
 //-------------------------------------------------------------------------------------------------------------------------------------------
 void setup()
 { 
+  //**************************battery voltage reading***************************
+  // pinMode(v_battery_pin, INPUT);
   //------------------------------------from emontx-------------------------------------------------------------
    pinMode(LEDpin, OUTPUT); 
-  pinMode(DS18B20_PWR, OUTPUT); 
+  //pinMode(DS18B20_PWR, OUTPUT); 
 
   pinMode(emonPi_int1_pin, INPUT_PULLUP);                     // Set emonTx V3.4 interrupt pulse counting pin as input (Dig 3 / INT1)
 //  emontx.pulseCount=0;                                        // Make sure pulse count starts at zero
 
   digitalWrite(LEDpin,HIGH); 
 
-  Serial.begin(9600);
+  //Serial.begin(9600);
  
   //Serial.print("emonTx V3.4 Discrete Sampling V"); Serial.print(firmware_version*0.1);
   #if (RF69_COMPAT)
@@ -251,6 +278,53 @@ void setup()
 //-------------------------------------------------------------------------------------------------------------------------------------------
 void loop()
 {
+
+ //***********************for battery voltage reading********************************************
+   battery_value = analogRead(v_battery_pin);
+   delay(100);
+   vout = (battery_value * 4.99) / 1024.0; 
+   vin_new=vout/(R2/(R1+R2));
+
+  unsigned long currentMillis = millis();
+  if(currentMillis - previousMillis >= interval) 
+  {
+    previousMillis = currentMillis;     
+    previous_reading = analogRead(v_battery_pin);
+    vout_old = (previous_reading * 4.99) / 1024.0; 
+    vin_old=vout_old / (R2/(R1+R2));
+    //Serial.print("old reading :"); 
+    //Serial.println(vin_old); 
+    // Serial.print("INPUT V= ");
+     //Serial.println(vin);
+      vin=(vin_new+vin_old)*100/2;   // final data to send in emonhub 
+  }
+  else
+  {
+  }
+
+  
+/*
+  
+   if (vin>0.09)  //v is the minimum voltage; 43 is the max
+   {
+
+     //Serial.print("new reading :"); 
+    // Serial.println(vin_new);
+  
+    
+   } 
+    else
+    { 
+    vin=0;//statement to quash undesired reading !
+    //Serial.println("no vin");
+    emonPi.v_battery_bank=0;
+    }  
+    */
+      
+  
+//***********************************************************************************************
+//**********************************************************************
+   
    // unsigned long start = millis();
   now = millis();
  
@@ -271,11 +345,12 @@ void loop()
   ct3.voltage(0, Vcal, phase_shift);                       // ADC pin, Calibration, phase_shift
   ct4.voltage(0, Vcal, phase_shift);                       // ADC pin, Calibration, phase_shift
 
+/*
   if (digitalRead(shutdown_switch_pin) == 0 ) 
     digitalWrite(emonpi_GPIO_pin, HIGH);                                          // if emonPi shutdown butten pressed then send signal to the Pi on GPIO 11
   else 
     digitalWrite(emonpi_GPIO_pin, LOW);
-  
+  */
   if (Serial.available()){
     handleInput(Serial.read());                                                   // If serial input is received
     double_LED_flash();
@@ -350,10 +425,12 @@ void loop()
      emonPi.Vrms=Vrms*100;
    }
 
+  // emonPi.power1_plus_2=emonPi.power1 + emonPi.power2;                            //Create power 1 plus power 2 variable for US and solar PV installs
+
+   emonPi.v_battery_bank=vin;
 
 
-   emonPi.power1_plus_2=emonPi.power1 + emonPi.power2;                            //Create power 1 plus power 2 variable for US and solar PV installs
-
+   
   //Serial.print(emonPi.pulseCount); Serial.print(" ");delay(5);
    // if (debug==1) {Serial.print(emonPi.power2); Serial.print(" ");delay(5);}  
     if (!ACAC){                                                                         // read battery voltage if powered by DC
@@ -363,20 +440,20 @@ void loop()
 
     if (DS18B20_STATUS==1) 
     {
-      digitalWrite(DS18B20_PWR, HIGH); 
+     // digitalWrite(DS18B20_PWR, HIGH); 
       Sleepy::loseSomeTime(50);
       sensors.requestTemperatures();                                        // Send the command to get temperatures
       for(byte j=0;j<numSensors;j++) emonPi.temp[j]=get_temperature(j); 
       //sensors.setResolution(allAddress[j], TEMPERATURE_PRECISION);                    // and set the a to d conversion resolution of each.
       //       emontx.temp[j]=get_temperature(j); 
-      digitalWrite(DS18B20_PWR, LOW);
+     // digitalWrite(DS18B20_PWR, LOW);
     }                                                                           
     
     if (pulseCount)                                                       // if the ISR has counted some pulses, update the total count
     {
       cli();                                                              // Disable interrupt just in case pulse comes in while we are updating the count
       emonPi.pulseCount += pulseCount;
-//      emontx.pulseCount += pulseCount;
+
       pulseCount = 0;
       sei();                                                              // Re-enable interrupts
     } 
