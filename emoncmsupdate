@@ -74,6 +74,8 @@ echo
 echo "Update Emoncms database"
 php /home/pi/emonpi/emoncmsdbupdate.php
 
+echo
+
 echo "Restarting Services..."
 sudo /etc/init.d/emonhub restart
 sudo /etc/init.d/feedwriter restart

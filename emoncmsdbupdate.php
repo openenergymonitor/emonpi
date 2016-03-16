@@ -11,4 +11,4 @@ require "core.php";
 $mysqli = @new mysqli($server,$username,$password,$database);
 
 require_once "Lib/dbschemasetup.php";
-print json_encode(db_schema_setup($mysqli,load_db_schema(),$applychanges));
+print json_encode(db_schema_setup($mysqli,load_db_schema(),$applychanges))."\n";
