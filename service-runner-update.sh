@@ -58,6 +58,13 @@ if [ -d /home/pi/backup ]; then
     git pull
 fi
 
+
+if [ -d /home/pi/huawei-hilink-status ]; then
+    echo "git pull /home/pi/huawei-hilink-status"
+    cd /home/pi/huawei-hilink-status
+    git pull
+fi
+
 echo
 echo "Start emonPi Atmega328 firmware update:"
 # Run emonPi update script to update firmware on Atmega328 on emonPi Shield using avrdude
