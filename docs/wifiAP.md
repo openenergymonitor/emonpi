@@ -13,11 +13,15 @@ There are 4 pieces of software that need to be installed to get this to work:
 
 # 1) Install dhcp server 
 
-sudo apt-get install isc-dhcp-server 
+	sudo apt-get install isc-dhcp-server 
 
 # 2) Install Hostapd
 
-Need to use latest version (which requires compile) which supports EW-7811UN (rtl871xdrv chipset) in AP mode.
+If your using RaspberryPi 3 simply 
+
+	sudo apt-get install hostapd
+	
+If using Edimax EW-7811UN (rtl871xdrv chipset) need to use latest version of hostapd (which requires compile) which supports rtl871xdrv in AP mode.
 
 ```
 sudo apt-get install libnl-genl-3-dev libnl-3-dev
@@ -70,7 +74,18 @@ Open hostapd config file with:
 Add the following lines to hostapd.conf (set SSID and password of your choice)
 
 
-WITHOUT AUTHENTICATION  USE
+WITHOUT AUTHENTICATION  USE - for **Edimax EW-7811UN (rtl871xdrv chipset**
+```
+interface=wlan0
+ssid=emonPi
+driver=nl80211
+hw_mode=g
+channel=6
+auth_algs=1
+wmm_enabled=0
+```
+
+WITHOUT AUTHENTICATION  -if using **RasPi3 with nl80211 chipset with the brcmfmac driver**
 ```
 interface=wlan0
 ssid=emonPi
@@ -81,7 +96,7 @@ auth_algs=1
 wmm_enabled=0
 ```
 
-WITH_AUTENTICATION USE
+WITH AUTENTICATION USE - for **Edimax EW-7811UN (rtl871xdrv chipset)**
 
 ```
 interface=wlan0
@@ -97,6 +112,23 @@ wpa=2
 wpa_passphrase=raspberry
 wpa_key_mgmt=WPA-PSK
 wpa_pairwise=TKIP
+rsn_pairwise=CCMP
+```
+WITH AUTENTICATION  - if using **RasPi3 with nl80211 chipset with the brcmfmac driver**
+
+```
+interface=wlan0
+driver=nl80211
+ssid=emonPi
+hw_mode=g
+channel=6
+macaddr_acl=0
+wmm_enabled=0
+auth_algs=1
+ignore_broadcast_ssid=0
+wpa=2
+wpa_key_mgmt=WPA-PSK
+wpa_passphrase=raspberry
 rsn_pairwise=CCMP
 ```
 
