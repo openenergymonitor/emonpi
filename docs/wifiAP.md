@@ -17,7 +17,7 @@ There are 4 pieces of software that need to be installed to get this to work:
 
 # 2) Install Hostapd
 
-If your using ***RasPi3 or official RasPi Wifi dongle - nl80211 chipset** with the brcmfmac driver simply 
+If your using **RasPi3 or official RasPi Wifi dongle - nl80211 chipset** with the brcmfmac driver simply 
 
 	sudo apt-get install hostapd
 	
