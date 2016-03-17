@@ -17,11 +17,11 @@ There are 4 pieces of software that need to be installed to get this to work:
 
 # 2) Install Hostapd
 
-If your using RaspberryPi 3 simply 
+If your using ***RasPi3 or official RasPi Wifi dongle - nl80211 chipset** with the brcmfmac driver simply 
 
 	sudo apt-get install hostapd
 	
-If using Edimax EW-7811UN (rtl871xdrv chipset) need to use latest version of hostapd (which requires compile) which supports rtl871xdrv in AP mode.
+If using **Edimax EW-7811UN (rtl871xdrv chipset)** need to use latest version of hostapd (which requires compile) which supports rtl871xdrv in AP mode.
 
 ```
 sudo apt-get install libnl-genl-3-dev libnl-3-dev
@@ -84,11 +84,11 @@ channel=6
 wmm_enabled=0
 ```
 
-WITHOUT AUTHENTICATION  -if using **RasPi3 with nl80211 chipset with the brcmfmac driver**
+WITHOUT AUTHENTICATION  -if using **RasPi3 or official RasPi Wifi dongle - nl80211 chipset with the brcmfmac driver**
 ```
 interface=wlan0
 ssid=emonPi
-driver=rtl871xdrv
+driver=nl80211
 hw_mode=g
 channel=6
 wmm_enabled=0
@@ -112,7 +112,7 @@ wpa_key_mgmt=WPA-PSK
 wpa_pairwise=TKIP
 rsn_pairwise=CCMP
 ```
-WITH AUTENTICATION  - if using **RasPi3 with nl80211 chipset with the brcmfmac driver**
+WITH AUTENTICATION  - if using **RasPi3 or official RasPi Wifi dongle - nl80211 chipset with the brcmfmac driver**
 
 ```
 interface=wlan0
