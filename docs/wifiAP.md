@@ -175,6 +175,12 @@ uncomment
 
 	authoritative;
 
+Save and exit. 
+
+## Create dhcpd.leases in ~/data 
+
+	sudo touch /home/pi/data/dhcpd.leases
+
 # 7) Configure /etc/default/isc-dhcp-server
 
 	sudo nano /etc/default/isc-dhcp-server 
