@@ -81,7 +81,6 @@ ssid=emonPi
 driver=nl80211
 hw_mode=g
 channel=6
-auth_algs=1
 wmm_enabled=0
 ```
 
@@ -92,7 +91,6 @@ ssid=emonPi
 driver=rtl871xdrv
 hw_mode=g
 channel=6
-auth_algs=1
 wmm_enabled=0
 ```
 
