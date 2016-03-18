@@ -29,6 +29,7 @@ This guide replaces the imagebuild.md (renamed to old.imagebuild.md) and emonPi 
 12. openHab
 12. nodeRED
 13. 3G / GSM HiLink Huawei USB modem dongle support
+14. Wifi AP mode
 
 
 
@@ -397,5 +398,13 @@ Default flows admin user: `emonpi` and password `emonpi2016`
 # 16. 3G / GSM HiLink Huawei USB modem dongle support
 
 [Follow Huawei Hi-Link RasPi setup guide](https://github.com/openenergymonitor/huawei-hilink-status/blob/master/README.md) to setup HiLink devices and useful status utility. The emonPiLCD now uses the same Huawei API to display GSM / 3G connection status and signal level on the LCD. 
+
+# 17. Wifi AP mode
+
+Wifi Access Point mode is useful when using emonPi without a interent connection of with a 3G dongle.
+
+[Follow guide to install hostpad and DHCP](https://github.com/openenergymonitor/emonpi/blob/master/docs/wifiAP.md)
+
+Including installing start/ stop script to start the AP and also brdige the 3G dongle interface on eth1 to wlan0
 
 
