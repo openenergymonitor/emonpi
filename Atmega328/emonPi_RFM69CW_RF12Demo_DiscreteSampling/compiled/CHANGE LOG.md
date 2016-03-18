@@ -5,8 +5,7 @@
  * Compile with Arduino 1.6.7 with JeeLib 10th Sep 2015 f097c0039c926881d80a74bec7a7aa020de610ee
  * Updated OneWire library to V2.3.2 & updated sensors.getAddress function
 
-Sketch uses 19,460 bytes (60%) of program storage space. Maximum is 32,256 bytes.
-Global variables use 941 bytes (45%) of dynamic memory, leaving 1,107 bytes for local variables. Maximum is 2,048 bytes.
+Compiled with Arduino 1.6.8 | Hex size: 54.8kB | Sketch uses 19,460 bytes | Global variables: 941 bytes
 
 # V2.3 (20/02/16)
  * Fix VRMS reading bug
