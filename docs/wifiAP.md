@@ -275,7 +275,28 @@ When running an emonPi in offline mode we recommend adding a hardware RTC to ens
 
 Once your up and running and connected to emonPi hotspot you should be able to browse to [http://192.168.42.1/emoncms](http://192.168.42.1/emoncms) to acess local Emoncms
 
+# Automated Operation
 
+I've made a script to start and stop WiFi AP mode. 
+
+It works starting WiFi AP when emonPi is in normal Wifi mode without any rebooting and then when AP is stopped normal client mode is resumed.
+
+The script also bridges eth1 (USB 3G dongle) to the WiFi AP. This will be useful when using emonPi with 3G dongle, this will allow a local user to connect to the emponPi via Wifi AP, to connect via SSH, view data locally and even get internet via the 3G dongle...an emonPi 3G router! 
+
+	sudo ln -s /home/pi/emonpi/wifiAP /sbin/wifiAP
+	
+then run 
+
+	sudo wifiAP start
+
+Then to stop
+
+	sudo wifiAP stop
+
+
+# Forum discussion 
+
+https://openenergymonitor.org/emon/node/12305
 
 # Resources 
 Useful blogs, guides and forum threads that I used to work out how to set up the above:
