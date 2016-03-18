@@ -1,5 +1,10 @@
 # Change Log - emonPi Discrete Sampling Firmware
 
+# V2.5 (18/03/16)
+ * Soft reset RFM69CW ever 60s to ensure its kept alive 
+
+Compiled with Arduino 1.6.8 | Hex size: 55kB | Sketch uses 19,554 bytes | Global variables: 946 bytes
+
 # V2.4 (8/03/16)
  * Adjust Vcal_EU to improve VRMS voltage reading accuracy when using UK/EU AC-AC
  * Compile with Arduino 1.6.7 with JeeLib 10th Sep 2015 f097c0039c926881d80a74bec7a7aa020de610ee

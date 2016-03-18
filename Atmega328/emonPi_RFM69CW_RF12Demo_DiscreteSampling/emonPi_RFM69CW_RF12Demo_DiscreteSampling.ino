@@ -64,15 +64,16 @@ EnergyMonitor ct1, ct2;
 #include <Wire.h>                                                     // Arduino I2C library
 #include <LiquidCrystal_I2C.h>                                        // https://github.com/openenergymonitor/LiquidCrystal_I2C
 LiquidCrystal_I2C lcd(0x27,16,2);                                     // LCD I2C address to 0x27, 16x2 line display
-const byte firmware_version = 24;                                    //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
+const byte firmware_version = 25;                                    //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
 boolean debug =                   TRUE; 
 const unsigned long BAUD_RATE=    38400;
 
-const byte Vrms_EU=               230;                               // Vrms for apparent power readings (when no AC-AC voltage sample is present)
-const byte Vrms_USA=              110;                               // USA apparent power VRMS  
-const int TIME_BETWEEN_READINGS=  5000;                             // Time between readings (mS)  
+const byte Vrms_EU=               230;                              // Vrms for apparent power readings (when no AC-AC voltage sample is present)
+const byte Vrms_USA=              110;                              // USA apparent power VRMS  
+const int TIME_BETWEEN_READINGS=  5000;                             // Time between readings (ms)  
+const int RF_RESET_PERIOD=        60000;                            // Time (ms) between RF resets (hack to keep RFM60CW alive) 
 
 
 //http://openenergymonitor.org/emon/buildingblocks/calibration
@@ -139,10 +140,11 @@ double Vcal, vrms;
 boolean CT1, CT2, ACAC, DS18B20_STATUS;
 byte CT_count, Vrms;                                             
 unsigned long last_sample=0;                                     // Record millis time of last discrete sample
-byte flag;                                                                         // flag to record shutdown push button press
+byte flag;                                                       // flag to record shutdown push button press
 volatile byte pulseCount = 0;
 unsigned long now =0;
 unsigned long pulsetime=0;                                      // Record time of interrupt pulse          
+unsigned long last_rf_rest=0;                                  // Record time of last RF reset
 
 // RF Global Variables 
 static byte stack[RF12_MAXDATA+4], top, sendLen, dest;           // RF variables 
@@ -239,14 +241,19 @@ void loop()
       
 
   if (RF_STATUS==1){                                                              // IF RF module is present and enabled then perform RF tasks
-    if (RF_Rx_Handle()==1)
-    {                                                                             // Returns true if RF packet is received                                            
+    if (RF_Rx_Handle()==1) {                                                      // Returns true if RF packet is received                                            
        double_LED_flash(); 
     }
+    
     send_RF();                                                                    // Transmitt data packets if needed 
-  }
+    
+    if ((now - last_rf_rest) > RF_RESET_PERIOD) {
+      rf12_initialize(nodeID, RF_freq, networkGroup);                             // Periodically reset RFM69CW to keep it alive :-( 
+    }
+   
+   }
 
- 
+
   if ((now - last_sample) > TIME_BETWEEN_READINGS)
   {
     single_LED_flash();                                                            // single flash of LED on local CT sample
@@ -310,6 +317,7 @@ void loop()
     last_sample = now;                                           //Record time of sample  
     
     } // end sample
+    
     
 } // end loop---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
