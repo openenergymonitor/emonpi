@@ -15,7 +15,19 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
+
 echo "WiFi AP only works with BCM43143 e.g. RasPi3"
+
+echo "Enter y to continue, any other key to exit "
+read input
+if [ $input != "Y" -o $input  = "y" ]; then
+	echo "Exiting"
+	exit 1
+fi
+
+
+
+rpi-rw
 #driver= basename $( readlink /sys/class/net/wlan0/device/driver ) | tr -d "\n"
 #echo "$driver"
 #driver="brcmfmac_sdio"
@@ -80,3 +92,4 @@ if [ "$1" = "stop" ]; then
         sudo iptables -D FORWARD -i eth1 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT >/dev/null 2>&1
         sudo iptables -D FORWARD -i wlan0 -o eth1 -j ACCEPT >/dev/null 2>&1
 fi
+rpi-ro
