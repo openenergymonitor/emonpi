@@ -18,16 +18,20 @@ fi
 
 echo "WiFi AP only works with BCM43143 e.g. RasPi3"
 
-echo "Enter y to continue, any other key to exit "
-read input
-if [ $input != "Y" -o $input  = "y" ]; then
-	echo "Exiting"
-	exit 1
+read -n1 -r -p "Press space to continue...any key to exit" key
+
+if [ "$key" = '' ]; then
+    echo " "
+    echo "Starting AP.....please wait process could take about 10-20s"
+else
+    exit 1
 fi
 
 
 
 rpi-rw
+
+# TO DO - make script auto read type of WiFi driver in use and determine if it will work with this version of hostpad
 #driver= basename $( readlink /sys/class/net/wlan0/device/driver ) | tr -d "\n"
 #echo "$driver"
 #driver="brcmfmac_sdio"
@@ -60,19 +64,16 @@ if [ "$1" = "start" ]; then
 	# if eth1 exists and is up then bridge to wlan0
 	FOUND=`grep "eth1" /proc/net/dev`
     if  [ -n "$FOUND" ] ; then
-        eth1_state = $(cat /sys/class/net/eth1/operstate)
-        if [ "$eth1_state"  = "up" ]; then
-            echo "eth1 up"
-            echo "Bridge eth1 (GSM dongle) to WiFi AP"
-            # Try and Remove bridge routes so we don't add double if exits
-            sudo iptables -t nat -D POSTROUTING -o eth1 -j MASQUERADE >/dev/null 2>&1
-            sudo iptables -D FORWARD -i eth1 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT >/dev/null 2>&1
-            sudo iptables -D FORWARD -i wlan0 -o eth1 -j ACCEPT >/dev/null 2>&1
-            # Add nerw bridge rules
-            sudo iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
-            sudo iptables -A FORWARD -i eth1 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT
-            sudo iptables -A FORWARD -i wlan0 -o eth1 -j ACCEPT
-        fi
+        echo "eth1 up"
+        echo "Bridge eth1 (GSM dongle) to WiFi AP"
+        # Try and Remove bridge routes so we don't add double if exits
+        sudo iptables -t nat -D POSTROUTING -o eth1 -j MASQUERADE >/dev/null 2>&1
+        sudo iptables -D FORWARD -i eth1 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT >/dev/null 2>&1
+        sudo iptables -D FORWARD -i wlan0 -o eth1 -j ACCEPT >/dev/null 2>&1
+        # Add nerw bridge rules
+        sudo iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+        sudo iptables -A FORWARD -i eth1 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+        sudo iptables -A FORWARD -i wlan0 -o eth1 -j ACCEPT
     fi
 fi
 
@@ -84,6 +85,7 @@ if [ "$1" = "stop" ]; then
         sudo service isc-dhcp-server stop
         sleep 5
         sudo ifconfig wlan0 down
+        sudo ifdown wlan0
         sleep 5
         sudo ifup wlan0
         
