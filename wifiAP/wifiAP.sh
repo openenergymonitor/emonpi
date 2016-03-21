@@ -23,8 +23,7 @@ read -n1 -r -p "Press space to continue...any key to exit" key
 if [ "$key" = '' ]; then
     echo " "
     echo "Starting AP.....please wait process could take about 10-20s"
-    echo "If connected via Wifi connection will now be lost...wait 30s then connect to SSID 'emonPi' SSID with password 'raspberry' then browse to http://192.168.42.1"
-    echo "..these are default setting to change edit /etc/hostapd/hostapd.conf"
+    echo "Wifi connection will now be lost...wait 30s then connect to SSID 'emonPi' SSID with password 'raspberry' then browse to http://192.168.42.1"
 else
     exit 1
 fi
@@ -47,7 +46,7 @@ rpi-rw
 if [ "$1" = "start" ]; then
 
 	sudo ifdown wlan0
-	sleep 5
+	sleep 4
 	sudo ifconfig wlan0 down
     sleep 5
 	echo "Set static IP addres of emonPi AP 192.168.42.1"
@@ -68,7 +67,14 @@ if [ "$1" = "start" ]; then
     if  [ -n "$FOUND" ] ; then
         echo "eth1 up"
         echo "Bridge eth1 (GSM dongle) to WiFi AP"
-        sudo iptables-restore < /home/pi/emonpi/iptables.ipv4.nat
+        # Remove bridge routes if exist to avoid duplicates 
+        sudo iptables -t nat -D POSTROUTING -o eth1 -j MASQUERADE >/dev/null 2>&1
+        sudo iptables -D FORWARD -i eth1 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+        sudo iptables -D FORWARD -i wlan0 -o eth1 -j ACCEPT >/dev/null 2>&1
+	# Add bridge routes
+        sudo iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE >/dev/null 2>&1
+        sudo iptables -A FORWARD -i eth1 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+        sudo iptables -A FORWARD -i wlan0 -o eth1 -j ACCEPT 
     fi
 fi
 
