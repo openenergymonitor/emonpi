@@ -114,7 +114,7 @@ echo "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev" > /etc/wpa_suppli
 echo "update_config=1" >> /etc/wpa_supplicant/wpa_supplicant.conf
 
 
-if [ -f /home/pi/data/dhcpd.leases]; then
+if [ -f /home/pi/data/dhcpd.leases ]; then
    echo "Removing wifiAP dhcpd.leases"
    rm /home/pi/data/dhcpd.leases
    rm /home/pi/data/dhcpd.leases~
