@@ -22,8 +22,6 @@ read -n1 -r -p "Press space to continue...any key to exit" key
 
 if [ "$key" = '' ]; then
     echo " "
-    echo "Starting AP.....please wait process could take about 10-20s"
-    echo "Wifi connection will now be lost...wait 30s then connect to SSID 'emonPi' SSID with password 'raspberry' then browse to http://192.168.42.1"
 else
     exit 1
 fi
@@ -44,7 +42,8 @@ rpi-rw
 
 
 if [ "$1" = "start" ]; then
-
+	echo "Starting AP.....please wait process could take about 10-20s"
+    	echo "Wifi connection will now be lost...wait 30s then connect to SSID 'emonPi' SSID with password 'raspberry' then browse to http://192.168.42.1"
 	sudo ifdown wlan0
 	sleep 4
 	sudo ifconfig wlan0 down
