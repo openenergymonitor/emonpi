@@ -48,10 +48,26 @@ if [ "$1" = "start" ]; then
 	sudo ifdown wlan0
 	sleep 4
 	sudo ifconfig wlan0 down
-    sleep 5
+	
+	# if eth1 exists and is up then bridge to wlan0
+	FOUND=`grep "eth1" /proc/net/dev`
+    	if  [ -n "$FOUND" ] ; then
+        	echo "eth1 up"
+        	echo "Bridge eth1 (GSM dongle) to WiFi AP"
+		# Remove bridge routes if exist to avoid duplicates 
+        	sudo iptables -t nat -D POSTROUTING -o eth1 -j MASQUERADE >/dev/null 2>&1
+        	sudo iptables -D FORWARD -i eth1 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+        	sudo iptables -D FORWARD -i wlan0 -o eth1 -j ACCEPT >/dev/null 2>&1
+		# Add bridge nodes        	
+		sudo iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE >/dev/null 2>&1
+        	sudo iptables -A FORWARD -i eth1 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT >/dev/null 2>&1
+		sudo iptables -A FORWARD -i wlan0 -o eth1 -j ACCEPT >/dev/null 2>&1
+    	fi
+    
+    	sleep 5
 	echo "Set static IP addres of emonPi AP 192.168.42.1"
 	sudo ifconfig wlan0 192.168.42.1
-    sleep 5
+    	sleep 5
 	# Start DHCP server to offer AP clients DHCP
 	echo "Start isc-dhcp-server"
 	sudo service isc-dhcp-server start
@@ -59,27 +75,15 @@ if [ "$1" = "start" ]; then
 
 	# Start AP -  /etc/hostapd/hostapd.conf
 	echo "Start emonPi Wifi AP...."
-	sudo touch /home/pi/data/dhcpd.leases
+	if [ ! -f /home/pi/data/dhcpd.leases]; then
+		sudo touch /home/pi/data/dhcpd.leases
+	fi
 	sudo service hostapd start
-	
-	# if eth1 exists and is up then bridge to wlan0
-	FOUND=`grep "eth1" /proc/net/dev`
-    if  [ -n "$FOUND" ] ; then
-        echo "eth1 up"
-        echo "Bridge eth1 (GSM dongle) to WiFi AP"
-        # Remove bridge routes if exist to avoid duplicates 
-        sudo iptables -t nat -D POSTROUTING -o eth1 -j MASQUERADE >/dev/null 2>&1
-        sudo iptables -D FORWARD -i eth1 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT
-        sudo iptables -D FORWARD -i wlan0 -o eth1 -j ACCEPT >/dev/null 2>&1
-	# Add bridge routes
-        sudo iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE >/dev/null 2>&1
-        sudo iptables -A FORWARD -i eth1 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT
-        sudo iptables -A FORWARD -i wlan0 -o eth1 -j ACCEPT 
-    fi
+
 fi
 
 if [ "$1" = "stop" ]; then
-# Stop Wifi AP and restore normal Managed Client mode
+# Stop Wifi AP and restore normal Managed Client STA mode
         echo "Stop hostapd Wifi AP"
         sudo service hostapd stop
         echo "Stop isc-dhcp-server"
