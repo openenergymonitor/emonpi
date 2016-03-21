@@ -56,12 +56,12 @@ if [ "$1" = "start" ]; then
         	echo "Bridge eth1 (GSM dongle) to WiFi AP"
 		# Remove bridge routes if exist to avoid duplicates 
         	sudo iptables -t nat -D POSTROUTING -o eth1 -j MASQUERADE >/dev/null 2>&1
-        	sudo iptables -D FORWARD -i eth1 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+        	sudo iptables -D FORWARD -i eth1 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT >/dev/null 2>&1
         	sudo iptables -D FORWARD -i wlan0 -o eth1 -j ACCEPT >/dev/null 2>&1
 		# Add bridge nodes        	
-		sudo iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE >/dev/null 2>&1
-        	sudo iptables -A FORWARD -i eth1 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT >/dev/null 2>&1
-		sudo iptables -A FORWARD -i wlan0 -o eth1 -j ACCEPT >/dev/null 2>&1
+		sudo iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+        	sudo iptables -A FORWARD -i eth1 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+		sudo iptables -A FORWARD -i wlan0 -o eth1 -j ACCEPT
     	fi
     
     	sleep 5
