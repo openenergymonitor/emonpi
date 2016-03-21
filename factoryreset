@@ -113,6 +113,13 @@ echo "clear WiFi config /etc/wpa_supplicant/wpa_supplicant.conf"
 echo "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev" > /etc/wpa_supplicant/wpa_supplicant.conf
 echo "update_config=1" >> /etc/wpa_supplicant/wpa_supplicant.conf
 
+
+if [ -f /home/pi/data/dhcpd.leases]; then
+   echo "Removing wifiAP dhcpd.leases"
+   rm /home/pi/data/dhcpd.leases
+   rm /home/pi/data/dhcpd.leases~
+fi
+
 echo "Clear bash history"
 history -c
 
