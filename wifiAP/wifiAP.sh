@@ -75,7 +75,7 @@ if [ "$1" = "start" ]; then
 
 	# Start AP -  /etc/hostapd/hostapd.conf
 	echo "Start emonPi Wifi AP...."
-	if [ ! -f /home/pi/data/dhcpd.leases]; then
+	if [ ! -f /home/pi/data/dhcpd.leases ]; then
 		sudo touch /home/pi/data/dhcpd.leases
 	fi
 	sudo service hostapd start
