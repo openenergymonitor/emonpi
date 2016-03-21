@@ -69,14 +69,18 @@ if [ "$1" = "start" ]; then
     	sleep 5
 	# Start DHCP server to offer AP clients DHCP
 	echo "Start isc-dhcp-server"
+	if [ -f /home/pi/data/dhcpd.leases ]; then
+  		echo "Removing wifiAP dhcpd.leases"
+   		rm /home/pi/data/dhcpd.leases
+		touch /home/pi/data/dhcpd.leases
+	else
+		touch /home/pi/data/dhcpd.leases
+	fi
 	sudo service isc-dhcp-server start
 	sleep 5
 
-	# Start AP -  /etc/hostapd/hostapd.conf
+	# Start AP
 	echo "Start emonPi Wifi AP...."
-	if [ ! -f /home/pi/data/dhcpd.leases ]; then
-		sudo touch /home/pi/data/dhcpd.leases
-	fi
 	sudo service hostapd start
 
 fi
@@ -88,11 +92,16 @@ if [ "$1" = "stop" ]; then
         echo "Stop isc-dhcp-server"
         sudo service isc-dhcp-server stop
         sleep 5
-        sudo ifconfig wlan0 down
-        sudo ifdown wlan0
-        sleep 5
-        sudo ifup wlan0
-        
+        sudo kill $(pgrep -f "wpa_supplicant -B")
+	sudo ifconfig wlan0 down
+	sudo ifconfig wlan0 up
+	sudo rm -r /var/run/wpa_supplicant/*
+	sudo wpa_supplicant -B -iwlan0 -f/var/log/wpa_supplicant.log -c/etc/wpa_supplicant/wpa_supplicant.conf
+	sleep 10
+	sudo dhclient -v -r wlan0
+	sleep 5
+	sudo dhclient -v wlan0
+
         # Remove bridge routes
         sudo iptables -t nat -D POSTROUTING -o eth1 -j MASQUERADE >/dev/null 2>&1
         sudo iptables -D FORWARD -i eth1 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT >/dev/null 2>&1
