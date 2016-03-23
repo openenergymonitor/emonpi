@@ -4,6 +4,8 @@ from subprocess import *
 import time
 from datetime import datetime
 from datetime import timedelta
+#from gprs_signal import previous_signalf
+from  gprs_signal import get_gsm_signal_strength
 from uptime import uptime
 import threading
 import sys
@@ -12,6 +14,7 @@ import signal
 import redis
 import re
 import paho.mqtt.client as mqtt
+
 
 # ------------------------------------------------------------------------------------
 # LCD backlight timeout in seconds
@@ -38,7 +41,7 @@ GPIO.setup( GPIO_PORT_shutdown,GPIO.IN)
 new_switch_state = GPIO.input(GPIO_PORT)
 shutdown_button =GPIO.input(GPIO_PORT_shutdown)
 
-max_number_pages = 3
+max_number_pages = 5
 
 SHUTDOWN_TIME =3  # Shutdown after 3 second press
 
@@ -93,8 +96,11 @@ class Background(threading.Thread):
     def run(self):
         last1s = time.time() - 2.0
         last5s = time.time() - 6.0
+        last30s = time.time() - 31.0
+        last180s = time.time() - 181.0   #update the GPRS signal strength after 3min
         logger.info("Starting background thread")
         # Loop until we stop is false (our exit signal)
+
         while not self.stop:
             now = time.time()
 
@@ -130,6 +136,11 @@ class Background(threading.Thread):
                 r.set("eth:ip",eth0ip)
                 logger.info("background: eth:"+str(int(ethactive))+" "+eth0ip)
 
+                #update GPRS signal strength everyafter 3min
+
+            if (now - last180s) >=180.0:
+                last180s = now
+
                 # Wireless LAN
                 # ----------------------------------------------------------------------------------
                 wlan0 = "ip addr show wlan0 | grep inet | awk '{print $2}' | cut -d/ -f1 | head -n1"
@@ -146,6 +157,22 @@ class Background(threading.Thread):
 
                 # ----------------------------------------------------------------------------------
 
+                 # GPRS connection from olemexino GSM module
+                # ----------------------------------------------------------------------------------
+                wlanactive = 0 # Not using wlan
+                ppp0 = "ip addr show ppp0 | grep inet | awk '{print $2}' | cut -d/ -f1 | head -n1"
+                p = Popen(ppp0, shell=True, stdout=PIPE)
+                ppp0ip = p.communicate()[0][:-1]
+
+                pppactive = 1
+                if ppp0ip=="" or ppp0ip==False:
+                    pppactive = 0
+
+                r.set("ppp:active",pppactive)
+                r.set("ppp:ip",ppp0ip)
+                logger.info("background: ppp:"+str(int(pppactive))+" "+ppp0ip)
+                #--------------------------------------------------------------------------------------
+
                 signallevel = 0
                 linklevel = 0
                 noiselevel = 0
@@ -160,6 +187,15 @@ class Background(threading.Thread):
                 r.set("wlan:signallevel",signallevel)
                 logger.info("background: wlan "+str(signallevel))
 
+
+                #----------------------gprs signal level----------------------------------------
+                gsm_signallevel = 0
+
+                if pppactive:
+                   gsm_signallevel = get_gsm_signal_strength()
+                   #print "$#$#$#$#$#$$# %s"%gsm_signallevel
+                   r.set("ppp:gsm_signallevel",gsm_signallevel)
+                   logger.info("background: ppp "+str(gsm_signallevel))
             # this loop runs a bit faster so that ctrl-c exits are fast
             time.sleep(0.1)
 
@@ -365,10 +401,24 @@ while 1:
                 lcd_string2 = "NOT CONNECTED"
 
         elif page==2:
+                if int(r.get("ppp:active")):
+                lcd_string1 = "GPRS: YES - "+r.get("ppp:gsm_signallevel")+"%"
+                lcd_string2 = r.get("ppp:ip")
+                #print  "SIGNAL STRENGTH" + lcd_string1
+                #print"********************CONNECTED!!!!!!!!"+r.get("ppp:ip")
+
+            else:
+                lcd_string1 = "GPRS strength:"+r.get("ppp:gsm_signallevel")+"%"
+                lcd_string2 = ""
+                #print  "SIGNAL STRENGTH" + lcd_string1
+                #print"****************NOT CONNECTED"
+
+
+        elif page==3:
 		    lcd_string1 = datetime.now().strftime('%b %d %H:%M')
 		    lcd_string2 =  'Uptime %.2f days' % (float(r.get("uptime"))/86400)
 
-        elif page==3:
+        elif page==4:
             basedata = r.get("basedata")
             if basedata is not None:
                 basedata = basedata.split(",")
@@ -377,6 +427,22 @@ while 1:
             else:
                 lcd_string1 = 'Power 1: ...'
                 lcd_string2 = 'Power 2: ...'
+
+        elif page==5:
+            basedata = r.get("basedata")
+            if basedata is not None:
+                basedata = basedata.split(",")
+                lcd_string1 = 'Power 3: '+str(basedata[2])+"W"
+                lcd_string2 = 'Power 4: '+str(basedata[3])+"W"
+            #    print"***********************power 3:"
+             #   print"**************************power 4:"
+
+            else:
+                lcd_string1 = 'Power 3: ...'
+                lcd_string2 = 'Power 4: ...'
+             #   print"*******************power 3:....."
+             #   print"********************power 4:......"
+
 
         logger.info("main lcd_string1: "+lcd_string1)
         logger.info("main lcd_string2: "+lcd_string2)

@@ -12,7 +12,11 @@ echo "Enable I2C module"
 #else
 
 #       echo 'i2c 2 already enabled'
+
 #fi
+
+#---------GPRR signal strength file------
+sudo cp /home/debian/gprsAndEmonInstall/gprs_signal.py /home/debian/emonpi/lcd/gprs_signal.py
 
 cd /sys/devices/bone_capemgr.9/
 file=slots
@@ -36,6 +40,7 @@ file=tempcrontab.txt
 
 i2c_on_boot=`grep -c "@reboot sudo echo BB-I2C1 >> /sys/devices/bone_capemgr.9/slots" "$file"`
 
+
 #enable i2c to be enabled on boot
 if [ $i2c_on_boot -eq 1 ]
 then
@@ -43,14 +48,18 @@ then
         echo "Code line exist"
         crontab -l >tempcrontab.txt
         #sudo echo '@reboot sudo echo BB-I2C1 >> /sys/devices/bone_capemgr.9/slots' >> /root/tempcrontab.txt
+        sudo echo '@reboot /home/debian/gprsAndEmonInstall/gprs_on.sh' >> /root/tempcrontab.txt
         crontab tempcrontab.txt
 else
         echo "Adding the code line....."
         crontab -l >tempcrontab.txt
         sudo echo '@reboot sudo echo BB-I2C1 >> /sys/devices/bone_capemgr.9/slots' >> /root/tempcrontab.txt
+        sudo echo '@reboot /home/debian/gprsAndEmonInstall/gprs_on.sh' >> /root/tempcrontab.txt
         crontab tempcrontab.txt
 
 fi
+
+
 
 #---------------------------------------------------------------------------------------------------
 echo 'Install Python I2C Tools'

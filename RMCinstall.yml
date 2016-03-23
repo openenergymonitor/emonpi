@@ -30,10 +30,9 @@
      - Adafruit_BBIO
      - uptime
      - paho-mqtt
+     - redis
      tags:
      - pip-packages
-        
-       
         #make a directory
    - name: make a directory
      file: path=/home/debian/emonpi state=directory
@@ -46,6 +45,14 @@
    - file: path=/home/debian/gprsAndEmonInstall/gprsAndEmonTx.sh mode="u+x"
     #print this message but can be useful for debugging variables or expressions
    - debug: msg="Executable permission is assigned to GPRS and Emon install file"
+
+   - file: path=/home/debian/gprsAndEmonInstall/gprs_on.sh mode="u+x"
+    #print this message but can be useful for debugging variables or expressions
+   - debug: msg="Executable permission is assigned to gprs_enable file"
+
+   - file: path=/home/debian/gprsAndEmonInstall/gprs_off.sh mode="u+x"
+    #print this message but can be useful for debugging variables or expressions
+   - debug: msg="Executable permission is assigned to gprs_disable file"
 
 
       #Download EmonPi config files
