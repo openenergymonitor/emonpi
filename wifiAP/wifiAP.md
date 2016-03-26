@@ -283,7 +283,7 @@ It works starting WiFi AP when emonPi is in normal Wifi mode without any rebooti
 
 The script also bridges eth1 (USB 3G dongle) to the WiFi AP. This will be useful when using emonPi with 3G dongle, this will allow a local user to connect to the emponPi via Wifi AP, to connect via SSH, view data locally and even get internet via the 3G dongle...an emonPi 3G router! 
 
-	sudo ln -s /home/pi/emonpi/wifiAP /sbin/wifiAP
+	sudo ln -s /home/pi/emonpi/wifiAP/wifiAP.sh /usr/local/sbin/wifiAP
 	
 then run 
 
