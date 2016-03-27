@@ -54,6 +54,10 @@
     #print this message but can be useful for debugging variables or expressions
    - debug: msg="Executable permission is assigned to gprs_disable file"
 
+   - file: path=/home/debian/gprsAndEmonInstall/enable_ttyo4.sh mode="u+x"
+    #print this message but can be useful for debugging variables or expressions
+   - debug: msg="Executable permission is assigned to enable_ttyo4 file"
+
 
       #Download EmonPi config files
    - git: repo=git://github.com/GreatLakesEnergy/emonpi.git version=beaglebone dest=/home/debian/emonpi/

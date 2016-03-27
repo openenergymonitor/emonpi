@@ -167,6 +167,9 @@ class Background(threading.Thread):
                 pppactive = 1
                 if ppp0ip=="" or ppp0ip==False:
                     pppactive = 0
+                    time.sleep(1)
+                    subprocess.call(['/home/debian/gprsAndEmonInstall/gprs_on.sh'])
+
 
                 r.set("ppp:active",pppactive)
                 r.set("ppp:ip",ppp0ip)
