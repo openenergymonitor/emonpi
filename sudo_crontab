@@ -24,4 +24,4 @@
 MAILTO=""
 
 # Check wifi is connecrted very 5 min
- */5 * * * * /usr/local/bin/wifi-check >> /var/log/wificheck.log 2>&1
+ */5 * * * * /usr/local/bin/wifi-check > /home/pi/data/wificheck.log 2>&1
