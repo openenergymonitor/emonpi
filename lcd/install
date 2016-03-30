@@ -1,9 +1,6 @@
 #!/bin/bash
 
 # Run script as root $ sudo ./install
-# Reboot required for I2C modules enable to take effect
-
-# Part of the OpenEnergyMonitor.org project
 
 echo "Enable I2C module"
 
@@ -15,7 +12,11 @@ echo "Enable I2C module"
 #else
 
 #       echo 'i2c 2 already enabled'
+
 #fi
+
+#---------GPRR signal strength file------
+sudo cp /home/debian/gprsAndEmonInstall/gprs_signal.py /home/debian/emonpi/lcd/gprs_signal.py
 
 cd /sys/devices/bone_capemgr.9/
 file=slots
@@ -39,6 +40,7 @@ file=tempcrontab.txt
 
 i2c_on_boot=`grep -c "@reboot sudo echo BB-I2C1 >> /sys/devices/bone_capemgr.9/slots" "$file"`
 
+
 #enable i2c to be enabled on boot
 if [ $i2c_on_boot -eq 1 ]
 then
@@ -46,14 +48,18 @@ then
         echo "Code line exist"
         crontab -l >tempcrontab.txt
         #sudo echo '@reboot sudo echo BB-I2C1 >> /sys/devices/bone_capemgr.9/slots' >> /root/tempcrontab.txt
+        sudo echo '@reboot sh /home/debian/gprsAndEmonInstall/enable_ttyo4.sh' >> /root/tempcrontab.txt
         crontab tempcrontab.txt
 else
         echo "Adding the code line....."
         crontab -l >tempcrontab.txt
         sudo echo '@reboot sudo echo BB-I2C1 >> /sys/devices/bone_capemgr.9/slots' >> /root/tempcrontab.txt
+        sudo echo '@reboot sh /home/debian/gprsAndEmonInstall/enable_ttyo4.sh' >> /root/tempcrontab.txt
         crontab tempcrontab.txt
 
 fi
+
+
 
 #---------------------------------------------------------------------------------------------------
 echo 'Install Python I2C Tools'
@@ -62,6 +68,9 @@ sudo apt-get install python-smbus i2c-tools -y
 echo 'Attemp to search for LCD I2C address:'
 # Use port 2 for bbb
 #sudo i2cdetect -r 2
+
+echo 'I2C for LCD is enabled; reboot to take effect'
+
 echo 'Install emonPi Python LCD install scripts'
 if [ -f /etc/init.d/emonPiLCD ]
 then
@@ -81,3 +90,17 @@ sudo service emonPiLCD start
 
 echo 'I2C LCD installed...please reboot to take effect'
 
+if [ -f /etc/init.d/emonPiLCD ]
+then
+	echo "/etc/init.d/emonPiLCD akready exists doing nothing"
+else
+	echo "copying daemon script /etc/init.d/emonPiLCD"
+	sudo cp /home/debian/emonpi/lcd/emonPiLCD /etc/init.d/emonPiLCD
+	echo "updating rc scripts for auto-start"
+	sudo update-rc.d emonPiLCD start
+	echo "updating rc scripts to enable start"
+	sudo update-rc.d emonPiLCD enable
+fi
+echo "Starting LCD script"
+sudo service emonPiLCD start
+echo 'I2C LCD installed...please reboot to take effect'

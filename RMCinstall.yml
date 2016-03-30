@@ -1,0 +1,116 @@
+---
+- hosts: bbb
+  remote_user: root
+  sudo: yes
+  ignore_errors: yes
+  tasks:
+   - name: update the repositories
+     apt: update_cache=yes
+   #Install basic packaged
+   - name: Install Necessary packages
+     apt: pkg={{item}} state=installed
+     with_items:
+     - vim
+     - python-dev
+     - python-smbus
+     - python-pip
+     - git
+     - npm
+     - redis-server
+     - re
+     - time
+     - strace
+     - minicom
+     tags:
+     - packages
+
+   - name: install python packages
+     action: pip state=present name={{ item }}
+     with_items:
+     - Adafruit_BBIO
+     - uptime
+     - paho-mqtt
+     - redis
+     tags:
+     - pip-packages
+        #make a directory
+   - name: make a directory
+     file: path=/home/debian/emonpi state=directory
+
+        #download GPRS and Emon config file      
+   - git: repo=git://github.com/GreatLakesEnergy/Tether-Olimexino-GPRS-SIM800H-module-connection-to-BBB.git  dest=/home/debian/gprsAndEmonInstall/
+   - debug: msg="GPRS and Emon install file downloaded"
+
+        #change permission of this config file 
+   - file: path=/home/debian/gprsAndEmonInstall/gprsAndEmonTx.sh mode="u+x"
+    #print this message but can be useful for debugging variables or expressions
+   - debug: msg="Executable permission is assigned to GPRS and Emon install file"
+
+   - file: path=/home/debian/gprsAndEmonInstall/gprs_on.sh mode="u+x"
+    #print this message but can be useful for debugging variables or expressions
+   - debug: msg="Executable permission is assigned to gprs_enable file"
+
+   - file: path=/home/debian/gprsAndEmonInstall/gprs_off.sh mode="u+x"
+    #print this message but can be useful for debugging variables or expressions
+   - debug: msg="Executable permission is assigned to gprs_disable file"
+
+   - file: path=/home/debian/gprsAndEmonInstall/enable_ttyo4.sh mode="u+x"
+    #print this message but can be useful for debugging variables or expressions
+   - debug: msg="Executable permission is assigned to enable_ttyo4 file"
+
+
+      #Download EmonPi config files
+   - git: repo=git://github.com/GreatLakesEnergy/emonpi.git version=beaglebone dest=/home/debian/emonpi/
+   - debug: msg="Emonpi files downloaded"
+
+   - file: path=/home/debian/emonpi/lcd/install mode="u+x"
+   - debug: msg="Executable permission is assigned to LCD install file"
+
+   - file: path=/home/debian/emonpi/install mode="u+x"
+   - debug: msg="Executable permission is assigned to emonpi install file"
+
+   - file: path=/home/debian/emonpi/emoncms9install mode="u+x"
+   - debug: msg="Executable permission is assigned  to emoncms9install file"
+  
+   - file: path=/home/debian/emonpi/emonfirmwareinstall mode="u+x"
+   - debug: msg="Executable permission is assigned  to emonfirmwareinstall file"
+
+  
+     #run GPRS and Emon  config file 
+   - shell: "/home/debian/gprsAndEmonInstall/gprsAndEmonTx.sh"
+     args:
+       chdir: "/home/debian/gprsAndEmonInstall/"
+       executable: "/bin/bash"
+   - debug: msg="gprs And EmonTx install file executed"
+
+        #run LCD config file
+   - shell: "/home/debian/emonpi/install"
+     args:
+       chdir: "/home/debian/emonpi/"
+       executable: "/bin/bash"
+   - debug: msg="emonpi install file executed"
+
+   - shell: "/home/debian/emonpi/emoncms9install"
+     args:
+       chdir: "/home/debian/emonpi/"
+       executable: "/bin/bash"
+   - debug: msg="emoncms9install file executed"
+
+
+
+   - shell: "/home/debian/emonpi/emonfirmwareinstall"
+     args:
+       chdir: "/home/debian/emonpi/"
+   - debug: msg="emonfirmwareinstall install file executed"
+
+   
+    #copy from local to remote
+#   - name: copy file from local to remote server
+#     copy: src=/home/honore/Desktop/test.py dest=/home/ansibleTEST/
+#   - file: path=/home/debian/test.py mode="u+x"
+
+
+    #execute python script
+#   - name: execute
+#     command: /home/debian/test.py
+...

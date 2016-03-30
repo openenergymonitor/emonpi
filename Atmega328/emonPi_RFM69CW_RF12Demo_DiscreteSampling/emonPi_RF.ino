@@ -5,27 +5,32 @@ void RF_Setup(){
    for (int i=10; i>=0; i--)                                                                  //Send RF test sequence (for factory testing)
    {
      emonPi.power1=i; 
+     //emontx.power1=i; 
      rf12_sendNow(0, &emonPi, sizeof emonPi);
      delay(100);
    }
   rf12_sendWait(2);
   emonPi.power1=0;
+  //emontx.power1=0;
  //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 }
 
-boolean RF_Rx_Handle(){
+boolean RF_Rx_Handle()
+{
   
 	if (rf12_recvDone()) {						//if RF Packet is received 
 	    byte n = rf12_len;
 	    if (rf12_crc == 0)							//Check packet is good
 	    {
-	    	Serial.print("OK");
+    
+	    	Serial.print("Ok");
 	    	Serial.print(" ");							//Print RF packet to serial in struct format
 	    	Serial.print(rf12_hdr & 0x1F);				// Extract and print node ID
 	    	Serial.print(" ");
 	    	for (byte i = 0; i < n; ++i) {
 	      		Serial.print((word)rf12_data[i]);
 	      		Serial.print(' ');
+             
 	    	}
 
 	      	#if RF69_COMPAT
@@ -130,17 +135,21 @@ static void handleInput (char c) {
     //Print Current RF config  
 
     if (RF_STATUS==1) {
+      
       Serial.print(' ');
 -     Serial.print((char) ('@' + (nodeID & RF12_HDR_MASK)));
 -     Serial.print(" i");
       Serial.print(nodeID & RF12_HDR_MASK);   
       Serial.print(" g");
-      Serial.print(networkGroup);
+      //Serial.print(networkGroup);
+      //Serial.println("hello");
       Serial.print(" @ ");
       Serial.print(RF_freq == RF12_433MHZ ? 433 :
                    RF_freq == RF12_868MHZ ? 868 :
                    RF_freq == RF12_915MHZ ? 915 : 0);
       Serial.print(" MHz"); 
+     // Serial.print(" Wireless Data"); 
+      
     }
     Serial.print(" USA "); Serial.print(USA);
     Serial.println(" ");
