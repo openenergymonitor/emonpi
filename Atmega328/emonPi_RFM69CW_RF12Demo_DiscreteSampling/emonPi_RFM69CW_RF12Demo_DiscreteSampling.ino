@@ -121,7 +121,10 @@ byte numSensors;
 //-----------------------RFM12B / RFM69CW SETTINGS----------------------------------------------------------------------------------------------------
 byte RF_freq=RF12_433MHZ;                                        // Frequency of RF69CW module can be RF12_433MHZ, RF12_868MHZ or RF12_915MHZ. You should use the one matching the module you have.
 byte nodeID = 5;                                                 // emonpi node ID
-int networkGroup = 210;  
+//int networkGroup = 210;  
+    String api = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";   //API key
+    int str_len = api.length() + 1;     // Length (with one extra character for the null terminator)
+    int networkGroup = 0; 
 
 typedef struct { 
 int power1;
@@ -214,6 +217,18 @@ void setup()
   digitalWrite(LEDpin,HIGH); 
 
   //Serial.begin(9600);
+   // Serial.begin(9600);
+  //***************************get network group****************************************
+    char char_array[str_len];               // Prepare the character array (the buffer) 
+    api.toCharArray(char_array, str_len);    //convert api string to a char array
+    for (int i=0; i<str_len; i++)
+    {
+            
+             networkGroup = char_array[i]  + networkGroup;
+             //Serial.print(char_array[i], DEC);       
+    
+      }
+  //************************************************************************************
  
   //Serial.print("emonTx V3.4 Discrete Sampling V"); Serial.print(firmware_version*0.1);
   #if (RF69_COMPAT)
