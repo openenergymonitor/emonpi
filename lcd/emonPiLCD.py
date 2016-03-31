@@ -404,7 +404,7 @@ while 1:
                 lcd_string2 = "NOT CONNECTED"
 
         elif page==2:
-                if int(r.get("ppp:active")):
+            if int(r.get("ppp:active")):
                 lcd_string1 = "GPRS: YES - "+r.get("ppp:gsm_signallevel")+"%"
                 lcd_string2 = r.get("ppp:ip")
                 #print  "SIGNAL STRENGTH" + lcd_string1

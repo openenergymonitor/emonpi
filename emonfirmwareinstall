@@ -7,8 +7,10 @@ echo "================================="
 sudo service emonhub stop
 sudo service emonPiLCD stop
 cd /home/debian/
-Sudo apt-get install avrdude
-Cd /home/debian/ git clone https://github.com/GreatLakesEnergy/avrdude-rpi.git
+sudo apt-get install avrdude
+git clone https://github.com/GreatLakesEnergy/avrdude-rpi.git
+sudo cp /home/debian/avrdude-rpi/autoreset /usr/bin/autoreset
+
 sudo  sed -i "s/7/'P9_15'/g" /usr/bin/autoreset
 sudo sed -i "s/RPi.GPIO/Adafruit_BBIO.GPIO/g" /usr/bin/autoreset
 sudo sed -i "s/GPIO.setmode(GPIO.BOARD)/#GPIO.setmode(GPIO.BOARD)/g" /usr/bin/autoreset
@@ -17,7 +19,7 @@ if [ ! -f /usr/bin/avrdude-original ]; then
 fi
 sudo ln -s /home/debian/avrdude-rpi/avrdude-autoreset /usr/bin/avrdude
 
-avrdude -v -c arduino -p ATMEGA328P -P /dev/ttyO2 -b 115200  -U flash:w:/home/RMC/emonpi/Atmega328/emonPi_RFM69CW_RF12Demo_DiscreteSampling/emonPi_RFM69CW_RF12Demo_DiscreteSampling.cpp.hex
+avrdude -v -c arduino -p ATMEGA328P -P /dev/ttyO2 -b 115200  -U flash:w:/home/debian/emonpi/Atmega328/emonPi_RFM69CW_RF12Demo_DiscreteSampling/emonPi_RFM69CW_RF12Demo_DiscreteSampling.cpp.hex
 
 
 sudo service emonhub start

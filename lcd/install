@@ -4,16 +4,9 @@
 
 echo "Enable I2C module"
 
-#if ! grep -Fxq "BB-I2C1" /sys/devices/bone_capemgr.9/slots ; then
-#       echo 'i2c 2 is not enabled, Enabling...'
-#       sudo echo '@reboot sudo echo BB-I2C1 >> /sys/devices/bone_capemgr.9/slots' >>tempcrontab.txt
-#        echo 'i2c 2 now is enabled'
-#
-#else
-
-#       echo 'i2c 2 already enabled'
-
-#fi
+#i2c0: Not exposed in the expansion headers
+#i2c1: pins P9 17,18 (and 24,26)
+#i2c2: pins P9 19,20 (and 21,22)
 
 #---------GPRR signal strength file------
 sudo cp /home/debian/gprsAndEmonInstall/gprs_signal.py /home/debian/emonpi/lcd/gprs_signal.py
