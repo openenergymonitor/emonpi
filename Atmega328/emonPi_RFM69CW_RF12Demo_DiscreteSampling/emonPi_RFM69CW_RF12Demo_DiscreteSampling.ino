@@ -184,8 +184,8 @@ const byte v_battery_pin =    A5;
 //int v_battery_pin = A5;  //vout of voltage divider is connected to A5
 float vout = 0.0;      //output of voltage regulator
 float vin = 0;        //input voltage
-float R1 = 10005.0;     //Resistor in ohm for Max V=33
-float R2 = 1908.0;      //Resistor in ohm for Max V=33
+float R1 = 9990.0;     //Resistor in ohm for Max V=33
+float R2 = 1925.0;      //Resistor in ohm for Max V=33
 
 //float R1 = 10000.0;     //Resistor in ohm for Max V=52     
 //float R2 = 1063.0;      //Resistor in ohm for Max V=52
@@ -297,7 +297,7 @@ void loop()
  //***********************for battery voltage reading********************************************
    battery_value = analogRead(v_battery_pin);
    delay(100);
-   vout = (battery_value * 4.99) / 1024.0; 
+   vout = (battery_value * 5) / 1024.0; 
    vin_new=vout/(R2/(R1+R2));
 
   unsigned long currentMillis = millis();
@@ -305,7 +305,7 @@ void loop()
   {
     previousMillis = currentMillis;     
     previous_reading = analogRead(v_battery_pin);
-    vout_old = (previous_reading * 4.99) / 1024.0; 
+    vout_old = (previous_reading * 5) / 1024.0; 
     vin_old=vout_old / (R2/(R1+R2));
     //Serial.print("old reading :"); 
     //Serial.println(vin_old); 
