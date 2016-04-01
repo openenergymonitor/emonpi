@@ -249,6 +249,9 @@ def shutdown():
         lcd.lcd_display_string( string_lenth("Wait 30s...", 16),1)
         lcd.lcd_display_string( string_lenth("Before Unplug!", 16),2)
         time.sleep(4)
+        subprocess.call(['/home/debian/gprsAndEmonInstall/switch_off_gsm_module.py'])
+        time.sleep(1)
+
         lcd.backlight(0) 											# backlight zero must be the last call to the LCD to keep the backlight off
         call('halt', shell=False)
         sys.exit() #end script
