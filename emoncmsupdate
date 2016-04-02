@@ -67,6 +67,7 @@ echo
 if [ -d /home/pi/postprocess ]; then
   echo "git pull /home/pi/postprocess"
   cd /home/pi/postprocess
+  git branch --set-upstream-to=origin/emonpi
   git branch
   git pull
 else
