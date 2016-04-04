@@ -71,9 +71,10 @@ if [ -d /home/pi/postprocess ]; then
   git branch
   git pull
 else
-  echo "git clone https://github.com/emoncms/graph"
-  cd /var/www/emoncms/Modules
-  git clone https://github.com/emoncms/graph
+  echo "git clone https://github.com/emoncms/postprocess"
+  cd /home/pi
+  git clone -b emonpi https://github.com/emoncms/postprocess
+  git checkout emonpi
 fi
 
 
