@@ -111,10 +111,6 @@ if [ -f /etc/init.d/mqtt_input ]; then
   sleep 1
   sudo /etc/init.d/mqtt_input restart
 fi
-
-
-
 echo
-echo "Emoncms update finished"
-echo "================================="
-echo
+
+echo "Restarting Services..."
