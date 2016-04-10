@@ -1,10 +1,10 @@
 void RF_Setup(){
-	//--------------------------------------------------Initalize RF and send out RF test packets--------------------------------------------------------------------------------------------  
+	//--------------------------------------------------Initalize RF and send out RF test packets--------------------------------------------------------------------------------------------
   delay(10);
   rf12_initialize(nodeID, RF_freq, networkGroup);                          // initialize RFM12B/rfm69CW
    for (int i=10; i>=0; i--)                                                                  //Send RF test sequence (for factory testing)
    {
-     emonPi.power1=i; 
+     emonPi.power1=i;
      rf12_sendNow(0, &emonPi, sizeof emonPi);
      delay(100);
    }
@@ -15,7 +15,7 @@ void RF_Setup(){
 
 boolean RF_Rx_Handle(){
   
-	if (rf12_recvDone()) {						//if RF Packet is received 
+	if (rf12_recvDone()) {						//if RF Packet is received
 	    byte n = rf12_len;
 	    if (rf12_crc == 0)							//Check packet is good
 	    {
@@ -25,7 +25,7 @@ boolean RF_Rx_Handle(){
 	    	Serial.print(F(" "));
 	    	for (byte i = 0; i < n; ++i) {
 	      		Serial.print((word)rf12_data[i]);
-	      		Serial.print(' ');
+	      		Serial.print(F(" "));
 	    	}
 
 	      	#if RF69_COMPAT
@@ -37,7 +37,7 @@ boolean RF_Rx_Handle(){
 		    	Serial.println();
 
 	        if (RF12_WANTS_ACK==1) {
-	           // Serial.print(" -> ack");
+	           // Serial.print(F(" -> ack"));
 	           rf12_sendStart(RF12_ACK_REPLY, 0, 0);
 	       }
 
@@ -100,7 +100,7 @@ static void handleInput (char c) {
         break;
     
       case 'g': // set network group
-        if (value){
+        if (value>=0){
           networkGroup = value;
           if (RF_STATUS==1) rf12_initialize(nodeID, RF_freq, networkGroup);
         }
@@ -110,23 +110,11 @@ static void handleInput (char c) {
         if (value){
           if (value==1) USA=false;
           if (value==2) USA=true;
-          
-          if (USA==TRUE) 
-          {
-            Vcal = Vcal_USA;                                                       // Assume USA AC/AC adatper is being used, set calibration accordingly 
-            Vrms = Vrms_USA;
-          }
-          else 
-          {
-            Vcal = Vcal_EU;
-            Vrms = Vrms_EU;
-          }
-          EmonLibCM_voltageCal(Vcal*(3.3/1023));            // 260.4 * (3.3/1023)
         }
         break;
 
       case 'v': // print firmware version
-        Serial.print("[emonPi."); Serial.print(firmware_version*0.1); Serial.print("]");
+        Serial.print(F("[emonPi.")); Serial.print(firmware_version*0.1); Serial.print(F("]"));
         break;
 
       case 'a': // send packet to node ID N, request an ack
@@ -138,21 +126,21 @@ static void handleInput (char c) {
 
         default:
           showString(helpText1);
-      } //end case 
-    //Print Current RF config  
+      } //end case
+    //Print Current RF config
 
     if (RF_STATUS==1) {
       Serial.print(F(" "));
 -     Serial.print((char) ('@' + (nodeID & RF12_HDR_MASK)));
 -     Serial.print(F(" i"));
-      Serial.print(nodeID & RF12_HDR_MASK);   
+      Serial.print(nodeID & RF12_HDR_MASK);
       Serial.print(F(" g"));
       Serial.print(networkGroup);
       Serial.print(F(" @ "));
       Serial.print(RF_freq == RF12_433MHZ ? 433 :
                    RF_freq == RF12_868MHZ ? 868 :
                    RF_freq == RF12_915MHZ ? 915 : 0);
-      Serial.print(F(" MHz")); 
+      Serial.print(F(" MHz"));
     }
     Serial.print(F(" USA ")); Serial.print(USA);
     Serial.println(F(" "));
@@ -165,4 +153,3 @@ static void handleInput (char c) {
 static byte bandToFreq (byte band) {
   return band == 4 ? RF12_433MHZ : band == 8 ? RF12_868MHZ : band == 9 ? RF12_915MHZ : 0;
 }
- 
