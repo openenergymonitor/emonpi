@@ -6,21 +6,63 @@ echo "================================="
 
 sudo service emonhub stop
 sudo service emonPiLCD stop
-cd /home/debian/
 sudo apt-get install avrdude
+sudo apt-get install arduino -y
+sudo apt-get install strace
+cd /home/
+git clone https://github.com/amperka/ino.git
 git clone https://github.com/GreatLakesEnergy/avrdude-rpi.git
-sudo cp /home/debian/avrdude-rpi/autoreset /usr/bin/autoreset
-
+cd /home/ino/
+echo "install setup"
+sudo python setup.py install
+cd /home/avrdude-rpi
+cp autoreset /usr/bin
+cp avrdude-autoreset /usr/bin
+mv /usr/bin/avrdude /usr/bin/avrdude-original
+ln -s /usr/bin/avrdude-autoreset /usr/bin/avrdude
 sudo  sed -i "s/7/'P9_15'/g" /usr/bin/autoreset
 sudo sed -i "s/RPi.GPIO/Adafruit_BBIO.GPIO/g" /usr/bin/autoreset
 sudo sed -i "s/GPIO.setmode(GPIO.BOARD)/#GPIO.setmode(GPIO.BOARD)/g" /usr/bin/autoreset
-if [ ! -f /usr/bin/avrdude-original ]; then
-        sudo mv /usr/bin/avrdude /usr/bin/avrdude-original
-fi
-sudo ln -s /home/debian/avrdude-rpi/avrdude-autoreset /usr/bin/avrdude
-
-avrdude -v -c arduino -p ATMEGA328P -P /dev/ttyO2 -b 115200  -U flash:w:/home/debian/emonpi/Atmega328/emonPi_RFM69CW_RF12Demo_DiscreteSampling/emonPi_RFM69CW_RF12Demo_DiscreteSampling.cpp.hex
 
 
+
+cd /home/debian/emonpi/Atmega328/emonPi_RFM69CW_RF12Demo_DiscreteSampling/
+sudo mkdir src
+sudo mkdir lib
+mv emonPi_RFM69CW_RF12Demo_DiscreteSampling.ino emonPi_RFM69CW_RF12Demo_DiscreteSampling.ino_merge
+cat *.ino >> emonPi_RFM69CW_RF12Demo_DiscreteSampling.ino_merge
+rm *.ino
+cat emonPi_RFM69CW_RF12Demo_DiscreteSampling.ino_merge | sed -s "s/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/\$rmc_api_key/g" > emonPi_RFM69CW_RF12Demo_DiscreteSampling.ino
+cp emonPi_RFM69CW_RF12Demo_DiscreteSampling.ino /home/debian/emonpi/Atmega328/emonPi_RFM69CW_RF12Demo_DiscreteSampling/src
+cd lib/
+
+echo "cloning libraries*******************************************"
+git clone https://github.com/jcw/jeelib.git
+git clone https://github.com/openenergymonitor/RFu_jeelib.git
+git clone https://github.com/openenergymonitor/EmonLib.git
+git clone https://github.com/PaulStoffregen/OneWire.git
+git clone https://github.com/milesburton/Arduino-Temperature-Control-Library.git
+git clone https://github.com/jcw/rtclib.git
+git clone https://github.com/jcw/rtclib.git
+git clone https://github.com/jcw/glcdlib.git
+git clone https://github.com/jcw/ethercard.git
+git clone https://github.com/adafruit/DHT-sensor-library.git
+git clone https://github.com/marcoschwartz/LiquidCrystal_I2C.git
+mv DHT-sensor-library DHTxx
+mv Arduino-Temperature-Control-Library DallasTemperature
+
+
+
+
+
+
+
+
+#avrdude -v -c arduino -p ATMEGA328P -P /dev/ttyO2 -b 115200  -U flash:w:/home/debian/emonpi/Atmega328/emonPi_RFM69CW_RF12Demo_DiscreteSampling/emonPi_RFM69CW_RF12Demo_DiscreteSampling.cpp.hex
+
+
+cd /home/debian/emonpi/Atmega328/emonPi_RFM69CW_RF12Demo_DiscreteSampling/
+ino build -m uno     #build hex file, 
+ino upload -m uno -p /dev/ttyO2    # upload into emon through ttyO2
 sudo service emonhub start
 sudo service emonPiLCD start
