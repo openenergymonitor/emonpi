@@ -19,14 +19,14 @@
 
 /*Recommended node ID allocation
 ------------------------------------------------------------------------------------------------------------
--ID-	-Node Type- 
-0	- Special allocation in JeeLib RFM12 driver - reserved for OOK use
+-ID-  -Node Type- 
+0 - Special allocation in JeeLib RFM12 driver - reserved for OOK use
 1-4     - Control nodes 
-5-10	- Energy monitoring nodes
-11-14	--Un-assigned --
-15-16	- Base Station & logging nodes
-17-30	- Environmental sensing nodes (temperature humidity etc.)
-31	- Special allocation in JeeLib RFM12 driver - Node31 can communicate with nodes on any network group
+5-10  - Energy monitoring nodes
+11-14 --Un-assigned --
+15-16 - Base Station & logging nodes
+17-30 - Environmental sensing nodes (temperature humidity etc.)
+31  - Special allocation in JeeLib RFM12 driver - Node31 can communicate with nodes on any network group
 -------------------------------------------------------b------------------------------------------------------
 
 
@@ -58,8 +58,8 @@ const byte firmware_version = 21;                                    //firmware 
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
 boolean debug =                   TRUE; 
-const unsigned long BAUD_RATE=    38400;
-//const unsigned long BAUD_RATE=    9600;
+//const unsigned long BAUD_RATE=    38400;
+const unsigned long BAUD_RATE=    9600;
 
 const byte Vrms_EU=               230;                               // Vrms for apparent power readings (when no AC-AC voltage sample is present)
 const byte Vrms_USA=              110;                               // USA apparent power VRMS  
@@ -121,10 +121,11 @@ byte numSensors;
 //-----------------------RFM12B / RFM69CW SETTINGS----------------------------------------------------------------------------------------------------
 byte RF_freq=RF12_433MHZ;                                        // Frequency of RF69CW module can be RF12_433MHZ, RF12_868MHZ or RF12_915MHZ. You should use the one matching the module you have.
 byte nodeID = 5;                                                 // emonpi node ID
-//int networkGroup = 210;  
-    String api = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";   //API key
-    int str_len = api.length() + 1;     // Length (with one extra character for the null terminator)
-    int networkGroup = 0; 
+uint32_t networkGroup = 12345;
+   // String api = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";   //API key uint32_t
+    //int str_len = api.length() + 1;     // Length (with one extra character for the null terminator)
+   // int networkGroup = 0; 
+
 
 typedef struct { 
 int power1;
@@ -196,7 +197,7 @@ float  vin_new=0;
 float  vin_old=0;
 float  vout_old=0;
 
-unsigned long previousMillis = 0;        // will store last time turner pin was updated         
+unsigned long previousMillis = 0;        // will store last time it checked the value from A5         
 const long interval = 2000; 
 
 //*****************************************************************************************************************
@@ -216,8 +217,8 @@ void setup()
 
   digitalWrite(LEDpin,HIGH); 
 
-  //Serial.begin(9600);
-   // Serial.begin(9600);
+ Serial.begin(9600);
+ /*
   //***************************get network group****************************************
     char char_array[str_len];               // Prepare the character array (the buffer) 
     api.toCharArray(char_array, str_len);    //convert api string to a char array
@@ -225,10 +226,13 @@ void setup()
     {
             
              networkGroup = char_array[i]  + networkGroup;
-             //Serial.print(char_array[i], DEC);       
+             //Serial.print(char_array[i], DEC);    
+                
     
       }
+      //Serial.println(networkGroup);
   //************************************************************************************
+  */
  
   //Serial.print("emonTx V3.4 Discrete Sampling V"); Serial.print(firmware_version*0.1);
   #if (RF69_COMPAT)
@@ -310,8 +314,9 @@ void loop()
     //Serial.print("old reading :"); 
     //Serial.println(vin_old); 
     // Serial.print("INPUT V= ");
-     //Serial.println(vin);
+ 
       vin=(vin_new+vin_old)*100/2;   // final data to send in emonhub 
+      Serial.println(vin);
   }
   else
   {
@@ -530,7 +535,6 @@ void double_LED_flash()
   digitalWrite(LEDpin, HIGH);  delay(25); digitalWrite(LEDpin, LOW);
   digitalWrite(LEDpin, HIGH);  delay(25); digitalWrite(LEDpin, LOW);
 }
-
 
 
 

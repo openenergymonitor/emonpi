@@ -32,7 +32,7 @@ sudo mkdir lib
 mv emonPi_RFM69CW_RF12Demo_DiscreteSampling.ino emonPi_RFM69CW_RF12Demo_DiscreteSampling.ino_merge
 cat *.ino >> emonPi_RFM69CW_RF12Demo_DiscreteSampling.ino_merge
 rm *.ino
-cat emonPi_RFM69CW_RF12Demo_DiscreteSampling.ino_merge | sed -s "s/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/\$rmc_api_key/g" > emonPi_RFM69CW_RF12Demo_DiscreteSampling.ino
+cat emonPi_RFM69CW_RF12Demo_DiscreteSampling.ino_merge | sed -s "s/12345/\$rmc_api_key/g" > emonPi_RFM69CW_RF12Demo_DiscreteSampling.ino
 cp emonPi_RFM69CW_RF12Demo_DiscreteSampling.ino /home/debian/emonpi/Atmega328/emonPi_RFM69CW_RF12Demo_DiscreteSampling/src
 cd lib/
 
@@ -50,12 +50,6 @@ git clone https://github.com/adafruit/DHT-sensor-library.git
 git clone https://github.com/marcoschwartz/LiquidCrystal_I2C.git
 mv DHT-sensor-library DHTxx
 mv Arduino-Temperature-Control-Library DallasTemperature
-
-
-
-
-
-
 
 
 #avrdude -v -c arduino -p ATMEGA328P -P /dev/ttyO2 -b 115200  -U flash:w:/home/debian/emonpi/Atmega328/emonPi_RFM69CW_RF12Demo_DiscreteSampling/emonPi_RFM69CW_RF12Demo_DiscreteSampling.cpp.hex
