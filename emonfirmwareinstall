@@ -32,7 +32,7 @@ sudo mkdir lib
 mv emonPi_RFM69CW_RF12Demo_DiscreteSampling.ino emonPi_RFM69CW_RF12Demo_DiscreteSampling.ino_merge
 cat *.ino >> emonPi_RFM69CW_RF12Demo_DiscreteSampling.ino_merge
 rm *.ino
-cat emonPi_RFM69CW_RF12Demo_DiscreteSampling.ino_merge | sed -s "s/12345/\$rmc_api_key/g" > emonPi_RFM69CW_RF12Demo_DiscreteSampling.ino
+cat emonPi_RFM69CW_RF12Demo_DiscreteSampling.ino_merge | sed -s "s/xxxxxx/$rmc_api_key/g" > emonPi_RFM69CW_RF12Demo_DiscreteSampling.ino
 cp emonPi_RFM69CW_RF12Demo_DiscreteSampling.ino /home/debian/emonpi/Atmega328/emonPi_RFM69CW_RF12Demo_DiscreteSampling/src
 cd lib/
 
