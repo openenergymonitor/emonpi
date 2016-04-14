@@ -19,7 +19,7 @@ cd /home/avrdude-rpi
 cp autoreset /usr/bin
 cp avrdude-autoreset /usr/bin
 mv /usr/bin/avrdude /usr/bin/avrdude-original
-ln -s /usr/bin/avrdude-autoreset /usr/bin/avrdude
+ln -s /home/avrdude-rpi/avrdude-autoreset /usr/bin/avrdude
 sudo  sed -i "s/7/'P9_15'/g" /usr/bin/autoreset
 sudo sed -i "s/RPi.GPIO/Adafruit_BBIO.GPIO/g" /usr/bin/autoreset
 sudo sed -i "s/GPIO.setmode(GPIO.BOARD)/#GPIO.setmode(GPIO.BOARD)/g" /usr/bin/autoreset
