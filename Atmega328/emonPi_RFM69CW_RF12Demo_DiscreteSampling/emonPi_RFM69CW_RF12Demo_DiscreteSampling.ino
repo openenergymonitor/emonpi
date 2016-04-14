@@ -58,8 +58,8 @@ const byte firmware_version = 21;                                    //firmware 
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
 boolean debug =                   TRUE; 
-//const unsigned long BAUD_RATE=    38400;
-const unsigned long BAUD_RATE=    9600;
+const unsigned long BAUD_RATE=    38400;
+//const unsigned long BAUD_RATE=    9600;
 
 const byte Vrms_EU=               230;                               // Vrms for apparent power readings (when no AC-AC voltage sample is present)
 const byte Vrms_USA=              110;                               // USA apparent power VRMS  
