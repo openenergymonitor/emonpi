@@ -121,7 +121,7 @@ byte numSensors;
 //-----------------------RFM12B / RFM69CW SETTINGS----------------------------------------------------------------------------------------------------
 byte RF_freq=RF12_433MHZ;                                        // Frequency of RF69CW module can be RF12_433MHZ, RF12_868MHZ or RF12_915MHZ. You should use the one matching the module you have.
 byte nodeID = 5;                                                 // emonpi node ID
-uint32_t networkGroup = xxxxxx;
+uint32_t networkGroup = 3421749817;    //numeric value from ansible rmc_key
    // String api = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";   //API key uint32_t
     //int str_len = api.length() + 1;     // Length (with one extra character for the null terminator)
    // int networkGroup = 0; 
