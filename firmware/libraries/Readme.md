@@ -5,9 +5,10 @@
 |---|---|---|---|---|
 |  emonLib |  Jan 5th 2015 | N/A  | [source](https://github.com/openenergymonitor/emonlib)  | [7685720](https://github.com/openenergymonitor/EmonLib/commit/7685720ab391b14edb218151c1d5d3ebc1fd1ec1)  |
 |  JeeLib |  10th Sep 2015 | N/A  |  [source](https://github.com/jcw/jeelib) |  [f097c00](https://github.com/jcw/jeelib/commit/f097c0039c926881d80a74bec7a7aa020de610ee) |
-|  LiquidCrystal | 7th Feb 2016  | N/A  | [source](https://github.com/openenergymonitor/LiquidCrystal_I2C1602V1)  | [6ab83c7](https://github.com/openenergymonitor/LiquidCrystal_I2C1602V1/commit/6ab83c7b8cf2360c4c82631d158b083bf95cb6d7)  |
+|  LiquidCrystal_I2C | 29th Nov 2015  | 1.1.2  | [source](https://github.com/marcoschwartz/LiquidCrystal_I2C)  | [6ab83c7](https://github.com/marcoschwartz/LiquidCrystal_I2C/commit/9a4e33e6cdaca805d70e220897d0b59446d52adf)  |
 | OneWire  | 4th March 2016  | N/A  | [source](https://github.com/PaulStoffregen/OneWire)  | N/A  | [ 57c18c6](https://github.com/PaulStoffregen/OneWire/commit/57c18c6de80c13429275f70875c7c341f1719201)
 | Dallas Temperature |  6th Dec 2011 | V3.7.2   | [source](http://download.milesburton.com/Arduino/MaximTemperature/DallasTemperature_LATEST.zip)  | N/A  |
+| Arduino Wire |  N/A | V1.0   | included in Arduino IDE  | N/A  |
 
 # Installing emonPi Arduino Libraries 
 
@@ -29,4 +30,3 @@ After cloning or checking out the repo on further step is needed to pull in the 
 To tell Arduino IDE to use the libraries in `emonpi/firmware/libraries` we need to set the **Arduino IDE Sketchbook location** to `*<localpath>*/emonpi/firmware/libraries` then restart the Arduino IDE.
 
 On compiling check that Arduino is used the correct library, turn on *preferances>Show verbose output during compilation* and see log message at the beginning of compilation showing lib path. You might need to remove any lib you have sharing the same name in your Arduino sketchbook folder. 
-	

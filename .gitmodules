@@ -1,6 +1,3 @@
-[submodule "firmware/libraries/LiquidCrystal_I2C1602V1"]
-	path = firmware/libraries/LiquidCrystal_I2C1602V1
-	url = https://github.com/openenergymonitor/LiquidCrystal_I2C1602V1
 [submodule "firmware/libraries/emonlib"]
 	path = firmware/libraries/emonlib
 	url = https://github.com/openenergymonitor/emonlib
