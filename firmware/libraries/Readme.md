@@ -16,7 +16,7 @@
 
 The Arduino librarys used by the emonPi firmware uses [git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules) to link the github librarys (at a specific version) to the emonPi firmware. 
 
-Using usb modules has the advantage of keeping the link between the origional lib repository while at the same time allowing us to specify the state of each library. We have implemented this to ensure when a user clones the emonPi fimware and attempts to compile we can be sure that the libs used are **exactly** the same as the libs used when we compiled the firmware. 
+Using sub modules has the advantage of keeping the link between the origional lib repository while at the same time allowing us to specify the state of each library. We have implemented this to ensure when a user clones the emonPi fimware and attempts to compile we can be sure that the libs used are **exactly** the same as the libs used when we compiled the firmware. 
 
 After cloning or checking out the repo on further step is needed to pull in the sub modules:
 

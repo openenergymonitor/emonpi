@@ -1,6 +1,6 @@
 /*
   
-  emonPi  Discrete Sampling
+  emonPi  Discrete Sampling 
   
   If AC-AC adapter is detected assume emonPi is also powered from adapter (jumper shorted) and take Real Power Readings and disable sleep mode to keep load on power supply constant
   If AC-AC addapter is not detected assume powering from battereis / USB 5V AC sample is not present so take Apparent Power Readings and enable sleep mode
@@ -10,8 +10,8 @@
    ------------------------------------------
   Part of the openenergymonitor.org project
   
-  Authors: Glyn Hudson & Trystan Lea
-  Builds upon JCW JeeLabs RF12 library and Arduino
+  Authors: Glyn Hudson & Trystan Lea 
+  Builds upon JCW JeeLabs RF12 library and Arduino 
   
   Licence: GNU GPL V3
 
@@ -19,9 +19,9 @@
 
 /*Recommended node ID allocation
 ------------------------------------------------------------------------------------------------------------
--ID-	-Node Type-
+-ID-	-Node Type- 
 0	- Special allocation in JeeLib RFM12 driver - reserved for OOK use
-1-4     - Control nodes
+1-4     - Control nodes 
 5-10	- Energy monitoring nodes
 11-14	--Un-assigned --
 15-16	- Base Station & logging nodes
@@ -53,10 +53,10 @@ emonhub.conf node decoder:
 #include <JeeLib.h>                                                   // https://github.com/openenergymonitor/jeelib
 #include <avr/pgmspace.h>
 #include <util/parity.h>
-ISR(WDT_vect) { Sleepy::watchdogEvent(); }                            // Attached JeeLib sleep function to Atmega328 watchdog -enables MCU to be put into sleep mode inbetween readings to reduce power consumption
+ISR(WDT_vect) { Sleepy::watchdogEvent(); }                            // Attached JeeLib sleep function to Atmega328 watchdog -enables MCU to be put into sleep mode inbetween readings to reduce power consumption 
 
 #include "EmonLib.h"                                                  // Include EmonLib energy monitoring library https://github.com/openenergymonitor/EmonLib
-EnergyMonitor ct1, ct2;
+EnergyMonitor ct1, ct2;       
 
 #include <OneWire.h>                                                  // http://www.pjrc.com/teensy/td_libs_OneWire.html
 #include <DallasTemperature.h>                                        // http://download.milesburton.com/Arduino/MaximTemperature/DallasTemperature_LATEST.zip
@@ -67,42 +67,42 @@ LiquidCrystal_I2C lcd(0x27,16,2);                                     // LCD I2C
 const byte firmware_version = 25;                                    //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
-boolean debug =                   TRUE;
+boolean debug =                   TRUE; 
 const unsigned long BAUD_RATE=    38400;
 
 const byte Vrms_EU=               230;                              // Vrms for apparent power readings (when no AC-AC voltage sample is present)
-const byte Vrms_USA=              110;                              // USA apparent power VRMS
-const int TIME_BETWEEN_READINGS=  5000;                             // Time between readings (ms)
-const int RF_RESET_PERIOD=        60000;                            // Time (ms) between RF resets (hack to keep RFM60CW alive)
+const byte Vrms_USA=              110;                              // USA apparent power VRMS  
+const int TIME_BETWEEN_READINGS=  5000;                             // Time between readings (ms)  
+const int RF_RESET_PERIOD=        60000;                            // Time (ms) between RF resets (hack to keep RFM60CW alive) 
 
 
 //http://openenergymonitor.org/emon/buildingblocks/calibration
 
 const float Ical1=                90.9;                             // (2000 turns / 22 Ohm burden) = 90.9
-const float Ical2=                90.9;
-float Vcal_EU=                    256.8;                             // (230V x 13) / (9V x 1.2) = 276.9 - Calibration for EU AC-AC adapter 77DE-06-09
+const float Ical2=                90.9;                                 
+float Vcal_EU=                    256.8;                             // (230V x 13) / (9V x 1.2) = 276.9 - Calibration for EU AC-AC adapter 77DE-06-09 
 const float Vcal_USA=             130.0;                             // Calibration for US AC-AC adapter 77DA-10-09
-boolean USA=                      FALSE;
+boolean USA=                      FALSE; 
 const byte min_pulsewidth= 110;                              // minimum width of interrupt pulse (default pulse output meters = 100ms)
 
 const float phase_shift=          1.7;
-const int no_of_samples=          1480;
+const int no_of_samples=          1480; 
 const byte no_of_half_wavelengths= 20;
-const int timeout=                2000;                               // emonLib timeout
+const int timeout=                2000;                               // emonLib timeout 
 const int ACAC_DETECTION_LEVEL=   3000;
 
 const byte TEMPERATURE_PRECISION=  12;                                 // 9 (93.8ms),10 (187.5ms) ,11 (375ms) or 12 (750ms) bits equal to resplution of 0.5C, 0.25C, 0.125C and 0.0625C
-const byte MaxOnewire=             6;                                  // maximum number of DS18B20 one wire sensors
+const byte MaxOnewire=             6;                                  // maximum number of DS18B20 one wire sensors           
 boolean RF_STATUS=                 1;                                  // Turn RF on and off
 //-------------------------------------------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------------------------------
 
 
-//----------------------------emonPi V3 hard-wired connections---------------------------------------------------------------------------------------------------------------
+//----------------------------emonPi V3 hard-wired connections--------------------------------------------------------------------------------------------------------------- 
 const byte LEDpin=                     9;              // emonPi LED - on when HIGH
 const byte shutdown_switch_pin =       8;              // Push-to-make - Low when pressed
 const byte emonpi_GPIO_pin=            5;              // Connected to Pi GPIO 17, used to activate Pi Shutdown when HIGH
-//const byte emonpi_OKK_Tx=              6;            // On-off keying transmission Pin - not populated by default
+//const byte emonpi_OKK_Tx=              6;            // On-off keying transmission Pin - not populated by default 
 //const byte emonPi_RJ45_8_IO=           A6;           // RJ45 pin 8 - Analog 6 (D19) - Aux I/O
 const byte emonPi_int1=                1;              // RJ45 pin 6 - INT1 - PWM - Dig 3 - default pulse count input
 const byte emonPi_int1_pin=            3;              // RJ45 pin 6 - INT1 - PWM - Dig 3 - default pulse count input
@@ -120,39 +120,39 @@ byte numSensors;
 //-----------------------RFM12B / RFM69CW SETTINGS----------------------------------------------------------------------------------------------------
 byte RF_freq=RF12_433MHZ;                                        // Frequency of RF69CW module can be RF12_433MHZ, RF12_868MHZ or RF12_915MHZ. You should use the one matching the module you have.
 byte nodeID = 5;                                                 // emonpi node ID
-int networkGroup = 210;
+int networkGroup = 210;  
 
-typedef struct {
+typedef struct { 
 int power1;
 int power2;
-int power1_plus_2;
-int Vrms;
-int temp[MaxOnewire];
-unsigned long pulseCount;
+int power1_plus_2;                                                    
+int Vrms; 
+int temp[MaxOnewire]; 
+unsigned long pulseCount;  
 } PayloadTX;                                                    // create JeeLabs RF packet structure - a neat way of packaging data for RF comms
-PayloadTX emonPi;
+PayloadTX emonPi; 
 //-------------------------------------------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------------------------------
 
 
-//Global Variables Energy Monitoring
+//Global Variables Energy Monitoring 
 double Vcal, vrms;
 boolean CT1, CT2, ACAC, DS18B20_STATUS;
-byte CT_count, Vrms;
+byte CT_count, Vrms;                                             
 unsigned long last_sample=0;                                     // Record millis time of last discrete sample
 byte flag;                                                       // flag to record shutdown push button press
 volatile byte pulseCount = 0;
 unsigned long now =0;
-unsigned long pulsetime=0;                                      // Record time of interrupt pulse
+unsigned long pulsetime=0;                                      // Record time of interrupt pulse          
 unsigned long last_rf_rest=0;                                  // Record time of last RF reset
 
-// RF Global Variables
-static byte stack[RF12_MAXDATA+4], top, sendLen, dest;           // RF variables
+// RF Global Variables 
+static byte stack[RF12_MAXDATA+4], top, sendLen, dest;           // RF variables 
 static char cmd;
 static word value;                                               // Used to store serial input
 long unsigned int start_press=0;                                 // Record time emonPi shutdown push switch is pressed
 
-const char helpText1[] PROGMEM =                                 // Available Serial Commands
+const char helpText1[] PROGMEM =                                 // Available Serial Commands 
 "\n"
 "Available commands:\n"
 "  <nn> i     - set node IDs (standard node ids are 1..30)\n"
@@ -169,36 +169,36 @@ const char helpText1[] PROGMEM =                                 // Available Se
 // SETUP ********************************************************************************************
 //-------------------------------------------------------------------------------------------------------------------------------------------
 void setup()
-{
+{ 
   delay(100);
-  if (USA==TRUE)
+  if (USA==TRUE) 
   {
-    Vcal = Vcal_USA;                                                       // Assume USA AC/AC adatper is being used, set calibration accordingly
+    Vcal = Vcal_USA;                                                       // Assume USA AC/AC adatper is being used, set calibration accordingly 
     Vrms = Vrms_USA;
   }
-  else
+  else 
   {
     Vcal = Vcal_EU;
     Vrms = Vrms_EU;
   }
   
   emonPi_startup();                                                     // emonPi startup proceadure, check for AC waveform and print out debug
-  if (RF_STATUS==1) RF_Setup();
-  byte numSensors =  check_for_DS18B20();                               // check for presence of DS18B20 and return number of sensors
-  emonPi_LCD_Startup();
-  delay(1500);
+  if (RF_STATUS==1) RF_Setup(); 
+  byte numSensors =  check_for_DS18B20();                               // check for presence of DS18B20 and return number of sensors 
+  emonPi_LCD_Startup(); 
+  delay(1500);  
   CT_Detect();
   serial_print_startup();
    
-  attachInterrupt(emonPi_int1, onPulse, FALLING);  // Attach pulse counting interrupt on RJ45 (Dig 3 / INT 1)
-  emonPi.pulseCount = 0;                                                  // Reset Pulse Count
+  attachInterrupt(emonPi_int1, onPulse, FALLING);  // Attach pulse counting interrupt on RJ45 (Dig 3 / INT 1) 
+  emonPi.pulseCount = 0;                                                  // Reset Pulse Count 
    
   
 
   ct1.current(1, Ical1);                                     // CT ADC channel 1, calibration.  calibration (2000 turns / 22 Ohm burden resistor = 90.909)
   ct2.current(2, Ical2);                                     // CT ADC channel 2, calibration.
 
-  if (ACAC)                                                           //If AC wavefrom has been detected
+  if (ACAC)                                                           //If AC wavefrom has been detected 
   {
     ct1.voltage(0, Vcal, phase_shift);                       // ADC pin, Calibration, phase_shift
     ct2.voltage(0, Vcal, phase_shift);                       // ADC pin, Calibration, phase_shift
@@ -214,12 +214,12 @@ void loop()
 {
   now = millis();
  
-  if (USA==TRUE)
+  if (USA==TRUE) 
   {
-    Vcal = Vcal_USA;                                                       // Assume USA AC/AC adatper is being used, set calibration accordingly
+    Vcal = Vcal_USA;                                                       // Assume USA AC/AC adatper is being used, set calibration accordingly 
     Vrms = Vrms_USA;
   }
-  else
+  else 
   {
     Vcal = Vcal_EU;
     Vrms = Vrms_EU;
@@ -229,26 +229,26 @@ void loop()
   ct1.voltage(0, Vcal, phase_shift);                       // ADC pin, Calibration, phase_shift
   ct2.voltage(0, Vcal, phase_shift);                       // ADC pin, Calibration, phase_shift
 
-  if (digitalRead(shutdown_switch_pin) == 0 )
+  if (digitalRead(shutdown_switch_pin) == 0 ) 
     digitalWrite(emonpi_GPIO_pin, HIGH);                                          // if emonPi shutdown butten pressed then send signal to the Pi on GPIO 11
-  else
+  else 
     digitalWrite(emonpi_GPIO_pin, LOW);
   
   if (Serial.available()){
     handleInput(Serial.read());                                                   // If serial input is received
     double_LED_flash();
-  }
+  }                                             
       
 
   if (RF_STATUS==1){                                                              // IF RF module is present and enabled then perform RF tasks
-    if (RF_Rx_Handle()==1) {                                                      // Returns true if RF packet is received
-       double_LED_flash();
+    if (RF_Rx_Handle()==1) {                                                      // Returns true if RF packet is received                                            
+       double_LED_flash(); 
     }
     
-    send_RF();                                                                    // Transmitt data packets if needed
+    send_RF();                                                                    // Transmitt data packets if needed 
     
     if ((now - last_rf_rest) > RF_RESET_PERIOD) {
-      rf12_initialize(nodeID, RF_freq, networkGroup);                             // Periodically reset RFM69CW to keep it alive :-(
+      rf12_initialize(nodeID, RF_freq, networkGroup);                             // Periodically reset RFM69CW to keep it alive :-( 
     }
    
    }
@@ -263,39 +263,39 @@ void loop()
       ct1.calcVI(no_of_half_wavelengths,timeout); emonPi.power1=ct1.realPower;
       emonPi.Vrms=ct1.Vrms*100;
    }
-    else
+    else 
     {
       if (CT1) emonPi.power1 = ct1.calcIrms(no_of_samples)*Vrms;                               // Calculate Apparent Power 1  1480 is  number of samples
-   }
+   }  
   
    if (ACAC && CT2)                                                                       // Read from CT 2
    {
      ct2.calcVI(no_of_half_wavelengths,timeout); emonPi.power2=ct2.realPower;
      emonPi.Vrms=ct2.Vrms*100;
    }
-   else
+   else 
    {
      if (CT2) emonPi.power2 = ct2.calcIrms(no_of_samples)*Vrms;                               // Calculate Apparent Power 1  1480 is  number of samples
    }
    
    emonPi.power1_plus_2=emonPi.power1 + emonPi.power2;                                       //Create power 1 plus power 2 variable for US and solar PV installs
    
-   if ((ACAC==0) && (CT_count > 0)) emonPi.Vrms=Vrms*100;                                        // If no AC wave detected set VRMS constant
+   if ((ACAC==0) && (CT_count > 0)) emonPi.Vrms=Vrms*100;                                        // If no AC wave detected set VRMS constant         
   
-   if ((ACAC==1) && (CT_count==0)) {                                                                        // If only AC-AC is connected then return just VRMS calculation
+   if ((ACAC==1) && (CT_count==0)) {                                                                        // If only AC-AC is connected then return just VRMS calculation 
      ct1.calcVI(no_of_half_wavelengths,timeout);
      emonPi.Vrms=ct1.Vrms*100;
    }
 
   //Serial.print(emonPi.pulseCount); Serial.print(" ");delay(5);
-   // if (debug==1) {Serial.print(emonPi.power2); Serial.print(" ");delay(5);}
+   // if (debug==1) {Serial.print(emonPi.power2); Serial.print(" ");delay(5);}  
     
 
-    if (DS18B20_STATUS==1)
+    if (DS18B20_STATUS==1) 
     {
       sensors.requestTemperatures();                                        // Send the command to get temperatures
-      for(byte j=0;j<numSensors;j++) emonPi.temp[j]=get_temperature(j);
-    }
+      for(byte j=0;j<numSensors;j++) emonPi.temp[j]=get_temperature(j); 
+    }                                                                           
     
     if (pulseCount)                                                       // if the ISR has counted some pulses, update the total count
     {
@@ -303,7 +303,7 @@ void loop()
       emonPi.pulseCount += pulseCount;
       pulseCount = 0;
       sei();                                                              // Re-enable interrupts
-    }
+    }     
     /*
     Serial.print(CT1); Serial.print(" "); Serial.print(CT2); Serial.print(" "); Serial.print(ACAC); Serial.print(" "); Serial.println  (CT_count);
     Serial.print(emonPi.power1); Serial.print(" ");
@@ -314,7 +314,7 @@ void loop()
     
     send_emonpi_serial();                                             //Send emonPi data to Pi serial using struct packet structure
     
-    last_sample = now;                                           //Record time of sample
+    last_sample = now;                                           //Record time of sample  
     
     } // end sample
     
@@ -331,3 +331,7 @@ void double_LED_flash()
   digitalWrite(LEDpin, HIGH);  delay(25); digitalWrite(LEDpin, LOW);
   digitalWrite(LEDpin, HIGH);  delay(25); digitalWrite(LEDpin, LOW);
 }
+
+
+
+

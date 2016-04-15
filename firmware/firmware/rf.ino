@@ -1,10 +1,10 @@
 void RF_Setup(){
-	//--------------------------------------------------Initalize RF and send out RF test packets--------------------------------------------------------------------------------------------
+	//--------------------------------------------------Initalize RF and send out RF test packets--------------------------------------------------------------------------------------------  
   delay(10);
   rf12_initialize(nodeID, RF_freq, networkGroup);                          // initialize RFM12B/rfm69CW
    for (int i=10; i>=0; i--)                                                                  //Send RF test sequence (for factory testing)
    {
-     emonPi.power1=i;
+     emonPi.power1=i; 
      rf12_sendNow(0, &emonPi, sizeof emonPi);
      delay(100);
    }
@@ -15,7 +15,7 @@ void RF_Setup(){
 
 boolean RF_Rx_Handle(){
   
-	if (rf12_recvDone()) {						//if RF Packet is received
+	if (rf12_recvDone()) {						//if RF Packet is received 
 	    byte n = rf12_len;
 	    if (rf12_crc == 0)							//Check packet is good
 	    {
@@ -126,21 +126,21 @@ static void handleInput (char c) {
 
         default:
           showString(helpText1);
-      } //end case
-    //Print Current RF config
+      } //end case 
+    //Print Current RF config  
 
     if (RF_STATUS==1) {
       Serial.print(F(" "));
 -     Serial.print((char) ('@' + (nodeID & RF12_HDR_MASK)));
 -     Serial.print(F(" i"));
-      Serial.print(nodeID & RF12_HDR_MASK);
+      Serial.print(nodeID & RF12_HDR_MASK);   
       Serial.print(F(" g"));
       Serial.print(networkGroup);
       Serial.print(F(" @ "));
       Serial.print(RF_freq == RF12_433MHZ ? 433 :
                    RF_freq == RF12_868MHZ ? 868 :
                    RF_freq == RF12_915MHZ ? 915 : 0);
-      Serial.print(F(" MHz"));
+      Serial.print(F(" MHz")); 
     }
     Serial.print(F(" USA ")); Serial.print(USA);
     Serial.println(F(" "));
@@ -153,3 +153,4 @@ static void handleInput (char c) {
 static byte bandToFreq (byte band) {
   return band == 4 ? RF12_433MHZ : band == 8 ? RF12_868MHZ : band == 9 ? RF12_915MHZ : 0;
 }
+ 
