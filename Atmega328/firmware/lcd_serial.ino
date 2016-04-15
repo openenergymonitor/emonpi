@@ -23,6 +23,7 @@ void serial_print_startup(){
     if (USA==TRUE) Serial.print(F("USA mode > ")); 
     Serial.print(F("Vcal: ")); Serial.println(Vcal);
     Serial.print(F("Vrms: ")); Serial.print(Vrms); Serial.println(F("V"));
+    Serial.print(F("Phase Shift: ")); Serial.println(phase_shift);
   }
   else 
   {
@@ -73,8 +74,6 @@ lcd.setCursor(0, 1); lcd.print(F("Detected "));
   lcd.clear();
   lcd.print(F("Raspberry Pi"));
   lcd.setCursor(0, 1); lcd.print(F("Booting...")); 
-   
-   
 
   if (RF_STATUS == 1){
     #if (RF69_COMPAT)

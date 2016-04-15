@@ -1,21 +1,28 @@
-# Change Log - emonPi Firmwarwe
+# Change Log - emonPi Discrete Sampling Firmware
 
-# V3.3 (08/03/16
+# V2.5 (18/03/16)
+ * Soft reset RFM69CW ever 60s to ensure its kept alive 
+
+Compiled with Arduino 1.6.8 | Hex size: 55kB | Sketch uses 19,554 bytes | Global variables: 946 bytes
+
+# V2.4 (8/03/16)
  * Adjust Vcal_EU to improve VRMS voltage reading accuracy when using UK/EU AC-AC
  * Compile with Arduino 1.6.7 with JeeLib 10th Sep 2015 f097c0039c926881d80a74bec7a7aa020de610ee
  * Updated OneWire library to V2.3.2 & updated sensors.getAddress function
 
-Sketch uses 20,668 bytes (64%) of program storage space. Maximum is 32,256 bytes.
-Global variables use 1,070 bytes (52%) of dynamic memory, leaving 978 bytes for local variables. Maximum is 2,048 bytes.
+Compiled with Arduino 1.6.8 | Hex size: 54.8kB | Sketch uses 19,460 bytes | Global variables: 941 bytes
 
-# V3.2 (31/01/16) 
+# V2.3 (20/02/16)
+ * Fix VRMS reading bug
+ * Compile with Arduino 1.6.7
+
+# V2.2 (30/01/16)
  * Reduction in SRAM memory usage thanks to F-macro serial string implementation
+ * Display "Raspberry Pi Booting" message on LCD at startup
+ * Only sample from CT channels when CT is connected to that channel (fix noise readings when no CT connected)
 
-# V3.1 (31/01/16)
- * Display "Rasberry Pi Booting" message at startup & don't sample from CT input channel when no CT is physically connected to that input
-
-# V3.0 December 2015
-  * Continuous sampling using emonLibCM https://github.com/openenergymonitor/EmonLibCM
+# V2.1 (20/1/16)
+  * Allow use of group 0
 
 # V2.0 (17/11/15)
   * Don't print ACK's to serial 

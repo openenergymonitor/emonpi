@@ -25,7 +25,7 @@ boolean RF_Rx_Handle(){
 	    	Serial.print(F(" "));
 	    	for (byte i = 0; i < n; ++i) {
 	      		Serial.print((word)rf12_data[i]);
-	      		Serial.print(' ');
+	      		Serial.print(F(" "));
 	    	}
 
 	      	#if RF69_COMPAT
@@ -37,7 +37,7 @@ boolean RF_Rx_Handle(){
 		    	Serial.println();
 
 	        if (RF12_WANTS_ACK==1) {
-	           // Serial.print(" -> ack");
+	           // Serial.print(F(" -> ack"));
 	           rf12_sendStart(RF12_ACK_REPLY, 0, 0);
 	       }
 
@@ -100,7 +100,7 @@ static void handleInput (char c) {
         break;
     
       case 'g': // set network group
-        if (value){
+        if (value>=0){
           networkGroup = value;
           if (RF_STATUS==1) rf12_initialize(nodeID, RF_freq, networkGroup);
         }
@@ -110,23 +110,11 @@ static void handleInput (char c) {
         if (value){
           if (value==1) USA=false;
           if (value==2) USA=true;
-          
-          if (USA==TRUE) 
-          {
-            Vcal = Vcal_USA;                                                       // Assume USA AC/AC adatper is being used, set calibration accordingly 
-            Vrms = Vrms_USA;
-          }
-          else 
-          {
-            Vcal = Vcal_EU;
-            Vrms = Vrms_EU;
-          }
-          EmonLibCM_voltageCal(Vcal*(3.3/1023));            // 260.4 * (3.3/1023)
         }
         break;
 
       case 'v': // print firmware version
-        Serial.print("[emonPi."); Serial.print(firmware_version*0.1); Serial.print("]");
+        Serial.print(F("[emonPi.")); Serial.print(firmware_version*0.1); Serial.print(F("]"));
         break;
 
       case 'a': // send packet to node ID N, request an ack

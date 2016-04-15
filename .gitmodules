@@ -1,0 +1,15 @@
+[submodule "firmware/libraries/emonlib"]
+	path = firmware/libraries/emonlib
+	url = https://github.com/openenergymonitor/emonlib
+[submodule "firmware/libraries/jeelib"]
+	path = firmware/libraries/jeelib
+	url = https://github.com/jcw/jeelib
+[submodule "firmware/libraries/OneWire"]
+	path = firmware/libraries/OneWire
+	url = https://github.com/PaulStoffregen/OneWire
+[submodule "firmware/libraries/LiquidCrystal_I2C"]
+	path = firmware/libraries/LiquidCrystal_I2C
+	url = https://github.com/marcoschwartz/LiquidCrystal_I2C
+[submodule "firmware/libraries/Arduino-Temperature-Control-Library"]
+	path = firmware/libraries/Arduino-Temperature-Control-Library
+	url = https://github.com/milesburton/Arduino-Temperature-Control-Library
