@@ -1,9 +1,7 @@
 # Change Log - emonPi Discrete Sampling Firmware
 
-**See continous-sampling branch for continous sampling**
-
 # V2.5 (18/03/16)
- * Soft reset RFM69CW ever 60s to ensure its kept alive
+ * Soft reset RFM69CW ever 60s to ensure its kept alive 
 
 Compiled with Arduino 1.6.8 | Hex size: 55kB | Sketch uses 19,554 bytes | Global variables: 946 bytes
 
@@ -27,7 +25,7 @@ Compiled with Arduino 1.6.8 | Hex size: 54.8kB | Sketch uses 19,460 bytes | Glob
   * Allow use of group 0
 
 # V2.0 (17/11/15)
-  * Don't print ACK's to serial
+  * Don't print ACK's to serial 
 
 # V1.9 (16/11/15)
   * Fix counting pulses faster than 110ms, strobed meter LED http://openenergymonitor.org/emon/node/11490
@@ -39,7 +37,7 @@ Compiled with Arduino 1.6.8 | Hex size: 54.8kB | Sketch uses 19,460 bytes | Glob
   * Fix bug which stopped USA AC-AC Vcal from being applied at runtime
 
 # V1.6 (12/06/15)
-  * Fix interrupt pulse debouce issue by limiting pulse width to 52ms min (50ms is default for LED pulse output meters)
+  * Fix interrupt pulse debouce issue by limiting pulse width to 52ms min (50ms is default for LED pulse output meters) 
   * Compile with latest JeeLib with fix for RF hang, remove RF reset added in V1.3 (bf179057ee1abc2cfa2965b454421203ac52c6c3)
   * Enable simultaneous pulse counting and temperature monitoring on single RJ45 using breakout
 
@@ -70,13 +68,20 @@ https://github.com/openenergymonitor/emonpi/commit/fa4474571cffa45d03483ce9da32f
 1.3 firmware dev, add RF init ever 10min to keep RF alive
 https://github.com/openenergymonitor/emonpi/commit/96b59c38c045a44e6dea3c1a5e048d038380e88a
 
-# V1.2 (13/05/15)
-Fix AC wave detect and improve AC calibration calibration
+# V1.2 (13/05/15) 
+Fix AC wave detect and improve AC calibration calibration 
 https://github.com/openenergymonitor/emonpi/commit/41987f1e21b3687b8b0ac6b9f5f5160cdfb808a4
 
-# V1.1 (11/05/15)
+# V1.1 (11/05/15) 
 Add sample from both CT's as default and set 110V VRMS for apparent power when US calibration is set e.g '2p'
 https://github.com/openenergymonitor/emonpi/commit/2565eb3663847c22bfb62b0d1258f8cbc5fea224
 
-# V1.0
-First release
+# V1.0 
+First release 
+
+
+
+
+
+
+
