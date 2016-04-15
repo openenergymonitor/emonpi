@@ -74,6 +74,7 @@ else
   echo "git clone https://github.com/emoncms/postprocess"
   cd /home/pi
   git clone -b emonpi https://github.com/emoncms/postprocess
+  cd /home/pi/postprocess
   git checkout emonpi
 fi
 
