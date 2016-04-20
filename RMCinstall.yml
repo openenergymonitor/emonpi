@@ -83,6 +83,13 @@
        executable: "/bin/bash"
    - debug: msg="gprs And EmonTx install file executed"
 
+   - shell: "/home/debian/emonpi/emoncms9install"
+     args:
+       chdir: "/home/debian/emonpi/"
+       executable: "/bin/bash"
+
+   - debug: msg="emoncms9install file executed"
+
         #run LCD config file
    - shell: "/home/debian/emonpi/install"
      args:
@@ -90,27 +97,10 @@
        executable: "/bin/bash"
    - debug: msg="emonpi install file executed"
 
-   - shell: "/home/debian/emonpi/emoncms9install"
-     args:
-       chdir: "/home/debian/emonpi/"
-       executable: "/bin/bash"
-   - debug: msg="emoncms9install file executed"
-
-
 
    - shell: "/home/debian/emonpi/emonfirmwareinstall"
      args:
        chdir: "/home/debian/emonpi/"
    - debug: msg="emonfirmwareinstall install file executed"
 
-   
-    #copy from local to remote
-#   - name: copy file from local to remote server
-#     copy: src=/home/honore/Desktop/test.py dest=/home/ansibleTEST/
-#   - file: path=/home/debian/test.py mode="u+x"
-
-
-    #execute python script
-#   - name: execute
-#     command: /home/debian/test.py
 ...
