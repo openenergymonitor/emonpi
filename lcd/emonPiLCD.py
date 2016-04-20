@@ -168,7 +168,7 @@ class Background(threading.Thread):
                 if ppp0ip=="" or ppp0ip==False:
                     pppactive = 0
                     time.sleep(1)
-                    subprocess.call(['/home/debian/gprsAndEmonInstall/gprs_on.sh'])
+                    subprocess.call(['/home/debian/emonpi/gprs/gprs_on.sh'])
 
 
                 r.set("ppp:active",pppactive)
@@ -249,7 +249,7 @@ def shutdown():
         lcd.lcd_display_string( string_lenth("Wait 30s...", 16),1)
         lcd.lcd_display_string( string_lenth("Before Unplug!", 16),2)
         time.sleep(4)
-        subprocess.call(['/home/debian/gprsAndEmonInstall/switch_off_gsm_module.py'])
+        subprocess.call(['/home/debian/emonpi/gprs/switch_off_gsm_module.py'])
         time.sleep(1)
 
         lcd.backlight(0) 											# backlight zero must be the last call to the LCD to keep the backlight off
