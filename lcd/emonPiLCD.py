@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import lcddriver
+import subprocess
 from subprocess import *
 import time
 from datetime import datetime
@@ -41,7 +42,7 @@ GPIO.setup( GPIO_PORT_shutdown,GPIO.IN)
 new_switch_state = GPIO.input(GPIO_PORT)
 shutdown_button =GPIO.input(GPIO_PORT_shutdown)
 
-max_number_pages = 5
+sumax_number_pages = 5
 
 SHUTDOWN_TIME =3  # Shutdown after 3 second press
 
@@ -55,6 +56,8 @@ uselogfile = False
 mqttc = False
 mqttConnected = False
 basedata = []
+mqtt_rx_channel = "emonhub/rx/#"
+mqtt_push_channel = "emonhub/tx/#"
 
 if not uselogfile:
     loghandler = logging.StreamHandler()
@@ -157,18 +160,19 @@ class Background(threading.Thread):
 
                 # ----------------------------------------------------------------------------------
 
-                 # GPRS connection from olemexino GSM module
+                # GPRS connection from olemexino GSM module
                 # ----------------------------------------------------------------------------------
                 wlanactive = 0 # Not using wlan
                 ppp0 = "ip addr show ppp0 | grep inet | awk '{print $2}' | cut -d/ -f1 | head -n1"
                 p = Popen(ppp0, shell=True, stdout=PIPE)
                 ppp0ip = p.communicate()[0][:-1]
+                
 
                 pppactive = 1
                 if ppp0ip=="" or ppp0ip==False:
                     pppactive = 0
                     time.sleep(1)
-                    subprocess.call(['/home/debian/gprsAndEmonInstall/gprs_on.sh'])
+                    #subprocess.call(['/home/debian/gprsAndEmonInstall/gprs_on.sh'])
 
 
                 r.set("ppp:active",pppactive)
@@ -199,6 +203,22 @@ class Background(threading.Thread):
                    #print "$#$#$#$#$#$$# %s"%gsm_signallevel
                    r.set("ppp:gsm_signallevel",gsm_signallevel)
                    logger.info("background: ppp "+str(gsm_signallevel))
+                   
+                   # GPRS data sent counter
+                   # ----------------------------------------------------------------------------------
+                   ppp0 = "ifconfig ppp0 | grep -oP '(?<=TX bytes:)[0-9]*'"
+                   p = Popen(ppp0, shell=True, stdout=PIPE)
+                   ppp0tx = p.communicate()[0][:-1]
+               
+                   ppp0 = "ifconfig ppp0 | grep -oP '(?<=RX bytes:)[0-9]*'"
+                   p = Popen(ppp0, shell=True, stdout=PIPE)
+                   ppp0rx = p.communicate()[0][:-1]
+  
+		   r.set("ppp:tx",ppp0tx)
+		   r.set("ppp:rx",ppp0rx)
+		   logger.info("background: ppp data tx:"+str(ppp0tx))
+		   logger.info("background: ppp data rx:"+str(ppp0rx))
+
             # this loop runs a bit faster so that ctrl-c exits are fast
             time.sleep(0.1)
 
@@ -277,7 +297,7 @@ def on_connect(client, userdata, flags, rc):
     else:
         logger.info("MQTT Connection UP")
         mqttConnected = True
-        mqttc.subscribe("emonhub/rx/#")
+        mqttc.subscribe(mqtt_rx_channel)
 
 def on_disconnect(client, userdata, rc):
     global mqttConnected
@@ -406,14 +426,14 @@ while 1:
 
         elif page==2:
                 if int(r.get("ppp:active")):
-                lcd_string1 = "GPRS: YES - "+r.get("ppp:gsm_signallevel")+"%"
-                lcd_string2 = r.get("ppp:ip")
+			lcd_string1 = "GPRS: YES - "+r.get("ppp:gsm_signallevel")+"%"
+			lcd_string2 = r.get("ppp:ip")
                 #print  "SIGNAL STRENGTH" + lcd_string1
                 #print"********************CONNECTED!!!!!!!!"+r.get("ppp:ip")
 
-            else:
-                lcd_string1 = "GPRS strength:"+r.get("ppp:gsm_signallevel")+"%"
-                lcd_string2 = ""
+		else:
+			lcd_string1 = "GPRS strength:"+r.get("ppp:gsm_signallevel")+"%"
+			lcd_string2 = ""
                 #print  "SIGNAL STRENGTH" + lcd_string1
                 #print"****************NOT CONNECTED"
 
@@ -438,7 +458,7 @@ while 1:
                 basedata = basedata.split(",")
                 lcd_string1 = 'Power 3: '+str(basedata[2])+"W"
                 lcd_string2 = 'Power 4: '+str(basedata[3])+"W"
-            #    print"***********************power 3:"
+             #   print"***********************power 3:"
              #   print"**************************power 4:"
 
             else:
