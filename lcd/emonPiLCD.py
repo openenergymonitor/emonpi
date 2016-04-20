@@ -142,8 +142,8 @@ class Background(threading.Thread):
 
 			#update GPRS signal strength everyafter 3min
 
-		    if (now - last180s) >=180.0:
-			last180s = now
+		    if (now - last300s) >=300.0:
+			last300s = now
 
 	# Wireless LAN
 	# ----------------------------------------------------------------------------------
@@ -196,29 +196,30 @@ class Background(threading.Thread):
 			logger.info("background: wlan "+str(signallevel))
 
 
-   	   #---------------------------gprs signal level----------------------------------------
 			gsm_signallevel = 0
 
-			if pppactive:
-			   gsm_signallevel = get_gsm_signal_strength()
-			   #print "$#$#$#$#$#$$# %s"%gsm_signallevel
-			   r.set("ppp:gsm_signallevel",gsm_signallevel)
-			   logger.info("background: ppp "+str(gsm_signallevel))
-			   
+			if pppactive:	
 	   # GPRS data sent counter
 	   # ----------------------------------------------------------------------------------
 			   ppp0 = "ifconfig ppp0 | grep -oP '(?<=TX bytes:)[0-9]*'"
 			   p = Popen(ppp0, shell=True, stdout=PIPE)
-			   ppp0tx = p.communicate()[0][:-1]
+			   ppp0tx = p.communicate()[0]
 		       
 			   ppp0 = "ifconfig ppp0 | grep -oP '(?<=RX bytes:)[0-9]*'"
 			   p = Popen(ppp0, shell=True, stdout=PIPE)
-			   ppp0rx = p.communicate()[0][:-1]
+			   ppp0rx = p.communicate()[0]
 	  
 			   r.set("ppp:tx",ppp0tx)
 			   r.set("ppp:rx",ppp0rx)
 			   logger.info("background: ppp data tx:"+str(ppp0tx))
 			   logger.info("background: ppp data rx:"+str(ppp0rx))
+
+   	   #---------------------------gprs signal level----------------------------------------
+			   gsm_signallevel = get_gsm_signal_strength()
+			   #print "$#$#$#$#$#$$# %s"%gsm_signallevel
+			   r.set("ppp:gsm_signallevel",gsm_signallevel)
+			   logger.info("background: ppp "+str(gsm_signallevel))
+			   
             except Exception,e:
                logger.exception("An error occured in thread")
 
