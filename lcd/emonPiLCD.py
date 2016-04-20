@@ -97,7 +97,7 @@ class Background(threading.Thread):
         last1s = time.time() - 2.0
         last5s = time.time() - 6.0
         last30s = time.time() - 31.0
-        last180s = time.time() - 181.0   #update the GPRS signal strength after 3min
+        last300s = time.time() - 301.0   #update the GPRS signal strength after 5min
         logger.info("Starting background thread")
         # Loop until we stop is false (our exit signal)
 
@@ -138,8 +138,8 @@ class Background(threading.Thread):
 
                 #update GPRS signal strength everyafter 3min
 
-            if (now - last180s) >=180.0:
-                last180s = now
+            if (now - last300s) >=300.0:
+                last300s = now
 
                 # Wireless LAN
                 # ----------------------------------------------------------------------------------
