@@ -35,6 +35,7 @@ lcd = lcddriver.lcd()
 page = 0
 inc = 0
 GPIO_PORT = "P8_11"
+
 #in case we use a button to switch on/off
 GPIO_PORT_shutdown = "P8_12"
 GPIO.setup( GPIO_PORT,GPIO.IN)
@@ -100,12 +101,18 @@ class Background(threading.Thread):
         last1s = time.time() - 2.0
         last5s = time.time() - 6.0
         last30s = time.time() - 31.0
-        last300s = time.time() - 301.0   #update the GPRS signal strength after 5min
+        last100s = time.time() - 100.0   #update the GPRS signal strength after 5min
+        last5h = time.time() - 18000   #update the GPRS signal strength after 5min
         logger.info("Starting background thread")
         # Loop until we stop is false (our exit signal)
         
+        pppactive = 0
+        wlanactive = 0
+        ethactive = 0
+        data_counter_init = False
         while not self.stop:
             try:
+
 		    now = time.time()
 
 		    # ----------------------------------------------------------
@@ -140,10 +147,37 @@ class Background(threading.Thread):
 			r.set("eth:ip",eth0ip)
 			logger.info("background: eth:"+str(int(ethactive))+" "+eth0ip)
 
-			#update GPRS signal strength everyafter 3min
+	   # GPRS data sent counter
+	   # ----------------------------------------------------------------------------------
+                        if pppactive:
 
-		    if (now - last300s) >=300.0:
-			last300s = now
+			   ppp0 = "ifconfig ppp0 | grep -oP '(?<=TX bytes:)[0-9]*'"
+			   p = Popen(ppp0, shell=True, stdout=PIPE)
+			   ppp0tx = p.communicate()[0]
+			   
+                           oldtx = r.get("ppp:old_tx")	
+                           oldrx = r.get("ppp:old_rx")	
+                                               
+			   ppp0 = "ifconfig ppp0 | grep -oP '(?<=RX bytes:)[0-9]*'"
+			   p = Popen(ppp0, shell=True, stdout=PIPE)
+			   ppp0rx = p.communicate()[0]
+	            
+                           if oldtx and oldrx:
+                              oldtx = int(oldtx)
+                              oldrx = int(oldrx)
+                              ppp0tx = oldtx + int(ppp0tx)
+                              ppp0rx = oldrx + int(ppp0rx)
+
+                           
+			   r.set("ppp:tx",ppp0tx)
+			   r.set("ppp:rx",ppp0rx)
+			   logger.info("background: ppp data tx:"+str(ppp0tx))
+			   logger.info("background: ppp data rx:"+str(ppp0rx))
+                           data_counter_init = True
+
+
+		    if (now - last100s) >= 100.0:
+			last100s = now
 
 	# Wireless LAN
 	# ----------------------------------------------------------------------------------
@@ -195,26 +229,15 @@ class Background(threading.Thread):
 			r.set("wlan:signallevel",signallevel)
 			logger.info("background: wlan "+str(signallevel))
 
-
 			gsm_signallevel = 0
 
+		    if (now - last5h) >= 18000.0:
+			last5h = now
 			if pppactive:	
-	   # GPRS data sent counter
-	   # ----------------------------------------------------------------------------------
-			   ppp0 = "ifconfig ppp0 | grep -oP '(?<=TX bytes:)[0-9]*'"
-			   p = Popen(ppp0, shell=True, stdout=PIPE)
-			   ppp0tx = p.communicate()[0]
-		       
-			   ppp0 = "ifconfig ppp0 | grep -oP '(?<=RX bytes:)[0-9]*'"
-			   p = Popen(ppp0, shell=True, stdout=PIPE)
-			   ppp0rx = p.communicate()[0]
-	  
-			   r.set("ppp:tx",ppp0tx)
-			   r.set("ppp:rx",ppp0rx)
-			   logger.info("background: ppp data tx:"+str(ppp0tx))
-			   logger.info("background: ppp data rx:"+str(ppp0rx))
-
    	   #---------------------------gprs signal level----------------------------------------
+                           if data_counter_init:
+				   r.set("ppp:old_tx",ppp0tx)
+				   r.set("ppp:old_rx",ppp0rx)
 			   gsm_signallevel = get_gsm_signal_strength()
 			   #print "$#$#$#$#$#$$# %s"%gsm_signallevel
 			   r.set("ppp:gsm_signallevel",gsm_signallevel)
