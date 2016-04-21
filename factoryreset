@@ -122,7 +122,7 @@ fi
 
 echo "Clear bash history"
 history -c
-
+>~/.bash_history
 
 
 echo
