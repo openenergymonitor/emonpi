@@ -84,9 +84,8 @@ echo
 
 echo
 # Wait for update to finish
-sleep 30
-echo "Start emonPi LCD service"
-
+echo "Starting emonPi LCD service.."
+sleep 20
 sudo service emonPiLCD start
 echo
 rpi-ro
