@@ -78,6 +78,20 @@ else
   git checkout emonpi
 fi
 
+if [ -d /home/pi/backup ]; then
+  echo "git pull /home/pi/backup"
+  cd /home/pi/backup
+  git branch --set-upstream-to=origin/master
+  git branch
+  git pull
+else
+  echo "git clone https://github.com/emoncms/backup"
+  cd /home/pi
+  git clone https://github.com/emoncms/backup
+  cd /home/pi/backup
+  git checkout master
+  ln -s /home/pi/backup/backup/ /var/www/emoncms/Modules/backup
+fi
 
 echo
 
@@ -113,5 +127,15 @@ if [ -f /etc/init.d/mqtt_input ]; then
   sudo /etc/init.d/mqtt_input restart
 fi
 echo
-
 echo "Restarting Services..."
+
+# Add backup module service-runner
+echo "Install service-runner in crontab"
+# Add root crontab entry to run wifi check script ever 5min
+crontab -l > mycron #write out current root crontab
+# Check crontab entry does not already exist, if not add new entry
+if ! grep -Fxq " * * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1" mycron ; then
+        echo " * * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1" >> mycron  #echo new cron into cronfile
+        crontab mycron #install new cron file
+fi
+sudo rm mycron
