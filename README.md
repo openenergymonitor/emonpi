@@ -10,7 +10,7 @@ emonPi - Raspberry Pi Energy Monitoring Unit
 
 [Setup Guide](http://openenergymonitor.org/emon/modules/emonpi)
 
-[Ready-to-go SD card image info & download](http://openenergymonitor.org/emon/node/10729)
+[Ready-to-go SD card image download](https://github.com/openenergymonitor/emonpi/wiki/emonSD-pre-built-SD-card-Repository-&-Change-Log)
 
 
 ## Technical:
