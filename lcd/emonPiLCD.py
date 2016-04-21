@@ -35,6 +35,7 @@ lcd = lcddriver.lcd()
 page = 0
 inc = 0
 GPIO_PORT = "P8_11"
+
 #in case we use a button to switch on/off
 GPIO_PORT_shutdown = "P8_12"
 GPIO.setup( GPIO_PORT,GPIO.IN)
@@ -100,112 +101,18 @@ class Background(threading.Thread):
         last1s = time.time() - 2.0
         last5s = time.time() - 6.0
         last30s = time.time() - 31.0
-        last300s = time.time() - 301.0   #update the GPRS signal strength after 5min
+        last100s = time.time() - 100.0   #update the GPRS signal strength after 5min
+        last5h = time.time() - 18000   #update the GPRS signal strength after 5min
         logger.info("Starting background thread")
         # Loop until we stop is false (our exit signal)
         
+        pppactive = 0
+        wlanactive = 0
+        ethactive = 0
+        data_counter_init = False
         while not self.stop:
-<<<<<<< HEAD
-            now = time.time()
-
-            # ----------------------------------------------------------
-            # UPDATE EVERY 1's
-            # ----------------------------------------------------------
-            if (now-last1s)>=1.0:
-                last1s = now
-                # Get uptime
-                with open('/proc/uptime', 'r') as f:
-                    seconds = float(f.readline().split()[0])
-                    array = str(timedelta(seconds = seconds)).split('.')
-                    string = array[0]
-                    r.set("uptime",seconds)
-
-            # ----------------------------------------------------------
-            # UPDATE EVERY 5's
-            # ----------------------------------------------------------
-            if (now-last5s)>=5.0:
-                last5s = now
-
-                # Ethernet
-                # --------------------------------------------------------------------------------
-                eth0 = "ip addr show eth0 | grep inet | awk '{print $2}' | cut -d/ -f1 | head -n1"
-                p = Popen(eth0, shell=True, stdout=PIPE)
-                eth0ip = p.communicate()[0][:-1]
-
-                ethactive = 1
-                if eth0ip=="" or eth0ip==False:
-                    ethactive = 0
-
-                r.set("eth:active",ethactive)
-                r.set("eth:ip",eth0ip)
-                logger.info("background: eth:"+str(int(ethactive))+" "+eth0ip)
-
-                #update GPRS signal strength everyafter 3min
-
-            if (now - last180s) >=180.0:
-                last180s = now
-
-                # Wireless LAN
-                # ----------------------------------------------------------------------------------
-                wlan0 = "ip addr show wlan0 | grep inet | awk '{print $2}' | cut -d/ -f1 | head -n1"
-                p = Popen(wlan0, shell=True, stdout=PIPE)
-                wlan0ip = p.communicate()[0][:-1]
-
-                wlanactive = 1
-                if wlan0ip=="" or wlan0ip==False:
-                    wlanactive = 0
-
-                r.set("wlan:active",wlanactive)
-                r.set("wlan:ip",wlan0ip)
-                logger.info("background: wlan:"+str(int(wlanactive))+" "+wlan0ip)
-
-                # ----------------------------------------------------------------------------------
-
-                 # GPRS connection from olemexino GSM module
-                # ----------------------------------------------------------------------------------
-                wlanactive = 0 # Not using wlan
-                ppp0 = "ip addr show ppp0 | grep inet | awk '{print $2}' | cut -d/ -f1 | head -n1"
-                p = Popen(ppp0, shell=True, stdout=PIPE)
-                ppp0ip = p.communicate()[0][:-1]
-
-                pppactive = 1
-                if ppp0ip=="" or ppp0ip==False:
-                    pppactive = 0
-                    time.sleep(1)
-                    subprocess.call(['/home/debian/emonpi/gprs/gprs_on.sh'])
-
-
-                r.set("ppp:active",pppactive)
-                r.set("ppp:ip",ppp0ip)
-                logger.info("background: ppp:"+str(int(pppactive))+" "+ppp0ip)
-                #--------------------------------------------------------------------------------------
-
-                signallevel = 0
-                linklevel = 0
-                noiselevel = 0
-
-                if wlanactive:
-                    # wlan link status
-                    p = Popen("/sbin/iwconfig wlan0", shell=True, stdout=PIPE)
-                    iwconfig = p.communicate()[0]
-                    tmp = re.findall('(?<=Signal level=)\w+',iwconfig)
-                    if len(tmp)>0: signallevel = tmp[0]
-
-                r.set("wlan:signallevel",signallevel)
-                logger.info("background: wlan "+str(signallevel))
-
-
-                #----------------------gprs signal level----------------------------------------
-                gsm_signallevel = 0
-
-                if pppactive:
-                   gsm_signallevel = get_gsm_signal_strength()
-                   #print "$#$#$#$#$#$$# %s"%gsm_signallevel
-                   r.set("ppp:gsm_signallevel",gsm_signallevel)
-                   logger.info("background: ppp "+str(gsm_signallevel))
-            # this loop runs a bit faster so that ctrl-c exits are fast
-=======
             try:
+
 		    now = time.time()
 
 		    # ----------------------------------------------------------
@@ -240,10 +147,37 @@ class Background(threading.Thread):
 			r.set("eth:ip",eth0ip)
 			logger.info("background: eth:"+str(int(ethactive))+" "+eth0ip)
 
-			#update GPRS signal strength everyafter 3min
+	   # GPRS data sent counter
+	   # ----------------------------------------------------------------------------------
+                        if pppactive:
 
-		    if (now - last300s) >=300.0:
-			last300s = now
+			   ppp0 = "ifconfig ppp0 | grep -oP '(?<=TX bytes:)[0-9]*'"
+			   p = Popen(ppp0, shell=True, stdout=PIPE)
+			   ppp0tx = p.communicate()[0]
+			   
+                           oldtx = r.get("ppp:old_tx")	
+                           oldrx = r.get("ppp:old_rx")	
+                                               
+			   ppp0 = "ifconfig ppp0 | grep -oP '(?<=RX bytes:)[0-9]*'"
+			   p = Popen(ppp0, shell=True, stdout=PIPE)
+			   ppp0rx = p.communicate()[0]
+	            
+                           if oldtx and oldrx:
+                              oldtx = int(oldtx)
+                              oldrx = int(oldrx)
+                              ppp0tx = oldtx + int(ppp0tx)
+                              ppp0rx = oldrx + int(ppp0rx)
+
+                           
+			   r.set("ppp:tx",ppp0tx)
+			   r.set("ppp:rx",ppp0rx)
+			   logger.info("background: ppp data tx:"+str(ppp0tx))
+			   logger.info("background: ppp data rx:"+str(ppp0rx))
+                           data_counter_init = True
+
+
+		    if (now - last100s) >= 100.0:
+			last100s = now
 
 	# Wireless LAN
 	# ----------------------------------------------------------------------------------
@@ -295,26 +229,15 @@ class Background(threading.Thread):
 			r.set("wlan:signallevel",signallevel)
 			logger.info("background: wlan "+str(signallevel))
 
-
 			gsm_signallevel = 0
 
+		    if (now - last5h) >= 18000.0:
+			last5h = now
 			if pppactive:	
-	   # GPRS data sent counter
-	   # ----------------------------------------------------------------------------------
-			   ppp0 = "ifconfig ppp0 | grep -oP '(?<=TX bytes:)[0-9]*'"
-			   p = Popen(ppp0, shell=True, stdout=PIPE)
-			   ppp0tx = p.communicate()[0]
-		       
-			   ppp0 = "ifconfig ppp0 | grep -oP '(?<=RX bytes:)[0-9]*'"
-			   p = Popen(ppp0, shell=True, stdout=PIPE)
-			   ppp0rx = p.communicate()[0]
-	  
-			   r.set("ppp:tx",ppp0tx)
-			   r.set("ppp:rx",ppp0rx)
-			   logger.info("background: ppp data tx:"+str(ppp0tx))
-			   logger.info("background: ppp data rx:"+str(ppp0rx))
-
    	   #---------------------------gprs signal level----------------------------------------
+                           if data_counter_init:
+				   r.set("ppp:old_tx",ppp0tx)
+				   r.set("ppp:old_rx",ppp0rx)
 			   gsm_signallevel = get_gsm_signal_strength()
 			   #print "$#$#$#$#$#$$# %s"%gsm_signallevel
 			   r.set("ppp:gsm_signallevel",gsm_signallevel)
@@ -324,7 +247,6 @@ class Background(threading.Thread):
                logger.exception("An error occured in thread")
 
 		    # this loop runs a bit faster so that ctrl-c exits are fast
->>>>>>> b9c8effe95cd6423dc0d1c337901e650e17236fb
             time.sleep(0.1)
 
 def sigint_handler(signal, frame):
@@ -374,7 +296,7 @@ def shutdown():
         lcd.lcd_display_string( string_lenth("Wait 30s...", 16),1)
         lcd.lcd_display_string( string_lenth("Before Unplug!", 16),2)
         time.sleep(4)
-        subprocess.call(['/home/debian/emonpi/gprs/switch_off_gsm_module.py'])
+        subprocess.call(['/home/debian/gprsAndEmonInstall/switch_off_gsm_module.py'])
         time.sleep(1)
 
         lcd.backlight(0) 											# backlight zero must be the last call to the LCD to keep the backlight off
