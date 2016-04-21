@@ -91,6 +91,8 @@ else
   cd /home/pi/backup
   git checkout master
   ln -s /home/pi/backup/backup/ /var/www/emoncms/Modules/backup
+  echo "Restarting apache web-server"
+  sudo service apache2 restart
 fi
 
 echo
