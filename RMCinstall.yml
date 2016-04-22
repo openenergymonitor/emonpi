@@ -62,10 +62,6 @@
      file: path=/home/debian/emonpi/gprs/gprs_on.sh mode="u+x"
 
 
-   - name: Executable permission is assigned to gprs_disable file
-     file: path=/home/debian/emonpi/gprs/gprs_off.sh mode="u+x"
-
-
    - name: Executable permission is assigned to enable_ttyo4 file
      file: path=/home/debian/emonpi/gprs/enable_ttyo4.sh mode="u+x"
 
