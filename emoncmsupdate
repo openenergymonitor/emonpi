@@ -67,8 +67,7 @@ echo
 if [ -d /home/pi/postprocess ]; then
   echo "git pull /home/pi/postprocess"
   cd /home/pi/postprocess
-  git branch --set-upstream-to=origin/emonpi
-  git branch
+  git checkout emonpi
   git pull
 else
   echo "git clone https://github.com/emoncms/postprocess"
@@ -81,7 +80,6 @@ fi
 if [ -d /home/pi/backup ]; then
   echo "git pull /home/pi/backup"
   cd /home/pi/backup
-  git branch --set-upstream-to=origin/master
   git branch
   git pull
 else
