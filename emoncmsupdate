@@ -135,7 +135,8 @@ echo "Checking cron tab for service runner entry..."
 crontab -l > mycron #write out current root crontab
 # Check crontab entry does not already exist, if not add new entry
 if ! grep -Fxq " * * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1" mycron ; then
-        echo "Add service runner cron entry: * * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1" >> mycron  #echo new cron into cronfile
+        echo "Add service runner cron entry" 
+        echo "* * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1" >> mycron  #echo new cron into cronfile
         crontab mycron #install new cron file
 else
   echo "service runner crontab entry already installed"
