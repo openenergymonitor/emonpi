@@ -4,9 +4,9 @@ Glyn Hudson - January 2016
 
 This guide replaces the imagebuild.md (renamed to old.imagebuild.md) and emonPi install.sh script which has never really worked reliably (renamed to old.install.sh). The guide cites the [Emoncms Raspberry Pi install guides](https://github.com/emoncms/emoncms/tree/master/docs/RaspberryPi) exhaustively compiled by Paul Reed.
 
-[**User docs & setup gide**](https://openenergymonitor.org/emon/node/12288)
+[**User docs & setup guide**](http://guide.openenergymonitor.org)
 
-[**Forum discussion & Changelog**](https://openenergymonitor.org/emon/node/12291)
+[**Pre-built image repository & changelog**](https://github.com/openenergymonitor/emonpi/wiki/emonSD-pre-built-SD-card-Download-&-Change-Log)
 
 
 # Features  
