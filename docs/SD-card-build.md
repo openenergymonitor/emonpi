@@ -8,6 +8,7 @@ This guide replaces the imagebuild.md (renamed to old.imagebuild.md) and emonPi 
 
 [**Pre-built image repository & changelog**](https://github.com/openenergymonitor/emonpi/wiki/emonSD-pre-built-SD-card-Download-&-Change-Log)
 
+***
 
 # Features  
 - Base image **RASPBIAN JESSIE LITE 2015-11-21** (Kernel 4.1)
@@ -16,6 +17,7 @@ This guide replaces the imagebuild.md (renamed to old.imagebuild.md) and emonPi 
 1. Initial setup
 2. Root filesystem read-only with RW data partition (~/data)
 4. Serial port (/dev/ttyAMA0)
+5. Memory Setup
 5. emonPi LCD service
 5. emonHub
 6. Mosquitto MQTT server with authentication
@@ -138,6 +140,10 @@ Reboot then test serial comms with:
 	
 You should see data from emonPi ATmega328, sending serial `v` should result in emonPi returning it's firmware version and config settings. 
 
+# Memory Setup
+
+Append `gpu_mem=16` to `/boot/config.txt` this caps the RAM available to the GPU. Since we are running headless this will give us more RAM at the expence of the GPI
+
 # 4. emonPi LCD service
 
 Enable I2C module, install packages needed for emonPi LCD service `python-smbus i2c-tools python-rpi.gpio python-pip redis-server` and `pip install uptime redis paho-mqtt`, and install emonPi LCD python scrip service to run at boot
@@ -147,6 +153,9 @@ Enable I2C module, install packages needed for emonPi LCD service `python-smbus 
 Restart and test if I2C LCD is detected, it should be on address `0x27`:
 
 	sudo i2cdetect -y 1
+
+
+
 
 # 5. Install mosquitto MQTT & emonHub
 
