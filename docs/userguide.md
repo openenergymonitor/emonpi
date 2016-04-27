@@ -1,4 +1,3 @@
 
-
-[http://openenergymonitor.org/emon/modules/emonpi](http://openenergymonitor.org/emon/modules/emonpi)
+# http://guide.openenergymonitor.org
 
