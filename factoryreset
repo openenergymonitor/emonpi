@@ -124,6 +124,10 @@ echo "Clear bash history"
 history -c
 >~/.bash_history
 
+echo "Clear and re-generate SSH keys"
+sudo rm /home/pi/.ssh/known_hosts
+sudo rm /etc/ssh/ssh_host_*
+sudo dpkg-reconfigure openssh-server
 
 echo
 if [[ "$ans" == "" ]] ; then ans=n;fi
