@@ -3,7 +3,7 @@
 **See continous-sampling branch for continous sampling**
 
 # V2.6 (15/04/16)
- * RF test with latest JeeLib https://github.com/jcw/jeelib/issues/92
+ * [Update to latest JeeLib with RF Fixes ](https://github.com/jcw/jeelib/issues/92) [68f6e42]
  * Remove RF keep alive introduced in V2.5 
 
 Compiled with Arduino 1.6.8 | Hex size: 54.8kB | Sketch uses 19,400 bytes (60%) | Global variables: 947 bytes (46%)
