@@ -140,6 +140,10 @@ Reboot then test serial comms with:
 	
 You should see data from emonPi ATmega328, sending serial `v` should result in emonPi returning it's firmware version and config settings. 
 
+To fix SSHD bug (when using the on board WiFi adapter and NO ethernet). [Forum thread](https://openenergymonitor.org/emon/node/12566). Edit ` /etc/ssh/sshd_config ` and append:
+
+	IPQoS cs0 cs0
+
 # Memory Setup
 
 Append `gpu_mem=16` to `/boot/config.txt` this caps the RAM available to the GPU. Since we are running headless this will give us more RAM at the expence of the GPI
@@ -415,5 +419,3 @@ Wifi Access Point mode is useful when using emonPi without a interent connection
 [Follow guide to install hostpad and DHCP](https://github.com/openenergymonitor/emonpi/blob/master/docs/wifiAP.md)
 
 Including installing start/ stop script to start the AP and also brdige the 3G dongle interface on eth1 to wlan0
-
-
