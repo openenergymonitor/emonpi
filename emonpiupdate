@@ -10,7 +10,7 @@ sudo pip install requests
 
 sudo /etc/init.d/emonhub stop
 
-echo "Start ATmega328 serial upload using avrdude with emonPi_latest.hex"
+echo "Start ATmega328 serial upload using avrdude with latest.hex"
 
 # Discrete Sampling
 echo "Discrete Sampling"

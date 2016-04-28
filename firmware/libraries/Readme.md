@@ -4,7 +4,7 @@
 |  Name | Date  | Version  | Source  | Commit |
 |---|---|---|---|---|
 |  emonLib |  Jan 5th 2015 | N/A  | [source](https://github.com/openenergymonitor/emonlib)  | [7685720](https://github.com/openenergymonitor/EmonLib/commit/7685720ab391b14edb218151c1d5d3ebc1fd1ec1)  |
-|  JeeLib |  10th Sep 2015 | N/A  |  [source](https://github.com/jcw/jeelib) |  [f097c00](https://github.com/jcw/jeelib/commit/f097c0039c926881d80a74bec7a7aa020de610ee) |
+|  JeeLib |  8th April 2016 | N/A  |  [source](https://github.com/jcw/jeelib) |  [68f6e42 ](https://github.com/jcw/jeelib/commit/6f1af25695a51910d2bb8ca0e796a7edda028848e) |
 |  LiquidCrystal_I2C | 29th Nov 2015  | 1.1.2  | [source](https://github.com/marcoschwartz/LiquidCrystal_I2C)  | [6ab83c7](https://github.com/marcoschwartz/LiquidCrystal_I2C/commit/9a4e33e6cdaca805d70e220897d0b59446d52adf)  |
 | OneWire  | 4th March 2016  | N/A  | [source](https://github.com/PaulStoffregen/OneWire)  | [ 57c18c6](https://github.com/PaulStoffregen/OneWire/commit/57c18c6de80c13429275f70875c7c341f1719201)
 | Dallas Temperature |  25th Jan 2016 | V3.7.6   | [source](https://github.com/milesburton/Arduino-Temperature-Control-Library)  | [7e9a2b7](https://github.com/milesburton/Arduino-Temperature-Control-Library/commit/7e9a2b710ae713d0686c3f921c1bbe0b4ebd23fb) |
