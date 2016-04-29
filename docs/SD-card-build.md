@@ -32,6 +32,7 @@ This guide replaces the imagebuild.md (renamed to old.imagebuild.md) and emonPi 
 12. nodeRED
 13. 3G / GSM HiLink Huawei USB modem dongle support
 14. Wifi AP mode
+15. Language Support
 
 
 
@@ -419,3 +420,17 @@ Wifi Access Point mode is useful when using emonPi without a interent connection
 [Follow guide to install hostpad and DHCP](https://github.com/openenergymonitor/emonpi/blob/master/docs/wifiAP.md)
 
 Including installing start/ stop script to start the AP and also brdige the 3G dongle interface on eth1 to wlan0
+
+# 18. Language Support 
+
+```
+sudo apt-get install gettext
+sudo dpkg-reconfigure locales
+```
+Select required languages from the list by presseing [Space], hit [Enter to install], see [language translations supported by Emoncms](https://github.com/emoncms/emoncms/tree/master/Modules/user/locale)
+
+`sudo apache2 restart`
+
+[more info on gettext](https://github.com/emoncms/emoncms/blob/master/docs/gettext.md)
+
+
