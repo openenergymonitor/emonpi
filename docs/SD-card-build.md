@@ -33,6 +33,7 @@ This guide replaces the imagebuild.md (renamed to old.imagebuild.md) and emonPi 
 13. 3G / GSM HiLink Huawei USB modem dongle support
 14. Wifi AP mode
 15. Language Support
+16. Symlink scripts 
 
 
 
@@ -433,4 +434,8 @@ Select required languages from the list by presseing [Space], hit [Enter to inst
 
 [more info on gettext](https://github.com/emoncms/emoncms/blob/master/docs/gettext.md)
 
+# 19 Symlink scripts 
 
+emonSDexpand:
+
+`sudo ln -s /home/pi/usefulscripts/sdpart/sdpart_imagefile /sbin/emonSDexpand`
