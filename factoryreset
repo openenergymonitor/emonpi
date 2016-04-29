@@ -56,7 +56,7 @@ else
    /home/pi/emonpi/./service-runner-update.sh
 fi
 echo
-
+rpi-rw
 sudo /etc/init.d/emonhub stop
 sudo /etc/init.d/emoncms-nodes-service stop
 sudo /etc/init.d/feedwriter stop
