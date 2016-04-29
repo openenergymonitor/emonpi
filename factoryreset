@@ -129,6 +129,12 @@ sudo rm /home/pi/.ssh/known_hosts
 sudo rm /etc/ssh/ssh_host_*
 sudo dpkg-reconfigure openssh-server
 
+echo "Ensure tracking latest Emoncms stable branch"
+cd /var/www/emoncms
+git checkout stable
+git pull
+
+
 echo
 if [[ "$ans" == "" ]] ; then ans=n;fi
 if [[ "$ans" == "y" ]] ;then
