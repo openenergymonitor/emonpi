@@ -50,6 +50,7 @@ echo "get latest updates"
 echo
 touch /tmp/emonpiupdate 
 if [[ $image == "old" ]]
+then
    ./update
 else
    ./service-runner-update
