@@ -45,8 +45,10 @@ git pull
 cd /var/www/emoncms
 git checkout stable
 git pull
+
 echo "get latest updates"
 echo
+touch /tmp/emonpiupdate 
 if [[ $image == "old" ]]
    ./update
 else
