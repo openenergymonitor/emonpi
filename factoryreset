@@ -35,6 +35,25 @@ fi
 ans=n
 read -p "Shutdown when complete (y/n)? Else rebooting in 5s " -t 5 ans
 
+
+
+
+echo "Ensure tracking latest Emoncms & emonpi stable branch"
+cd /home/pi/emonpi
+git checkout master
+git pull
+cd /var/www/emoncms
+git checkout stable
+git pull
+echo "get latest updates"
+echo
+if [[ $image == "old" ]]
+   ./update
+else
+   ./service-runner-update
+fi
+echo
+
 sudo /etc/init.d/emonhub stop
 sudo /etc/init.d/emoncms-nodes-service stop
 sudo /etc/init.d/feedwriter stop
@@ -129,10 +148,7 @@ sudo rm /home/pi/.ssh/known_hosts
 sudo rm /etc/ssh/ssh_host_*
 sudo dpkg-reconfigure openssh-server
 
-echo "Ensure tracking latest Emoncms stable branch"
-cd /var/www/emoncms
-git checkout stable
-git pull
+
 
 
 echo
