@@ -53,7 +53,7 @@ if [[ $image == "old" ]]
 then
    /home/pi/emonpi/./update
 else
-   /home/pi/emonpi/./service-runner-update
+   /home/pi/emonpi/./service-runner-update.sh
 fi
 echo
 
