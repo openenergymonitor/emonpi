@@ -142,3 +142,12 @@ else
   echo "service runner crontab entry already installed"
 fi
 sudo rm mycron
+
+# Check if double service runner (with space) entry exits, if so remove it
+crontab -l > mycron
+if grep -Fxq " * * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1" mycron ; then
+        echo "Remove duplicate service runner entry"
+        sed -i  "/\s\* \* \* \* \* \/home\/pi\/emonpi\/service-runner >> \/var\/log\/service-runner.log 2>&1/d" ./mycron
+        crontab mycron
+	sudo rm mycron
+fi
