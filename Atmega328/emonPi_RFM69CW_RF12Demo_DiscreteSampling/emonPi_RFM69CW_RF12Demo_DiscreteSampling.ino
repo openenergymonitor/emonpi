@@ -301,7 +301,7 @@ void loop()
  //***********************for battery voltage reading********************************************
    battery_value = analogRead(v_battery_pin);
    delay(100);
-   vout = (battery_value * 5) / 1024.0; 
+   vout = (battery_value * 5) / 1024.0;     //change A/D value into voltage = analogread *5/1024  so the reading of 1 for the A/D = 0.0048mVA 
    vin_new=vout/(R2/(R1+R2));
 
   unsigned long currentMillis = millis();
