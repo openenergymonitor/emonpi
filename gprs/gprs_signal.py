@@ -17,7 +17,7 @@ def get_gsm_signal_strength(baud=115200,port='/dev/ttyO4',bytesize=8,parity='N',
 
         ser = serial.Serial(port=port, baudrate=baud, bytesize=bytesize,parity=parity, stopbits=stopbits, timeout=timeout)
         #print "DISABLING GPRS"
-        subprocess.call(['/home/debian/gprsAndEmonInstall/gprs_off.sh'])
+        subprocess.call(['/home/debian/emonpi/gprs/gprs_off.sh'])
         time.sleep(1)
         cmd="AT+CSQ\r"
         ser.write(cmd.encode())
@@ -40,7 +40,7 @@ def get_gsm_signal_strength(baud=115200,port='/dev/ttyO4',bytesize=8,parity='N',
 
         #print "ENNALBING GPRS"
         time.sleep(1)
-        subprocess.call(['/home/debian/gprsAndEmonInstall/gprs_on.sh'])
+        subprocess.call(['/home/debian/emonpi/gprs/gprs_on.sh'])
 
         return result
         #time.sleep(1)

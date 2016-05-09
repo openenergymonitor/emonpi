@@ -66,6 +66,8 @@ else
         sudo echo "/dev/ttyO4" >> /etc/ppp/peers/fona
 fi
 
+cp /home/debian/emonpi/gprs/gprs_signal.py /home/debian/emonpi/lcd/ 
+
 
 stty -F /dev/ttyO2 9600
 
