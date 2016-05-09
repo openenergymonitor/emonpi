@@ -163,7 +163,7 @@ Restart and test if I2C LCD is detected, it should be on address `0x27`:
 
 
 
-# 5. Install mosquitto MQTT & emonHub
+# 5. Install mosquitto MQTT
 
 ## Install & configure Mosquitto MQTT server, PHP MQTT
 ```
@@ -197,13 +197,19 @@ Create a password file for MQTT user `emonpi` with:
 
 Enter password `emonpimqtt2016` (default)
 
-Test by publishing to a topic:
+**Test MQTT**
 
-	mosquitto_pub -u 'emonpi' -P 'emonpimqtt2016' -t 'test/topic' -m 'helloWorld'
-
-While in another shell window subscribe to that topic, if all is working we should see `helloWord`
+Open *another shell window* to subscribe to a test topic:
 
 	mosquitto_sub -v -u 'emonpi' -P 'emonpimqtt2016' -t 'test/topic'
+
+Publish to the test topic :
+ 
+	mosquitto_pub -u 'emonpi' -P 'emonpimqtt2016' -t 'test/topic' -m 'helloWorld'
+	
+If all is working we should see `helloWord`
+
+##  Install  emonHub
 
 Install other EmonHub dependencies if they have not been installed already by emonPi LCD service
 ```
