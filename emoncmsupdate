@@ -9,6 +9,54 @@ date
 
 echo
 
+#########################################################################################
+
+uid=`id -u`
+echo "EUID: $uid"
+
+if [ "$uid" = "0" ] ; then
+    # update is being ran mistakenly as root, need to remove all sudo crontab service runner entries
+    echo "update running as root: remove sudo crontab service runner entries"
+    crontab -l > mycron
+    if grep -Fxq " * * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1" mycron ; then
+        sed -i  "/\s\* \* \* \* \* \/home\/pi\/emonpi\/service-runner >> \/var\/log\/service-runner.log 2>&1/d" ./mycron
+    fi
+    if grep -Fxq "* * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1" mycron ; then
+        sed -i  "/\* \* \* \* \* \/home\/pi\/emonpi\/service-runner >> \/var\/log\/service-runner.log 2>&1/d" ./mycron
+    fi
+    crontab mycron
+    rm mycron
+    echo "switching to Pi user & restarting script"
+    su -c ./$0 pi
+    exit
+fi
+
+#########################################################################################
+
+# Add backup module service-runner
+echo "Checking cron tab for service runner entry..."
+crontab -l > mycron
+# Check crontab entry does not already exist, if not add new entry
+if ! grep -Fxq "* * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1" mycron ; then
+        echo "Add service runner cron entry"
+        echo "* * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1" >> mycron
+        crontab mycron
+else
+  echo "service runner crontab entry already installed"
+fi
+rm mycron
+
+# Check if double service runner (with space) entry exits, if so remove it
+crontab -l > mycron
+if grep -Fxq " * * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1" mycron ; then
+        echo "Remove duplicate service runner entry"
+        sed -i  "/\s\* \* \* \* \* \/home\/pi\/emonpi\/service-runner >> \/var\/log\/service-runner.log 2>&1/d" ./mycron
+        crontab mycron
+fi
+rm mycron
+
+#########################################################################################
+
 echo "git pull /var/www/emoncms"
 cd /var/www/emoncms
 git branch
@@ -49,7 +97,7 @@ cd /var/www/emoncms/Modules/dashboard
 git branch
 git pull
 
-echo 
+echo
 
 if [ -d /var/www/emoncms/Modules/graph ]; then
   echo "git pull /var/www/emoncms/Modules/graph"
@@ -62,7 +110,7 @@ else
   git clone https://github.com/emoncms/graph
 fi
 
-echo 
+echo
 
 if [ -d /home/pi/postprocess ]; then
   echo "git pull /home/pi/postprocess"
@@ -115,7 +163,7 @@ if [ -f /etc/init.d/emoncms-nodes-service ]; then
   sudo /etc/init.d/emoncms-nodes-service restart
 fi
 
-echo 
+echo
 if [ -f /etc/init.d/openhab ]; then
   sudo /etc/init.d/openhab restart
 fi
@@ -127,27 +175,6 @@ if [ -f /etc/init.d/mqtt_input ]; then
   sudo /etc/init.d/mqtt_input restart
 fi
 echo
+echo "set log rotate config owner to root"
+sudo chown root:root /etc/logrotate.conf
 echo "Restarting Services..."
-
-# Add backup module service-runner
-echo "Checking cron tab for service runner entry..."
-# Add root crontab entry to run wifi check script ever 5min
-crontab -l > mycron #write out current root crontab
-# Check crontab entry does not already exist, if not add new entry
-if ! grep -Fxq "* * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1" mycron ; then
-        echo "Add service runner cron entry" 
-        echo "* * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1" >> mycron  #echo new cron into cronfile
-        crontab mycron #install new cron file
-else
-  echo "service runner crontab entry already installed"
-fi
-sudo rm mycron
-
-# Check if double service runner (with space) entry exits, if so remove it
-crontab -l > mycron
-if grep -Fxq " * * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1" mycron ; then
-        echo "Remove duplicate service runner entry"
-        sed -i  "/\s\* \* \* \* \* \/home\/pi\/emonpi\/service-runner >> \/var\/log\/service-runner.log 2>&1/d" ./mycron
-        crontab mycron
-	sudo rm mycron
-fi

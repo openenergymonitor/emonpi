@@ -15,8 +15,11 @@ touch $LOCK
 # Make FS RW
 rpi-rw
 
+echo
+echo "EUID: $EUID"
+
 # Clear log update file
-cat /dev/null >  /home/pi/data/emonpiupdate.log
+cp /home/pi/data/emonpiupdate.log /home/pi/data/emonpiupdate2.log
 
 # Stop emonPi LCD servcice
 sudo /etc/init.d/emonPiLCD stop
