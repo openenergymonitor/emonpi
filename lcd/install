@@ -9,7 +9,7 @@ echo "Enable I2C module"
 #i2c2: pins P9 19,20 (and 21,22)
 
 #---------GPRR signal strength file------
-sudo cp /home/debian/gprsAndEmonInstall/gprs_signal.py /home/debian/emonpi/lcd/gprs_signal.py
+sudo cp /home/debian/emonpi/gprs/gprs_signal.py /home/debian/emonpi/lcd/gprs_signal.py
 
 cd /sys/devices/bone_capemgr.9/
 file=slots
