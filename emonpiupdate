@@ -3,7 +3,9 @@ echo
 echo "================================="
 echo "EmonPi update started"
 echo "================================="
-
+echo
+echo "EUID: $EUID"
+echo
 # Needed for emonPi LCD Hi-Link 3G dongle support
 sudo pip install xmltodict
 sudo pip install requests

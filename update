@@ -15,6 +15,9 @@ touch $LOCK
 # Make FS RW
 rpi-rw
 
+echo
+echo "EUID: $EUID"
+
 # Clear log update file
 cat /dev/null >  /home/pi/data/emonpiupdate.log
 
