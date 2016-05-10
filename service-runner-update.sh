@@ -10,7 +10,7 @@ echo
 echo "EUID: $EUID"
 
 # Clear log update file
-cp /home/pi/data/emonpiupdate.log /home/pi/data/emonpiupdate2.log
+cat /dev/null >  /home/pi/data/emonpiupdate.log
 
 # Stop emonPi LCD servcice
 sudo service emonPiLCD stop
