@@ -45,6 +45,15 @@ def get_gsm_signal_strength(baud=115200,port='/dev/ttyO4',bytesize=8,parity='N',
         return result
         #time.sleep(1)
 
+def switch_off_gsm():
+   ser = serial.Serial(port='/dev/ttyO4', baudrate=115200, bytesize=8,parity='N', stopbits=1, timeout=5)
+
+   subprocess.call(['/home/debian/emonpi/gprs/gprs_off.sh'])
+   time.sleep(1)
+
+   cmd="AT+CPOWD=1\r"
+   ser.write(cmd.encode())
+
 if __name__ == '__main__':
         gprs=get_gsm_signal_strength()
         previous_signal=gprs

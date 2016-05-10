@@ -6,8 +6,7 @@ import time
 from datetime import datetime
 from datetime import timedelta
 #from gprs_signal import previous_signalf
-#from  gprs_signal import get_gsm_signal_strength, switch_off_gsm
-from  gprs_signal import get_gsm_signal_strength
+from  gprs_signal import get_gsm_signal_strength, switch_off_gsm
 from uptime import uptime
 import threading
 import sys
