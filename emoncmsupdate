@@ -27,6 +27,8 @@ if [ "$uid" = "0" ] ; then
     crontab mycron
     rm mycron
     echo "switching to Pi user & restarting script"
+    echo
+    echo "**MANUAL SYSTEM REBOOT REQUIRED**"
     su -c ./$0 pi
     exit
 fi
