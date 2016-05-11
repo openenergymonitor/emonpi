@@ -29,6 +29,8 @@ if [ "$uid" = "0" ] ; then
     echo "switching to Pi user & restarting script"
     echo
     echo "**MANUAL SYSTEM REBOOT REQUIRED**"
+    echo 
+    echo "Please shutdown and reboot emonPi then run Update again"
     su -c ./$0 pi
     exit
 fi
