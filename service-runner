@@ -9,6 +9,9 @@ flock -n 200 || exit 1
 pid=$$
 echo $pid 1>&200
 
+# Set permissions to logfile
+sudo chown pi $logfile
+
 while :
 do
     for flag in /tmp/emoncms-flag*; do
