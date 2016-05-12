@@ -52,7 +52,8 @@ SHUTDOWN_TIME =3  # Shutdown after 3 second press
 # ------------------------------------------------------------------------------------
 import logging
 import logging.handlers
-uselogfile = False
+# NOTE this is during pilots remove this in future or move to proper log management
+uselogfile = True
 
 mqttc = False
 mqttConnected = False
@@ -105,7 +106,7 @@ class Background(threading.Thread):
         last5h = time.time() - 18000   #update the GPRS signal strength after 5min
         logger.info("Starting background thread")
         # Loop until we stop is false (our exit signal)
-        
+
         pppactive = 0
         wlanactive = 0
         ethactive = 0
@@ -154,21 +155,21 @@ class Background(threading.Thread):
 			   ppp0 = "ifconfig ppp0 | grep -oP '(?<=TX bytes:)[0-9]*'"
 			   p = Popen(ppp0, shell=True, stdout=PIPE)
 			   ppp0tx = p.communicate()[0]
-			   
-                           oldtx = r.get("ppp:old_tx")	
-                           oldrx = r.get("ppp:old_rx")	
-                                               
+
+                           oldtx = r.get("ppp:old_tx")
+                           oldrx = r.get("ppp:old_rx")
+
 			   ppp0 = "ifconfig ppp0 | grep -oP '(?<=RX bytes:)[0-9]*'"
 			   p = Popen(ppp0, shell=True, stdout=PIPE)
 			   ppp0rx = p.communicate()[0]
-	            
+
                            if oldtx and oldrx:
                               oldtx = int(oldtx)
                               oldrx = int(oldrx)
                               ppp0tx = oldtx + int(ppp0tx)
                               ppp0rx = oldrx + int(ppp0rx)
 
-                           
+
 			   r.set("ppp:tx",ppp0tx)
 			   r.set("ppp:rx",ppp0rx)
 			   logger.info("background: ppp data tx:"+str(ppp0tx))
@@ -199,7 +200,7 @@ class Background(threading.Thread):
 			ppp0 = "ip addr show ppp0 | grep inet | awk '{print $2}' | cut -d/ -f1 | head -n1"
 			p = Popen(ppp0, shell=True, stdout=PIPE)
 			ppp0ip = p.communicate()[0][:-1]
-			
+
 
 			pppactive = 1
 			if ppp0ip=="" or ppp0ip==False:
@@ -231,7 +232,7 @@ class Background(threading.Thread):
 
 		    if (now - last5h) >= 18000.0:
 			last5h = now
-			if pppactive:	
+			if pppactive:
    	   #---------------------------gprs signal level----------------------------------------
                            if data_counter_init:
 				   r.set("ppp:old_tx",ppp0tx)
@@ -240,7 +241,7 @@ class Background(threading.Thread):
 			   #print "$#$#$#$#$#$$# %s"%gsm_signallevel
 			   r.set("ppp:gsm_signallevel",gsm_signallevel)
 			   logger.info("background: ppp "+str(gsm_signallevel))
-			   
+
             except Exception,e:
                logger.exception("An error occured in thread")
 
@@ -380,7 +381,7 @@ buttonPress_time = time.time()
 while 1:
 
     logging.info("Starting main loop")
-  
+
     if background.is_alive():
        logging.info("thread is still alive")
     else:
