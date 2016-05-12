@@ -31,7 +31,7 @@ if [ "$uid" = "0" ] ; then
     echo "**MANUAL SYSTEM REBOOT REQUIRED**"
     echo 
     echo "Please shutdown and reboot emonPi then run Update again"
-    su -c ./$0 pi
+    su -c $0 pi
     exit
 fi
 
