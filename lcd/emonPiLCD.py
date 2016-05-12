@@ -80,6 +80,7 @@ class IPAddress(object):
 
 
 def shutdown(lcd):
+    lcd.backlight = 1
     lcd[0] = "emonPi Shutdown"
     for x in range(1, 6):
         lcd[1] = ''.join(str(y) + '..' for y in range(5, 5-x, -1))
