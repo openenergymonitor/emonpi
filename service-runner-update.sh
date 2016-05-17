@@ -7,7 +7,7 @@
 rpi-rw
 
 echo
-echo "EUID: $EUID"
+
 
 # Clear log update file
 cat /dev/null >  /home/pi/data/emonpiupdate.log
@@ -20,6 +20,7 @@ sudo /home/pi/emonpi/lcd/./emonPiLCD_update.py
 
 
 echo "Starting emonPi Update >"
+echo "EUID: $EUID"
 echo
 # Date and time
 date
