@@ -23525,9 +23525,9 @@ Sensors</text>
 <text x="-83.82" y="190.5" size="1.778" layer="91">Design is provided "AS IS" and "WITH ALL FAULTS. OpenEnergyMonitor DISCLAIMS ALL OTHER WARRANTIES, EXPRESS OR IMPLIED,</text>
 <text x="-83.82" y="194.31" size="1.778" layer="91">Hardware design files are licensed under the Creative Commons Attribution-ShareAlike 3.0 Unported License</text>
 <text x="-97.79" y="396.24" size="5.08" layer="91">emonTx V3.4.1</text>
-<text x="1.27" y="360.68" size="1.778" layer="91">ADC 5</text>
+<text x="1.27" y="360.68" size="1.778" layer="91">D19 / ADC 5 DS18B20 PWR</text>
 <text x="1.27" y="363.22" size="1.778" layer="91">D5 - one-wire data</text>
-<text x="1.27" y="355.6" size="1.778" layer="91">ADC 6</text>
+<text x="1.27" y="355.6" size="1.778" layer="91">D3 - IRQ1 PQM</text>
 <text x="94.615" y="370.84" size="3.81" layer="91">ATMEGA328</text>
 <text x="173.99" y="381.635" size="3.81" layer="91">RFM12B
 RFM1269CW</text>
@@ -23540,9 +23540,6 @@ ADC6 / Dig20
 </text>
 <text x="167.894" y="271.018" size="5.08" layer="91">DIP
 Switch</text>
-<text x="0" y="347.98" size="1.778" layer="91">ADC 7</text>
-<text x="0" y="353.06" size="1.778" layer="91">GND</text>
-<text x="0" y="345.44" size="1.778" layer="91">+5V</text>
 </plain>
 <instances>
 <instance part="CT4" gate="1" x="-77.47" y="219.71" rot="R180"/>
@@ -24567,8 +24564,15 @@ Switch</text>
 <junction x="135.89" y="331.47"/>
 </segment>
 <segment>
+<pinref part="TP2" gate="G$1" pin="TP"/>
+<wire x1="-12.7" y1="355.6" x2="-17.78" y2="355.6" width="0.1524" layer="91"/>
+<pinref part="J5" gate="G$1" pin="1"/>
+<junction x="-12.7" y="355.6"/>
+<label x="-22.86" y="355.6" size="1.778" layer="95"/>
+</segment>
+<segment>
 <pinref part="U$13" gate="G$1" pin="6"/>
-<wire x1="16.51" y1="311.404" x2="13.97" y2="311.404" width="0.1524" layer="91"/>
+<wire x1="16.51" y1="311.404" x2="-3.81" y2="311.404" width="0.1524" layer="91"/>
 <label x="-6.35" y="311.404" size="1.778" layer="95"/>
 </segment>
 </net>
@@ -24716,11 +24720,9 @@ Switch</text>
 <junction x="135.89" y="346.71"/>
 </segment>
 <segment>
-<pinref part="TP2" gate="G$1" pin="TP"/>
-<pinref part="J5" gate="G$1" pin="1"/>
-<wire x1="-12.7" y1="355.6" x2="-17.78" y2="355.6" width="0.1524" layer="91"/>
-<junction x="-12.7" y="355.6"/>
-<label x="-22.86" y="355.6" size="1.778" layer="95"/>
+<pinref part="U$13" gate="G$1" pin="8"/>
+<wire x1="16.51" y1="306.324" x2="-6.35" y2="306.324" width="0.1524" layer="91"/>
+<label x="-6.35" y="306.324" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="A7" class="0">
@@ -24842,7 +24844,7 @@ Switch</text>
 <label x="258.064" y="323.596" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="A5" class="0">
+<net name="ADC5" class="0">
 <segment>
 <pinref part="U1_TQFP" gate="G$1" pin="PC5(ADC5/SCL)"/>
 <pinref part="U1" gate="G$1" pin="PC5(ADC5/SCL)"/>
