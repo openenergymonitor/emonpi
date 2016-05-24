@@ -1,7 +1,0 @@
-#!/bin/bash
-
-sudo ln /home/pi/emonpi/shutdownpi/shutdownpi /usr/bin/shutdownpi
-sudo ln /home/pi/emonpi/shutdownpi/shutdownpi.sh /etc/init.d/shutdownpi.sh
-sudo update-rc.d shutdownpi.sh defaults
-sudo service shutdownpi.sh start 
-
