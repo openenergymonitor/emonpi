@@ -25,6 +25,9 @@ echo
 # Date and time
 date
 echo
+image_version=$(ls /boot | grep emonSD)
+echo "$image_version"
+echo
 
 echo "git pull /home/pi/emonpi"
 cd /home/pi/emonpi
