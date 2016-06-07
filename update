@@ -15,8 +15,7 @@ touch $LOCK
 # Make FS RW
 rpi-rw
 
-echo
-echo "EUID: $EUID"
+
 
 # Clear log update file
 cat /dev/null >  /home/pi/data/emonpiupdate.log
@@ -33,7 +32,11 @@ echo
 # Date and time
 date
 echo
-
+echo "EUID: $EUID"
+echo
+image_version=$(ls /boot | grep emonSD)
+echo "$image_version"
+echo
 echo "git pull /home/pi/emonpi"
 cd /home/pi/emonpi
 git pull
