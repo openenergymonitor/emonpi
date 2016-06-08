@@ -45,7 +45,7 @@ install:
     - platformio lib install 576 --version="4bb48bd648"
     
 script:
-    - cd firmware && platformio run
+    - platformio run -d firmware
 
 # Template #2: The project is intended to by used as a library with examples
 #
