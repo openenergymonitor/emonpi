@@ -2,7 +2,7 @@
 
 ## Install patformio if needed
 
-    pip install platformio
+    sudo pip install platformio
     
 
 ## Install libs
