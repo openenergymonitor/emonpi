@@ -1,23 +1,23 @@
-
-byte check_for_DS18B20()                                      //Setup and for presence of DS18B20, return number of sensors 
+//Setup and for presence of DS18B20, return number of sensors
+byte check_for_DS18B20()
 {
   sensors.begin();
-  numSensors=(sensors.getDeviceCount()); 
+  numSensors=(sensors.getDeviceCount());
   
   byte j=0;                                        // search for one wire devices and
                                                    // copy to device address arrays.
   while ( (j < numSensors) && (sensors.getAddress(allAddress[j], j)) )  j++;
   for(byte j=0;j<numSensors;j++) sensors.setResolution(allAddress[j], TEMPERATURE_PRECISION);      // and set the a to d conversion resolution of each.
   
-  if (numSensors==0) DS18B20_STATUS=0; 
+  if (numSensors==0) DS18B20_STATUS=0;
     else DS18B20_STATUS=1;
 
   if (numSensors>MaxOnewire) numSensors=MaxOnewire;     //If more sensors are detected than allowed only read from max allowed number
     
- return numSensors;   
+ return numSensors;
 }
 
-int get_temperature(byte sensor)                
+int get_temperature(byte sensor)
 {
     {
     
