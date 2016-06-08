@@ -43,6 +43,9 @@ install:
     - platformio lib install 116 --version="7685720ab3"
     # LiquidCrystal_I2C
     - platformio lib install 576 --version="4bb48bd648"
+    # OneWire:
+    - platformio lib install 1 --version="57c18c6de8"
+    
 script:
     - cd firmware && platformio run
 

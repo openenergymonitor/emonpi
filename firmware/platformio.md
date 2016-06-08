@@ -29,6 +29,9 @@ LiquidCrystal_I2C:
 
     platformio lib install 576 --version="4bb48bd648"
 
+OneWire:
+    platformio lib install 1 --version="57c18c6de8"
+
 ## Compile
   
     $ platformio run
