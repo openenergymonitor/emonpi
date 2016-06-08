@@ -1,9 +1,8 @@
-emonPi
-======
-
-emonPi - Raspberry Pi Energy Monitoring Unit
+# emonPi
 
 [![Build Status](https://travis-ci.org/openenergymonitor/emonpi.svg?branch=master)](https://travis-ci.org/openenergymonitor/emonpi)
+
+## Raspberry Pi based energy Monitoring Unit
 
 ![emonpi_diagram](docs/emonPi_System_Diagram.png)
 
