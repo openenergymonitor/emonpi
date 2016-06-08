@@ -3,6 +3,7 @@ emonPi
 
 emonPi - Raspberry Pi Energy Monitoring Unit
 
+[![Build Status](https://travis-ci.org/openenergymonitor/emonpi.svg?branch=master)](https://travis-ci.org/openenergymonitor/emonpi)
 
 ![emonpi_diagram](docs/emonPi_System_Diagram.png)
 
@@ -20,7 +21,7 @@ emonPi - Raspberry Pi Energy Monitoring Unit
 [Technical Software Stack Docs](https://github.com/openenergymonitor/emonpi/blob/master/docs/software.md)
 
 
-## Open-Hardware: 
+## Open-Hardware:
 
 [Schematic & Board CAD Design Files](https://github.com/openenergymonitor/Hardware/tree/master/emonPi)
 
