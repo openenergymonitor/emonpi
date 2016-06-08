@@ -19,18 +19,16 @@ dht22:
 
 Dallas Temperature Control:
 
-    platformio lib install 252 --version="3.7.7"
+    platformio lib install 54 --version="3.7.7"
     
 emonlib:
 
-    platformio lib install 116 --version="7685720ab3"
+    platformio lib install 116 --version="1.0"
 
 LiquidCrystal_I2C:
 
     platformio lib install 576 --version="4bb48bd648"
 
-OneWire:
-    platformio lib install 1 --version="57c18c6de8"
 
 ## Compile
   
