@@ -291,6 +291,19 @@ Follow [Raspberry Pi Emoncms Low-Write guide](https://github.com/emoncms/emoncms
  	*  `sudo nano /etc/apache2/envvars`
  	*  Ensure `export APACHE_LOG_DIR=/var/log/apache2/$SUFFIX`
 
+* [Reduce garbage in syslog due to Raspbian bug](https://openenergymonitor.org/emon/node/12566):
+
+	* Edit the `/etc/rsyslog.conf` and comment out the last 4 lines that use xconsole:
+
+```
+#daemon.*;mail.*;\
+
+#       news.err;\
+
+#       *.=debug;*.=info;\
+
+#       *.=notice;*.=warn       |/dev/xconsole
+```
 
 No need to [Enable Low-write mode in emoncms](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/Low-write-mode.md#enable-low-write-mode-in-emoncms) since these changes to `settings.php` are already set in `default.emonpi.settings.php` that we installed earlier.
 
@@ -442,6 +455,10 @@ Select required languages from the list by presseing [Space], hit [Enter to inst
 
 # 19 Symlink scripts 
 
-emonSDexpand:
+### emonSDexpand:
 
 `sudo ln -s /home/pi/usefulscripts/sdpart/sdpart_imagefile /sbin/emonSDexpand`
+
+### Fstab: 
+
+`sudo ln -s /home/pi/emonpi/fstab /etc/fstab`

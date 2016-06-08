@@ -40,3 +40,18 @@ Enter "sudo reboot" to restart the pi and now the I2C pins will be available to 
  	$ sudo i2cdetect -y 1
 
 Use port 1 for 512Mb RAM pi (rev2) or port 0 for older 256Mb RAM pi (rev1)
+
+Expected output:
+
+```
+pi@emonpi:~ $  sudo i2cdetect -y 1
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+00:          -- -- -- -- -- -- -- -- -- -- -- -- -- 
+10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+20: -- -- -- -- -- -- -- 27 -- -- -- -- -- -- -- -- 
+30: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+40: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+70: -- -- -- -- -- -- -- --   
+```
