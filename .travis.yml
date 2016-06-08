@@ -33,17 +33,6 @@ cache:
         - "~/.platformio"
 install:
     - pip install -U platformio
-    # jeelib
-    - platformio lib install 252 --version="e70c9d9f4e"
-    # dht22
-    - platformio lib install 19 --version="09344416d2"
-    # Dalls-temperature
-    - platformio lib install 54 --version="3.7.7"
-    # emonlib
-    - platformio lib install 116 --version="1.0"
-    # LiquidCrystal_I2C
-    - platformio lib install 576 --version="4bb48bd648"
-    
 script:
     - platformio run -d firmware
 
