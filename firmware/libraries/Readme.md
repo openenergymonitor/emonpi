@@ -12,7 +12,9 @@
 
 # Installing emonPi Arduino Libraries
 
-## Git Sub Modules
+## Using Git Sub Modules
+
+### [See Blog Post](https://blog.openenergymonitor.org/2016/04/Git-Sub-Modules/)
 
 The Arduino librarys used by the emonPi firmware uses [git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules) to link the github librarys (at a specific version) to the emonPi firmware.
 
@@ -25,7 +27,7 @@ After cloning or checking out the repo on further step is needed to pull in the 
 
 ## Arduino IDE setup
 
-**Tested with Arduino 1.6.8 64Bit**
+**Tested with Arduino 1.6.8**
 
 To tell Arduino IDE to use the libraries in `emonpi/firmware/libraries` we need to set the **Arduino IDE Sketchbook location** to `*<localpath>*/emonpi/firmware` then restart the Arduino IDE.
 
