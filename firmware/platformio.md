@@ -11,7 +11,7 @@ Platformoio does not using the libraries in firmware/librarys instead we can ins
 
 jeeib:
 
-    platformio lib install 252 --version="e70c9d9f4e
+    platformio lib install 252 --version="e70c9d9f4e"
 
 dht22:
 
