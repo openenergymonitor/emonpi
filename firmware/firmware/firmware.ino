@@ -50,6 +50,10 @@ emonhub.conf node decoder:
 #define emonTxV3                                                      // Tell emonLib this is the emonPi V3 - don't read Vcc assume Vcc = 3.3V as is always the case on emonPi eliminates bandgap error and need for calibration http://harizanov.com/2013/09/thoughts-on-avr-adc-accuracy/
 #define RF69_COMPAT 1                                                 // Set to 1 if using RFM69CW or 0 is using RFM12B
 
+extern void emonPi_startup();                                         // Add function decleration from sperate .ino to make compatible with platformio compiler https://github.com/platformio/platformio/issues/130#issuecomment-224353071
+extern void send_emonpi_serial(); 
+extern byte check_for_DS18B20();
+
 #include <JeeLib.h>                                                   // https://github.com/openenergymonitor/jeelib
 #include <avr/pgmspace.h>
 #include <util/parity.h>
