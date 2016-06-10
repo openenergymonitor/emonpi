@@ -20,4 +20,4 @@ deploy:
   overwrite: true
   api_key:
     secure: VYjeZ8A9tqeO3x82okTj4z2TV1yQlqe61pcvWWCrxc9wGejSw3flYO0uN/me2MMApm6pPVYui3HAZusbxdi0hkW9J6R65wpacXjaXtVG+MIy7npH6ztPK9Q4GA+Rt2Yj89fyqINL4YAZYhaWpV/7e031CwhwEWdP3qj/4moYNmWFP0vE4HsRybX+4gNcEfH6kX+/Fh22aauxTHgZlidfl6nr5n1Np/ExXoLvMMFb/R3HF6l4pJKgpYcVrX3afm+E3PLkBuO+WXysF3/2Wz/XgpcHX7Gkk5/SulTfhZn1HJLCPdtwZsHoRsx/427OrrUkyASts0OYVOkxZJBggaOmVF/EZWwedtFxxP4cKQmneO9jTkO5OxYgPdWZsQx/FB6y8hFc/3VTB4eT0WG7NH3+SsMou8Nc3yoqC8MOOPu3u1xbCzS4UgPI3zjDyQvuTSkKVELnlgTA5FQ/XPgeZpEfBblRFQHFUIkhSmmwVngjovlgh5lGlXBo/B8JBCd30b67zGRdAA1pv17MyFIBSyQuVjZn81kEfCPlxrHOPExBhMg92+RWS1/RrV0ZjlQsu1o5DYBSUlqQQ4S7GsUM2IiVweuU3lV3ZygEySWftVnvbioGd9jPsz+Y+PyMNQL9B3wNxqqrYHb1N0cBdbv+0IpHiQBw+TM9hzwoh9l5GCCWMww=
-     file: ".pioenvs/emonpi_deploy/firmware.bin"
+  file: ".pioenvs/emonpi_deploy/firmware.bin"
