@@ -1,60 +1,23 @@
-# Continuous Integration (CI) is the practice, in software
-# engineering, of merging all developer working copies with a shared mainline
-# several times a day < http://docs.platformio.org/en/latest/ci/index.html >
-#
-# Documentation:
-#
-# * Travis CI Embedded Builds with PlatformIO
-#   < https://docs.travis-ci.com/user/integration/platformio/ >
-#
-# * PlatformIO integration with Travis CI
-#   < http://docs.platformio.org/en/latest/ci/travis.html >
-#
-# * User Guide for `platformio ci` command
-#   < http://docs.platformio.org/en/latest/userguide/cmd_ci.html >
-#
-#
-# Please choice one of the following templates (proposed below) and uncomment
-# it (remove "# " before each line) or use own configuration according to the
-# Travis CI documentation (see above).
-#
-
-
-#
-# Template #1: General project. Test it using existing `platformio.ini`.
-#
-
 language: python
 python:
-    - "2.7"
+- '2.7'
 sudo: false
 cache:
-    directories:
-        - "~/.platformio"
+  directories:
+  - "~/.platformio"
 install:
-    - pip install -U platformio
+- pip install -U platformio
 script:
-    - platformio run -d firmware
+- platformio run -d firmware -e emonpi_deploy
 
-# Template #2: The project is intended to by used as a library with examples
-#
-
-# language: python
-# python:
-#     - "2.7"
-#
-# sudo: false
-# cache:
-#     directories:
-#         - "~/.platformio"
-#
-# env:
-#     - PLATFORMIO_CI_SRC=path/to/test/file.c
-#     - PLATFORMIO_CI_SRC=examples/file.ino
-#     - PLATFORMIO_CI_SRC=path/to/test/directory
-#
-# install:
-#     - pip install -U platformio
-#
-# script:
-#     - platformio ci --lib="." --board=TYPE_1 --board=TYPE_2 --board=TYPE_N
+deploy:
+  on:
+    repo: openenergymonitor/emonpi
+    all_branches: true
+    condition: $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+$
+  skip_cleanup: true
+  provider: releases
+  overwrite: true
+  api_key:
+    secure: VYjeZ8A9tqeO3x82okTj4z2TV1yQlqe61pcvWWCrxc9wGejSw3flYO0uN/me2MMApm6pPVYui3HAZusbxdi0hkW9J6R65wpacXjaXtVG+MIy7npH6ztPK9Q4GA+Rt2Yj89fyqINL4YAZYhaWpV/7e031CwhwEWdP3qj/4moYNmWFP0vE4HsRybX+4gNcEfH6kX+/Fh22aauxTHgZlidfl6nr5n1Np/ExXoLvMMFb/R3HF6l4pJKgpYcVrX3afm+E3PLkBuO+WXysF3/2Wz/XgpcHX7Gkk5/SulTfhZn1HJLCPdtwZsHoRsx/427OrrUkyASts0OYVOkxZJBggaOmVF/EZWwedtFxxP4cKQmneO9jTkO5OxYgPdWZsQx/FB6y8hFc/3VTB4eT0WG7NH3+SsMou8Nc3yoqC8MOOPu3u1xbCzS4UgPI3zjDyQvuTSkKVELnlgTA5FQ/XPgeZpEfBblRFQHFUIkhSmmwVngjovlgh5lGlXBo/B8JBCd30b67zGRdAA1pv17MyFIBSyQuVjZn81kEfCPlxrHOPExBhMg92+RWS1/RrV0ZjlQsu1o5DYBSUlqQQ4S7GsUM2IiVweuU3lV3ZygEySWftVnvbioGd9jPsz+Y+PyMNQL9B3wNxqqrYHb1N0cBdbv+0IpHiQBw+TM9hzwoh9l5GCCWMww=
+     file: ".pioenvs/emonpi_deploy/firmware.bin"
