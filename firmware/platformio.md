@@ -1,6 +1,6 @@
 ## Compile and upload firmware using platformio
 
-## Install patformio if needed.
+## Install patformio if needed
 
 See [platformio install quick start](http://docs.platformio.org/en/latest/installation.html#super-quick-mac-linux)
 
