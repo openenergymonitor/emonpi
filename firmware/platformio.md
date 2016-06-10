@@ -32,7 +32,11 @@ or via python pip
 
 Compile and upload via /dev/ttyAMA0 using GPIO4 as emonpi autorest. **sudo required** ...for now
 
+    $ sudo service emonhub stop
     $ sudo platformio run -e emonpi_dev -t upload
+    $ sudo service emonhub start 
+
+Stopping emonhub is required to free up the serial port
 
 ## Install libs
 
