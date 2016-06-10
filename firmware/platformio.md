@@ -1,11 +1,21 @@
 ## Compile and upload firmware using platformio
 
-## Install patformio if needed
+## Install patformio if needed.
+
+See [platformio install quick start](http://docs.platformio.org/en/latest/installation.html#super-quick-mac-linux)
+
+Recomended to use install script which may require sudo:
+
+`python -c "$(curl -fsSL https://raw.githubusercontent.com/platformio/platformio/master/scripts/get-platformio.py)"`
+
+or via python pipL
 
     sudo pip install platformio
     
 
 ## Install libs
+
+**Note: installing libs is no longer requires since required libs are now defined in `platformio.ini`., in current version of platformio its not possible to specify a particualr version when definining in .ini. This will be fixed in platformio 3.0**
 
 Platformoio does not using the libraries in firmware/librarys instead we can install the libs direct from git via platform io lib manager.
 
@@ -32,11 +42,11 @@ LiquidCrystal_I2C:
 
 ## Compile
   
-    $ platformio run
+    $ platformio run -e emonpi_dev
 
 ## Upload
 
-    $ platformio run --target upload
+    $ platformio run -e emonpi_dev -t upload
 
 
 
