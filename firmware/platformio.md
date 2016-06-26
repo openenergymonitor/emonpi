@@ -1,5 +1,7 @@
 ## Compile and upload firmware using platformio on emonPi 
 
+### [See blog post](https://blog.openenergymonitor.org/2016/06/platformio/)
+
 Code can eaisly be compiled and uploaded direcly on a RaspberryPi to the emonPi board. PlatformIO now supports `emonpi` board defintion with auto-reset on GPIO4 / pin 7 on upload. See commit:
 
 https://github.com/platformio/platformio/commit/c5b5e80de4928cf91be59e675429b520e31d873a
@@ -26,14 +28,14 @@ or via python pip
 
 ## Compile
   
-    $ platformio run -e emonpi_dev
+    $ platformio run 
 
 ## Compile Upload 
 
 Compile and upload via /dev/ttyAMA0 using GPIO4 as emonpi autorest. **sudo required** ...for now
 
     $ sudo service emonhub stop
-    $ sudo platformio run -e emonpi_dev -t upload
+    $ sudo platformio run -t upload
     $ sudo service emonhub start 
 
 Stopping emonhub is required to free up the serial port
