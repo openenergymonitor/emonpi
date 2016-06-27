@@ -299,8 +299,8 @@ def shutdown():
 #from gprs_signal import previous_signalf
         time.sleep(1)
 
-        lcd.backlight(0) 											# backlight zero must be the last call to the LCD to keep the backlight off
-        call('halt', shell=False)
+        lcd.backlight(0) 	# backlight zero must be the last call to the LCD to keep the backlight off
+        call('reboot', shell=False)	#
         sys.exit() #end script
 
 def get_uptime():
