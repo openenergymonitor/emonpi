@@ -7,7 +7,7 @@ echo "================================="
 sudo service emonhub stop
 sudo service emonPiLCD stop
 sudo apt-get install avrdude -y
-sudo apt-get install arduino -y
+#sudo apt-get install arduino -y
 sudo apt-get install strace -y
 cd /home/
 #git clone https://github.com/amperka/ino.git

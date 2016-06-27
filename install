@@ -31,6 +31,8 @@ sudo sed -i 's/beaglebone/emonpi/g' /etc/hostname
 
 echo "install LCD"
 sudo /home/debian/emonpi/lcd/install
+echo "install wifi dongle"
+sudo /home/debian/emonpi/install_wifi_autoreset
 
 echo "move /etc/resolv.conf to RW data partition to allow updating of DNS nameservers"
 # create sim link of resolv.conf and resolv.conf.dhclient-new in RW /data to /etc

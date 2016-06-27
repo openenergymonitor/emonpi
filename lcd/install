@@ -41,13 +41,15 @@ then
         echo "Code line exist"
         crontab -l >tempcrontab.txt
         #sudo echo '@reboot sudo echo BB-I2C1 >> /sys/devices/bone_capemgr.9/slots' >> /root/tempcrontab.txt
-        sudo echo '@reboot sh /home/debian/gprsAndEmonInstall/enable_ttyo4.sh' >> /root/tempcrontab.txt
+        sudo echo '@reboot sh /home/debian/emonpi/gprs/enable_ttyo4.sh' >> /root/tempcrontab.txt
+	sudo echo '@reboot sh /home/debian/emonpi/usb_reset.sh' >> /root/tempcrontab.txt
         crontab tempcrontab.txt
 else
         echo "Adding the code line....."
         crontab -l >tempcrontab.txt
         sudo echo '@reboot sudo echo BB-I2C1 >> /sys/devices/bone_capemgr.9/slots' >> /root/tempcrontab.txt
-        sudo echo '@reboot sh /home/debian/gprsAndEmonInstall/enable_ttyo4.sh' >> /root/tempcrontab.txt
+        sudo echo '@reboot sh /home/debian/gprs/enable_ttyo4.sh' >> /root/tempcrontab.txt
+	sudo echo '@reboot sh /home/debian/emonpi/usb_reset.sh' >> /root/tempcrontab.txt
         crontab tempcrontab.txt
 
 fi
