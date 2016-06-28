@@ -272,7 +272,7 @@ def sigterm_handler(signal, frame):
 
 def shutdown():
     while (shutdown_button == 1):
-        lcd_string1 = "RMC Shutdown"
+        lcd_string1 = "RMC REBOOT"
         lcd_string2 = "5.."
         lcd.lcd_display_string( string_lenth(lcd_string1, 16),1)
         lcd.lcd_display_string( string_lenth(lcd_string2, 16),2)
@@ -286,14 +286,14 @@ def shutdown():
 
             if (shutdown_button == 0):
                 return
-        lcd_string2="SHUTDOWN NOW!"
+        lcd_string2="SHUTTING DOWN..."
         background.stop = True
         lcd.lcd_display_string( string_lenth(lcd_string1, 16),1)
         lcd.lcd_display_string( string_lenth(lcd_string2, 16),2)
         time.sleep(2)
         lcd.lcd_clear()
-        lcd.lcd_display_string( string_lenth("Wait 30s...", 16),1)
-        lcd.lcd_display_string( string_lenth("Before Unplug!", 16),2)
+        lcd.lcd_display_string( string_lenth("Rebooting...", 16),1)
+        lcd.lcd_display_string( string_lenth("Please wait", 16),2)
         time.sleep(4)
 	switch_off_gsm()
 #from gprs_signal import previous_signalf
