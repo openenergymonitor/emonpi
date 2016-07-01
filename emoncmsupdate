@@ -29,7 +29,7 @@ if [ "$uid" = "0" ] ; then
     echo "switching to Pi user & restarting script"
     echo
     echo "**MANUAL SYSTEM REBOOT REQUIRED**"
-    echo 
+    echo
     echo "Please shutdown and reboot emonPi then run Update again"
     su -c $0 pi
     exit
@@ -58,6 +58,15 @@ if grep -Fxq " * * * * * /home/pi/emonpi/service-runner >> /var/log/service-runn
         crontab mycron
 fi
 rm mycron
+
+#########################################################################################
+
+# Install sudoers entry to enable emoncms reboot button
+
+if [ ! -f /etc/sudoers.d/emoncms-rebootbutton ]; then
+    visudo -c -q -f emoncms-rebootbutton && \  # check correct sudo syntax
+    cp emoncms-rebootbutton /etc/sudoers.d/
+fi
 
 #########################################################################################
 
