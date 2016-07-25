@@ -65,7 +65,7 @@ rm mycron
 
 if [ ! -f /etc/sudoers.d/emoncms-rebootbutton ]; then
     # double check correct sudo syntax
-    visudo -cf emoncms-rebootbutton && \
+    visudo -cf /home/pi/emonpi/emoncms-rebootbutton && \
     sudo cp /home/pi/emonpi/emoncms-rebootbutton /etc/sudoers.d/
     sudo chmod 0440 /etc/sudoers.d/emoncms-rebootbutton
     echo
