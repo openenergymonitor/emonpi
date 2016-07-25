@@ -1,1 +1,1 @@
-/sbin/shutdown
+www-data ALL=(ALL) NOPASSWD:/sbin/shutdown

@@ -64,12 +64,17 @@ rm mycron
 # Install sudoers entry to enable emoncms reboot button
 
 if [ ! -f /etc/sudoers.d/emoncms-rebootbutton ]; then
-    visudo -c -q -f emoncms-rebootbutton && \  # check correct sudo syntax
-    cp emoncms-rebootbutton /etc/sudoers.d/
+    # double check correct sudo syntax
+    visudo -cf emoncms-rebootbutton && \
+    sudo cp /home/pi/emonpi/emoncms-rebootbutton /etc/sudoers.d/
+    sudo chmod 0440 /etc/sudoers.d/emoncms-rebootbutton
+    echo
+    echo "Install emonPi Emoncms admin reboot button sudoers entry"
 fi
 
 #########################################################################################
 
+echo
 echo "git pull /var/www/emoncms"
 cd /var/www/emoncms
 git branch
