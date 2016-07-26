@@ -39,14 +39,17 @@ echo "$image_version"
 echo
 echo "git pull /home/pi/emonpi"
 cd /home/pi/emonpi
+git branch
 git pull
 
 echo "git pull /home/pi/RFM2Pi"
 cd /home/pi/RFM2Pi
+git branch
 git pull
 
 echo "git pull /home/pi/emonhub"
 cd /home/pi/emonhub
+git branch
 git pull
 
 if [ -d /home/pi/oem_openHab ]; then
@@ -70,6 +73,7 @@ fi
 if [ -d /home/pi/backup ]; then
     echo "git pull /home/pi/backup"
     cd /home/pi/backup
+    git branch
     git pull
 fi
 
