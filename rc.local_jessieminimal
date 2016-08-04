@@ -25,6 +25,6 @@ fi
 # Run emonPi Update of first factory boot (~/data/emonpiupdate.log does not exist)
 /home/pi/emonpi/./firstbootupdate
 
-sleep 5
+sleep 20
 service mqtt_input restart
 exit 0
