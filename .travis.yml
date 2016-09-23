@@ -1,3 +1,5 @@
+# http://blog.openenergymonitor.org/2016/06/auto-build-continuous-test-firmware/
+
 language: python
 python:
 - '2.7'
@@ -9,21 +11,17 @@ install:
 - pip install -U platformio
 script:
 - pio --version
-- echo $TRAVIS_TAG
 - platformio run -d firmware -e emonpi
 
 # If git release then run build with git tag as build tag see platformio.ini
-- if [ ${TRAVIS_TAG} = "true" ]; then
-    platformio run -d firmware -e emonpi_deploy || travis_terminate 1;
-  fi
-# Fix travis exit status
-# http://steven.casagrande.io/articles/travis-ci-and-if-statements/
-  
-
 deploy:
+  run:
+  - echo $TRAVIS_TAG
+  - platformio run -d firmware -e emonpi_deploy
   on:
     repo: openenergymonitor/emonpi
     all_branches: true
+    tags: true
     condition: $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+$
   skip_cleanup: true
   provider: releases
