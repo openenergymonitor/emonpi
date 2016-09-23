@@ -11,6 +11,12 @@ script:
 - pio --version
 - echo $TRAVIS_TAG
 - platformio run -d firmware -e emonpi_deploy
+
+# If git release then run build with git tag as build tag see platformio.ini
+- 'if [ ${$TRAVIS_TAG} = "true" ]; then
+    platformio run -d firmware -e emonpi_deploy
+  fi'
+
 deploy:
   on:
     repo: openenergymonitor/emonpi
