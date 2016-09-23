@@ -12,12 +12,11 @@ install:
 
 script:
 - pio --version
-
-- if [ "$TRAVIS_TAG" != "" ]; then
+- if [ -z "$TRAVIS_TAG" ]; then
+    platformio run -d firmware -e emonpi;
+  else
     echo $TRAVIS_TAG;
     platformio run -d firmware -e emonpi_deploy;
-  else
-    platformio run -d firmware -e emonpi;
   fi
 
 
