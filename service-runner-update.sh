@@ -59,13 +59,6 @@ if [ -d /home/pi/usefulscripts ]; then
     git pull
 fi
 
-if [ -d /home/pi/backup ]; then
-    echo "git pull /home/pi/backup"
-    cd /home/pi/backup
-    git pull
-fi
-
-
 if [ -d /home/pi/huawei-hilink-status ]; then
     echo "git pull /home/pi/huawei-hilink-status"
     cd /home/pi/huawei-hilink-status
