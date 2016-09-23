@@ -8,6 +8,7 @@ cache:
 install:
 - pip install -U platformio
 script:
+- pio --version
 - platformio run -d firmware -e emonpi_deploy
 deploy:
   on:
