@@ -24,6 +24,6 @@ deploy:
 
 ## Setup auto depoly .hex on release tag
 # sudo gem install travis
-# cd into repo 
+# cd into repo
 # $ travis setup releases
 # folow prompts..depoly section will be populated
