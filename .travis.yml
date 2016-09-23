@@ -10,7 +10,7 @@ install:
 script:
 - pio --version
 - echo $TRAVIS_TAG
-- platformio run -d firmware -e emonpi_deploy
+- platformio run -d firmware -e emonpi
 
 # If git release then run build with git tag as build tag see platformio.ini
 - 'if [ ${$TRAVIS_TAG} = "true" ]; then
