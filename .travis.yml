@@ -13,7 +13,7 @@ script:
 - platformio run -d firmware -e emonpi
 
 # If git release then run build with git tag as build tag see platformio.ini
-- 'if [ ${$TRAVIS_TAG} = "true" ]; then
+- 'if [ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]; then
     platformio run -d firmware -e emonpi_deploy
   fi'
 
