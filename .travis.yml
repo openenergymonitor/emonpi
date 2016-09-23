@@ -9,6 +9,8 @@ install:
 - pip install -U platformio
 script:
 - pio --version
+- echo "git tag: "
+- $TRAVIS_TAG
 - platformio run -d firmware -e emonpi_deploy
 deploy:
   on:
