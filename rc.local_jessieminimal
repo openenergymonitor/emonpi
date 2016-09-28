@@ -8,7 +8,7 @@
 # Will only run if /var/log is mounted in tmpfs
 if ( mount | grep "on /var/log "| grep -q "^tmpfs " )
 then
-  for i in "redis" "apache2" "mysql" "openhab" "logrotate"; do mkdir /var/log/"$i"; done
+  for i in "redis" "apache2" "mysql" "openhab" "logrotate" "mosquitto"; do mkdir /var/log/"$i"; done
   for i in "emoncms.log" "mysql.log" "mqtt_input.log" "redis/redis-server.log" "service-runner.log" "mysql/error.log" "apache2/error.log" ; do touch /var/log/"$i"; done
   for i in "emoncms.log" "mysql.log" "mqtt_input.log" "redis/redis-server.log" "service-runner.log" "mysql/error.log" "apache2/error.log" ; do ""chmod 666"" /var/log/"$i"; done
   chown -R root:adm /var/log/apache2
@@ -16,10 +16,12 @@ then
   chown -R mysql:adm /var/log/mysql
   chown -R openhab:openhab /var/log/openhab
   chown -R pi:pi /var/log/logrotate
+  chown -R mosquitto:mosquitto /var/log/mosquitto
 
-  # Restart Apache & Redis, now the directories are defined
+  # Restart services,they should run happy now log dir's are created
   service apache2 restart
   service redis-server restart
+  service mosquitto restart
 fi
 
 # Run emonPi Update of first factory boot (~/data/emonpiupdate.log does not exist)
