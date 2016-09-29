@@ -142,6 +142,9 @@ if [ -f /home/pi/data/dhcpd.leases ]; then
    rm /home/pi/data/dhcpd.leases~
 fi
 
+echo "remove git user credentials"
+sudo rm /home/pi/.gitconfig
+
 echo "Clear bash history"
 history -c
 >~/.bash_history
