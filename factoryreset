@@ -81,7 +81,7 @@ then    # Legacy image use emonhub.conf without MQTT authenitication
    echo "Start with fresh config: copy LEGACY default emonhub.conf"
    echo "/home/pi/emonhub/conf/old.default.emonhub.conf /home/pi/data/emonhub.conf"
    cp /home/pi/emonhub/conf/old.default.emonhub.conf /home/pi/data/emonhub.conf
-   
+ 
    echo "Resetting emonPi pi user password to raspberry"
 passwd pi<<EOF
 raspberry
@@ -144,6 +144,9 @@ fi
 
 echo "remove git user credentials"
 sudo rm /home/pi/.gitconfig
+
+echo "restore nodered flow"
+cp /home/pi/oem_node-red/flows_emonpi.json /home/pi/data/node-red/flows_emonpi.json 
 
 echo "Clear bash history"
 history -c
