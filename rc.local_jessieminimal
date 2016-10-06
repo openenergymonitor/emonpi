@@ -27,6 +27,8 @@ fi
 # Run emonPi Update of first factory boot (~/data/emonpiupdate.log does not exist)
 /home/pi/emonpi/./firstbootupdate
 
+# wait for mosquitto to restart then restart services than depend on MQTT
 sleep 20
 service mqtt_input restart
+service lwrfd restart
 exit 0
