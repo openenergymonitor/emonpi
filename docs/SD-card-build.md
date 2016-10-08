@@ -203,11 +203,11 @@ Open *another shell window* to subscribe to a test topic:
 
 	mosquitto_sub -v -u 'emonpi' -P 'emonpimqtt2016' -t 'test/topic'
 
-Publish to the test topic :
+ In the first shell oublish to the test topic :
  
 	mosquitto_pub -u 'emonpi' -P 'emonpimqtt2016' -t 'test/topic' -m 'helloWorld'
 	
-If all is working we should see `helloWord`
+If all is working we should see `helloWord` in the second shell
 
 ##  Install  emonHub
 
