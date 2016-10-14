@@ -310,7 +310,7 @@ No need to [Enable Low-write mode in emoncms](https://github.com/emoncms/emoncms
 # 9. Emoncms install & configure modules: node, app, dashboards, wifi
 
 ```
-cd /var/www/emoncms/Modules
+cd /var/www/html/emoncms/Modules
 git clone https://github.com/emoncms/dashboard.git
 git clone https://github.com/emoncms/app.git
 git clone https://github.com/emoncms/wifi.git
