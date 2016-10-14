@@ -173,7 +173,7 @@ cd /etc/apt/sources.list.d/
 sudo wget http://repo.mosquitto.org/debian/mosquitto-jessie.list
 sudo apt-get update
 sudo apt-get install mosquitto mosquitto-clients libmosquitto-dev -y
-pecl install Mosquitto-alpha
+sudo pecl install Mosquitto-alpha
 (​Hit enter to autodetect libmosquitto location)
 ```
 
