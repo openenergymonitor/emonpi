@@ -246,7 +246,7 @@ Follow [Emoncms Raspberry Pi Raspbian Jessie install guide](https://github.com/e
 * MYSQL root password: `emonpimysql2016`
 * MYSQL `emoncms` user password: `emonpiemoncmsmysql2016`
 * Use emonPi default settings:
-	* `cd /var/www/emoncms && cp default.emonpi.settings.php settings.php`
+	* `cd /var/www/html/emoncms && cp default.emonpi.settings.php settings.php`
 * Create feed directories in RW partition `/home/pi/data` instead of `/var/lib`:
 	* `sudo mkdir /home/pi/data/{phpfina,phptimeseries}`
 	* `sudo chown www-data:root /home/pi/data/{phpfina,phptimeseries}`
