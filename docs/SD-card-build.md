@@ -73,7 +73,14 @@ From 'raspberrypi' to 'emonpi2016'
 
 [Follow Raspberry Pi Emoncms Read-Only guide](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/read-only.md)
 
+## Custom emonPi MOTD (message of the day)
 
+Use custom motd to alert users they are logging into an emonPi with RW / RO toggle instructions:
+
+```
+sudo rm /etc/motd
+sudo ln -s /home/pi/emonpi/motd /etc/motd
+```
 
 
 # 3. Serial port setup 
