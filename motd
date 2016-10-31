@@ -1,0 +1,12 @@
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+
+Welcome to emonPi shell. The file system is in Read Only (RO) mode. If you need to make changes, 
+use the command 'rpi-rw' to put the file system in Read Write (RW) mode. 
+Use 'rpi-ro' to return to RO mode. The /home/pi/data directory is always in RW mode. 
+

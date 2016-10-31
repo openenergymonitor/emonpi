@@ -1,0 +1,17 @@
+
+# emonPi bash RW / RO prompt 
+# Thanks to Andy Taylor: https://community.openenergymonitor.org/t/increase-emonsd-pre-built-sd-ca$
+
+set_bash_prompt(){
+    fs_mode=$(mount | sed -n -e "s/^\/dev\/mmcblk0p2 on \/ .*(\(r[w|o]\).*/\1/p")
+
+    if [ $(id -u) -eq 0 ];
+      then
+        PS1='\[\033[01;31m\]\u@\h${fs_mode:+($fs_mode)}\[\033[00m\]:\[\033[01;34m\]\W\[\033[00m\]\$
+      else
+        PS1='\[\033[01;32m\]\u@\h${fs_mode:+($fs_mode)}\[\033[00m\]:\[\033[01;34m\]\W\[\033[00m\]\$
+    fi
+}
+
+# setup fancy prompt
+PROMPT_COMMAND=set_bash_prompt

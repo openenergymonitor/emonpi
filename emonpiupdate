@@ -6,9 +6,11 @@ echo "================================="
 echo
 echo "EUID: $EUID"
 echo
+
 # Needed for emonPi LCD Hi-Link 3G dongle support
-sudo pip install xmltodict
-sudo pip install requests
+# ALLREADY INSTALLED
+# sudo pip install xmltodict
+# sudo pip install requests
 
 sudo /etc/init.d/emonhub stop
 
@@ -24,3 +26,12 @@ avrdude -c arduino -p ATMEGA328P -P /dev/ttyAMA0 -b 115200 -U flash:w:/home/pi/e
 
 # RFM69Pi with RFM69CW Update
 # avrdude -v -c arduino -p ATMEGA328P -P /dev/ttyAMA0 -b 38400 -U flash:w:/home/pi/RFM2Pi/firmware/RFM69CW_RF_Demo_ATmega328/RFM69CW_RF12_Demo_ATmega328.cpp.hex
+
+sudo /etc/init.d/emonhub start
+###############################################################################################################
+
+# Add bash prompt RW / RO emonPi file-system indicator
+if ! grep -Fxq "# emonPi bash RW / RO prompt"  /etc/bash.bashrc ; then
+        echo "Add RW bash prompt indicator"
+        sudo bash -c 'cat bash-rw-indicator >> /etc/bash.bashrc'
+fi
