@@ -1,12 +1,22 @@
-
+[1;34m
+╔══════════════════════════════════════════════════════════════════════╗
+║                                                   ooooooooo.    o8o  ║
+║                                                   `888   `Y88.  `"'  ║
+║  .ooooo.  ooo. .oo.  .oo.    .ooooo.  ooo. .oo.    888   .d88' oooo  ║
+║ d88' `88b `888P"Y88bP"Y88b  d88' `88b `888P"Y88b   888ooo88P'  `888  ║
+║ 888ooo888  888   888   888  888   888  888   888   888          888  ║
+║ 888    .o  888   888   888  888   888  888   888   888          888  ║
+║ `Y8bod8P' o888o o888o o888o `Y8bod8P' o888o o888o o888o        o888o ║
+╚══════════════════════════════════════════════════════════════════════╝
+[1;31m
 The programs included with the Debian GNU/Linux system are free software;
 the exact distribution terms for each program are described in the
 individual files in /usr/share/doc/*/copyright.
 
 Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
 permitted by applicable law.
-
-Welcome to emonPi shell. The file system is in Read Only (RO) mode. If you need to make changes, 
+[1;32m
+The file system is in Read Only (RO) mode. If you need to make changes, 
 use the command 'rpi-rw' to put the file system in Read Write (RW) mode. 
-Use 'rpi-ro' to return to RO mode. The /home/pi/data directory is always in RW mode. 
-
+Use 'rpi-ro' to return to RO mode. The /home/pi/data directory is always in RW mode.
+[0m
