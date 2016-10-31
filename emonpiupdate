@@ -31,7 +31,7 @@ sudo /etc/init.d/emonhub start
 ###############################################################################################################
 
 # Add bash prompt RW / RO emonPi file-system indicator
-if ! grep -Fxq "# emonPi bash RW / RO prompt"  /etc/bash.bashrc ; then
+if ! grep -q "# emonPi bash RW / RO prompt"  /etc/bash.bashrc ; then
         echo "Add RW bash prompt indicator"
-        sudo bash -c 'cat bash-rw-indicator >> /etc/bash.bashrc'
+        sudo bash -c 'cat /home/pi/emonpi/bash-rw-indicator >> /etc/bash.bashrc'
 fi

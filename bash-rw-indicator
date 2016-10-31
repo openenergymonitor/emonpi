@@ -1,5 +1,5 @@
 
-# emonPi bash RW / RO prompt 
+# emonPi bash RW / RO prompt
 # Thanks to Andy Taylor: https://community.openenergymonitor.org/t/increase-emonsd-pre-built-sd-ca$
 
 set_bash_prompt(){
