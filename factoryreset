@@ -157,6 +157,8 @@ sudo rm /home/pi/.ssh/known_hosts
 sudo rm /etc/ssh/ssh_host_*
 sudo dpkg-reconfigure openssh-server
 
+echo "Clean up packages"
+sudo apt-get clean
 
 
 
