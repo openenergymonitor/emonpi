@@ -126,10 +126,10 @@ fi
 
 
 echo "Delete logs & backup data"
-rm /home/pi/data/*.log
-rm /home/pi/data/*.gz
-rm /home/pi/data/uploads/*.gz
-rm /home/pi/data/import -rf
+sudo rm /home/pi/data/*.log
+sudo rm /home/pi/data/*.gz
+sudo rm /home/pi/data/uploads/*.gz
+sudo rm /home/pi/data/import -rf
 
 echo "clear WiFi config /etc/wpa_supplicant/wpa_supplicant.conf"
 echo "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev" > /etc/wpa_supplicant/wpa_supplicant.conf
@@ -138,8 +138,8 @@ echo "update_config=1" >> /etc/wpa_supplicant/wpa_supplicant.conf
 
 if [ -f /home/pi/data/dhcpd.leases ]; then
    echo "Removing wifiAP dhcpd.leases"
-   rm /home/pi/data/dhcpd.leases
-   rm /home/pi/data/dhcpd.leases~
+   sudo rm /home/pi/data/dhcpd.leases
+   sudo rm /home/pi/data/dhcpd.leases~
 fi
 
 echo "remove git user credentials"
