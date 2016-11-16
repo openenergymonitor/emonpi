@@ -15,7 +15,7 @@
 
 - [Setup Guide](https://guide.openenergymonitor.org/)
 
-- [emonSD pre-built SD card image download](https://github.com/openenergymonitor/emonpi/wiki/emonSD-pre-built-SD-card-Repository-&-Change-Log)
+- [emonSD pre-built SD card image download](https://github.com/openenergymonitor/emonpi/wiki/emonSD-pre-built-SD-card-Download-&-Change-Log)
 
 
 ## Technical:

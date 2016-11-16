@@ -73,7 +73,14 @@ From 'raspberrypi' to 'emonpi2016'
 
 [Follow Raspberry Pi Emoncms Read-Only guide](https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/read-only.md)
 
+## Custom emonPi MOTD (message of the day)
 
+Use custom motd to alert users they are logging into an emonPi with RW / RO toggle instructions:
+
+```
+sudo rm /etc/motd
+sudo ln -s /home/pi/emonpi/motd /etc/motd
+```
 
 
 # 3. Serial port setup 
@@ -173,7 +180,7 @@ cd /etc/apt/sources.list.d/
 sudo wget http://repo.mosquitto.org/debian/mosquitto-jessie.list
 sudo apt-get update
 sudo apt-get install mosquitto mosquitto-clients libmosquitto-dev -y
-pecl install Mosquitto-alpha
+sudo pecl install Mosquitto-alpha
 (​Hit enter to autodetect libmosquitto location)
 ```
 
@@ -203,11 +210,11 @@ Open *another shell window* to subscribe to a test topic:
 
 	mosquitto_sub -v -u 'emonpi' -P 'emonpimqtt2016' -t 'test/topic'
 
-Publish to the test topic :
+ In the first shell oublish to the test topic :
  
 	mosquitto_pub -u 'emonpi' -P 'emonpimqtt2016' -t 'test/topic' -m 'helloWorld'
 	
-If all is working we should see `helloWord`
+If all is working we should see `helloWorld` in the second shell
 
 ##  Install  emonHub
 

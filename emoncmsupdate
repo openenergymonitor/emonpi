@@ -161,9 +161,10 @@ fi
 
 echo
 
-echo "Copy new default.emonpi.settings.php to settings.php & make backup old.emonpi.settings.php"
-sudo cp /var/www/emoncms/settings.php /var/www/emoncms/old.settings.php
-sudo cp /var/www/emoncms/default.emonpi.settings.php /var/www/emoncms/settings.php
+## Don't overwrite settings unless required (un comment if required)
+# echo "Copy new default.emonpi.settings.php to settings.php & make backup old.emonpi.settings.php"
+# sudo cp /var/www/emoncms/settings.php /var/www/emoncms/old.settings.php
+# sudo cp /var/www/emoncms/default.emonpi.settings.php /var/www/emoncms/settings.php
 
 echo
 

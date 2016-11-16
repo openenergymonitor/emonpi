@@ -73,6 +73,7 @@ fi
 if [ -d /home/pi/huawei-hilink-status ]; then
     echo "git pull /home/pi/huawei-hilink-status"
     cd /home/pi/huawei-hilink-status
+    sudo chown -R pi:pi .git
     git pull
 fi
 

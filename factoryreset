@@ -81,7 +81,7 @@ then    # Legacy image use emonhub.conf without MQTT authenitication
    echo "Start with fresh config: copy LEGACY default emonhub.conf"
    echo "/home/pi/emonhub/conf/old.default.emonhub.conf /home/pi/data/emonhub.conf"
    cp /home/pi/emonhub/conf/old.default.emonhub.conf /home/pi/data/emonhub.conf
-   
+ 
    echo "Resetting emonPi pi user password to raspberry"
 passwd pi<<EOF
 raspberry
@@ -126,10 +126,10 @@ fi
 
 
 echo "Delete logs & backup data"
-rm /home/pi/data/*.log
-rm /home/pi/data/*.gz
-rm /home/pi/data/uploads/*.gz
-rm /home/pi/data/import -rf
+sudo rm /home/pi/data/*.log
+sudo rm /home/pi/data/*.gz
+sudo rm /home/pi/data/uploads/*.gz
+sudo rm /home/pi/data/import -rf
 
 echo "clear WiFi config /etc/wpa_supplicant/wpa_supplicant.conf"
 echo "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev" > /etc/wpa_supplicant/wpa_supplicant.conf
@@ -138,9 +138,15 @@ echo "update_config=1" >> /etc/wpa_supplicant/wpa_supplicant.conf
 
 if [ -f /home/pi/data/dhcpd.leases ]; then
    echo "Removing wifiAP dhcpd.leases"
-   rm /home/pi/data/dhcpd.leases
-   rm /home/pi/data/dhcpd.leases~
+   sudo rm /home/pi/data/dhcpd.leases
+   sudo rm /home/pi/data/dhcpd.leases~
 fi
+
+echo "remove git user credentials"
+sudo rm /home/pi/.gitconfig
+
+echo "restore nodered flow"
+cp /home/pi/oem_node-red/flows_emonpi.json /home/pi/data/node-red/flows_emonpi.json 
 
 echo "Clear bash history"
 history -c
@@ -151,6 +157,8 @@ sudo rm /home/pi/.ssh/known_hosts
 sudo rm /etc/ssh/ssh_host_*
 sudo dpkg-reconfigure openssh-server
 
+echo "Clean up packages"
+sudo apt-get clean
 
 
 
