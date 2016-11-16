@@ -1,5 +1,3 @@
-# http://blog.openenergymonitor.org/2016/06/auto-build-continuous-test-firmware/
-
 language: python
 python:
 - '2.7'
@@ -15,16 +13,14 @@ script:
 - platformio run -d firmware -e emonpi_deploy;
 
 deploy:
+  provider: releases
+  api_key:
+    secure: OzNwxsQEVlSj2e4sOqKNYlNXqPqc5myL0nOBtY1FYD+sbxslHMixmlRASWuFMCjHdpFYQST2IuR3UMCPCjfPzMDVCVtsJ8VPd299fgDGzmEnL3P5Z8wCAv1CfHURcfXzFJDM7prevGx9cfz8uAiwIaNOhbTL7kL2GfSatV5PERzr2ytVh6WUj650Rd7bLKKhj8YHOzO9wOBoKDadYDFF99XYQbDDoHj9pAv+OPG76X0kWrdrq/0w26jh7JZaxrwhF/xD7maGaEjLOa/FcXbyZlVy/JIFjyrKp79swzVNSFNox/CbF7e6tzBf3NhZsoQyEchnCrgWw8IB7j/Ja7Ypetn6IG7C5rT/h46rWrZshbVdw7ZBUzhNJIUVLHFBy7hi2hxMw9Bn+oCt0UWLt8SnQnRfAbjw+z3XQ2/6MccUAINKGDqd4fm9M85sN6drpXySeJ/ZyRkdlUN0xsDpARI05mYLLlCutRzlSCkglbsKJr5XM7h7pXHLUQY5dfw9LrA788w25OBoO9U8vCKtoV8UCXWh6og/364CRl9Uih958f1t7kHIvfwLJjwSDFYVxUsyvSFyjfY+pIfuGEXtgIqMZ87nK3O1vAb9udbPErp0q5kJBeks9Df6wVsvjI7O++7YwiSuWlJBD0x45ZV9pxOFLnWb1hetHpPH5kFgBlTDqsY=
+  file: .pioenvs/emonpi_deploy/firmware.hex
   on:
     repo: openenergymonitor/emonpi
     all_branches: true
     condition: $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+$
-  skip_cleanup: true
-  provider: releases
-  overwrite: true
-  api_key:
-    secure: OzNwxsQEVlSj2e4sOqKNYlNXqPqc5myL0nOBtY1FYD+sbxslHMixmlRASWuFMCjHdpFYQST2IuR3UMCPCjfPzMDVCVtsJ8VPd299fgDGzmEnL3P5Z8wCAv1CfHURcfXzFJDM7prevGx9cfz8uAiwIaNOhbTL7kL2GfSatV5PERzr2ytVh6WUj650Rd7bLKKhj8YHOzO9wOBoKDadYDFF99XYQbDDoHj9pAv+OPG76X0kWrdrq/0w26jh7JZaxrwhF/xD7maGaEjLOa/FcXbyZlVy/JIFjyrKp79swzVNSFNox/CbF7e6tzBf3NhZsoQyEchnCrgWw8IB7j/Ja7Ypetn6IG7C5rT/h46rWrZshbVdw7ZBUzhNJIUVLHFBy7hi2hxMw9Bn+oCt0UWLt8SnQnRfAbjw+z3XQ2/6MccUAINKGDqd4fm9M85sN6drpXySeJ/ZyRkdlUN0xsDpARI05mYLLlCutRzlSCkglbsKJr5XM7h7pXHLUQY5dfw9LrA788w25OBoO9U8vCKtoV8UCXWh6og/364CRl9Uih958f1t7kHIvfwLJjwSDFYVxUsyvSFyjfY+pIfuGEXtgIqMZ87nK3O1vAb9udbPErp0q5kJBeks9Df6wVsvjI7O++7YwiSuWlJBD0x45ZV9pxOFLnWb1hetHpPH5kFgBlTDqsY=
-  file: ".pioenvs/emonpi_deploy/firmware.hex"
 
 
 ## Setup auto depoly .hex on release tag
@@ -32,3 +28,5 @@ deploy:
 # cd into repo
 # $ travis setup releases
 # folow prompts..depoly section will be populated
+
+# http://blog.openenergymonitor.org/2016/06/auto-build-continuous-test-firmware/
