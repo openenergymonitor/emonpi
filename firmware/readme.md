@@ -2,11 +2,25 @@
 
 **See continous-sampling branch for continous sampling**
 
-~~# V2.6 (15/04/16)~~
-~~* [Update to latest JeeLib with RF Fixes ](https://github.com/jcw/jeelib/issues/92) [68f6e42]~~
-~~* Remove RF keep alive introduced in V2.5~~
+# V2.7 (16/11/16)
 
-~~Compiled with Arduino 1.6.8 | Hex size: 54.8kB | Sketch uses 19,400 bytes (60%) | Global variables: 947 bytes (46%)~~
+* Compiled using platformIO with latest JeeLib (7fc95a72ec)
+* Consistency with github releases
+* Smaller compiled size
+* Ensure soft-reset introduced in V2.5 is included
+  * Fix RF droping issue caused by V2.6 being mistakenly compiled
+
+```
+Program:   19100 bytes (58.3% Full)
+(.text + .data + .bootloader)
+Data:        951 bytes (46.4% Full)
+(.data + .bss + .noinit)
+```
+
+# V2.6 (15/04/16)
+* [Update to latest JeeLib with RF Fixes ](https://github.com/jcw/jeelib/issues/92) [68f6e42]~~
+* Remove RF keep alive introduced in V2.5~
+Compiled with Arduino 1.6.8 | Hex size: 54.8kB | Sketch uses 19,400 bytes (60%) | Global variables: 947 bytes (46%)~~
 
 **(10/05/16) - Temporarily restored to V2.5 to fix emonTx RF dropping issue [thread [[1]](https://community.openenergymonitor.org/t/emonsd-03may16-release/145/40) [[2]](https://openenergymonitor.org/emon/node/12593)**
 
