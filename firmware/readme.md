@@ -2,6 +2,19 @@
 
 **See continous-sampling branch for continous sampling**
 
+# V2.7 (18/11/16)
+
+* Compiled using platformIO with [JeeLib 10th Nov 2015 (f097c0039c)](https://github.com/jcw/jeelib/tree/f097c0039c926881d80a74bec7a7aa020de610ee)
+* Fixes emonTx drop off [forum discussion](https://community.openenergymonitor.org/t/emon-txs-not-updating-after-emonpi-update/2233/10)
+                                                         
+
+```
+Program:   19074 bytes (58.2% Full)
+(.text + .data + .bootloader)
+Data:        951 bytes (46.4% Full)
+(.data + .bss + .noinit)
+```
+
 # V2.7 (16/11/16)
 
 * Compiled using platformIO with latest JeeLib (7fc95a72ec)
