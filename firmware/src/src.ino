@@ -151,6 +151,7 @@ static byte stack[RF12_MAXDATA+4], top, sendLen, dest;           // RF variables
 static char cmd;
 static word value;                                               // Used to store serial input
 long unsigned int start_press=0;                                 // Record time emonPi shutdown push switch is pressed
+boolean quiet_mode = 1;
 
 const char helpText1[] PROGMEM =                                 // Available Serial Commands
 "\n"
@@ -163,6 +164,7 @@ const char helpText1[] PROGMEM =                                 // Available Se
 "  ...,<nn> s - send data packet to node <nn>, no ack\n"
 "  ...,<n> p  - Set AC Adapter Vcal 1p = UK, 2p = USA\n"
 "  v          - Show firmware version\n"
+"  <n> q      - set quiet mode (1 = don't report bad packets)\n"
 ;
 
 //-------------------------------------------------------------------------------------------------------------------------------------------
