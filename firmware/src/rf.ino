@@ -15,25 +15,25 @@ void RF_Setup(){
 
 boolean RF_Rx_Handle(){
   
-	if (rf12_recvDone()) {						//if RF Packet is received 
-	    if (rf12_crc == 0) {					//Check packet is good
-	    	Serial.print(F("OK"));     //Print "good packet" line prefix
-        print_frame(rf12_len);      //Print recieved data
-        if (RF12_WANTS_ACK==1) {
-             // Serial.print(F(" -> ack"));
-             rf12_sendStart(RF12_ACK_REPLY, 0, 0);
-        }
-        return(1);
-	    } else {
-	      if (quiet_mode == 0) {          //if the packet is bad
-	        Serial.print(F(" ?"));    //Print the "bad packet" line prefix
-          print_frame(20);          //Print only the first 20 bytes of a bad packet
-        }
-	      return(0);
-	    }
+  if (rf12_recvDone()) {		//if RF Packet is received 
+    if (rf12_crc == 0) {		//Check packet is good
+      Serial.print(F("OK"));		//Print "good packet" line prefix
+      print_frame(rf12_len);		//Print recieved data
+      if (RF12_WANTS_ACK==1) {
+        // Serial.print(F(" -> ack"));
+        rf12_sendStart(RF12_ACK_REPLY, 0, 0);
+      }
+      return(1);
+    } else {
+      if (quiet_mode == 0) {            //if the packet is bad
+        Serial.print(F(" ?"));    	//Print the "bad packet" line prefix
+        print_frame(20);          	//Print only the first 20 bytes of a bad packet
+      }
+      return(0);
+    }
 	       
-	} //end recDone
-	
+  } //end recDone
+
 }
 
 void print_frame (int len) {
