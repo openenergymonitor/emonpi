@@ -2,11 +2,24 @@
 
 **See continous-sampling branch for continous sampling**
 
+# V2.8.1 (21/11/16)
+
+* Reintroduces "quiet mode" feature as seen in the RFM2Pi firmwares to allow improved RF debugging.
+
+Serial `1q` enables quiet mode (default) and `0q` removes quiet mode for a more verbose output including bad packets that have failed crc checks. In emonHub it can be set with `quiet = true` or `quiet = false` in the interfacer settings. [Pull request discussion](https://github.com/openenergymonitor/emonpi/pull/34).
+
+```
+Program:   17602 bytes (53.7% Full)
+(.text + .data + .bootloader)
+Data:        980 bytes (47.9% Full)
+(.data + .bss + .noinit)
+```
+
 # V2.8 (18/11/16)
 
 * Compiled using platformIO with [JeeLib 10th Nov 2015 (f097c0039c)](https://github.com/jcw/jeelib/tree/f097c0039c926881d80a74bec7a7aa020de610ee)
 * Fixes emonTx drop off [forum discussion](https://community.openenergymonitor.org/t/emon-txs-not-updating-after-emonpi-update/2233/10)
-                                                         
+
 
 ```
 Program:   19074 bytes (58.2% Full)
@@ -69,7 +82,7 @@ Compiled with Arduino 1.6.8 | Hex size: 54.8kB | Sketch uses 19,460 bytes | Glob
 
 # V1.8 (30/10/15)
   * Enable pulse count INT1 internal pull-up to fix spurious pulse count readings
- 
+
 # V1.7 (12/06/15)
   * Fix bug which stopped USA AC-AC Vcal from being applied at runtime
 
