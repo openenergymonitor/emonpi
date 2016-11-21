@@ -64,7 +64,7 @@ EnergyMonitor ct1, ct2;
 #include <Wire.h>                                                     // Arduino I2C library
 #include <LiquidCrystal_I2C.h>                                        // https://github.com/openenergymonitor/LiquidCrystal_I2C
 LiquidCrystal_I2C lcd(0x27,16,2);                                     // LCD I2C address to 0x27, 16x2 line display
-const byte firmware_version = 281;                                    //firmware version x 100 e.g 100 = V1.00
+const int firmware_version = 281;                                    //firmware version x 100 e.g 100 = V1.00
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
 boolean debug =                   TRUE;
@@ -188,7 +188,7 @@ void setup()
   if (RF_STATUS==1) RF_Setup();
   byte numSensors =  check_for_DS18B20();                               // check for presence of DS18B20 and return number of sensors
   emonPi_LCD_Startup();
-  delay(1500);
+  delay(2000);
   CT_Detect();
   serial_print_startup();
 
