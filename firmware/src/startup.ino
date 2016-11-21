@@ -21,17 +21,17 @@ void emonPi_startup()
 
   pinMode(emonpi_GPIO_pin, OUTPUT);                     //Connected to RasPi GPIO pin 17
   digitalWrite(emonpi_GPIO_pin, LOW);
-  
+
   pinMode(emonPi_int1_pin, INPUT_PULLUP);               // Set RJ45 interrupt pulse counting pin to input (INT 1) and pullup
 
   Serial.begin(BAUD_RATE);
-  Serial.print(F("emonPi V")); Serial.println(firmware_version*0.1);
+  Serial.print(F("emonPi V")); Serial.println(firmware_version*0.01);
   Serial.println(F("OpenEnergyMonitor.org"));
   Serial.println(F("startup..."));
 }
 
 
- 
+
 void CT_Detect(){
 //--------------------------------------------------Check for connected CT sensors---------------------------------------------------------------------------------------------------------
 if (analogRead(1) > 0) {CT1 = 1; CT_count++;} else CT1=0;              // check to see if CT is connected to CT1 input, if so enable that channel

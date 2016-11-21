@@ -1,18 +1,18 @@
 /*
-  
+
   emonPi  Discrete Sampling
-  
+
   If AC-AC adapter is detected assume emonPi is also powered from adapter (jumper shorted) and take Real Power Readings and disable sleep mode to keep load on power supply constant
   If AC-AC addapter is not detected assume powering from battereis / USB 5V AC sample is not present so take Apparent Power Readings and enable sleep mode
-  
+
   Transmitt values via RFM69CW radio
-  
+
    ------------------------------------------
   Part of the openenergymonitor.org project
-  
+
   Authors: Glyn Hudson & Trystan Lea
   Builds upon JCW JeeLabs RF12 library and Arduino
-  
+
   Licence: GNU GPL V3
 
 */
@@ -64,7 +64,7 @@ EnergyMonitor ct1, ct2;
 #include <Wire.h>                                                     // Arduino I2C library
 #include <LiquidCrystal_I2C.h>                                        // https://github.com/openenergymonitor/LiquidCrystal_I2C
 LiquidCrystal_I2C lcd(0x27,16,2);                                     // LCD I2C address to 0x27, 16x2 line display
-const byte firmware_version = 28;                                     //firmware version x 10 e.g 10 = V1.0 / 1 = V0.1
+const byte firmware_version = 281;                                    //firmware version x 100 e.g 100 = V1.00
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
 boolean debug =                   TRUE;
@@ -183,7 +183,7 @@ void setup()
     Vcal = Vcal_EU;
     Vrms = Vrms_EU;
   }
-  
+
   emonPi_startup();                                                     // emonPi startup proceadure, check for AC waveform and print out debug
   if (RF_STATUS==1) RF_Setup();
   byte numSensors =  check_for_DS18B20();                               // check for presence of DS18B20 and return number of sensors
@@ -191,11 +191,11 @@ void setup()
   delay(1500);
   CT_Detect();
   serial_print_startup();
-   
+
   attachInterrupt(emonPi_int1, onPulse, FALLING);  // Attach pulse counting interrupt on RJ45 (Dig 3 / INT 1)
   emonPi.pulseCount = 0;                                                  // Reset Pulse Count
-   
-  
+
+
 
   ct1.current(1, Ical1);                                     // CT ADC channel 1, calibration.  calibration (2000 turns / 22 Ohm burden resistor = 90.909)
   ct2.current(2, Ical2);                                     // CT ADC channel 2, calibration.
@@ -205,7 +205,7 @@ void setup()
     ct1.voltage(0, Vcal, phase_shift);                       // ADC pin, Calibration, phase_shift
     ct2.voltage(0, Vcal, phase_shift);                       // ADC pin, Calibration, phase_shift
   }
- 
+
 } //end setup
 
 
@@ -215,7 +215,7 @@ void setup()
 void loop()
 {
   now = millis();
- 
+
   if (USA==TRUE)
   {
     Vcal = Vcal_USA;                                                       // Assume USA AC/AC adatper is being used, set calibration accordingly
@@ -226,7 +226,7 @@ void loop()
     Vcal = Vcal_EU;
     Vrms = Vrms_EU;
   }
-  
+
   // Update Vcal
   ct1.voltage(0, Vcal, phase_shift);                       // ADC pin, Calibration, phase_shift
   ct2.voltage(0, Vcal, phase_shift);                       // ADC pin, Calibration, phase_shift
@@ -235,31 +235,31 @@ void loop()
     digitalWrite(emonpi_GPIO_pin, HIGH);                                          // if emonPi shutdown butten pressed then send signal to the Pi on GPIO 11
   else
     digitalWrite(emonpi_GPIO_pin, LOW);
-  
+
   if (Serial.available()){
     handleInput(Serial.read());                                                   // If serial input is received
     double_LED_flash();
   }
-      
+
 
   if (RF_STATUS==1){                                                              // IF RF module is present and enabled then perform RF tasks
     if (RF_Rx_Handle()==1) {                                                      // Returns true if RF packet is received
        double_LED_flash();
     }
-    
+
     send_RF();                                                                    // Transmitt data packets if needed
-    
+
     if ((now - last_rf_rest) > RF_RESET_PERIOD) {
       rf12_initialize(nodeID, RF_freq, networkGroup);                             // Periodically reset RFM69CW to keep it alive :-(
     }
-   
+
    }
 
 
   if ((now - last_sample) > TIME_BETWEEN_READINGS)
   {
     single_LED_flash();                                                            // single flash of LED on local CT sample
-    
+
     if (ACAC && CT1)                                                                      // Read from CT 1
     {
       ct1.calcVI(no_of_half_wavelengths,timeout); emonPi.power1=ct1.realPower;
@@ -269,7 +269,7 @@ void loop()
     {
       if (CT1) emonPi.power1 = ct1.calcIrms(no_of_samples)*Vrms;                               // Calculate Apparent Power 1  1480 is  number of samples
    }
-  
+
    if (ACAC && CT2)                                                                       // Read from CT 2
    {
      ct2.calcVI(no_of_half_wavelengths,timeout); emonPi.power2=ct2.realPower;
@@ -279,11 +279,11 @@ void loop()
    {
      if (CT2) emonPi.power2 = ct2.calcIrms(no_of_samples)*Vrms;                               // Calculate Apparent Power 1  1480 is  number of samples
    }
-   
+
    emonPi.power1_plus_2=emonPi.power1 + emonPi.power2;                                       //Create power 1 plus power 2 variable for US and solar PV installs
-   
+
    if ((ACAC==0) && (CT_count > 0)) emonPi.Vrms=Vrms*100;                                        // If no AC wave detected set VRMS constant
-  
+
    if ((ACAC==1) && (CT_count==0)) {                                                                        // If only AC-AC is connected then return just VRMS calculation
      ct1.calcVI(no_of_half_wavelengths,timeout);
      emonPi.Vrms=ct1.Vrms*100;
@@ -291,14 +291,14 @@ void loop()
 
   //Serial.print(emonPi.pulseCount); Serial.print(" ");delay(5);
    // if (debug==1) {Serial.print(emonPi.power2); Serial.print(" ");delay(5);}
-    
+
 
     if (DS18B20_STATUS==1)
     {
       sensors.requestTemperatures();                                        // Send the command to get temperatures
       for(byte j=0;j<numSensors;j++) emonPi.temp[j]=get_temperature(j);
     }
-    
+
     if (pulseCount)                                                       // if the ISR has counted some pulses, update the total count
     {
       cli();                                                              // Disable interrupt just in case pulse comes in while we are updating the count
@@ -313,14 +313,14 @@ void loop()
     Serial.print(emonPi.Vrms); Serial.print(" ");
     Serial.println(emonPi.temp[1]);
     */
-    
+
     send_emonpi_serial();                                             //Send emonPi data to Pi serial using struct packet structure
-    
+
     last_sample = now;                                           //Record time of sample
-    
+
     } // end sample
-    
-    
+
+
 } // end loop---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 void single_LED_flash()
@@ -333,7 +333,3 @@ void double_LED_flash()
   digitalWrite(LEDpin, HIGH);  delay(25); digitalWrite(LEDpin, LOW);
   digitalWrite(LEDpin, HIGH);  delay(25); digitalWrite(LEDpin, LOW);
 }
-
-
-
-
