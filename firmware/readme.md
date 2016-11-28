@@ -9,9 +9,9 @@
 Serial `1q` enables quiet mode (default) and `0q` removes quiet mode for a more verbose output including bad packets that have failed crc checks. In emonHub it can be set with `quiet = true` or `quiet = false` in the interfacer settings. [Pull request discussion](https://github.com/openenergymonitor/emonpi/pull/34).
 
 ```
-Program:   17602 bytes (53.7% Full)
+Program:   19206 bytes (58.6% Full)
 (.text + .data + .bootloader)
-Data:        980 bytes (47.9% Full)
+Data:        953 bytes (46.5% Full)
 (.data + .bss + .noinit)
 ```
 

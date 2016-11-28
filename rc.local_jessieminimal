@@ -28,7 +28,10 @@ fi
 su pi -c '/home/pi/emonpi/./firstbootupdate'
 
 # wait for mosquitto to restart then restart services than depend on MQTT
-sleep 20
+sleep 5
+service emonPiLCD restart
+sleep 5
 service mqtt_input restart
 service lwrfd restart
+
 exit 0

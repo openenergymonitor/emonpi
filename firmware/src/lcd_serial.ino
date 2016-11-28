@@ -3,7 +3,7 @@
 void emonPi_LCD_Startup() {
   lcd.init();                      // initialize the lcd
   lcd.backlight();                 // Or lcd.noBacklight()
-  lcd.print(F("emonPi V")); lcd.print(firmware_version*0.1);
+  lcd.print(F("emonPi V")); lcd.print(firmware_version*0.01);
   lcd.setCursor(0, 1); lcd.print(F("OpenEnergyMon"));
 }
 

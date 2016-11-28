@@ -11,6 +11,7 @@ echo
 # ALLREADY INSTALLED
 # sudo pip install xmltodict
 # sudo pip install requests
+sudo pip install paho-mqtt --upgrade
 
 sudo /etc/init.d/emonhub stop
 

@@ -236,9 +236,11 @@ def main():
 
     def on_connect(client, userdata, flags, rc):
         mqttc.subscribe(mqtt_topic)
+
     mqttc = mqtt.Client()
     mqttc.on_message = on_message
     mqttc.on_connect = on_connect
+
     try:
         mqttc.username_pw_set(mqtt_user, mqtt_passwd)
         mqttc.connect(mqtt_host, mqtt_port, 60)
