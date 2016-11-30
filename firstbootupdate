@@ -1,12 +1,13 @@
 #!/bin/bash
 
 # Script to update new emonPi's to latest firmware and software the fist time they are booted up in the factory
-# Looks to see if /home/pi/data/emonpiupdate.log exists, if it does not then run update script 
+# Looks to see if /home/pi/data/emonpiupdate.log exists or LCD push button is pressed
+
 # To rc.local before exit 0 add:
 # /home/pi/emonpi/./firstbootupdate
 
-# Check if update log file is empty if so then proceed to update	
-if [ ! -s /home/pi/data/emonpiupdate.log ]; then 
+# Check if update log file is empty if so then proceed to update
+if [ ! -s /home/pi/data/emonpiupdate.log ] || [ "gpio read 23" == 1 ]; then
 	echo "First Boot Update.."
 	printf "Checking interent connectivity...wait 5s\n"
 	sleep 30
@@ -21,13 +22,13 @@ if [ ! -s /home/pi/data/emonpiupdate.log ]; then
 
 	if [ "$connected" = true ]; then
 		/home/pi/emonpi/service-runner-update.sh 2>&1 >> /home/pi/data/emonpiupdate.log 2>&1
+                # set permissions on newly created logfile so emonpiupdate script an write to it
+                sudo chmod 666 /home/pi/data/emonpiupdate.log
 	fi
 else
 	echo "Not first boot"
 	exit
 fi
 
-# set permissions on newly created logfile so emonpiupdate script an write to it
-sudo chmod 666 /home/pi/data/emonpiupdate.log
 
 exit
