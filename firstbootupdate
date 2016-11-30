@@ -1,13 +1,16 @@
 #!/bin/bash
 
 # Script to update new emonPi's to latest firmware and software the fist time they are booted up in the factory
-# Looks to see if /home/pi/data/emonpiupdate.log exists or LCD push button is pressed
+# Looks to see if /home/pi/data/emonpiupdate.log exists or LCD push button (GPIO 23) is pressed (low when pressed)
 
 # To rc.local before exit 0 add:
 # /home/pi/emonpi/./firstbootupdate
 
 # Check if update log file is empty if so then proceed to update
-if [ ! -s /home/pi/data/emonpiupdate.log ] || [ "gpio read 23" == 1 ]; then
+
+button="$(sudo cat /sys/class/gpio/gpio23/value)"
+
+if [ ! -s /home/pi/data/emonpiupdate.log ] || [ $button == 0 ]; then
 	echo "First Boot Update.."
 	printf "Checking interent connectivity...wait 5s\n"
 	sleep 30
