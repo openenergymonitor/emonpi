@@ -24,5 +24,5 @@ echo "Flashing RFM69Pi with V" $version
 echo
 
 
-avrdude -v -c arduino -p ATMEGA328P -P /dev/ttyAMA0 -b 38400 -U flash:w:/home/pi/data/firmware/rfm69pi-$firmware.hex
+avrdude -v -c arduino -p ATMEGA328P -P /dev/ttyAMA0 -b 38400 -U flash:w:/home/pi/data/firmware/rfm69pi-$version.hex
 
