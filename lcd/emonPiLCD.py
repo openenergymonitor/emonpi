@@ -53,7 +53,7 @@ redis_port = 6379
 hilink_device_ip = '192.168.1.1'
 
 # ------------------------------------------------------------------------------------
-# I2C LCD: each I2C address will be tried in consecutive order  until LCD is found
+# I2C LCD: each I2C address will be tried in consecutive order until LCD is found
 # The first address that matches a device on the I2C bus will be used for the I2C LCD
 # ------------------------------------------------------------------------------------
 lcd_i2c = ['27', '1f']
@@ -110,7 +110,7 @@ def shutdown(lcd):
 
 class LCD(object):
     def __init__(self, logger):
-        # Check to see if LCD is connected if not then stop here
+        # Scan I2C bus for LCD I2C addresses as defined in led_i2c, we have a couple of models of LCD which have different adreses that are shipped with emonPi. First I2C device to match address is used.
         self.logger = logger
         for i2c_address in lcd_i2c:
           lcd_status = subprocess.check_output(["/home/pi/emonpi/lcd/emonPiLCD_detect.sh", "%s" % i2c_address])
@@ -124,6 +124,8 @@ class LCD(object):
           print ("I2C LCD NOT DETECTED on either 0x" + str(lcd_i2c) + " ...exiting LCD script")
           logger.error("I2C LCD NOT DETECTED on either 0x" + str(lcd_i2c) + " ...exiting LCD script")
           sys.exit(1)
+        
+        # Init LCD using detected I2C address with 16 characters
         self.lcd = lcddriver.lcd(int(current_lcd_i2c, 16))
         self._display = ['', '']
 
