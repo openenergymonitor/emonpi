@@ -1,6 +1,25 @@
 // emonPi used 16 x 2 I2C LCD display
+int i2c_lcd_detect(int i2c_lcd_address[]){
+  Wire.begin();
+  byte error=1;
+  for (int i=0; i<2; i++){
+    Serial.print("Looking for I2c LCD at "); Serial.println(i2c_lcd_address[i],HEX);
+    Wire.beginTransmission(i2c_lcd_address[i]);
+    error = Wire.endTransmission();
+    if (error == 0)
+    {
+      Serial.print("I2C device found "); Serial.println(i2c_lcd_address[i], HEX);
+      return (i2c_lcd_address[i]);
+      break;
+    }
+  }
+Serial.println("i2c LCD not found");
+return(0);
+}
 
-void emonPi_LCD_Startup() {
+
+void emonPi_LCD_Startup(int current_lcd_i2c) {
+  LiquidCrystal_I2C lcd(current_lcd_i2c,16,2);                                   // LCD I2C address to 0x27, 16x2 line display
   lcd.init();                      // initialize the lcd
   lcd.backlight();                 // Or lcd.noBacklight()
   lcd.print(F("emonPi V")); lcd.print(firmware_version*0.01);
@@ -41,7 +60,7 @@ lcd.setCursor(0, 1); lcd.print(F("Detected "));
   }
    else
    {
-    
+
      if (CT1) {
       Serial.println(F("CT 1 detect"));
       lcd.print(F("CT1 "));
@@ -51,7 +70,7 @@ lcd.setCursor(0, 1); lcd.print(F("Detected "));
       lcd.print(F("CT2"));
     }
    }
-  
+
   delay(2000);
 
   if (DS18B20_STATUS==1) {
@@ -68,9 +87,9 @@ lcd.setCursor(0, 1); lcd.print(F("Detected "));
   	lcd.print(F("Detected: ")); lcd.print(numSensors);
     lcd.setCursor(0, 1); lcd.print(F("DS18B20 Temp"));
   }
-  
+
   delay(2000);
-  
+
   lcd.clear();
   lcd.print(F("Raspberry Pi"));
   lcd.setCursor(0, 1); lcd.print(F("Booting..."));
@@ -99,7 +118,7 @@ void send_emonpi_serial()
 {
   byte binarray[sizeof(emonPi)];
   memcpy(binarray, &emonPi, sizeof(emonPi));
-  
+
   Serial.print(F("OK "));
   Serial.print(nodeID);
   for (byte i = 0; i < sizeof(binarray); i++) {
@@ -108,7 +127,7 @@ void send_emonpi_serial()
   }
   Serial.print(F(" (-0)"));
   Serial.println();
-  
+
   delay(10);
 }
 
