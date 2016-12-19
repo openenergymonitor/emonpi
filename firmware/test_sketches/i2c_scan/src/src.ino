@@ -22,25 +22,25 @@
 // Version 6, November 27, 2015.
 //    Added waiting for the Leonardo serial communication.
 // Test I2C device detection
- 
+
 #include <Wire.h>
- 
- 
+
+
 void setup()
 {
   Wire.begin();
- 
+
   Serial.begin(9600);
   Serial.println("\nI2C Scanner");
 }
- 
- 
+
+
 void loop()
 {
   byte error;
- 
+
   Serial.println("Scanning...");
- 
+
 
     // The i2c_scanner uses the return value of
     // the Write.endTransmisstion to see if
@@ -51,14 +51,14 @@ void loop()
     {
       Serial.print("I2C device found at address 0x27");
     }
-    
-    Wire.beginTransmission(0x1f);
+
+    Wire.beginTransmission(0x3f);
     error = Wire.endTransmission();
     if (error == 0)
     {
       Serial.print("I2C device found at address 0x1f");
     }
- 
- 
+
+
   delay(5000);           // wait 5 seconds for next scan
 }

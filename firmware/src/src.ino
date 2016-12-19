@@ -172,7 +172,22 @@ const char helpText1[] PROGMEM =                                 // Available Se
 //-------------------------------------------------------------------------------------------------------------------------------------------
 void setup()
 {
+
   delay(100);
+  Wire.beginTransmission(0x27);
+  error = Wire.endTransmission();
+  if (error == 0)
+  {
+    Serial.print("I2C device found at address 0x27");
+  }
+
+  Wire.beginTransmission(0x3f);
+  error = Wire.endTransmission();
+  if (error == 0)
+  {
+    Serial.print("I2C device found at address 0x1f");
+  }
+
   if (USA==TRUE)
   {
     Vcal = Vcal_USA;                                                       // Assume USA AC/AC adatper is being used, set calibration accordingly
