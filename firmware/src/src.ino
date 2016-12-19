@@ -63,8 +63,8 @@ EnergyMonitor ct1, ct2;
 
 #include <Wire.h>                                                     // Arduino I2C library
 #include <LiquidCrystal_I2C.h>                                        // https://github.com/openenergymonitor/LiquidCrystal_I2C
-int i2c_lcd_address[2]={0x27, 0x1f};                                  // I2C addresses to test for I2C LCD device
-int current_lcd_i2c;                                          // Used to store current I2C address as found by i2_lcd_detect()
+int i2c_lcd_address[2]={0x27, 0x3f};                                  // I2C addresses to test for I2C LCD device
+int current_lcd_i2c;                                                  // Used to store current I2C address as found by i2_lcd_detect()
 LiquidCrystal_I2C lcd(0x00,16,2);                                     // I2C LCD
 
 //----------------------------emonPi Firmware Version---------------------------------------------------------------------------------------------------------------
