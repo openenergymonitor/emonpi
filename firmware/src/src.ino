@@ -63,7 +63,7 @@ EnergyMonitor ct1, ct2;
 
 #include <Wire.h>                                                     // Arduino I2C library
 #include <LiquidCrystal_I2C.h>                                        // https://github.com/openenergymonitor/LiquidCrystal_I2C
-LiquidCrystal_I2C lcd(0x27,16,2);                                     // LCD I2C address to 0x27, 16x2 line display
+LiquidCrystal_I2C lcd(0x3f,16,2);                                     // LCD I2C address to 0x27, 16x2 line display
 const int firmware_version = 281;                                    //firmware version x 100 e.g 100 = V1.00
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
