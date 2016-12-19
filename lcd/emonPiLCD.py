@@ -56,7 +56,7 @@ hilink_device_ip = '192.168.1.1'
 # I2C LCD: each I2C address will be tried in consecutive order until LCD is found
 # The first address that matches a device on the I2C bus will be used for the I2C LCD
 # ------------------------------------------------------------------------------------
-lcd_i2c = ['27', '1f']
+lcd_i2c = ['27', '3f']
 current_lcd_i2c = ''
 # LCD backlight timeout in seconds
 # 0: always on, 300: off after 5 min
