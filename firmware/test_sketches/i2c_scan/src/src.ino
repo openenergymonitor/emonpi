@@ -24,6 +24,8 @@
 // Test I2C device detection
 
 #include <Wire.h>
+#include <LiquidCrystal_I2C.h>                                        // https://github.com/openenergymonitor/LiquidCrystal_I2C
+LiquidCrystal_I2C lcd(0x3f,16,2);                                     // LCD I2C address to 0x27, 16x2 line display
 
 
 void setup()
