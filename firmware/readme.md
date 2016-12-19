@@ -2,6 +2,17 @@
 
 **See continous-sampling branch for continous sampling**
 
+# V2.8.2 (10/12/16)
+
+* Autodetect LCD on I2C address `0x27` or `0x3f`
+
+```
+Program:   17900 bytes (54.6% Full)
+(.text + .data + .bootloader)
+Data:       1026 bytes (50.1% Full)
+(.data + .bss + .noinit)
+```
+
 # V2.8.1 (21/11/16)
 
 * Reintroduces "quiet mode" feature as seen in the RFM2Pi firmwares to allow improved RF debugging.

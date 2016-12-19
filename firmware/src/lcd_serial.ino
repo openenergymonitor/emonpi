@@ -3,32 +3,33 @@ int i2c_lcd_detect(int i2c_lcd_address[]){
   Wire.begin();
   byte error=1;
   for (int i=0; i<2; i++){
-    Serial.print("Looking for I2c LCD at "); Serial.println(i2c_lcd_address[i],HEX);
     Wire.beginTransmission(i2c_lcd_address[i]);
     error = Wire.endTransmission();
     if (error == 0)
     {
-      Serial.print("I2C device found "); Serial.println(i2c_lcd_address[i], HEX);
+      Serial.print("LCD found i2c 0x"); Serial.println(i2c_lcd_address[i], HEX);
       return (i2c_lcd_address[i]);
       break;
     }
   }
-Serial.println("i2c LCD not found");
+Serial.println("LCD not found");
 return(0);
 }
 
 
-void emonPi_LCD_Startup(int current_lcd_i2c) {
-  LiquidCrystal_I2C lcd(current_lcd_i2c,16,2);                                   // LCD I2C address to 0x27, 16x2 line display
+void emonPi_LCD_Startup(int current_i2c_addr) {
+  LiquidCrystal_I2C lcd(current_lcd_i2c_addr,16,2);                                   // LCD I2C address to 0x27, 16x2 line display
   lcd.init();                      // initialize the lcd
   lcd.backlight();                 // Or lcd.noBacklight()
   lcd.print(F("emonPi V")); lcd.print(firmware_version*0.01);
   lcd.setCursor(0, 1); lcd.print(F("OpenEnergyMon"));
 }
 
-void serial_print_startup(){
+void serial_print_startup(int current_lcd_i2c_addr){
   //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  LiquidCrystal_I2C lcd(current_lcd_i2c_addr,16,2);                                   // LCD I2C address to 0x27, 16x2 line display
   lcd.clear();
+  lcd.backlight();
 
   Serial.print(F("CT 1 Cal: ")); Serial.println(Ical1);
   Serial.print(F("CT 2 Cal: ")); Serial.println(Ical2);

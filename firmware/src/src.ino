@@ -64,8 +64,10 @@ EnergyMonitor ct1, ct2;
 #include <Wire.h>                                                     // Arduino I2C library
 #include <LiquidCrystal_I2C.h>                                        // https://github.com/openenergymonitor/LiquidCrystal_I2C
 int i2c_lcd_address[2]={0x27, 0x3f};                                  // I2C addresses to test for I2C LCD device
-int current_lcd_i2c;                                                  // Used to store current I2C address as found by i2_lcd_detect()
-LiquidCrystal_I2C lcd(0x00,16,2);                                     // I2C LCD
+int current_lcd_i2c_addr;                                                  // Used to store current I2C address as found by i2_lcd_detect()
+// LiquidCrystal_I2C lcd(0x27,16,2);                                     // I2C LCD
+LiquidCrystal_I2C lcd(0,0,0);
+
 
 //----------------------------emonPi Firmware Version---------------------------------------------------------------------------------------------------------------
 // Changelog: https://github.com/openenergymonitor/emonpi/blob/master/firmware/readme.md
@@ -179,9 +181,6 @@ void setup()
 {
 
   delay(100);
-  emonPi_startup();                                                     // emonPi startup proceadure, check for AC waveform and print out debug
-  current_lcd_i2c = i2c_lcd_detect(i2c_lcd_address);
-  emonPi_LCD_Startup(current_lcd_i2c);
 
   if (USA==TRUE)
   {
@@ -194,11 +193,18 @@ void setup()
     Vrms = Vrms_EU;
   }
 
+  emonPi_startup();                                                     // emonPi startup proceadure, check for AC waveform and print out debug
   if (RF_STATUS==1) RF_Setup();
   byte numSensors =  check_for_DS18B20();                               // check for presence of DS18B20 and return number of sensors
+  
+  // Detect and startup I2C LCD
+  current_lcd_i2c_addr = i2c_lcd_detect(i2c_lcd_address);
+  LiquidCrystal_I2C lcd(current_lcd_i2c_addr,16,2);                                   // LCD I2C address to 0x27, 16x2 line display
+  emonPi_LCD_Startup(current_lcd_i2c_addr);
+  
   delay(2000);
   CT_Detect();
-  serial_print_startup();
+  serial_print_startup(current_lcd_i2c_addr);
 
   attachInterrupt(emonPi_int1, onPulse, FALLING);  // Attach pulse counting interrupt on RJ45 (Dig 3 / INT 1)
   emonPi.pulseCount = 0;                                                  // Reset Pulse Count
