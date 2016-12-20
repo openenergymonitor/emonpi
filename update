@@ -44,6 +44,7 @@ git pull
 
 echo "git pull /home/pi/RFM2Pi"
 cd /home/pi/RFM2Pi
+sudo chown -R pi:pi .git
 git branch
 git pull
 
