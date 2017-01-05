@@ -161,6 +161,17 @@ fi
 
 echo
 
+################################################################################################
+if [ -f /etc/init.d/mqtt_input ]; then
+  echo "replacing initd mqtt_input with systemd mqtt input"
+  sudo /etc/init.d/mqtt_input stop
+  sudo rm /etc/init.d/mqtt_input
+  sudo cp /var/www/emoncms/scripts/mqtt_input.service /etc/systemd/system/mqtt_input.service
+  sudo systemctl daemon-reload
+  sudo systemctl enable mqtt_input.service
+  sudo systemctl start mqtt_input.service
+fi
+
 ## Don't overwrite settings unless required (un comment if required)
 # echo "Copy new default.emonpi.settings.php to settings.php & make backup old.emonpi.settings.php"
 # sudo cp /var/www/emoncms/settings.php /var/www/emoncms/old.settings.php
@@ -192,6 +203,8 @@ if [ -f /etc/init.d/mqtt_input ]; then
   sudo /etc/init.d/mqtt_input start
   sleep 1
   sudo /etc/init.d/mqtt_input restart
+else
+  sudo systemctl restart mqtt_input.service
 fi
 echo
 echo "set log rotate config owner to root"
