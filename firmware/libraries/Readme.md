@@ -20,7 +20,7 @@ The Arduino librarys used by the emonPi firmware uses [git submodules](https://g
 
 Using sub modules has the advantage of keeping the link between the origional lib repository while at the same time allowing us to specify the state of each library. We have implemented this to ensure when a user clones the emonPi fimware and attempts to compile we can be sure that the libs used are **exactly** the same as the libs used when we compiled the firmware.
 
-After cloning or checking out the repo on further step is needed to pull in the sub modules:
+After cloning or checking out the repo, one further step is needed to pull in the sub modules:
 
 	$ git submodule init
 	$ git submodule update
@@ -31,4 +31,4 @@ After cloning or checking out the repo on further step is needed to pull in the 
 
 To tell Arduino IDE to use the libraries in `emonpi/firmware/libraries` we need to set the **Arduino IDE Sketchbook location** to `*<localpath>*/emonpi/firmware` then restart the Arduino IDE.
 
-On compiling check that Arduino is used the correct library, turn on *preferances>Show verbose output during compilation* and see log message at the beginning of compilation showing lib path. You might need to remove any lib you have sharing the same name in your Arduino sketchbook folder.
+On compiling check that Arduino is used the correct library, turn on *preferences>Show verbose output during compilation* and see log message at the beginning of compilation showing lib path. You might need to remove any lib you have sharing the same name in your Arduino sketchbook folder.
