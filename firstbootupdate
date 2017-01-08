@@ -4,7 +4,7 @@
 # Looks to see if /home/pi/data/emonpiupdate.log exists or LCD push button (GPIO 23) is pressed (high when pressed)
 
 # To rc.local before exit 0 add:
-# /home/pi/emonpi/./firstbootupdate
+# su pi -c '/home/pi/emonpi/firstbootupdate'
 
 # Check if update log file is empty if so then proceed to update
 
