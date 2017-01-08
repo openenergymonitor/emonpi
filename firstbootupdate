@@ -12,7 +12,7 @@ button="$(sudo cat /sys/class/gpio/gpio23/value)"
 
 if [ ! -s /home/pi/data/emonpiupdate.log ] || [ $button == 1 ]; then
 	echo "First Boot Update.."
-	printf "Checking interent connectivity...wait 5s\n"
+	printf "Checking internet connectivity...wait 30s\n"
 	sleep 30
 	WGET="/usr/bin/wget"
 	$WGET -q --tries=20 --timeout=5 http://www.google.com -O /tmp/google.idx &> /dev/null
