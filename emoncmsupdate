@@ -82,7 +82,7 @@ if [ ! -f /etc/sudoers.d/emonhub-sudoers ]; then
     sudo cp /home/pi/emonpi/emonhub-sudoers /etc/sudoers.d/
     sudo chmod 0440 /etc/sudoers.d/emonhub-sudoers
     echo
-    echo "Install emonPi Emoncms admin reboot button sudoers entry"
+    echo "Install emonhub reboot sudoers entry"
 fi
 
 #########################################################################################
