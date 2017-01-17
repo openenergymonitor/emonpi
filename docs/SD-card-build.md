@@ -1,4 +1,4 @@
-# emonPi SD card build
+# emonSD (emonPi & emonBase) SD card build
 
 Glyn Hudson - January 2016
 
