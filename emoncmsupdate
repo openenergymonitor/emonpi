@@ -175,18 +175,20 @@ fi
 echo
 
 ################################################################################################
-if [ -f /etc/init.d/mqtt_input ] && [ -d /etc/systemd ]; then
-  echo "replacing initd mqtt_input with systemd mqtt input"
-  sudo /etc/init.d/mqtt_input stop
-  sudo rm /etc/init.d/mqtt_input
-  sudo cp /var/www/emoncms/scripts/mqtt_input.service /etc/systemd/system/mqtt_input.service
-  sudo systemctl daemon-reload
-  sudo systemctl enable mqtt_input.service
-  sudo systemctl start mqtt_input.service
-else
- echo "update mqtt_input systemd unit file"
- sudo cp /var/www/emoncms/scripts/mqtt_input.service /etc/systemd/system/mqtt_input.service
- sudo systemctl daemon-reload
+if [ -d /etc/systemd ]; then
+    if [ -f /etc/init.d/mqtt_input ]; then
+      echo "replacing initd mqtt_input with systemd mqtt input"
+      sudo /etc/init.d/mqtt_input stop
+      sudo rm /etc/init.d/mqtt_input
+      sudo cp /var/www/emoncms/scripts/mqtt_input.service /etc/systemd/system/mqtt_input.service
+      sudo systemctl daemon-reload
+      sudo systemctl enable mqtt_input.service
+      sudo systemctl start mqtt_input.service
+    else
+     echo "update mqtt_input systemd unit file"
+     sudo cp /var/www/emoncms/scripts/mqtt_input.service /etc/systemd/system/mqtt_input.service
+     sudo systemctl daemon-reload
+    fi
 fi
 
 ## Don't overwrite settings unless required (un comment if required)
