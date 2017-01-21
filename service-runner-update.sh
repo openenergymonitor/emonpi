@@ -21,7 +21,8 @@ sudo /home/pi/emonpi/lcd/./emonPiLCD_update.py
 echo "Starting emonPi Update >"
 echo "via service-runner-update.sh"
 echo "EUID: $EUID"
-echo "Argument: " $1
+argument=$1
+echo "Argument: "$argument
 # Date and time
 date
 echo "#############################################################"
@@ -82,10 +83,18 @@ if [ -d /home/pi/huawei-hilink-status ]; then
 fi
 
 echo
-echo "Start emonPi Atmega328 firmware update:"
-# Run emonPi update script to update firmware on Atmega328 on emonPi Shield using avrdude
-/home/pi/emonpi/emonpiupdate
-echo
+
+# if passed argument from Emoncms admin is rfm69pi then run rfm69pi update instead of emonPi
+if [ $argument = "rfm69pi" ]; then
+  echo "Running RFM69Pi firmware update:"
+  /home/pi/emonpi/rfm69piupdate.sh
+  echo
+else
+  echo "Start emonPi Atmega328 firmware update:"
+  # Run emonPi update script to update firmware on Atmega328 on emonPi Shield using avrdude
+  /home/pi/emonpi/emonpiupdate
+  echo
+fi
 
 echo
 echo "Start emonhub update script:"
