@@ -1,5 +1,8 @@
 #!/bin/bash
 
+## NOT USED ANYMORE
+# Replaced by: service-runner-update.sh
+
 scriptname=$(basename $0)
 pidfile="/tmp/${scriptname}"
 
