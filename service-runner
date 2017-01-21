@@ -1,7 +1,9 @@
 #!/bin/bash
 
-## NOT USED ANYMORE
-# Replaced by: service-runner-update.sh
+## Used to update log viewer window in Emoncms admin
+# Used in conjunction with: service-runner-update.sh and Emoncms admin module 
+
+echo "update via service-runner"
 
 scriptname=$(basename $0)
 pidfile="/tmp/${scriptname}"
@@ -18,11 +20,11 @@ do
         if [ -f $flag ]; then
             tmp=`cat $flag`
             IFS=\> read script logfile <<< "$tmp"
-            echo "STARTING: $script > $logfile"
+            echo "STARTING: $script >> $logfile"
             sudo rm $flag
             sudo chown pi $logfile
-            $script > $logfile
-            echo "COMPLETE: $script > $logfile"
+            $script >> $logfile
+            echo "COMPLETE: $script >> $logfile"
         fi
     done
     sleep 1

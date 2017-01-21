@@ -6,11 +6,10 @@
 # Make FS RW
 rpi-rw
 
-echo
-
+echo "#############################################################"
 
 # Clear log update file
-cat /dev/null >  /home/pi/data/emonpiupdate.log
+#cat /dev/null >  /home/pi/data/emonpiupdate.log
 
 # Stop emonPi LCD servcice
 sudo service emonPiLCD stop
@@ -20,10 +19,12 @@ sudo /home/pi/emonpi/lcd/./emonPiLCD_update.py
 
 
 echo "Starting emonPi Update >"
+echo "via service-runner-update.sh"
 echo "EUID: $EUID"
-echo
+echo "Argument: " $1
 # Date and time
 date
+echo "#############################################################"
 echo
 image_version=$(ls /boot | grep emonSD)
 echo "$image_version"
@@ -31,37 +32,52 @@ echo
 
 echo "git pull /home/pi/emonpi"
 cd /home/pi/emonpi
+git branch
+git status
 git pull
 
 echo "git pull /home/pi/RFM2Pi"
 cd /home/pi/RFM2Pi
+git branch
+git status
+sudo chown -R pi:pi .git
 git pull
 
 echo "git pull /home/pi/emonhub"
 cd /home/pi/emonhub
+git branch
+git status
 git pull
 
 if [ -d /home/pi/oem_openHab ]; then
     echo "git pull /home/pi/oem_openHab"
     cd /home/pi/oem_openHab
+    git branch
+    git status
     git pull
 fi
 
 if [ -d /home/pi/oem_node ]; then
     echo "git pull /home/pi/oem_node-red"
     cd /home/pi/oem_node-red
+    git branch
+    git status
     git pull
 fi
 
 if [ -d /home/pi/usefulscripts ]; then
     echo "git pull /home/pi/usefulscripts"
     cd /home/pi/usefulscripts
+    git branch
+    git status
     git pull
 fi
 
 if [ -d /home/pi/huawei-hilink-status ]; then
     echo "git pull /home/pi/huawei-hilink-status"
     cd /home/pi/huawei-hilink-status
+    git branch
+    git status
     git pull
 fi
 

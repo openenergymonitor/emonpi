@@ -91,6 +91,7 @@ echo
 echo "git pull /var/www/emoncms"
 cd /var/www/emoncms
 git branch
+git status
 git pull
 
 echo
@@ -98,6 +99,7 @@ echo
 if [ -d /var/www/emoncms/Modules/nodes ]; then
   echo "git pull /var/www/emoncms/Modules/nodes"
   cd /var/www/emoncms/Modules/nodes
+  git status
   git branch
   git pull
 fi
@@ -107,6 +109,7 @@ echo
 echo "git pull /var/www/emoncms/Modules/app"
 cd /var/www/emoncms/Modules/app
 git branch
+git status
 git pull
 
 echo
@@ -114,6 +117,7 @@ echo
 echo "git pull /var/www/emoncms/Modules/config"
 cd /var/www/emoncms/Modules/config
 git branch
+git status
 git pull
 
 echo
@@ -121,11 +125,13 @@ echo
 echo "git pull /var/www/emoncms/Modules/wifi"
 cd /var/www/emoncms/Modules/wifi
 git branch
+git status
 git pull
 
 echo "git pull /var/www/emoncms/Modules/dashboard"
 cd /var/www/emoncms/Modules/dashboard
 git branch
+git status
 git pull
 
 echo
@@ -134,9 +140,10 @@ if [ -d /var/www/emoncms/Modules/graph ]; then
   echo "git pull /var/www/emoncms/Modules/graph"
   cd /var/www/emoncms/Modules/graph
   git branch
+  git status
   git pull
 else
-  echo "git clone https://github.com/emoncms/graph"
+  echo "Installing Emoncms graph module https://github.com/emoncms/graph"
   cd /var/www/emoncms/Modules
   git clone https://github.com/emoncms/graph
 fi
@@ -160,9 +167,10 @@ if [ -d /home/pi/backup ]; then
   echo "git pull /home/pi/backup"
   cd /home/pi/backup
   git branch
+  git status
   git pull
 else
-  echo "git clone https://github.com/emoncms/backup"
+  echo "Installing Emoncms backup module from  https://github.com/emoncms/backup"
   cd /home/pi
   git clone https://github.com/emoncms/backup
   cd /home/pi/backup

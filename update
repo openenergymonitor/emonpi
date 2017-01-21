@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# NOT USED ANYMORE: replaced with service-runner-update.sh
+
 # If update flag does not exit then exit
  if [ ! -f /tmp/emonpiupdate ]; then
     exit
@@ -28,6 +30,7 @@ sudo /home/pi/emonpi/lcd/./emonPiLCD_update.py
 
 
 echo "Starting emonPi Update >"
+echo "via update"
 echo
 # Date and time
 date
