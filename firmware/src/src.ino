@@ -47,7 +47,8 @@ emonhub.conf node decoder:
 
 */
 
-#define emonTxV3                                                      // Tell emonLib this is the emonPi V3 - don't read Vcc assume Vcc = 3.3V as is always the case on emonPi eliminates bandgap error and need for calibration http://harizanov.com/2013/09/thoughts-on-avr-adc-accuracy/
+#define emonTxV3                                                      // Tell emonLib this is the emonPi V3 - don't read Vcc assume Vcc = 3.3V as is always the case on emonPi eli
+ates bandgap error and need for calibration http://harizanov.com/2013/09/thoughts-on-avr-adc-accuracy/
 #define RF69_COMPAT 1                                                 // Set to 1 if using RFM69CW or 0 is using RFM12B
 
 #include <JeeLib.h>                                                   // https://github.com/openenergymonitor/jeelib
@@ -72,7 +73,7 @@ LiquidCrystal_I2C lcd(0,0,0);
 
 //----------------------------emonPi Firmware Version---------------------------------------------------------------------------------------------------------------
 // Changelog: https://github.com/openenergymonitor/emonpi/blob/master/firmware/readme.md
-const int firmware_version = 282;                                     //firmware version x 100 e.g 100 = V1.00
+const int firmware_version = 283;                                     //firmware version x 100 e.g 100 = V1.00
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
 boolean debug =                   TRUE;
@@ -91,7 +92,7 @@ const float Ical2=                90.9;
 float Vcal_EU=                    256.8;                             // (230V x 13) / (9V x 1.2) = 276.9 - Calibration for EU AC-AC adapter 77DE-06-09
 const float Vcal_USA=             130.0;                             // Calibration for US AC-AC adapter 77DA-10-09
 boolean USA=                      FALSE;
-const byte min_pulsewidth= 110;                              // minimum width of interrupt pulse (default pulse output meters = 100ms)
+const byte min_pulsewidth=        60;                                // minimum width of interrupt pulse
 
 const float phase_shift=          1.7;
 const int no_of_samples=          1480;
