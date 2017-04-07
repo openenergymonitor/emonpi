@@ -2,6 +2,17 @@
 
 **See continous-sampling branch for continous sampling**
 
+# V2.8.2 (07/04/17)
+
+* Reduce min pulse width to 60ms
+
+```
+Program:   17892 bytes (54.6% Full)
+(.text + .data + .bootloader)
+Data:       1022 bytes (49.9% Full)
+(.data + .bss + .noinit)
+```
+
 # V2.8.2 (10/12/16)
 
 * Autodetect LCD on I2C address `0x27` or `0x3f`
