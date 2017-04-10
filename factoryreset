@@ -153,7 +153,7 @@ history -c
 >~/.bash_history
 
 echo "Clear and re-generate SSH keys"
-sudo rm /home/pi/.ssh/known_hosts
+sudo rm /home/pi/.ssh/*
 sudo rm /etc/ssh/ssh_host_*
 sudo dpkg-reconfigure openssh-server
 
