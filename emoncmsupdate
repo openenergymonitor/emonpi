@@ -86,13 +86,44 @@ if [ ! -f /etc/sudoers.d/emonhub-sudoers ]; then
 fi
 
 #########################################################################################
+# Record current state of emoncms settings.php
 
+current_settings_md5 ="$(md5sum /var/www/emoncms/settings.php)"
+current_default_settings_md5 ="$(md5sum /var/www/emoncms/default.emonpi.settings.php)"
+
+#########################################################################################
+
+# Pulling in latest Emoncms changes
 echo
 echo "git pull /var/www/emoncms"
 cd /var/www/emoncms
 git branch
 git status
 git pull
+
+new_default_settings_md5 ="$(md5sum /var/www/emoncms/default.emonpi.settings.php)"
+
+settings_unmodified = false
+# check to see if user has modifed settings.php
+if [ "$current_default_settings_md5" == "$current_settings_md5" ]; then
+  echo "settings.php had NOT been user modifed"
+  $settings_unmodified = true
+else
+  echo "settings.php HAS been user modified"
+  $settings_unmodified = false
+fi
+
+
+# check to see if there is an update waiting for settings.php
+if [ "$new__default_settings_md5" != "$current_default_settings_md5" ]; then
+  echo "Update required to settings.php"
+  if [ "$settings_unmodified" == true ]; then
+    sudo cp /var/www/emoncms/default.emonpi.settings.php /var/www/emoncms/settings.php
+    echo "settings.php autoupdated"
+  else
+    echo "ERROR: unable to autoupdate settings.php since user changes are present, manual review required"
+  fi
+fi
 
 echo
 
