@@ -9,7 +9,7 @@ rpi-rw
 echo "#############################################################"
 
 # Clear log update file
-#cat /dev/null >  /home/pi/data/emonpiupdate.log
+cat /dev/null >  /home/pi/data/emonpiupdate.log
 
 # Stop emonPi LCD servcice
 sudo service emonPiLCD stop

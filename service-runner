@@ -20,11 +20,11 @@ do
         if [ -f $flag ]; then
             tmp=`cat $flag`
             IFS=\> read script logfile <<< "$tmp"
-            echo "STARTING: $script >> $logfile"
+            echo "STARTING: $script > $logfile"
             sudo rm $flag
             sudo chown pi $logfile
-            $script >> $logfile
-            echo "COMPLETE: $script >> $logfile"
+            $script > $logfile
+            echo "COMPLETE: $script > $logfile"
         fi
     done
     sleep 1
