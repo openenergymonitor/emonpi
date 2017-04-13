@@ -87,11 +87,11 @@ fi
 
 #########################################################################################
 # Record current state of emoncms settings.php
-
+echo
 current_settings_md5="$(/home/pi/emonpi/./md5sum.py /var/www/emoncms/settings.php)"
 echo "current settings.php md5: $current_settings_md5"
 
-current_default_settings_md5="$(./md5sum.py /var/www/emoncms/default.emonpi.settings.php)"
+current_default_settings_md5="$(/home/pi/emonpi/md5sum.py /var/www/emoncms/default.emonpi.settings.php)"
 echo "Default settings.php md5: $current_default_settings_md5"
 
 #########################################################################################
@@ -106,8 +106,8 @@ git pull
 
 #########################################################################################
 # check to see if user has modifed settings.php and if update is need. Auto apply of possible
-
-new_default_settings_md5="$(./md5sum.py /var/www/emoncms/default.emonpi.settings.php)"
+echo
+new_default_settings_md5="$(/home/pi/emonpi/md5sum.py /var/www/emoncms/default.emonpi.settings.php)"
 echo "NEW default settings.php md5: $new_default_settings_md5"
 
 
@@ -121,28 +121,17 @@ fi
 
 # check to see if there is an update waiting for settings.php
 if [ "$new_default_settings_md5" != "$current_default_settings_md5" ]; then
-  echo "Update required to settings.php"
+  echo "Update required to settings.php..."
   if [ $settings_unmodified == true ]; then
     sudo cp /var/www/emoncms/default.emonpi.settings.php /var/www/emoncms/settings.php
     echo "settings.php autoupdated"
   else
     echo "**ERROR: unable to autoupdate settings.php since user changes are present, manual review required**"
   fi
+else
+ echo "No update required to settings.php"
 fi
 #########################################################################################
-
-
-
-# check to see if there is an update waiting for settings.php
-if [ "$new__default_settings_md5" != "$current_default_settings_md5" ]; then
-  echo "Update required to settings.php"
-  if [ "$settings_unmodified" == true ]; then
-    sudo cp /var/www/emoncms/default.emonpi.settings.php /var/www/emoncms/settings.php
-    echo "settings.php autoupdated"
-  else
-    echo "ERROR: unable to autoupdate settings.php since user changes are present, manual review required"
-  fi
-fi
 
 echo
 
