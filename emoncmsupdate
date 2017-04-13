@@ -88,8 +88,11 @@ fi
 #########################################################################################
 # Record current state of emoncms settings.php
 
-current_settings_md5 ="$(md5sum /var/www/emoncms/settings.php)"
-current_default_settings_md5 ="$(md5sum /var/www/emoncms/default.emonpi.settings.php)"
+current_settings_md5="$(/home/pi/emonpi/./md5sum.py /var/www/emoncms/settings.php)"
+echo "current settings.php md5: $current_settings_md5"
+
+current_default_settings_md5="$(./md5sum.py /var/www/emoncms/default.emonpi.settings.php)"
+echo "Default settings.php md5: $current_default_settings_md5"
 
 #########################################################################################
 
@@ -101,17 +104,33 @@ git branch
 git status
 git pull
 
-new_default_settings_md5 ="$(md5sum /var/www/emoncms/default.emonpi.settings.php)"
+#########################################################################################
+# check to see if user has modifed settings.php and if update is need. Auto apply of possible
 
-settings_unmodified = false
-# check to see if user has modifed settings.php
+new_default_settings_md5="$(./md5sum.py /var/www/emoncms/default.emonpi.settings.php)"
+echo "NEW default settings.php md5: $new_default_settings_md5"
+
+
 if [ "$current_default_settings_md5" == "$current_settings_md5" ]; then
   echo "settings.php had NOT been user modifed"
-  $settings_unmodified = true
+  settings_unmodified=true
 else
   echo "settings.php HAS been user modified"
-  $settings_unmodified = false
+  settings_unmodified=false
 fi
+
+# check to see if there is an update waiting for settings.php
+if [ "$new_default_settings_md5" != "$current_default_settings_md5" ]; then
+  echo "Update required to settings.php"
+  if [ $settings_unmodified == true ]; then
+    sudo cp /var/www/emoncms/default.emonpi.settings.php /var/www/emoncms/settings.php
+    echo "settings.php autoupdated"
+  else
+    echo "**ERROR: unable to autoupdate settings.php since user changes are present, manual review required**"
+  fi
+fi
+#########################################################################################
+
 
 
 # check to see if there is an update waiting for settings.php
