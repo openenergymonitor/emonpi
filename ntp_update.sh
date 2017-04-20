@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Force NTP time update
-echo date
+date
 rpi-rw > /dev/null
 sudo service ntp stop
 sudo ntpd -q -g
