@@ -1,10 +1,11 @@
 #!/bin/bash
 
 # Force NTP time update
-
-rpi-rw
+echo date
+rpi-rw > /dev/null
 sudo service ntp stop
 sudo ntpd -q -g
 sudo service ntp start
-rpi-ro
+rpi-ro > /dev/null
+echo
 
