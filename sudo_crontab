@@ -25,3 +25,8 @@ MAILTO=""
 
 # Check wifi is connecrted very 5 min
  */5 * * * * /usr/local/bin/wifi-check > /home/pi/data/wificheck.log 2>&1
+
+# Force NTP update every 1 hour 
+
+0 * * * * /home/pi/emonpi/ntp_update.sh >> /var/log/ntp_update.log 2>&1
+
