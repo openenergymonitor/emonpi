@@ -24,6 +24,9 @@ do
             sudo rm $flag
             sudo chown pi $logfile
             $script > $logfile
+            if [ ! -e $logfile ]; then
+                touch $logfile
+            fi
             echo "COMPLETE: $script > $logfile"
         fi
     done
