@@ -192,6 +192,7 @@ echo
 if [ -d /home/pi/postprocess ]; then
   echo "git pull /home/pi/postprocess"
   cd /home/pi/postprocess
+  sudo chmod 777 .git -R
   git checkout emonpi
   git pull
 else
