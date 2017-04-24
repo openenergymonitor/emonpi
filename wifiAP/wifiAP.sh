@@ -18,13 +18,13 @@ fi
 
 echo "WiFi AP only works with BCM43143 e.g. RasPi3"
 
-read -n1 -r -p "Press space to continue...any key to exit" key
-
-if [ "$key" = '' ]; then
-    echo " "
-else
-    exit 1
-fi
+# read -n1 -r -p "Press space to continue...any key to exit" key
+# 
+# if [ "$key" = '' ]; then
+#     echo " "
+# else
+#     exit 1
+# fi
 
 
 
