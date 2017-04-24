@@ -21,6 +21,7 @@ else
     if [ "$wificonfig" == "$emptywificonfig" ]; then
         echo "Blank WIFI config detected"
         echo "Going for WIFI AP startup"
+        touch /home/pi/data/wifiAP-enabled
         wifiAP start
     fi
 fi

@@ -106,5 +106,7 @@ if [ "$1" = "stop" ]; then
         sudo iptables -t nat -D POSTROUTING -o eth1 -j MASQUERADE >/dev/null 2>&1
         sudo iptables -D FORWARD -i eth1 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT >/dev/null 2>&1
         sudo iptables -D FORWARD -i wlan0 -o eth1 -j ACCEPT >/dev/null 2>&1
+
+        rm /home/pi/data/wifiAP-enabled
 fi
 rpi-ro
