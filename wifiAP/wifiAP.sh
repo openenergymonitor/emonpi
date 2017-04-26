@@ -45,7 +45,7 @@ if [ "$1" = "start" ]; then
 	echo "Starting AP.....please wait process could take about 10-20s"
     	echo "Wifi connection will now be lost...wait 30s then connect to SSID 'emonPi' SSID with password 'raspberry' then browse to http://192.168.42.1"
 	sudo ifdown wlan0
-	sleep 4
+	# sleep 4
 	sudo ifconfig wlan0 down
 	
 	# if eth1 exists and is up then bridge to wlan0
@@ -63,10 +63,10 @@ if [ "$1" = "start" ]; then
 		sudo iptables -A FORWARD -i wlan0 -o eth1 -j ACCEPT
     	fi
     
-    	sleep 5
+    	# sleep 5
 	echo "Set static IP addres of emonPi AP 192.168.42.1"
 	sudo ifconfig wlan0 192.168.42.1
-    	sleep 5
+    	# sleep 5
 	# Start DHCP server to offer AP clients DHCP
 	echo "Start isc-dhcp-server"
 	if [ -f /home/pi/data/dhcpd.leases ]; then
@@ -77,7 +77,7 @@ if [ "$1" = "start" ]; then
 		touch /home/pi/data/dhcpd.leases
 	fi
 	sudo service isc-dhcp-server start
-	sleep 5
+	# sleep 5
 
 	# Start AP
 	echo "Start emonPi Wifi AP...."
@@ -91,16 +91,16 @@ if [ "$1" = "stop" ]; then
         sudo service hostapd stop
         echo "Stop isc-dhcp-server"
         sudo service isc-dhcp-server stop
-        sleep 5
+        # sleep 5
         sudo kill $(pgrep -f "wpa_supplicant -B")
 	sudo ifconfig wlan0 down
 	sudo ifconfig wlan0 up
 	sudo rm -r /var/run/wpa_supplicant/*
-	sudo wpa_supplicant -B -iwlan0 -f/var/log/wpa_supplicant.log -c/etc/wpa_supplicant/wpa_supplicant.conf
-	sleep 10
+	# sudo wpa_supplicant -B -iwlan0 -f/var/log/wpa_supplicant.log -c/etc/wpa_supplicant/wpa_supplicant.conf
+	# sleep 10
 	sudo dhclient -v -r wlan0
-	sleep 5
-	sudo dhclient -v wlan0
+	# sleep 5
+	# sudo dhclient -v wlan0
 
         # Remove bridge routes
         sudo iptables -t nat -D POSTROUTING -o eth1 -j MASQUERADE >/dev/null 2>&1
