@@ -29,10 +29,20 @@ avrdude -c arduino -p ATMEGA328P -P /dev/ttyAMA0 -b 115200 -U flash:w:/home/pi/e
 # avrdude -v -c arduino -p ATMEGA328P -P /dev/ttyAMA0 -b 38400 -U flash:w:/home/pi/RFM2Pi/firmware/RFM69CW_RF_Demo_ATmega328/RFM69CW_RF12_Demo_ATmega328.cpp.hex
 
 sudo /etc/init.d/emonhub start
-###############################################################################################################
+#########################################################################################################
 
 # Add bash prompt RW / RO emonPi file-system indicator
 if ! grep -q "# emonPi bash RW / RO prompt"  /etc/bash.bashrc ; then
         echo "Add RW bash prompt indicator"
         sudo bash -c 'cat /home/pi/emonpi/bash-rw-indicator >> /etc/bash.bashrc'
+fi
+
+#########################################################################################################
+
+# Move ~/.npm folder to RW folder ~/data/npm to allow npm packages to be installed when emonPi is in RO mode
+
+if [ ! -d /home/pi/data/npm ]; then
+  echo "moving ~./npm to ~/data/npm and create symlink"
+  mv /home/pi/.npm /home/pi/data/npm
+  ln -s /home/pi/data/npm /home/pi/.npm
 fi
