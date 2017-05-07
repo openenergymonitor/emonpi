@@ -46,3 +46,12 @@ if [ ! -d /home/pi/data/npm ]; then
   mv /home/pi/.npm /home/pi/data/npm
   ln -s /home/pi/data/npm /home/pi/.npm
 fi
+
+#########################################################################################################
+
+# Install / update nodeRED  emonPixel & Emoncms nodes
+
+cd /home/pi/.node-red
+npm install https://github.com/openenergymonitor/node-red-contrib-emonpixel
+npm install node-red-node-emoncms
+cd /home/pi
