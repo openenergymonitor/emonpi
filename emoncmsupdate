@@ -74,6 +74,19 @@ fi
 
 #########################################################################################
 
+# Install sudoers entry to enable toggling file-system RO/RW mount via Emoncms admin
+
+if [ ! -f /etc/sudoers.d/emoncms-filesystem ]; then
+    # double check correct sudo syntax
+    sudo visudo -cf /home/pi/emonpi/emoncms-filesystem && \
+    sudo cp /home/pi/emonpi/emoncms-filesystem /etc/sudoers.d/
+    sudo chmod 0440 /etc/sudoers.d/emoncms-filesystem
+    echo
+    echo "Install emonPi Emoncms admin file-system toggle buttons sudoers entry"
+fi
+
+#########################################################################################
+
 # Install sudoers entry to enable emonhub reboot button
 
 if [ ! -f /etc/sudoers.d/emonhub-sudoers ]; then
