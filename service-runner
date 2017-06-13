@@ -22,7 +22,6 @@ do
             IFS=\> read script logfile <<< "$tmp"
             echo "STARTING: $script > $logfile"
             sudo rm $flag
-            sudo chown pi $logfile
             $script > $logfile
             if [ ! -e $logfile ]; then
                 touch $logfile
