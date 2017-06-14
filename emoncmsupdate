@@ -3,6 +3,7 @@
 echo
 echo "================================="
 echo "Emoncms update started"
+echo "Update scrupt V1.0.0"
 echo
 
 date
