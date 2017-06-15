@@ -104,18 +104,19 @@ p {
   </div>
 
   <div id="setup-step2" style="display:none">
-  <p><b>WIFI Configuration</b></p> 
-  <p>Select WIFI network to connect to:</p>
-  <div class="wifinetworks-bound">
-    <div id="networks-scanning">Scanning for networks<br><br><img src="<?php echo $path; ?>Modules/wifi/icons/ajax-loader.gif" loop=infinite></div>
-    <div id="networks"></div>
-    <div id="network-authentication" style="display:none">
-      <div class="auth-heading">Authentication required</div>
-      <div class="auth-message">Passwords or encryption keys are required to access Wi-Fi network:<br><b><span id="WIFI_SSID"></span></b></div>
-      Password:<br>
-      <input id="wifi-password" type="password" style="height:auto">
-      <div class="auth-showpass"><input id="showpass" type="checkbox" style="margin-top:-3px"> Show password</div>
-      <button id="auth-cancel" class="btn">Cancel</button> <button id="wifi-connect" class="btn">Connect</button>
+    <p><b>WIFI Configuration</b></p> 
+    <p>Select WIFI network to connect to:</p>
+    <div class="wifinetworks-bound">
+      <div id="networks-scanning">Scanning for networks<br><br><img src="<?php echo $path; ?>Modules/wifi/icons/ajax-loader.gif" loop=infinite></div>
+      <div id="networks"></div>
+      <div id="network-authentication" style="display:none">
+        <div class="auth-heading">Authentication required</div>
+        <div class="auth-message">Passwords or encryption keys are required to access Wi-Fi network:<br><b><span id="WIFI_SSID"></span></b></div>
+        Password:<br>
+        <input id="wifi-password" type="password" style="height:auto">
+        <div class="auth-showpass"><input id="showpass" type="checkbox" style="margin-top:-3px"> Show password</div>
+        <button id="auth-cancel" class="btn">Cancel</button> <button id="wifi-connect" class="btn">Connect</button>
+      </div>
     </div>
   </div>
 </div>
@@ -125,8 +126,6 @@ p {
   <div class="welcome2"><a href="http://emonpi.local">http://emonpi.local</a> <span style="color:#c8e9f6">or</span> <a href="http://emonpi">http://emonpi</a></div>
   <br>
   <p>If the hostname does not work on your network, navigate to the IP address shown on the emonPi LCD.</p>
-</div>
-
 </div>
 
 <script>
