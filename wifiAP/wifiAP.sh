@@ -15,20 +15,16 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
+# Detect if we're runniing on a RasPi 3 that has got integrated Wifi. If not exit. WiFi AP will actually work on older RasPi with BCM43143 Wifi USB dongle, however this is difficult to detect reliably, see TODO below. Therefore for the moment we simply RasPi3 and abourting for older RasPi:
 
-echo "WiFi AP only works with BCM43143 e.g. RasPi3"
+HWREV=`cat /proc/cpuinfo | grep Revision | cut -d ':' -f 2 | sed -e "s/ //g"`
+echo "RasPi HW Revision: $HWREV"
 
-# read -n1 -r -p "Press space to continue...any key to exit" key
-# 
-# if [ "$key" = '' ]; then
-#     echo " "
-# else
-#     exit 1
-# fi
-
-
-
-rpi-rw
+if [ "$HWREV" != "a02082" ]; then
+   echo "Error WifiAP only works on RasPi3 with BCM43143 WiFi chipset"
+   exit 1
+fi
+echo "OK: RasPi 3 detected"
 
 # TO DO - make script auto read type of WiFi driver in use and determine if it will work with this version of hostpad
 #driver= basename $( readlink /sys/class/net/wlan0/device/driver ) | tr -d "\n"
@@ -40,6 +36,8 @@ rpi-rw
 #    exit 1
 #fi
 
+# Put emonPi file system into RW mode
+rpi-rw
 
 if [ "$1" = "start" ]; then
 	echo "Starting AP.....please wait process could take about 10-20s"

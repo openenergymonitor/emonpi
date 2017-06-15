@@ -123,9 +123,13 @@ p {
 
 <div id="page2" style="display:none; text-align:center">
 
-<div class="welcome">WiFi network setting saved. Going for reboot, please wait a couple of minutes before navigating to your emonpi on its hostname:</div>
+<div class="welcome">WiFi network setting saved. Rebooting system... please wait a couple of minutes before navigating to your emonpi's hostname:</div>
 
 <div class="welcome2"><a href="http://emonpi.local">http://emonpi.local</a></div>
+<div class="welcome">or</div>
+<div class="welcome2"><a href="http://emonpi">http://emonpi.local</a></div>
+<br>
+If hostname does not work on your network, navigate to IP address show on emonPi LCD</div>  
 
 <br><br>
 </div>
