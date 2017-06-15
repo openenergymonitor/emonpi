@@ -112,7 +112,7 @@ p {
       <div class="auth-heading">Authentication required</div>
       <div class="auth-message">Passwords or encryption keys are required to access Wi-Fi network:<br><b><span id="WIFI_SSID"></span></b></div>
       Password:<br>
-      <input id="wifi-password" type="password">
+      <input id="wifi-password" type="password" style="height:auto">
       <div class="auth-showpass"><input id="showpass" type="checkbox" style="margin-top:-3px"> Show password</div>
       <button id="auth-cancel" class="btn">Cancel</button> <button id="wifi-connect" class="btn">Connect</button>
     </div>
@@ -125,11 +125,9 @@ p {
 
 <div class="welcome">WiFi network setting saved. Rebooting system... please wait a couple of minutes before navigating to your emonpi's hostname:</div>
 
-<div class="welcome2"><a href="http://emonpi.local">http://emonpi.local</a></div>
-<div class="welcome">or</div>
-<div class="welcome2"><a href="http://emonpi">http://emonpi.local</a></div>
+<div class="welcome2"><a href="http://emonpi.local">http://emonpi.local</a> <span style="color:#c8e9f6">or</span> <a href="http://emonpi">http://emonpi</a></div>
 <br>
-If hostname does not work on your network, navigate to IP address show on emonPi LCD</div>  
+If the hostname does not work on your network, navigate to the IP address shown on the emonPi LCD</div>  
 
 <br><br>
 </div>
