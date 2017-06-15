@@ -20,18 +20,8 @@ function setup_controller()
     }
     
     else if ($route->action=="setwifi" && $setup_access) {
-        $val = get("mode");
-        if ($val=="ethernet" || $val=="standalone" || $val=="client") {
-            if ($setup->status()=="unconfigured") {
-                $mysqli->query("INSERT INTO setup (wifi) VALUES ('$val')");
-            } else {
-                $mysqli->query("UPDATE setup SET `wifi`='$val'");
-            }
-            $result = "saved:$val";
-        } else {
-            $result = "Invalid value";
-        }
         $route->format = "text"; 
+        $result = $setup->set_status(get("mode"));
     }
 
     else if ($route->action=="" && $setup_access) {
