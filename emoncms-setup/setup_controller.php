@@ -14,15 +14,15 @@ function setup_controller()
     require_once "Modules/setup/setup_model.php";
     $setup = new Setup($mysqli);
     
-    if ($route->action=="status" && $setup_access) {
+    if ($route->action=="status") {
         $route->format = "text";
         $result = $setup->status();
     }
     
     else if ($route->action=="setwifi" && $setup_access) {
         $val = get("mode");
-        if ($val=="standalone" || $val=="client") {
-            if ($wifi=="unconfigured") {
+        if ($val=="ethernet" || $val=="standalone" || $val=="client") {
+            if ($setup->status()=="unconfigured") {
                 $mysqli->query("INSERT INTO setup (wifi) VALUES ('$val')");
             } else {
                 $mysqli->query("UPDATE setup SET `wifi`='$val'");
@@ -35,7 +35,7 @@ function setup_controller()
     }
 
     else if ($route->action=="" && $setup_access) {
-        if ($setup_access) $result = view("Modules/setup/hello.php",array("wifi"=>$wifi));
+        if ($setup_access) $result = view("Modules/setup/hello.php",array());
     }
     
     $fullwidth = false;

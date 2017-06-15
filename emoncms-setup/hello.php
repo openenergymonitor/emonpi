@@ -98,7 +98,8 @@ p {
 
   <div id="setup-step1">
     <p><b>WIFI Configuration:</b> Would you like to:</p>
-    <div id="setup-standalone" class="setupbox">1. Run in stand-alone WIFI Access Point mode</div>
+    <div id="setup-ethernet" class="setupbox">1. Continue on ethernet</div>
+    <div id="setup-standalone" class="setupbox">1. Continue in stand-alone WIFI Access Point mode</div>
     <div id="setup-wificlient" class="setupbox">2. Connect to home WIFI network</div>
   </div>
 
@@ -117,26 +118,20 @@ p {
       <button id="auth-cancel" class="btn">Cancel</button> <button id="wifi-connect" class="btn">Connect</button>
     </div>
   </div>
-  </div>
-
 </div>
 
 <div id="page2" style="display:none; text-align:center">
+  <div class="welcome">WiFi network setting saved. Rebooting system... please wait a couple of minutes before navigating to your emonpi's hostname:</div>
+  <div class="welcome2"><a href="http://emonpi.local">http://emonpi.local</a> <span style="color:#c8e9f6">or</span> <a href="http://emonpi">http://emonpi</a></div>
+  <br>
+  <p>If the hostname does not work on your network, navigate to the IP address shown on the emonPi LCD.</p>
+</div>
 
-<div class="welcome">WiFi network setting saved. Rebooting system... please wait a couple of minutes before navigating to your emonpi's hostname:</div>
-
-<div class="welcome2"><a href="http://emonpi.local">http://emonpi.local</a> <span style="color:#c8e9f6">or</span> <a href="http://emonpi">http://emonpi</a></div>
-<br>
-If the hostname does not work on your network, navigate to the IP address shown on the emonPi LCD</div>  
-
-<br><br>
 </div>
 
 <script>
 
 // Authentication required by network
-
-var wifi = "<?php echo $wifi; ?>";
 var path = "<?php echo $path; ?>";
 var networks = [];
 
@@ -148,6 +143,13 @@ wifi_scan();
 $("#setup-standalone").click(function(){
     $("#setup-step1").hide();
     $.ajax({type: 'POST', url: path+"setup/setwifi?mode=standalone", dataType: 'text', async: true, success: function(result) {
+        window.location = path+"user/login";   
+    }});
+});
+
+$("#setup-ethernet").click(function(){
+    $("#setup-step1").hide();
+    $.ajax({type: 'POST', url: path+"setup/setwifi?mode=ethernet", dataType: 'text', async: true, success: function(result) {
         window.location = path+"user/login";   
     }});
 });

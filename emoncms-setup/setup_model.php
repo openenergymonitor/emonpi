@@ -16,11 +16,13 @@ class Setup
     
         $wifi = "unconfigured";
         $result = $this->mysqli->query("SELECT wifi FROM setup");
-        if ($row = $result->fetch_object()) {
+        if ($result && $row = $result->fetch_object()) {
             $wifi = $row->wifi;
         }
         
-        // Double check that wpa_supplicant is set
+        // Special case, if setup flag in database is wifi client but wpa_supplicant is blank then something went wrong
+        // or user cleared wpa_supplicant deliberatly in order to move emonpi to another network.
+        // If this is the case then we flag up as unconfigured
         if ($wifi=="client") {
             $wpa_supplicant = file_get_contents("/home/pi/data/wpa_supplicant.conf");
             // for ($i=0; $i<strlen($wpa_supplicant); $i++) print $wpa_supplicant[$i]." ".ord($wpa_supplicant[$i])."<br>";
