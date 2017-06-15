@@ -6,19 +6,13 @@ function setup_controller()
     global $path,$session,$route,$mysqli,$fullwidth;
 
     $result = false;
-
-    $wifi = "unconfigured";
-    $result = $mysqli->query("SELECT wifi FROM setup");
-    if ($row = $result->fetch_object()) {
-        $wifi = $row->wifi;
-    }
     
-    if ($wifi=="standalone") header('Location: '.$path."user/login");
-    if ($wifi=="client") header('Location: '.$path."user/login");
+    require_once "Modules/setup/setup_model.php";
+    $setup = new Setup($mysqli);
     
-    if ($route->action=="wifiget") {
+    if ($route->action=="status") {
         $route->format = "text";
-        $result = $wifi;
+        $result = $setup->status();
     }
     
     else if ($route->action=="setwifi") {
