@@ -41,7 +41,7 @@ rpi-rw
 
 if [ "$1" = "start" ]; then
 	echo "Starting AP.....please wait process could take about 10-20s"
-    	echo "Wifi connection will now be lost...wait 30s then connect to SSID 'emonPi' SSID with password 'raspberry' then browse to http://192.168.42.1"
+    	echo "Wifi connection will now be lost...wait 30s then connect to SSID 'emonPi' SSID with password 'emonpi2016' then browse to http://192.168.42.1"
 	sudo ifdown wlan0
 	# sleep 4
 	sudo ifconfig wlan0 down
@@ -62,8 +62,8 @@ if [ "$1" = "start" ]; then
     	fi
     
     	# sleep 5
-	echo "Set static IP addres of emonPi AP 192.168.42.1"
-	sudo ifconfig wlan0 192.168.42.1
+	echo "Set static IP addres of emonPi AP 192.168.4.1"
+	sudo ifconfig wlan0 192.168.4.1
     	# sleep 5
 	# Start DHCP server to offer AP clients DHCP
 	echo "Start isc-dhcp-server"
