@@ -98,9 +98,9 @@ p {
 
   <div id="setup-step1">
     <p><b>WIFI Configuration:</b> Would you like to:</p>
-    <div id="setup-ethernet" class="setupbox hide">1. Continue on ethernet</div>
-    <div id="setup-standalone" class="setupbox hide">1. Continue in stand-alone WIFI Access Point mode</div>
-    <div id="setup-wificlient" class="setupbox">2. Connect to home WIFI network</div>
+    <div id="setup-ethernet" class="setupbox hide">Continue on Ethernet</div>
+    <div id="setup-standalone" class="setupbox hide">Continue in stand-alone WIFI Access Point mode</div>
+    <div id="setup-wificlient" class="setupbox">Connect to WIFI network</div>
   </div>
 
   <div id="setup-step2" style="display:none">
@@ -126,6 +126,8 @@ p {
   <div class="welcome2"><a href="http://emonpi.local">http://emonpi.local</a> <span style="color:#c8e9f6">or</span> <a href="http://emonpi">http://emonpi</a></div>
   <br>
   <p>If the hostname does not work on your network, navigate to the IP address shown on the emonPi LCD.</p>
+  <p><b>Note:</b> If incorrect password is entered and wifi connection fails, connect emonpi via Ethernet to complete setup</p></p>
+
 </div>
 
 <script>
