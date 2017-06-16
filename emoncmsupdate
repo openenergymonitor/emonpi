@@ -105,8 +105,8 @@ fi
 
 if [ ! -f /etc/sudoers.d/emoncms-setup-sudoers ]; then
     # double check correct sudo syntax
-    sudo visudo -cf /home/pi/emonpi/emoncms/setup/emoncms-setup-sudoers && \
-    sudo cp /home/pi/emonpi/emoncms/setup/emoncms-setup-sudoers /etc/sudoers.d/
+    sudo visudo -cf sudo visudo -cf /home/pi/emonpi/emoncms-setup/emoncms-setup-sudoers && \
+    sudo cp /home/pi/emonpi/emoncms-setup/emoncms-setup-sudoers /etc/sudoers.d/
     sudo chmod 0440 /etc/sudoers.d/emoncms-setup-sudoers
     echo
     echo "Emoncms setup module sudoers entry installed"
