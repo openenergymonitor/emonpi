@@ -23,9 +23,21 @@ function setup_controller()
         $route->format = "text"; 
         $result = $setup->set_status(get("mode"));
     }
+    
+    else if ($route->action=="ethernet-status" && $setup_access) {
+        $route->format = "text";
+        $result = exec("/sbin/ifconfig eth0 | grep 'inet addr' | cut -d: -f2 | awk '{print $1}'");
+        if ($result=="") $result = "false";
+    }
+    
+    else if ($route->action=="wlan0-status" && $setup_access) {
+        $route->format = "text";
+        $result = exec("/sbin/ifconfig wlan0 | grep 'inet addr' | cut -d: -f2 | awk '{print $1}'");
+        if ($result=="") $result = "false";
+    }
 
     else if ($route->action=="" && $setup_access) {
-        if ($setup_access) $result = view("Modules/setup/hello.php",array());
+        $result = view("Modules/setup/hello.php",array());
     }
     
     $fullwidth = false;

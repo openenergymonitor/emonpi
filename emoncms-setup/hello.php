@@ -98,8 +98,8 @@ p {
 
   <div id="setup-step1">
     <p><b>WIFI Configuration:</b> Would you like to:</p>
-    <div id="setup-ethernet" class="setupbox">1. Continue on ethernet</div>
-    <div id="setup-standalone" class="setupbox">1. Continue in stand-alone WIFI Access Point mode</div>
+    <div id="setup-ethernet" class="setupbox hide">1. Continue on ethernet</div>
+    <div id="setup-standalone" class="setupbox hide">1. Continue in stand-alone WIFI Access Point mode</div>
     <div id="setup-wificlient" class="setupbox">2. Connect to home WIFI network</div>
   </div>
 
@@ -134,8 +134,21 @@ p {
 var path = "<?php echo $path; ?>";
 var networks = [];
 
+var ethernet = false;
+var wlan0 = false;
+
 $("body").css("background-color","#1d8dbc");
 $(".setupbox").last().css("border-bottom","1px solid #fff");
+
+$.ajax({type: 'GET', url: path+"setup/ethernet-status", dataType: 'text', async: true, success: function(result) {
+    ethernet = result;
+    if (ethernet!="false") $("#setup-ethernet").show();
+}});
+
+$.ajax({type: 'GET', url: path+"setup/wlan0-status", dataType: 'text', async: true, success: function(result) {
+    wlan0 = result;
+    if (wlan0!="false") $("#setup-standalone").show();
+}});
 
 wifi_scan();
 
