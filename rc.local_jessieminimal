@@ -37,6 +37,6 @@ service mqtt_input restart
 service lwrfd restart
 
 ## Start Wifi AP (uncomment if required) see emonpi/wifiAP/readme.md
-# /home/pi/emonpi/wifiAP/wifiAP.sh start
+/home/pi/emonpi/wifiAP/startAP.sh
 
 exit 0

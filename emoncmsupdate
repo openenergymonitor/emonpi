@@ -3,6 +3,7 @@
 echo
 echo "================================="
 echo "Emoncms update started"
+echo "Update scrupt V1.0.0"
 echo
 
 date
@@ -82,7 +83,7 @@ if [ ! -f /etc/sudoers.d/emoncms-filesystem ]; then
     sudo cp /home/pi/emonpi/emoncms-filesystem /etc/sudoers.d/
     sudo chmod 0440 /etc/sudoers.d/emoncms-filesystem
     echo
-    echo "Install emonPi Emoncms admin file-system toggle buttons sudoers entry"
+    echo "emonPi Emoncms admin file-system toggle buttons sudoers entry installed"
 fi
 
 #########################################################################################
@@ -95,8 +96,24 @@ if [ ! -f /etc/sudoers.d/emonhub-sudoers ]; then
     sudo cp /home/pi/emonpi/emonhub-sudoers /etc/sudoers.d/
     sudo chmod 0440 /etc/sudoers.d/emonhub-sudoers
     echo
-    echo "Install emonhub reboot sudoers entry"
+    echo "emonhub service constol sudoers entry installed"
 fi
+
+#########################################################################################
+
+# Install sudoers entry for WiFI AP
+
+if [ ! -f /etc/sudoers.d/emoncms-setup-sudoers ]; then
+    # double check correct sudo syntax
+    sudo visudo -cf /home/pi/emonpi/emoncms-setup/emoncms-setup-sudoers && \
+    sudo cp /home/pi/emonpi/emoncms-setup/emoncms-setup-sudoers /etc/sudoers.d/
+    sudo chmod 0440 /etc/sudoers.d/emoncms-setup-sudoers
+    echo
+    echo "Emoncms setup module sudoers entry installed"
+fi
+
+
+
 
 #########################################################################################
 # Record current state of emoncms settings.php
@@ -231,6 +248,14 @@ else
   ln -s /home/pi/backup/backup/ /var/www/emoncms/Modules/backup
   echo "Restarting apache web-server"
   sudo service apache2 restart
+fi
+
+# Install emoncms-setup module (symlink from emonpi repo)
+if [ -d /home/pi/emonpi/emoncms-setup ] && [ ! -d /var/www/emoncms/Modules/setup ]; then
+  echo "Installing emoncms/emonPi setup module: symlink from ~/emonpi/emoncms-setup"
+  ln -s /home/pi/emonpi/emoncms-setup /var/www/emoncms/Modules/setup
+else
+  echo "Cannot find emoncms-setup module, please update ~/emonpi repo"
 fi
 
 echo

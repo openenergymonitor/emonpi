@@ -15,20 +15,16 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
+# Detect if we're runniing on a RasPi 3 that has got integrated Wifi. If not exit. WiFi AP will actually work on older RasPi with BCM43143 Wifi USB dongle, however this is difficult to detect reliably, see TODO below. Therefore for the moment we simply RasPi3 and abourting for older RasPi:
 
-echo "WiFi AP only works with BCM43143 e.g. RasPi3"
+HWREV=`cat /proc/cpuinfo | grep Revision | cut -d ':' -f 2 | sed -e "s/ //g"`
+echo "RasPi HW Revision: $HWREV"
 
-read -n1 -r -p "Press space to continue...any key to exit" key
-
-if [ "$key" = '' ]; then
-    echo " "
-else
-    exit 1
+if [ "$HWREV" != "a02082" ]; then
+   echo "Error WifiAP only works on RasPi3 with BCM43143 WiFi chipset"
+   exit 1
 fi
-
-
-
-rpi-rw
+echo "OK: RasPi 3 detected"
 
 # TO DO - make script auto read type of WiFi driver in use and determine if it will work with this version of hostpad
 #driver= basename $( readlink /sys/class/net/wlan0/device/driver ) | tr -d "\n"
@@ -40,12 +36,14 @@ rpi-rw
 #    exit 1
 #fi
 
+# Put emonPi file system into RW mode
+rpi-rw
 
 if [ "$1" = "start" ]; then
 	echo "Starting AP.....please wait process could take about 10-20s"
-    	echo "Wifi connection will now be lost...wait 30s then connect to SSID 'emonPi' SSID with password 'raspberry' then browse to http://192.168.42.1"
+    	echo "Wifi connection will now be lost...wait 30s then connect to SSID 'emonPi' SSID with password 'emonpi2016' then browse to http://192.168.42.1"
 	sudo ifdown wlan0
-	sleep 4
+	# sleep 4
 	sudo ifconfig wlan0 down
 	
 	# if eth1 exists and is up then bridge to wlan0
@@ -63,10 +61,10 @@ if [ "$1" = "start" ]; then
 		sudo iptables -A FORWARD -i wlan0 -o eth1 -j ACCEPT
     	fi
     
-    	sleep 5
-	echo "Set static IP addres of emonPi AP 192.168.42.1"
-	sudo ifconfig wlan0 192.168.42.1
-    	sleep 5
+    	# sleep 5
+	echo "Set static IP addres of emonPi AP 192.168.4.1"
+	sudo ifconfig wlan0 192.168.4.1
+    	# sleep 5
 	# Start DHCP server to offer AP clients DHCP
 	echo "Start isc-dhcp-server"
 	if [ -f /home/pi/data/dhcpd.leases ]; then
@@ -77,7 +75,7 @@ if [ "$1" = "start" ]; then
 		touch /home/pi/data/dhcpd.leases
 	fi
 	sudo service isc-dhcp-server start
-	sleep 5
+	# sleep 5
 
 	# Start AP
 	echo "Start emonPi Wifi AP...."
@@ -91,20 +89,22 @@ if [ "$1" = "stop" ]; then
         sudo service hostapd stop
         echo "Stop isc-dhcp-server"
         sudo service isc-dhcp-server stop
-        sleep 5
+        # sleep 5
         sudo kill $(pgrep -f "wpa_supplicant -B")
 	sudo ifconfig wlan0 down
 	sudo ifconfig wlan0 up
 	sudo rm -r /var/run/wpa_supplicant/*
-	sudo wpa_supplicant -B -iwlan0 -f/var/log/wpa_supplicant.log -c/etc/wpa_supplicant/wpa_supplicant.conf
-	sleep 10
+	# sudo wpa_supplicant -B -iwlan0 -f/var/log/wpa_supplicant.log -c/etc/wpa_supplicant/wpa_supplicant.conf
+	# sleep 10
 	sudo dhclient -v -r wlan0
-	sleep 5
-	sudo dhclient -v wlan0
+	# sleep 5
+	# sudo dhclient -v wlan0
 
         # Remove bridge routes
         sudo iptables -t nat -D POSTROUTING -o eth1 -j MASQUERADE >/dev/null 2>&1
         sudo iptables -D FORWARD -i eth1 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT >/dev/null 2>&1
         sudo iptables -D FORWARD -i wlan0 -o eth1 -j ACCEPT >/dev/null 2>&1
+
+        rm /home/pi/data/wifiAP-enabled
 fi
 rpi-ro
