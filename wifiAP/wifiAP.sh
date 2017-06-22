@@ -62,8 +62,8 @@ if [ "$1" = "start" ]; then
     	fi
     
     	# sleep 5
-	echo "Set static IP addres of emonPi AP 192.168.4.1"
-	sudo ifconfig wlan0 192.168.4.1
+	echo "Set static IP addres of emonPi AP 192.168.42.1"
+	sudo ifconfig wlan0 192.168.42.1
     	# sleep 5
 	# Start DHCP server to offer AP clients DHCP
 	echo "Start isc-dhcp-server"
