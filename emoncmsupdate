@@ -199,9 +199,9 @@ git pull
 
 echo "git pull /var/www/emoncms/Modules/dashboard"
 cd /var/www/emoncms/Modules/dashboard
-git branch
 git status
 git pull
+git checkout stable
 
 echo
 
