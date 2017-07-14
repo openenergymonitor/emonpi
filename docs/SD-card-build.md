@@ -229,12 +229,6 @@ sudo pip install paho-mqtt pydispatcher
 	cd ~/
 	git clone https://github.com/openenergymonitor/emonhub.git && emonhub/install
 
-The emon-pi variant of emonHub locates the config file in the RW partition `/home/pi/data/emonhub.conf`, this config file includes the default emonpi MQTT authentication details. Symlink the latest default config file:
-
-		sudo rm ~/data/emonhub.conf
-		sudo ln -s /home/pi/emonhub/conf/emonpi.default.emonhub.conf /home/pi/data/emonhub.conf
-
-		sudo service emonhub start
 
 Check log file:
 
