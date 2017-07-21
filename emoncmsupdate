@@ -225,6 +225,7 @@ if [ -d /home/pi/postprocess ]; then
   sudo chmod 777 .git -R
   git checkout emonpi
   git pull
+  ln -sf /home/pi/postprocess/postprocess-module /var/www/emoncms/Modules/postprocess
 else
   echo "git clone https://github.com/emoncms/postprocess"
   cd /home/pi
