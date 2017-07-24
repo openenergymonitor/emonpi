@@ -33,7 +33,7 @@ echo "emonSD version: $image_version"
 echo
 
 if [ "$image_version" == "emonSD-30Sep16" ] || [ "$image_version" == "emonSD-03May16" ]; then
-  echo "emonSD base image check pass...continue update"
+  echo "emonSD base image check passed...continue update"
 else
   echo "ERROR: emonSD base image old or undefined...update will not continue"
   echo "See latest verson: https://github.com/openenergymonitor/emonpi/wiki/emonSD-pre-built-SD-card-Download-&-Change-Log"
