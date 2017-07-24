@@ -260,12 +260,13 @@ if [ -d /home/pi/backup ]; then
   git branch
   git status
   git pull
+  git checkout stable
 else
   echo "Installing Emoncms backup module from  https://github.com/emoncms/backup"
   cd /home/pi
   git clone https://github.com/emoncms/backup
   cd /home/pi/backup
-  git checkout master
+  git checkout stable
   ln -s /home/pi/backup/backup/ /var/www/emoncms/Modules/backup
   echo "Restarting apache web-server"
   sudo service apache2 restart
