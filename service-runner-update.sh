@@ -3,8 +3,6 @@
 # emonPi update for use with service-runner add following entry to crontab:
 # * * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1
 
-# Make FS RW
-rpi-rw
 
 echo "#############################################################"
 
@@ -32,7 +30,7 @@ image_version=$(ls /boot | grep emonSD)
 echo "emonSD version: $image_version"
 echo
 
-if [ "$image_version" == "emonSD-30Sep16" ] || [ "$image_version" == "emonSD-03May16" ]; then
+if [ "$image_version" == "emonSD-07Nov16" ] || [ $image_version == "emonSD-03May16" ]; then
   echo "emonSD base image check passed...continue update"
 else
   echo "ERROR: emonSD base image old or undefined...update will not continue"
@@ -42,6 +40,9 @@ else
 fi
 echo
 echo "#############################################################"
+
+# make file system read-write
+rpi-rw
 
 echo "git pull /home/pi/emonpi"
 cd /home/pi/emonpi
