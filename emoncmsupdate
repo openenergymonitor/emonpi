@@ -196,6 +196,7 @@ cd /var/www/emoncms/Modules/app
 git branch
 git status
 git pull
+git checkout stable
 
 echo
 
@@ -204,6 +205,7 @@ cd /var/www/emoncms/Modules/config
 git branch
 git status
 git pull
+git checkout stable
 
 echo
 
@@ -212,6 +214,7 @@ cd /var/www/emoncms/Modules/wifi
 git branch
 git status
 git pull
+git checkout stable
 
 echo "git pull /var/www/emoncms/Modules/dashboard"
 cd /var/www/emoncms/Modules/dashboard
@@ -227,6 +230,7 @@ if [ -d /var/www/emoncms/Modules/graph ]; then
   git branch
   git status
   git pull
+  git checkout stable
 else
   echo "Installing Emoncms graph module https://github.com/emoncms/graph"
   cd /var/www/emoncms/Modules
