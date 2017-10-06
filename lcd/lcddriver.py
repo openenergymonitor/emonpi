@@ -2,7 +2,8 @@ import i2c_lib
 from time import sleep
 
 # LCD Address
-ADDRESS = 0x27
+# ADDRESS = 0x27
+# Update 16th Dec 16: I2C address is now set by calling 'lcd = lcddriver.lcd(0x27)' from withing the main program
 
 # commands
 LCD_CLEARDISPLAY = 0x01
@@ -53,8 +54,8 @@ Rs = 0b00000001  # Register select bit
 
 class lcd(object):
     # initializes objects and lcd
-    def __init__(self):
-        self.lcd_device = i2c_lib.i2c_device(ADDRESS)
+    def __init__(self, i2c_address):
+        self.lcd_device = i2c_lib.i2c_device(i2c_address)
         self._backlight = LCD_NOBACKLIGHT
 
         self.lcd_write(0x03)

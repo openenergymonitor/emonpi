@@ -1,0 +1,1 @@
+www-data ALL=(ALL) NOPASSWD:/sbin/shutdown,/home/pi/emonpi/wifiAP/networklog.sh,/home/pi/emonpi/wifiAP/stopAP.sh

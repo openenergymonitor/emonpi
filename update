@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# NOT USED ANYMORE: replaced with service-runner-update.sh
+
 # If update flag does not exit then exit
  if [ ! -f /tmp/emonpiupdate ]; then
     exit
@@ -12,11 +14,6 @@ if [ -f $LOCK ]; then
 fi
 touch $LOCK
 
-# Make FS RW
-rpi-rw
-
-
-
 # Clear log update file
 cat /dev/null >  /home/pi/data/emonpiupdate.log
 
@@ -26,16 +23,35 @@ sudo /etc/init.d/emonPiLCD stop
 # Display update message on LCD
 sudo /home/pi/emonpi/lcd/./emonPiLCD_update.py
 
-
-echo "Starting emonPi Update >"
 echo
-# Date and time
+echo "Starting emonPi Update >"
+echo "via update"
 date
 echo
-echo "EUID: $EUID"
+echo "#############################################################"
+# Check emonSD base image is minimum required release date, else don't update
 echo
 image_version=$(ls /boot | grep emonSD)
-echo "$image_version"
+echo "emonSD version: $image_version"
+echo
+
+if [ "$image_version" == "emonSD-07Nov16" ] || [ $image_version == "emonSD-03May16" ]; then
+  echo "emonSD base image check pass...continue update"
+else
+  echo "ERROR: emonSD base image old or undefined...update will not continue"
+  echo "See latest verson: https://github.com/openenergymonitor/emonpi/wiki/emonSD-pre-built-SD-card-Download-&-Change-Log"
+  echo "Stopping update"
+  exit
+fi
+
+echo
+echo "#############################################################"
+
+# make file system read-write
+rpi-rw
+
+echo
+echo "EUID: $EUID"
 echo
 echo "git pull /home/pi/emonpi"
 cd /home/pi/emonpi
@@ -44,6 +60,7 @@ git pull
 
 echo "git pull /home/pi/RFM2Pi"
 cd /home/pi/RFM2Pi
+sudo chown -R pi:pi .git
 git branch
 git pull
 
@@ -73,6 +90,7 @@ fi
 if [ -d /home/pi/huawei-hilink-status ]; then
     echo "git pull /home/pi/huawei-hilink-status"
     cd /home/pi/huawei-hilink-status
+    sudo chown -R pi:pi .git
     git pull
 fi
 

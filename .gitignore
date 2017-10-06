@@ -24,4 +24,5 @@ Thumbs.db
 */overlays
 *~
 
-
+# ignore all compiled python binaries
+*.pyc

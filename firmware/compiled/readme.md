@@ -4,7 +4,9 @@ Update Atmega328 fimware on RasPi to latest.hex. In order of user friendliness:
 
 ## 1. Run emonPi update from local Emoncms 
 
-[[http://openenergymonitor.org/emon/modules/emonpi#update]]
+In local emoncms e.g. [http://emonpi/emoncms](http://emonpi/emoncms)
+
+`Setup > Admin > emonPi Update`
 
 ## 2. Run update bash script
 

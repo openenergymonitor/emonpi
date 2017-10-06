@@ -15,39 +15,42 @@ void RF_Setup(){
 
 boolean RF_Rx_Handle(){
   
-	if (rf12_recvDone()) {						//if RF Packet is received 
-	    byte n = rf12_len;
-	    if (rf12_crc == 0)							//Check packet is good
-	    {
-	    	Serial.print(F("OK"));
-	    	Serial.print(F(" "));							//Print RF packet to serial in struct format
-	    	Serial.print(rf12_hdr & 0x1F);				// Extract and print node ID
-	    	Serial.print(F(" "));
-	    	for (byte i = 0; i < n; ++i) {
-	      		Serial.print((word)rf12_data[i]);
-	      		Serial.print(F(" "));
-	    	}
-
-	      	#if RF69_COMPAT
-		    // display RSSI value after packet data e.g (-xx)
-		    Serial.print(F("("));
-		    Serial.print(-(RF69::rssi>>1));
-		    Serial.print(F(")"));
-			#endif
-		    	Serial.println();
-
-	        if (RF12_WANTS_ACK==1) {
-	           // Serial.print(F(" -> ack"));
-	           rf12_sendStart(RF12_ACK_REPLY, 0, 0);
-	       }
-
-	    return(1);
-	    }
-	    else
-			return(0);
+  if (rf12_recvDone()) {		//if RF Packet is received 
+    if (rf12_crc == 0) {		//Check packet is good
+      Serial.print(F("OK"));		//Print "good packet" line prefix
+      print_frame(rf12_len);		//Print recieved data
+      if (RF12_WANTS_ACK==1) {
+        // Serial.print(F(" -> ack"));
+        rf12_sendStart(RF12_ACK_REPLY, 0, 0);
+      }
+      return(1);
+    } else {
+      if (quiet_mode == 0) {            //if the packet is bad
+        Serial.print(F(" ?"));    	//Print the "bad packet" line prefix
+        print_frame(20);          	//Print only the first 20 bytes of a bad packet
+      }
+      return(0);
+    }
 	       
-	} //end recDone
-	
+  } //end recDone
+
+}
+
+void print_frame (int len) {
+    Serial.print(F(" "));
+    Serial.print(rf12_hdr & 0x1F);        // Extract and print node ID
+    Serial.print(F(" "));
+    for (byte i = 0; i < len; ++i) {
+        Serial.print((word)rf12_data[i]);
+        Serial.print(F(" "));
+    }
+    #if RF69_COMPAT
+    // display RSSI value after packet data e.g (-xx)
+    Serial.print(F("("));
+    Serial.print(-(RF69::rssi>>1));
+    Serial.print(F(")"));
+    #endif
+    Serial.println();
 }
 
 void send_RF(){
@@ -113,6 +116,10 @@ static void handleInput (char c) {
         }
         break;
 
+      case 'q': // turn quiet mode on or off (don't report bad packets)
+        quiet_mode = value;
+        break;
+
       case 'v': // print firmware version
         Serial.print(F("[emonPi.")); Serial.print(firmware_version*0.1); Serial.print(F("]"));
         break;
@@ -140,7 +147,9 @@ static void handleInput (char c) {
       Serial.print(RF_freq == RF12_433MHZ ? 433 :
                    RF_freq == RF12_868MHZ ? 868 :
                    RF_freq == RF12_915MHZ ? 915 : 0);
-      Serial.print(F(" MHz")); 
+      Serial.print(F(" MHz"));
+      Serial.print(F(" q")); 
+      Serial.print(quiet_mode);
     }
     Serial.print(F(" USA ")); Serial.print(USA);
     Serial.println(F(" "));

@@ -2,11 +2,73 @@
 
 **See continous-sampling branch for continous sampling**
 
-~~# V2.6 (15/04/16)~~
-~~* [Update to latest JeeLib with RF Fixes ](https://github.com/jcw/jeelib/issues/92) [68f6e42]~~
-~~* Remove RF keep alive introduced in V2.5~~
+# V2.8.2 (07/04/17)
 
-~~Compiled with Arduino 1.6.8 | Hex size: 54.8kB | Sketch uses 19,400 bytes (60%) | Global variables: 947 bytes (46%)~~
+* Reduce min pulse width to 60ms
+
+```
+Program:   17892 bytes (54.6% Full)
+(.text + .data + .bootloader)
+Data:       1022 bytes (49.9% Full)
+(.data + .bss + .noinit)
+```
+
+# V2.8.2 (10/12/16)
+
+* Autodetect LCD on I2C address `0x27` or `0x3f`
+
+```
+Program:   17900 bytes (54.6% Full)
+(.text + .data + .bootloader)
+Data:       1026 bytes (50.1% Full)
+(.data + .bss + .noinit)
+```
+
+# V2.8.1 (21/11/16)
+
+* Reintroduces "quiet mode" feature as seen in the RFM2Pi firmwares to allow improved RF debugging.
+
+Serial `1q` enables quiet mode (default) and `0q` removes quiet mode for a more verbose output including bad packets that have failed crc checks. In emonHub it can be set with `quiet = true` or `quiet = false` in the interfacer settings. [Pull request discussion](https://github.com/openenergymonitor/emonpi/pull/34).
+
+```
+Program:   19206 bytes (58.6% Full)
+(.text + .data + .bootloader)
+Data:        953 bytes (46.5% Full)
+(.data + .bss + .noinit)
+```
+
+# V2.8 (18/11/16)
+
+* Compiled using platformIO with [JeeLib 10th Nov 2015 (f097c0039c)](https://github.com/jcw/jeelib/tree/f097c0039c926881d80a74bec7a7aa020de610ee)
+* Fixes emonTx drop off [forum discussion](https://community.openenergymonitor.org/t/emon-txs-not-updating-after-emonpi-update/2233/10)
+
+
+```
+Program:   19074 bytes (58.2% Full)
+(.text + .data + .bootloader)
+Data:        951 bytes (46.4% Full)
+(.data + .bss + .noinit)
+```
+
+# V2.7 (16/11/16)
+
+* Compiled using platformIO with latest JeeLib (7fc95a72ec)
+* Consistency with github releases
+* Smaller compiled size
+* Ensure soft-reset introduced in V2.5 is included
+  * Fix RF droping issue caused by V2.6 being mistakenly compiled
+
+```
+Program:   19100 bytes (58.3% Full)
+(.text + .data + .bootloader)
+Data:        951 bytes (46.4% Full)
+(.data + .bss + .noinit)
+```
+
+# V2.6 (15/04/16)
+* [Update to latest JeeLib with RF Fixes ](https://github.com/jcw/jeelib/issues/92) [68f6e42]~~
+* Remove RF keep alive introduced in V2.5~
+Compiled with Arduino 1.6.8 | Hex size: 54.8kB | Sketch uses 19,400 bytes (60%) | Global variables: 947 bytes (46%)~~
 
 **(10/05/16) - Temporarily restored to V2.5 to fix emonTx RF dropping issue [thread [[1]](https://community.openenergymonitor.org/t/emonsd-03may16-release/145/40) [[2]](https://openenergymonitor.org/emon/node/12593)**
 
@@ -42,7 +104,7 @@ Compiled with Arduino 1.6.8 | Hex size: 54.8kB | Sketch uses 19,460 bytes | Glob
 
 # V1.8 (30/10/15)
   * Enable pulse count INT1 internal pull-up to fix spurious pulse count readings
- 
+
 # V1.7 (12/06/15)
   * Fix bug which stopped USA AC-AC Vcal from being applied at runtime
 

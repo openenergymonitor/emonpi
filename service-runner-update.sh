@@ -4,6 +4,9 @@
 # * * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1
 
 
+echo "#############################################################"
+
+
 # Clear log update file
 cat /dev/null >  /home/pi/data/emonpiupdate.log
 
@@ -21,55 +24,95 @@ sudo /home/pi/emonpi/lcd/./emonPiLCD_update.py
 echo "Starting emonPi Update >"
 echo "via service-runner-update.sh"
 echo "EUID: $EUID"
-echo
+argument=$1
+echo "Argument: "$argument
 # Date and time
 date
+echo "#############################################################"
 echo
+# Check emonSD base image is minimum required release date, else don't update
 image_version=$(ls /boot | grep emonSD)
-echo "$image_version"
+echo "emonSD version: $image_version"
 echo
+
+if [ "$image_version" == "emonSD-07Nov16" ] || [ $image_version == "emonSD-03May16" ]; then
+  echo "emonSD base image check passed...continue update"
+else
+  echo "ERROR: emonSD base image old or undefined...update will not continue"
+  echo "See latest verson: https://github.com/openenergymonitor/emonpi/wiki/emonSD-pre-built-SD-card-Download-&-Change-Log"
+  echo "Stopping update"
+  exit
+fi
+echo
+echo "#############################################################"
+
+# make file system read-write
+rpi-rw
 
 echo "git pull /home/pi/emonpi"
 cd /home/pi/emonpi
+git branch
+git status
 git pull
 
 echo "git pull /home/pi/RFM2Pi"
 cd /home/pi/RFM2Pi
+git branch
+git status
+sudo chown -R pi:pi .git
 git pull
 
 echo "git pull /home/pi/emonhub"
 cd /home/pi/emonhub
+git branch
+git status
 git pull
 
 if [ -d /home/pi/oem_openHab ]; then
     echo "git pull /home/pi/oem_openHab"
     cd /home/pi/oem_openHab
+    git branch
+    git status
     git pull
 fi
 
 if [ -d /home/pi/oem_node ]; then
     echo "git pull /home/pi/oem_node-red"
     cd /home/pi/oem_node-red
+    git branch
+    git status
     git pull
 fi
 
 if [ -d /home/pi/usefulscripts ]; then
     echo "git pull /home/pi/usefulscripts"
     cd /home/pi/usefulscripts
+    git branch
+    git status
     git pull
 fi
 
 if [ -d /home/pi/huawei-hilink-status ]; then
     echo "git pull /home/pi/huawei-hilink-status"
     cd /home/pi/huawei-hilink-status
+    git branch
+    git status
     git pull
 fi
 
 echo
-echo "Start emonPi Atmega328 firmware update:"
-# Run emonPi update script to update firmware on Atmega328 on emonPi Shield using avrdude
-/home/pi/emonpi/emonpiupdate
-echo
+
+# if passed argument from Emoncms admin is rfm69pi then run rfm69pi update instead of emonPi
+if [ $argument == "rfm69pi" ]; then
+  echo "Running RFM69Pi firmware update:"
+  /home/pi/emonpi/rfm69piupdate.sh
+  echo
+else
+  echo "Start emonPi Atmega328 firmware update:"
+  # Run emonPi update script to update firmware on Atmega328 on emonPi Shield using avrdude
+  /home/pi/emonpi/emonpiupdate
+  echo
+fi
 
 echo
 echo "Start emonhub update script:"

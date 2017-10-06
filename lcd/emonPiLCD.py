@@ -23,6 +23,11 @@ import lcddriver
 import gsmhuaweistatus
 
 # ------------------------------------------------------------------------------------
+# Script version
+version = '2.1.0'
+# ------------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------------
 # emonPi Node ID (default 5)
 # ------------------------------------------------------------------------------------
 emonPi_nodeID = 5
@@ -47,13 +52,16 @@ redis_port = 6379
 # ------------------------------------------------------------------------------------
 hilink_device_ip = '192.168.1.1'
 
-
 # ------------------------------------------------------------------------------------
+# I2C LCD: each I2C address will be tried in consecutive order until LCD is found
+# The first address that matches a device on the I2C bus will be used for the I2C LCD
+# ------------------------------------------------------------------------------------
+lcd_i2c = ['27', '3f']
+current_lcd_i2c = ''
 # LCD backlight timeout in seconds
-# 0: always on
-# 300: off after 5 min
-# ------------------------------------------------------------------------------------
+# 0: always on, 300: off after 5 min
 backlight_timeout = 300
+# ------------------------------------------------------------------------------------
 
 # Default Startup Page
 max_number_pages = 7
@@ -102,16 +110,23 @@ def shutdown(lcd):
 
 class LCD(object):
     def __init__(self, logger):
-        # Check to see if LCD is connected if not then stop here
+        # Scan I2C bus for LCD I2C addresses as defined in led_i2c, we have a couple of models of LCD which have different adreses that are shipped with emonPi. First I2C device to match address is used.
         self.logger = logger
-        lcd_status = subprocess.check_output(["/home/pi/emonpi/lcd/emonPiLCD_detect.sh", "27"])
+        for i2c_address in lcd_i2c:
+          lcd_status = subprocess.check_output(["/home/pi/emonpi/lcd/emonPiLCD_detect.sh", "%s" % i2c_address])
+          if lcd_status.rstrip() == 'True':
+            print "I2C LCD DETECTED Ox%s" % i2c_address
+            logger.info("I2C LCD DETECTED 0x%s" % i2c_address)
+            current_lcd_i2c = "0x%s" % i2c_address
+            break
+        
         if lcd_status.rstrip() == 'False':
-            print "I2C LCD NOT DETECTED...exiting LCD script"
-            logger.error("I2C LCD NOT DETECTED...exiting LCD script")
-            sys.exit(1)
-        else:
-            logger.info("I2C LCD Detected on 0x27")
-        self.lcd = lcddriver.lcd()
+          print ("I2C LCD NOT DETECTED on either 0x" + str(lcd_i2c) + " ...exiting LCD script")
+          logger.error("I2C LCD NOT DETECTED on either 0x" + str(lcd_i2c) + " ...exiting LCD script")
+          sys.exit(1)
+        
+        # Init LCD using detected I2C address with 16 characters
+        self.lcd = lcddriver.lcd(int(current_lcd_i2c, 16))
         self._display = ['', '']
 
     def __setitem__(self, line, string):
@@ -172,7 +187,7 @@ def main():
     logger.addHandler(loghandler)
     logger.setLevel(logging.INFO)
 
-    logger.info("emonPiLCD V2 Start")
+    logger.info("Starting emonPiLCD V" + version)
 
     # Now check the LCD and initialise the object
     lcd = LCD(logger)
@@ -236,9 +251,11 @@ def main():
 
     def on_connect(client, userdata, flags, rc):
         mqttc.subscribe(mqtt_topic)
+
     mqttc = mqtt.Client()
     mqttc.on_message = on_message
     mqttc.on_connect = on_connect
+
     try:
         mqttc.username_pw_set(mqtt_user, mqtt_passwd)
         mqttc.connect(mqtt_host, mqtt_port, 60)

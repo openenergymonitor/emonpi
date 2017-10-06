@@ -1,4 +1,4 @@
-# emonPi SD card build
+# emonSD (emonPi & emonBase) SD card build
 
 Glyn Hudson - January 2016
 
@@ -101,7 +101,7 @@ From:
 
 To:
 
-	wc_otg.lpm_enable=0 console=tty1 elevator=noop root=/dev/mmcblk0p2 rootfstype=ext4 fsck.repair=yes rootwait
+	dwc_otg.lpm_enable=0 console=tty1 elevator=noop root=/dev/mmcblk0p2 rootfstype=ext4 fsck.repair=yes rootwait
 
 Note changing `elevator=deadline` to `elevator=noop` disk scheduler. Noop that is best recommend for flash disks, this will result in a reduction in disk I/O performance
 
@@ -226,14 +226,9 @@ sudo pip install paho-mqtt pydispatcher
 
 ## Install emonHub (emon-pi) variant:
 
+	cd ~/
 	git clone https://github.com/openenergymonitor/emonhub.git && emonhub/install
 
-The emon-pi variant of emonHub locates the config file in the RW partition `/home/pi/data/emonhub.conf`, this config file includes the default emonpi MQTT authentication details. Symlink the latest default config file:
-
-		sudo rm ~/data/emonhub.conf
-		sudo ln -s /home/pi/emonhub/conf/emonpi.default.emonhub.conf /home/pi/data/emonhub.conf
-
-		sudo service emonhub start
 
 Check log file:
 
