@@ -3,14 +3,13 @@
 # emonPi update for use with service-runner add following entry to crontab:
 # * * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1
 
-# Make FS RW
-rpi-rw
-
-echo
-
 
 # Clear log update file
 cat /dev/null >  /home/pi/data/emonpiupdate.log
+
+# Make FS RW
+rpi-rw
+
 
 # Stop emonPi LCD servcice
 sudo service emonPiLCD stop
@@ -20,6 +19,7 @@ sudo /home/pi/emonpi/lcd/./emonPiLCD_update.py
 
 
 echo "Starting emonPi Update >"
+echo "via service-runner-update.sh"
 echo "EUID: $EUID"
 echo
 # Date and time
