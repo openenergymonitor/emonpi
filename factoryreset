@@ -151,6 +151,7 @@ cp /home/pi/oem_node-red/flows_emonpi.json /home/pi/data/node-red/flows_emonpi.j
 echo "Clear bash history"
 history -c
 >~/.bash_history
+rm /home/pi/.bash_history
 
 echo "Clear and re-generate SSH keys"
 sudo rm /home/pi/.ssh/*
