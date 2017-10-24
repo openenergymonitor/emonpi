@@ -1,6 +1,8 @@
 # emonSD (emonPi & emonBase) SD card build
 
-Glyn Hudson - January 2016
+**As used to buid emonSD-07Nov16**
+
+***
 
 This guide replaces the imagebuild.md (renamed to old.imagebuild.md) and emonPi install.sh script which has never really worked reliably (renamed to old.install.sh). The guide cites the [Emoncms Raspberry Pi install guides](https://github.com/emoncms/emoncms/tree/master/docs/RaspberryPi) exhaustively compiled by Paul Reed.
 
