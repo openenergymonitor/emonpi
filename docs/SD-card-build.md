@@ -2,6 +2,8 @@
 
 **As used to build Oct 2017 emonSD**
 
+***
+
 ## emonPi Resources
 
 - [**User docs & setup guide**](http://guide.openenergymonitor.org)
