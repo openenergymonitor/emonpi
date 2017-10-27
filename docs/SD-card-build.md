@@ -6,11 +6,11 @@
 
 ***
 
-## emonPi Resources
+## emonPi/emonBase Resources
 
 - [**User docs & setup guide**](http://guide.openenergymonitor.org)
-- [**Purchase Pre-built SD card](http://shop.openenergymonitor.com/emonsd-pre-loaded-raspberry-pi-sd-card/)
-- [**Purchase emonPi](shop.openenergymonitor.com/emonpi-3/)
+- [**Purchase Pre-built SD card**](http://shop.openenergymonitor.com/emonsd-pre-loaded-raspberry-pi-sd-card/)
+- [**Purchase emonPi**](shop.openenergymonitor.com/emonpi-3/)
 - [**Pre-built image repository & changelog**](https://github.com/openenergymonitor/emonpi/wiki/emonSD-pre-built-SD-card-Download-&-Change-Log)
 
 ***
