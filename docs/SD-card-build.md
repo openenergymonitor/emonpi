@@ -1,6 +1,8 @@
 # emonSD (emonPi & emonBase) SD card build
 
-**As used to build Oct 2017 emonSD**
+**As used to build emonSD-26Oct17**
+
+**For download: See [emonSD releases page (Git wiki)](https://github.com/openenergymonitor/emonpi/wiki/emonSD-pre-built-SD-card-Download-%26-Change-Log)**.
 
 ***
 
@@ -15,11 +17,11 @@
 
 # emonSD Features  
 
-- Base image **RASPBIAN JESSIE LITE 2015-11-21**
-- Linux emonpi 4.9.35-v7+ #1014 SMP Fri Jun 30 14:47:43 BST 2017 armv7l GNU/Linux
-- 4GB SD card size, partitions can be expanded if required (8GB SD card shipped with emonPi)
+- Base image RASPBIAN JESSIE LITE 2015-11-21
+- 8GB min SD card size
 - Read-only root file system
 - Stable Emoncms Core
+- Apache web-server
 - MQTT
 - NodeRed
 - OpenHAB
