@@ -17,7 +17,7 @@
 
 # emonSD Features  
 
-- Base image RASPBIAN JESSIE LITE 2015-11-21
+- Base image RASPBIAN JESSIE LITE
 - 8GB min SD card size
 - Read-only root file system
 - Stable Emoncms Core
