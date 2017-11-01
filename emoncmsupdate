@@ -3,7 +3,7 @@
 echo
 echo "================================="
 echo "Emoncms update started"
-echo "Update script V1.1.0"
+echo "Update script V1.1.1"
 echo
 
 date
@@ -277,7 +277,9 @@ if [ -d /home/pi/emonpi/emoncms-setup ] && [ ! -d /var/www/emoncms/Modules/setup
   echo "Installing emoncms/emonPi setup module: symlink from ~/emonpi/emoncms-setup"
   ln -s /home/pi/emonpi/emoncms-setup /var/www/emoncms/Modules/setup
 else
-  echo "Cannot find emoncms-setup module, please update ~/emonpi repo"
+  if [ ! -d /home/pi/emonpi/emoncms-setup ]; then
+    echo "Cannot find emoncms-setup module, please update ~/emonpi repo"
+  fi
 fi
 
 echo
