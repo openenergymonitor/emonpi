@@ -23,6 +23,7 @@ sudo /home/pi/emonpi/lcd/./emonPiLCD_update.py
 
 echo "Starting emonPi Update >"
 echo "via service-runner-update.sh"
+echo "Service Runner update script V1.0.0"
 echo "EUID: $EUID"
 argument=$1
 echo "Argument: "$argument
