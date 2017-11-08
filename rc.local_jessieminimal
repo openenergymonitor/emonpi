@@ -20,6 +20,7 @@ then
   chown -R dataplicity:dataplicity /var/log/supervisor;
 
   # Restart services,they should run happy now log dir's are created
+  sleep 11
   service apache2 restart
   service redis-server restart
   service mosquitto restart
