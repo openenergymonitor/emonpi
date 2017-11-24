@@ -88,6 +88,7 @@ fi
 if [ -d /home/pi/usefulscripts ]; then
     echo "git pull /home/pi/usefulscripts"
     cd /home/pi/usefulscripts
+    sudo chown -R pi:pi .git
     git branch
     git status
     git pull
