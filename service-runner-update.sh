@@ -104,7 +104,7 @@ fi
 echo
 
 # if passed argument from Emoncms admin is rfm69pi then run rfm69pi update instead of emonPi
-if [ $argument == "rfm69pi" ]; then
+if [ "$argument" == "rfm69pi" ]; then
   echo "Running RFM69Pi firmware update:"
   /home/pi/emonpi/rfm69piupdate.sh
   echo
