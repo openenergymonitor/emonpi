@@ -2,6 +2,23 @@
 
 **See continous-sampling branch for continous sampling**
 
+# V2.8.4 (21/12/17)
+
+- V2.8.4: Correct USA voltage for apparent power sampling to 120V. Only affects battery / DC USB 5V operation. Does not effect when powering unit vi AC-AC adaptor.
+
+```
+Program:   17942 bytes (54.8% Full)
+(.text + .data + .bootloader)
+
+Data:       1034 bytes (50.5% Full)
+(.data + .bss + .noinit)
+```
+
+# V2.8.3 (07/04/17)
+
+- Reduce min pulse width to 60ms
+
+
 # V2.8.2 (07/04/17)
 
 * Reduce min pulse width to 60ms
