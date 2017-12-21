@@ -72,14 +72,14 @@ LiquidCrystal_I2C lcd(0,0,0);
 
 //----------------------------emonPi Firmware Version---------------------------------------------------------------------------------------------------------------
 // Changelog: https://github.com/openenergymonitor/emonpi/blob/master/firmware/readme.md
-const int firmware_version = 283;                                     //firmware version x 100 e.g 100 = V1.00
+const int firmware_version = 284;                                     //firmware version x 100 e.g 100 = V1.00
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
 boolean debug =                   TRUE;
 const unsigned long BAUD_RATE=    38400;
 
 const byte Vrms_EU=               230;                              // Vrms for apparent power readings (when no AC-AC voltage sample is present)
-const byte Vrms_USA=              110;                              // USA apparent power VRMS
+const byte Vrms_USA=              120;                              // USA apparent power VRMS
 const int TIME_BETWEEN_READINGS=  5000;                             // Time between readings (ms)
 const int RF_RESET_PERIOD=        60000;                            // Time (ms) between RF resets (hack to keep RFM60CW alive)
 
