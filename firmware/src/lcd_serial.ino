@@ -59,18 +59,10 @@ lcd.setCursor(0, 1); lcd.print(F("Detected "));
     Serial.println(F("no CT detected"));
     lcd.print(F("No CT's"));
   }
-   else
-   {
-
-     if (CT1) {
-      Serial.println(F("CT 1 detect"));
-      lcd.print(F("CT1 "));
-    }
-     if (CT2) {
-      Serial.println(F("CT 2 detect"));
-      lcd.print(F("CT2"));
-    }
-   }
+  else{
+    Serial.print("Detected "); Serial.print(CT_count); Serial.print(" CT's");
+    lcd.print(CT_count); lcd.print(F(" CT's"));
+  }
 
   delay(2000);
 
