@@ -2,9 +2,21 @@
 
 **See continous-sampling branch for continous sampling**
 
+# V2.9.0 (11/01/18)
+
+- Alwasys sample from both CT channels. Allows CT's to be plugged in after unit has powered up. CT input will read zero if no CT is connected.
+
+```
+Program:   17822 bytes (54.4% Full)
+(.text + .data + .bootloader)
+
+Data:       1048 bytes (51.2% Full)
+(.data + .bss + .noinit)
+```
+
 # V2.8.4 (21/12/17)
 
-- V2.8.4: Correct USA voltage for apparent power sampling to 120V. Only affects battery / DC USB 5V operation. Does not effect when powering unit vi AC-AC adaptor.
+- Correct USA voltage for apparent power sampling to 120V. Only affects battery / DC USB 5V operation. Does not effect when powering unit vi AC-AC adaptor.
 
 ```
 Program:   17942 bytes (54.8% Full)
