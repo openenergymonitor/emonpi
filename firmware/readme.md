@@ -2,12 +2,12 @@
 
 **See continous-sampling branch for continous sampling**
 
-# V2.9.0 (11/01/18)
+# V2.9.0 (16/01/18)
 
-- Alwasys sample from both CT channels. Allows CT's to be plugged in after unit has powered up. CT input will read zero if no CT is connected.
+- Allow CT's to be plugged in after unit has powered up. CT input will read zero if no CT is connected.
 
 ```
-Program:   17822 bytes (54.4% Full)
+Program:   17886 bytes (54.6% Full)
 (.text + .data + .bootloader)
 
 Data:       1048 bytes (51.2% Full)
