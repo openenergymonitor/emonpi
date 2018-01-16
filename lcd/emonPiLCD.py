@@ -24,7 +24,7 @@ import gsmhuaweistatus
 
 # ------------------------------------------------------------------------------------
 # Script version
-version = '2.1.0'
+version = '2.1.1'
 # ------------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------------
@@ -119,12 +119,12 @@ class LCD(object):
             logger.info("I2C LCD DETECTED 0x%s" % i2c_address)
             current_lcd_i2c = "0x%s" % i2c_address
             break
-        
+
         if lcd_status.rstrip() == 'False':
           print ("I2C LCD NOT DETECTED on either 0x" + str(lcd_i2c) + " ...exiting LCD script")
           logger.error("I2C LCD NOT DETECTED on either 0x" + str(lcd_i2c) + " ...exiting LCD script")
           sys.exit(1)
-        
+
         # Init LCD using detected I2C address with 16 characters
         self.lcd = lcddriver.lcd(int(current_lcd_i2c, 16))
         self._display = ['', '']
@@ -351,7 +351,7 @@ def main():
             elif eval(r.get("gsm:active")) or eval(r.get("eth:active")):
                 page += 1
             else:
-                lcd[0] = "WIFI:"
+                lcd[0] = "WiFi:"
                 lcd[1] = "NOT CONNECTED"
 
         if page == 2:
@@ -371,8 +371,8 @@ def main():
                 lcd[0] = 'Power 1: ' + basedata[0] + "W"
                 lcd[1] = 'Power 2: ' + basedata[1] + "W"
             else:
-                lcd[0] = 'ERROR: MQTT'
-                lcd[1] = 'Not connected'
+                lcd[0] = 'Connecting...'
+                lcd[1] = 'Please Wait'
 
         elif page == 4:
             basedata = r.get("basedata")
@@ -381,8 +381,8 @@ def main():
                 lcd[0] = 'VRMS: ' + basedata[3] + "V"
                 lcd[1] = 'Temp 1: ' + basedata[4] + " C"
             else:
-                lcd[0] = 'ERROR: MQTT'
-                lcd[1] = 'Not connected'
+                lcd[0] = 'Connecting...'
+                lcd[1] = 'Please Wait'
 
         elif page == 5:
             basedata = r.get("basedata")
@@ -391,8 +391,8 @@ def main():
                 lcd[0] = 'Temp 2: ' + basedata[5] + "C"
                 lcd[1] = 'Pulse: ' + basedata[10] + "p"
             else:
-                lcd[0] = 'ERROR: MQTT'
-                lcd[1] = 'Not connected'
+                lcd[0] = 'Connecting...'
+                lcd[1] = 'Please Wait'
 
         elif page == 6:
             lcd[0] = datetime.now().strftime('%b %d %H:%M')
