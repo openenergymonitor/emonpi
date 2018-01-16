@@ -1,6 +1,6 @@
 # Change Log - emonPi Discrete Sampling Firmware
 
-**See continous-sampling branch for continous sampling**
+**See continuous-sampling branch for continuous sampling**
 
 # V2.9.0 (16/01/18)
 
