@@ -371,7 +371,7 @@ def main():
                 lcd[0] = 'Power 1: ' + basedata[0] + "W"
                 lcd[1] = 'Power 2: ' + basedata[1] + "W"
             else:
-                lcd[0] = 'MQTT: Connecting'
+                lcd[0] = 'Connecting...'
                 lcd[1] = 'Please Wait'
 
         elif page == 4:
@@ -381,7 +381,7 @@ def main():
                 lcd[0] = 'VRMS: ' + basedata[3] + "V"
                 lcd[1] = 'Temp 1: ' + basedata[4] + " C"
             else:
-                lcd[0] = 'MQTT: Connecting'
+                lcd[0] = 'Connecting...'
                 lcd[1] = 'Please Wait'
 
         elif page == 5:
@@ -391,7 +391,7 @@ def main():
                 lcd[0] = 'Temp 2: ' + basedata[5] + "C"
                 lcd[1] = 'Pulse: ' + basedata[10] + "p"
             else:
-                lcd[0] = 'MQTT: Connecting'
+                lcd[0] = 'Connecting...'
                 lcd[1] = 'Please Wait'
 
         elif page == 6:
