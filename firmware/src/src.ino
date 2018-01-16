@@ -275,6 +275,7 @@ void loop()
   {
     single_LED_flash();                                                            // single flash of LED on local CT sample
 
+if (analogRead(1) > 0){
     if (ACAC)                                                                      // Read from CT 1
     {
       ct1.calcVI(no_of_half_wavelengths,timeout); emonPi.power1=ct1.realPower;
@@ -284,6 +285,10 @@ void loop()
     {
       emonPi.power1 = ct1.calcIrms(no_of_samples)*Vrms;                               // Calculate Apparent Power 1  1480 is  number of samples
    }
+} 
+else{
+emonPi.power1 =0;
+}
 
    if (ACAC)                                                                       // Read from CT 2
    {
