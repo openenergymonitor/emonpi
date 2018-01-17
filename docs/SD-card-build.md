@@ -289,6 +289,24 @@ sudo pecl install Mosquitto-alpha
 (​Hit enter to autodetect libmosquitto location)
 ```
 
+To check which version of Mosquitto pecl has installed run `$ pecl list-upgrades`. Currently emonSD (Oct17) is running Mosquitto 0.3. See this [forum post](https://community.openenergymonitor.org/t/raspbian-stretch/5096/60?u=glyn.hudson) and [this one](https://community.openenergymonitor.org/t/upgrading-emonsd-php-mosquito-version/6265/13) discussing the choice of Mosquitto alpa.
+
+```
+pecl list-upgrades
+Channel pear.php.net: No upgrades available
+Channel pear.swiftmailer.org: No upgrades available
+pecl.php.net Available Upgrades (stable):
+=========================================
+Channel      Package   Local          Remote         Size
+pecl.php.net dio       0.0.6 (beta)   0.1.0 (beta)   37kB
+pecl.php.net Mosquitto 0.3.0 (beta)   0.4.0 (beta)   24kB
+pecl.php.net redis     2.2.5 (stable) 3.1.6 (stable) 196kB
+```
+
+To upgrade to Mosquitto 0.4 run (currently not fully tested as of Jan 18):
+
+`$ sudo pecl install Mosquitto-0.4.0`
+
 If PHP extension config files `/etc/php5/cli/conf.d/20-mosquitto.ini` and `/etc/php5/apache2/conf.d/20-mosquitto.ini` don't exist then create with:
 
     sudo sh -c 'echo "extension=mosquitto.so" > /etc/php5/cli/conf.d/20-mosquitto.ini'
