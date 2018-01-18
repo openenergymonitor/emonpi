@@ -309,8 +309,8 @@ To upgrade to Mosquitto 0.4 run (currently not fully tested as of Jan 18):
 
 If PHP extension config files `/etc/php5/cli/conf.d/20-mosquitto.ini` and `/etc/php5/apache2/conf.d/20-mosquitto.ini` don't exist then create with:
 
-    sudo sh -c 'echo "extension=mosquitto.so" > /etc/php5/cli/conf.d/20-mosquitto.ini'
-    sudo sh -c 'echo "extension=mosquitto.so" > /etc/php5/apache2/conf.d/20-mosquitto.ini'
+    printf "extension=mosquitto.so" | sudo tee /etc/php5/mods-available/mosquitto.ini 1>&2
+    sudo php5enmod mosquitto
 
 Turn off Mosquitto persistence and enable authentication:
 
