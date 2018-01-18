@@ -303,11 +303,11 @@ pecl.php.net Mosquitto 0.3.0 (beta)   0.4.0 (beta)   24kB
 pecl.php.net redis     2.2.5 (stable) 3.1.6 (stable) 196kB
 ```
 
-To upgrade to Mosquitto 0.4 run (currently not fully tested as of Jan 18):
+To upgrade to Mosquitto 0.4 run (currently not fully tested as of Jan 18): *Update: seems to work fine*
 
 `$ sudo pecl install Mosquitto-0.4.0`
 
-If PHP extension config files `/etc/php5/cli/conf.d/20-mosquitto.ini` and `/etc/php5/apache2/conf.d/20-mosquitto.ini` don't exist then create with:
+Install PHP Mosquitto extension:
 
     printf "extension=mosquitto.so" | sudo tee /etc/php5/mods-available/mosquitto.ini 1>&2
     sudo php5enmod mosquitto
