@@ -175,7 +175,7 @@ if [ "$new_default_settings_md5" != "$current_default_settings_md5" ]; then
     echo "**ERROR: unable to autoupdate settings.php since user changes are present, manual review required**"
   fi
 else
- echo "No update required to settings.php"
+ echo "settings.php not updated"
 fi
 #########################################################################################
 
