@@ -158,7 +158,7 @@ echo "NEW default settings.php md5: $new_default_settings_md5"
 
 
 if [ "$current_default_settings_md5" == "$current_settings_md5" ]; then
-  echo "settings.php had NOT been user modifed"
+  echo "settings.php has NOT been user modifed"
   settings_unmodified=true
 else
   echo "settings.php HAS been user modified"
