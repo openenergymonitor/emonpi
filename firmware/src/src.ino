@@ -98,13 +98,13 @@ const int ACAC_DETECTION_LEVEL=   3000;
 
 const byte TEMPERATURE_PRECISION=  12;                                 // 9 (93.8ms),10 (187.5ms) ,11 (375ms) or 12 (750ms) bits equal to resplution of 0.5C, 0.25C, 0.125C and 0.0625C
 const byte MaxOnewire=             6;                                  // maximum number of DS18B20 one wire sensors
-boolean RF_STATUS=                 1;                                  // Turn RF on and off
+boolean RF_STATUS=                 0;                                  // Turn RF on and off
 //-------------------------------------------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------------------------------
 
 
 //----------------------------emonPi V3 hard-wired connections---------------------------------------------------------------------------------------------------------------
-const byte LEDpin=                     9;              // emonPi LED - on when HIGH
+const byte LEDpin=                     13;              // emonPi LED - on when HIGH
 const byte shutdown_switch_pin =       8;              // Push-to-make - Low when pressed
 const byte emonpi_GPIO_pin=            5;              // Connected to Pi GPIO 17, used to activate Pi Shutdown when HIGH
 //const byte emonpi_OKK_Tx=              6;            // On-off keying transmission Pin - not populated by default
@@ -123,8 +123,8 @@ byte numSensors;
 //-------------------------------------------------------------------------------------------------------------------------------------------
 
 //-----------------------RFM12B / RFM69CW SETTINGS----------------------------------------------------------------------------------------------------
-byte RF_freq=RF12_433MHZ;                                        // Frequency of RF69CW module can be RF12_433MHZ, RF12_868MHZ or RF12_915MHZ. You should use the one matching the module you have.
-byte nodeID = 5;                                                 // emonpi node ID
+byte RF_freq=RF12_433MHZ;  // Frequency of RF69CW module can be RF12_433MHZ, RF12_868MHZ or RF12_915MHZ. You should use the one matching the module you have.
+byte nodeID = 5;           // emonpi node ID
 int networkGroup = 210;
 
 typedef struct {
