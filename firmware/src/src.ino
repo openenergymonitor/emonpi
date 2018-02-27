@@ -191,7 +191,7 @@ void setup()
     Vrms = Vrms_EU;
   }
 
-  emonPi_startup();                                                     // emonPi startup proceadure, check for AC waveform and print out debug
+  emonPi_startup();                         // emonPi startup proceadure, check for AC waveform and print out debug
   if (RF_STATUS==1) RF_Setup();
   numSensors =  check_for_DS18B20();   // check for presence of DS18B20 and return number of sensors
 
@@ -254,8 +254,8 @@ void loop()
   }
 
 
-  if (RF_STATUS==1){                                                              // IF RF module is present and enabled then perform RF tasks
-    if (RF_Rx_Handle()==1) {                                                      // Returns true if RF packet is received
+  if (RF_STATUS==1){           // IF RF module is present and enabled then perform RF tasks
+    if (RF_Rx_Handle()==1) {   // Returns true if RF packet is received
        double_LED_flash();
     }
 

@@ -1,10 +1,10 @@
 void RF_Setup(){
-	//--------------------------------------------------Initalize RF and send out RF test packets--------------------------------------------------------------------------------------------  
+	//--------------------------------------------------Initalize RF and send out RF test packets--------------------------------------------------------------------------------------------
   delay(10);
   rf12_initialize(nodeID, RF_freq, networkGroup);                          // initialize RFM12B/rfm69CW
    for (int i=10; i>=0; i--)                                                                  //Send RF test sequence (for factory testing)
    {
-     emonPi.power1=i; 
+     emonPi.power1=i;
      rf12_sendNow(0, &emonPi, sizeof emonPi);
      delay(100);
    }
@@ -14,8 +14,8 @@ void RF_Setup(){
 }
 
 boolean RF_Rx_Handle(){
-  
-  if (rf12_recvDone()) {		//if RF Packet is received 
+
+  if (rf12_recvDone()) {		//if RF Packet is received
     if (rf12_crc == 0) {		//Check packet is good
       Serial.print(F("OK"));		//Print "good packet" line prefix
       print_frame(rf12_len);		//Print recieved data
@@ -23,7 +23,7 @@ boolean RF_Rx_Handle(){
         // Serial.print(F(" -> ack"));
         rf12_sendStart(RF12_ACK_REPLY, 0, 0);
       }
-      return(1);
+      return 1;
     } else {
       if (quiet_mode == 0) {            //if the packet is bad
         Serial.print(F(" ?"));    	//Print the "bad packet" line prefix
@@ -63,7 +63,7 @@ void send_RF(){
 	      header |= RF12_HDR_DST | dest;
 	    rf12_sendStart(header, stack, sendLen);
 	    cmd = 0;
-	    
+
 	}
 }
 
@@ -99,7 +99,7 @@ static void handleInput (char c) {
           if (RF_STATUS==1) rf12_initialize(nodeID, RF_freq, networkGroup);
         }
         break;
-    
+
       case 'g': // set network group
         if (value>=0){
           networkGroup = value;
@@ -131,14 +131,14 @@ static void handleInput (char c) {
 
         default:
           showString(helpText1);
-      } //end case 
-    //Print Current RF config  
+      } //end case
+    //Print Current RF config
 
     if (RF_STATUS==1) {
       Serial.print(F(" "));
 -     Serial.print((char) ('@' + (nodeID & RF12_HDR_MASK)));
 -     Serial.print(F(" i"));
-      Serial.print(nodeID & RF12_HDR_MASK);   
+      Serial.print(nodeID & RF12_HDR_MASK);
       Serial.print(F(" g"));
       Serial.print(networkGroup);
       Serial.print(F(" @ "));
@@ -146,12 +146,12 @@ static void handleInput (char c) {
                    RF_freq == RF12_868MHZ ? 868 :
                    RF_freq == RF12_915MHZ ? 915 : 0);
       Serial.print(F(" MHz"));
-      Serial.print(F(" q")); 
+      Serial.print(F(" q"));
       Serial.print(quiet_mode);
     }
     Serial.print(F(" USA ")); Serial.print(USA);
     Serial.println(F(" "));
-    
+
     }
   value = top = 0;
 }
@@ -160,4 +160,3 @@ static void handleInput (char c) {
 static byte bandToFreq (byte band) {
   return band == 4 ? RF12_433MHZ : band == 8 ? RF12_868MHZ : band == 9 ? RF12_915MHZ : 0;
 }
- 

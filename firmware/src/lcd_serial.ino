@@ -30,14 +30,14 @@ void lcd_print_startup(int current_lcd_i2c_addr){
   lcd.clear();
   lcd.backlight();
 
-lcd.print(F("AC "));
-  if (not ACAC) {
+  lcd.print(F("AC "));
+  if (not ACAC)
     lcd.print(F("NOT "));
-  }
+
   lcd.print(F("Detected"));
 
   lcd.setCursor(0, 1);
-  lcd.print(F("Detected ")); 
+  lcd.print(F("Detected "));
   lcd.print(CT_count);
   lcd.print(F(" CT's"));
 
