@@ -1,4 +1,4 @@
-void RF_Setup() 
+void RF_Setup()
 {
 	//--------------------------------------------------Initalize RF and send out RF test packets--------------------------------------------------------------------------------------------
   delay(10);
@@ -108,10 +108,9 @@ static void handleInput (char c) {
         }
         break;
 
-      case 'p': // set Vcc Cal 1=UK/EU 2=USA
-        if (value){
-          if (value==1) USA=false;
-          if (value==2) USA=true;
+      case 'p': // set Vcc Cal
+        if (value) {
+          setCountry(value - 1);
         }
         break;
 
@@ -150,7 +149,6 @@ static void handleInput (char c) {
       Serial.print(F(" q"));
       Serial.print(quiet_mode);
     }
-    Serial.print(F(" USA ")); Serial.print(USA);
     Serial.println(F(" "));
 
     }

@@ -69,39 +69,38 @@ int current_lcd_i2c_addr;                                                  // Us
 
 //----------------------------emonPi Firmware Version---------------------------------------------------------------------------------------------------------------
 // Changelog: https://github.com/openenergymonitor/emonpi/blob/master/firmware/readme.md
-const int firmware_version = 290;                                     //firmware version x 100 e.g 100 = V1.00
+const int firmware_version = 290; //firmware version x 100 e.g 100 = V1.00
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
 boolean debug =                   TRUE;
 const unsigned long BAUD_RATE=    38400;
 
-const byte Vrms_EU=               230;                              // Vrms for apparent power readings (when no AC-AC voltage sample is present)
-const byte Vrms_USA=              120;                              // USA apparent power VRMS
+byte country = 2;  // 0=EU,1=USA, 2=AU/NZ
+const byte Vrms_c[3] = {230, 120, 240};  // Vrms for apparent power readings (when no AC-AC voltage sample is present)
+const float Vcal_c[3] = {256.8, 130.0, 204};  // (230V x 13) / (9V x 1.2) = 276.9 - Calibration for EU AC-AC adapter 77DE-06-09
 
 const unsigned int TIME_BETWEEN_READINGS = 5000; // Time between readings (ms)
 const unsigned int RF_RESET_PERIOD = 60000;  // Time (ms) between RF resets (hack to keep RFM60CW alive)
 
 //http://openenergymonitor.org/emon/buildingblocks/calibration
 
-const float Ical1=                90.9;                             // (2000 turns / 22 Ohm burden) = 90.9
-const float Ical2=                90.9;
-float Vcal_EU=                    256.8;                             // (230V x 13) / (9V x 1.2) = 276.9 - Calibration for EU AC-AC adapter 77DE-06-09
-const float Vcal_USA=             130.0;                             // Calibration for US AC-AC adapter 77DA-10-09
-boolean USA=                      FALSE;
-const byte min_pulsewidth=        60;                                // minimum width of interrupt pulse
+const float Ical_11R = 181.8;  // (2000 turns / 11 Ohm burden)
+const float Ical_22R = 90.9;  // (2000 turns / 22 Ohm burden)
+
+const float Ical1 = Ical_11R;
+const float Ical2 = Ical_11R;
+
+const byte min_pulsewidth=        60;    // minimum width of interrupt pulse
 
 const float phase_shift=          1.7;
 const int no_of_samples=          1480;
-const byte no_of_half_wavelengths= 20;
-const int timeout=                2000;                               // emonLib timeout
+const byte no_of_half_wavelengths = 20;
+const int timeout=                2000;  // emonLib timeout
 const int ACAC_DETECTION_LEVEL=   3000;
 
-const byte TEMPERATURE_PRECISION=  12;                                 // 9 (93.8ms),10 (187.5ms) ,11 (375ms) or 12 (750ms) bits equal to resplution of 0.5C, 0.25C, 0.125C and 0.0625C
-const byte MaxOnewire=             6;                                  // maximum number of DS18B20 one wire sensors
-boolean RF_STATUS=                 0;                                  // Turn RF on and off
-//-------------------------------------------------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------------------------------------------------
-
+const byte TEMPERATURE_PRECISION=  12;  // 9 (93.8ms),10 (187.5ms) ,11 (375ms) or 12 (750ms) bits equal to resplution of 0.5C, 0.25C, 0.125C and 0.0625C
+const byte MaxOnewire=             6;  // maximum number of DS18B20 one wire sensors
+boolean RF_STATUS=                 0;  // Turn RF on and off
 
 //----------------------------emonPi V3 hard-wired connections---------------------------------------------------------------------------------------------------------------
 const byte LEDpin=                     13;              // emonPi LED - on when HIGH
@@ -137,8 +136,6 @@ unsigned long pulseCount;
 } PayloadTX;                                                    // create JeeLabs RF packet structure - a neat way of packaging data for RF comms
 PayloadTX emonPi;
 //-------------------------------------------------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------------------------------------------------
-
 
 //Global Variables Energy Monitoring
 double Vcal, vrms;
@@ -175,21 +172,21 @@ const char helpText1[] PROGMEM =                                 // Available Se
 //-------------------------------------------------------------------------------------------------------------------------------------------
 // SETUP ********************************************************************************************
 //-------------------------------------------------------------------------------------------------------------------------------------------
+void setCountry(byte value)
+{
+  value = min(value, 2);
+  value = max(value, 0);
+  country = value;
+  Vcal = Vcal_c[country];
+  Vrms = Vrms_c[country];
+}
+
+
 void setup()
 {
-
   delay(100);
 
-  if (USA==TRUE)
-  {
-    Vcal = Vcal_USA;                                                       // Assume USA AC/AC adatper is being used, set calibration accordingly
-    Vrms = Vrms_USA;
-  }
-  else
-  {
-    Vcal = Vcal_EU;
-    Vrms = Vrms_EU;
-  }
+  setCountry(2);
 
   emonPi_startup();                         // emonPi startup proceadure, check for AC waveform and print out debug
   if (RF_STATUS==1) RF_Setup();
@@ -212,12 +209,10 @@ void setup()
   ct1.current(1, Ical1);                                     // CT ADC channel 1, calibration.  calibration (2000 turns / 22 Ohm burden resistor = 90.909)
   ct2.current(2, Ical2);                                     // CT ADC channel 2, calibration.
 
-  if (ACAC)                                                           //If AC wavefrom has been detected
-  {
+  if (ACAC) {                                                //If AC wavefrom has been detected
     ct1.voltage(0, Vcal, phase_shift);                       // ADC pin, Calibration, phase_shift
     ct2.voltage(0, Vcal, phase_shift);                       // ADC pin, Calibration, phase_shift
   }
-
 } //end setup
 
 
@@ -228,16 +223,8 @@ void loop()
 {
   now = millis();
 
-  if (USA)
-  {
-    Vcal = Vcal_USA;  // Assume USA AC/AC adatper is being used, set calibration accordingly
-    Vrms = Vrms_USA;
-  }
-  else
-  {
-    Vcal = Vcal_EU;
-    Vrms = Vrms_EU;
-  }
+  Vcal = Vcal_c[country];
+  Vrms = Vrms_c[country];
 
   // Update Vcal
   ct1.voltage(0, Vcal, phase_shift);   // ADC pin, Calibration, phase_shift
@@ -264,9 +251,7 @@ void loop()
     if ((now - last_rf_rest) > RF_RESET_PERIOD) {
       rf12_initialize(nodeID, RF_freq, networkGroup);                             // Periodically reset RFM69CW to keep it alive :-(
     }
-
-   }
-
+  }
 
   if ((now - last_sample) > TIME_BETWEEN_READINGS)
   {
@@ -305,10 +290,6 @@ void loop()
      emonPi.Vrms=ct1.Vrms*100;
   }
 
-  //Serial.print(emonPi.pulseCount); Serial.print(" ");delay(5);
-   // if (debug==1) {Serial.print(emonPi.power2); Serial.print(" ");delay(5);}
-
-
     if (DS18B20_STATUS==1)
     {
       sensors.requestTemperatures();                                        // Send the command to get temperatures
@@ -330,13 +311,13 @@ void loop()
     Serial.println(emonPi.temp[1]);
     */
 
-    send_emonpi_serial();                                             //Send emonPi data to Pi serial using struct packet structure
+    send_emonpi_serial();  //Send emonPi data to Pi serial using struct packet structure
+    if (debug)
+       serial_print_emonpi();
 
     last_sample = now;                                           //Record time of sample
 
-    } // end sample
-
-
+  } // end sample
 } // end loop---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 void single_LED_flash()

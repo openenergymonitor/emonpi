@@ -64,25 +64,22 @@ void serial_print_startup(){
   Serial.print(F("VRMS AC ~"));
   Serial.print(vrms); Serial.println(F("V"));
 
+  Serial.print(F("Country mode "));
+  Serial.println(country);
   if (ACAC) {
     Serial.println(F("AC Wave Detected - Real Power calc enabled"));
-    if (USA==TRUE) Serial.print(F("USA mode > "));
     Serial.print(F("Vcal: ")); Serial.println(Vcal);
     Serial.print(F("Vrms: ")); Serial.print(Vrms); Serial.println(F("V"));
     Serial.print(F("Phase Shift: ")); Serial.println(phase_shift);
   } else {
     Serial.println(F("AC NOT detected - Apparent Power calc enabled"));
-    if (USA)
-        Serial.println(F("USA mode"));
     Serial.print(F("Assuming VRMS: "));
     Serial.print(Vrms); Serial.println(F("V"));
  }
 
- Serial.print("Detected "); Serial.print(CT_count); Serial.print(" CT's");
+ Serial.print("Detected "); Serial.print(CT_count); Serial.println(" CT's");
 
- Serial.print(F("Detected "));
- Serial.print(numSensors);
- Serial.println(F(" DS18B20"));
+ Serial.print(F("Detected ")); Serial.print(numSensors); Serial.println(F(" DS18B20"));
 
   if (RF_STATUS == 1){
     #if (RF69_COMPAT)
@@ -100,6 +97,16 @@ void serial_print_startup(){
 
     showString(helpText1);
   }
+}
+
+void serial_print_emonpi()
+{
+  Serial.print(F("P1:"));
+  Serial.print(emonPi.power1);
+  Serial.print(F(" P2:"));
+  Serial.print(emonPi.power2);
+  Serial.print(F(" Vrms:"));
+  Serial.println(emonPi.Vrms);
 }
 
 //Send emonPi data to Pi serial /dev/ttyAMA0 using struct JeeLabs RF12 packet structure
