@@ -137,8 +137,8 @@ static void handleInput (char c) {
 
     if (RF_STATUS==1) {
       Serial.print(F(" "));
--     Serial.print((char) ('@' + (nodeID & RF12_HDR_MASK)));
--     Serial.print(F(" i"));
+      Serial.print((char) ('@' + (nodeID & RF12_HDR_MASK)));
+      Serial.print(F(" i"));
       Serial.print(nodeID & RF12_HDR_MASK);
       Serial.print(F(" g"));
       Serial.print(networkGroup);

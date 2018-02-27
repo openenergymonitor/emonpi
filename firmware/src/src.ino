@@ -77,9 +77,9 @@ const unsigned long BAUD_RATE=    38400;
 
 const byte Vrms_EU=               230;                              // Vrms for apparent power readings (when no AC-AC voltage sample is present)
 const byte Vrms_USA=              120;                              // USA apparent power VRMS
-const int TIME_BETWEEN_READINGS=  5000;                             // Time between readings (ms)
-const int RF_RESET_PERIOD=        60000;                            // Time (ms) between RF resets (hack to keep RFM60CW alive)
 
+const unsigned int TIME_BETWEEN_READINGS = 5000; // Time between readings (ms)
+const unsigned int RF_RESET_PERIOD = 60000;  // Time (ms) between RF resets (hack to keep RFM60CW alive)
 
 //http://openenergymonitor.org/emon/buildingblocks/calibration
 
