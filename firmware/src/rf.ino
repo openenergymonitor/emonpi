@@ -29,11 +29,9 @@ boolean RF_Rx_Handle(){
         Serial.print(F(" ?"));    	//Print the "bad packet" line prefix
         print_frame(20);          	//Print only the first 20 bytes of a bad packet
       }
-      return(0);
     }
-	       
   } //end recDone
-
+  return 0;
 }
 
 void print_frame (int len) {

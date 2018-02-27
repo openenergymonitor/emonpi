@@ -193,7 +193,7 @@ void setup()
 
   emonPi_startup();                                                     // emonPi startup proceadure, check for AC waveform and print out debug
   if (RF_STATUS==1) RF_Setup();
-  byte numSensors =  check_for_DS18B20();                               // check for presence of DS18B20 and return number of sensors
+  numSensors =  check_for_DS18B20();   // check for presence of DS18B20 and return number of sensors
 
   // Detect and startup I2C LCD
   current_lcd_i2c_addr = i2c_lcd_detect(i2c_lcd_address);
