@@ -64,11 +64,8 @@ EnergyMonitor ct1, ct2;
 #include <Wire.h>                                                     // Arduino I2C library
 #include <LiquidCrystal_I2C.h>                                        // https://github.com/openenergymonitor/LiquidCrystal_I2C
 
-int i2c_lcd_address[2]={0x27, 0x3f};                                  // I2C addresses to test for I2C LCD device
+int i2c_lcd_address[2] = {0x27, 0x3f};                                  // I2C addresses to test for I2C LCD device
 int current_lcd_i2c_addr;                                                  // Used to store current I2C address as found by i2_lcd_detect()
-// LiquidCrystal_I2C lcd(0x27,16,2);                                  // Placeholder
-LiquidCrystal_I2C lcd(0,0,0);
-
 
 //----------------------------emonPi Firmware Version---------------------------------------------------------------------------------------------------------------
 // Changelog: https://github.com/openenergymonitor/emonpi/blob/master/firmware/readme.md
@@ -200,17 +197,17 @@ void setup()
 
   // Detect and startup I2C LCD
   current_lcd_i2c_addr = i2c_lcd_detect(i2c_lcd_address);
-  LiquidCrystal_I2C lcd(current_lcd_i2c_addr,16,2);                                   // LCD I2C address to 0x27, 16x2 line display
-  emonPi_LCD_Startup(current_lcd_i2c_addr);
+  if (current_lcd_i2c_addr)
+    emonPi_LCD_Startup(current_lcd_i2c_addr);
 
   delay(2000);
   CT_Detect();
-  serial_print_startup(current_lcd_i2c_addr);
+  serial_print_startup();
+  if (current_lcd_i2c_addr)
+    lcd_print_startup(current_lcd_i2c_addr);
 
   attachInterrupt(emonPi_int1, onPulse, FALLING);  // Attach pulse counting interrupt on RJ45 (Dig 3 / INT 1)
   emonPi.pulseCount = 0;                                                  // Reset Pulse Count
-
-
 
   ct1.current(1, Ical1);                                     // CT ADC channel 1, calibration.  calibration (2000 turns / 22 Ohm burden resistor = 90.909)
   ct2.current(2, Ical2);                                     // CT ADC channel 2, calibration.
@@ -231,9 +228,9 @@ void loop()
 {
   now = millis();
 
-  if (USA==TRUE)
+  if (USA)
   {
-    Vcal = Vcal_USA;                                                       // Assume USA AC/AC adatper is being used, set calibration accordingly
+    Vcal = Vcal_USA;  // Assume USA AC/AC adatper is being used, set calibration accordingly
     Vrms = Vrms_USA;
   }
   else
@@ -243,8 +240,8 @@ void loop()
   }
 
   // Update Vcal
-  ct1.voltage(0, Vcal, phase_shift);                       // ADC pin, Calibration, phase_shift
-  ct2.voltage(0, Vcal, phase_shift);                       // ADC pin, Calibration, phase_shift
+  ct1.voltage(0, Vcal, phase_shift);   // ADC pin, Calibration, phase_shift
+  ct2.voltage(0, Vcal, phase_shift);   // ADC pin, Calibration, phase_shift
 
   if (digitalRead(shutdown_switch_pin) == 0 )
     digitalWrite(emonpi_GPIO_pin, HIGH);                                          // if emonPi shutdown butten pressed then send signal to the Pi on GPIO 11

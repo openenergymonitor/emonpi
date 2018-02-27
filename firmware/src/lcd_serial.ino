@@ -9,83 +9,80 @@ int i2c_lcd_detect(int i2c_lcd_address[]){
     {
       Serial.print("LCD found i2c 0x"); Serial.println(i2c_lcd_address[i], HEX);
       return (i2c_lcd_address[i]);
-      break;
     }
   }
-Serial.println("LCD not found");
-return(0);
+  Serial.println("LCD not found");
+  return(0);
 }
 
 
 void emonPi_LCD_Startup(int current_i2c_addr) {
-  LiquidCrystal_I2C lcd(current_lcd_i2c_addr,16,2);                                   // LCD I2C address to 0x27, 16x2 line display
+  LiquidCrystal_I2C lcd(current_lcd_i2c_addr, 16, 2);  // LCD I2C address to 0x27, 16x2 line display
   lcd.init();                      // initialize the lcd
   lcd.backlight();                 // Or lcd.noBacklight()
   lcd.print(F("emonPi V")); lcd.print(firmware_version*0.01);
   lcd.setCursor(0, 1); lcd.print(F("OpenEnergyMon"));
 }
 
-void serial_print_startup(int current_lcd_i2c_addr){
+void lcd_print_startup(int current_lcd_i2c_addr){
   //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  LiquidCrystal_I2C lcd(current_lcd_i2c_addr,16,2);                                   // LCD I2C address to 0x27, 16x2 line display
+  LiquidCrystal_I2C lcd(current_lcd_i2c_addr, 16, 2);  // LCD I2C address to 0x27, 16x2 line display
   lcd.clear();
   lcd.backlight();
 
-  Serial.print(F("CT 1 Cal: ")); Serial.println(Ical1);
-  Serial.print(F("CT 2 Cal: ")); Serial.println(Ical2);
-  Serial.print(F("VRMS AC ~"));
-  Serial.print(vrms); Serial.println(F("V"));
-
-  if (ACAC)
-  {
-    lcd.print(F("AC Wave Detected"));
-    Serial.println(F("AC Wave Detected - Real Power calc enabled"));
-    if (USA==TRUE) Serial.print(F("USA mode > "));
-    Serial.print(F("Vcal: ")); Serial.println(Vcal);
-    Serial.print(F("Vrms: ")); Serial.print(Vrms); Serial.println(F("V"));
-    Serial.print(F("Phase Shift: ")); Serial.println(phase_shift);
+lcd.print(F("AC "));
+  if (not ACAC) {
+    lcd.print(F("NOT "));
   }
-  else
-  {
-   lcd.print(F("AC NOT Detected"));
-   Serial.println(F("AC NOT detected - Apparent Power calc enabled"));
-   if (USA==TRUE) Serial.println(F("USA mode"));
-   Serial.print(F("Assuming VRMS: ")); Serial.print(Vrms); Serial.println(F("V"));
- }
+  lcd.print(F("Detected"));
 
-lcd.setCursor(0, 1); lcd.print(F("Detected "));
-
-  if (CT_count==0) {
-    Serial.println(F("no CT detected"));
-    lcd.print(F("No CT's"));
-  }
-  else{
-    Serial.print("Detected "); Serial.print(CT_count); Serial.print(" CT's");
-    lcd.print(CT_count); lcd.print(F(" CT's"));
-  }
+  lcd.setCursor(0, 1);
+  lcd.print(F("Detected ")); 
+  lcd.print(CT_count);
+  lcd.print(F(" CT's"));
 
   delay(2000);
 
-  if (DS18B20_STATUS==1) {
-    Serial.print(F("Detect "));
-    Serial.print(numSensors);
-    Serial.println(F(" DS18B20"));
-    lcd.clear();
-    lcd.print(F("Detected: ")); lcd.print(numSensors);
-    lcd.setCursor(0, 1); lcd.print(F("DS18B20 Temp"));
-  }
-  else {
-  	Serial.println(F("0 DS18B20 detected"));
-  	lcd.clear();
-  	lcd.print(F("Detected: ")); lcd.print(numSensors);
-    lcd.setCursor(0, 1); lcd.print(F("DS18B20 Temp"));
-  }
+  lcd.clear();
+  lcd.print(F("Detected: ")); lcd.print(numSensors);
+  lcd.setCursor(0, 1);
+  lcd.print(F("DS18B20 Temp"));
 
   delay(2000);
 
   lcd.clear();
   lcd.print(F("Raspberry Pi"));
-  lcd.setCursor(0, 1); lcd.print(F("Booting..."));
+  lcd.setCursor(0, 1);
+  lcd.print(F("Booting..."));
+
+  delay(20);
+}
+
+void serial_print_startup(){
+  Serial.print(F("CT 1 Cal: ")); Serial.println(Ical1);
+  Serial.print(F("CT 2 Cal: ")); Serial.println(Ical2);
+  Serial.print(F("VRMS AC ~"));
+  Serial.print(vrms); Serial.println(F("V"));
+
+  if (ACAC) {
+    Serial.println(F("AC Wave Detected - Real Power calc enabled"));
+    if (USA==TRUE) Serial.print(F("USA mode > "));
+    Serial.print(F("Vcal: ")); Serial.println(Vcal);
+    Serial.print(F("Vrms: ")); Serial.print(Vrms); Serial.println(F("V"));
+    Serial.print(F("Phase Shift: ")); Serial.println(phase_shift);
+  } else {
+    Serial.println(F("AC NOT detected - Apparent Power calc enabled"));
+    if (USA)
+        Serial.println(F("USA mode"));
+    Serial.print(F("Assuming VRMS: "));
+    Serial.print(Vrms); Serial.println(F("V"));
+ }
+
+ Serial.print("Detected "); Serial.print(CT_count); Serial.print(" CT's");
+
+ Serial.print(F("Detected "));
+ Serial.print(numSensors);
+ Serial.println(F(" DS18B20"));
 
   if (RF_STATUS == 1){
     #if (RF69_COMPAT)
@@ -103,7 +100,6 @@ lcd.setCursor(0, 1); lcd.print(F("Detected "));
 
     showString(helpText1);
   }
-  delay(20);
 }
 
 //Send emonPi data to Pi serial /dev/ttyAMA0 using struct JeeLabs RF12 packet structure
