@@ -96,27 +96,25 @@ const byte no_of_half_wavelengths = 20;
 const int timeout=                2000;  // emonLib timeout
 const int ACAC_DETECTION_LEVEL=   3000;
 
-const byte TEMPERATURE_PRECISION=  12;  // 9 (93.8ms),10 (187.5ms) ,11 (375ms) or 12 (750ms) bits equal to resplution of 0.5C, 0.25C, 0.125C and 0.0625C
+const byte TEMPERATURE_PRECISION = 12;  // 9 (93.8ms),10 (187.5ms) ,11 (375ms) or 12 (750ms) bits equal to resplution of 0.5C, 0.25C, 0.125C and 0.0625C
 const byte MaxOnewire=             6;  // maximum number of DS18B20 one wire sensors
 boolean RF_STATUS=                 0;  // Turn RF on and off
 
 //----------------------------emonPi V3 hard-wired connections---------------------------------------------------------------------------------------------------------------
-const byte LEDpin=                     13;              // emonPi LED - on when HIGH
-const byte shutdown_switch_pin =       8;              // Push-to-make - Low when pressed
-const byte emonpi_GPIO_pin=            5;              // Connected to Pi GPIO 17, used to activate Pi Shutdown when HIGH
-//const byte emonpi_OKK_Tx=              6;            // On-off keying transmission Pin - not populated by default
-//const byte emonPi_RJ45_8_IO=           A6;           // RJ45 pin 8 - Analog 6 (D19) - Aux I/O
-const byte emonPi_int1=                1;              // RJ45 pin 6 - INT1 - PWM - Dig 3 - default pulse count input
-const byte emonPi_int1_pin=            3;              // RJ45 pin 6 - INT1 - PWM - Dig 3 - default pulse count input
-//const byte emonPi_int0=                2;            // Default RFM INT (Dig2) - Can be jumpered used JP5 to RJ45 pin 7 - PWM - D2
-#define ONE_WIRE_BUS                   4               // DS18B20 Data, RJ45 pin 4
+const byte LEDpin = 13;             // emonPi LED - on when HIGH
+const byte shutdown_switch_pin = 6; // Push-to-make - Low when pressed
+const byte emonpi_GPIO_pin = 5;     // Connected to Pi GPIO 17, used to activate Pi Shutdown when HIGH
+const byte oneWire_pin = 4;         // DS18B20 Data, RJ45 pin 4
+
+// Only pins 2 or 3 can be used for interrupts:
+const byte emonpi_pulse_pin = 2;    // default pulse count input
 //-------------------------------------------------------------------------------------------------------------------------------------------
 
 //Setup DS128B20
-OneWire oneWire(ONE_WIRE_BUS);
+OneWire oneWire(oneWire_pin);
 DallasTemperature sensors(&oneWire);
 byte allAddress [MaxOnewire][8];  // 8 bytes per address
-byte numSensors;
+byte numSensors = 0;
 //-------------------------------------------------------------------------------------------------------------------------------------------
 
 //-----------------------RFM12B / RFM69CW SETTINGS----------------------------------------------------------------------------------------------------
@@ -182,13 +180,12 @@ void setCountry(byte value)
 void setup()
 {
         delay(100);
-
         setCountry(2);
+        emonPi_startup(); // emonPi startup procedure, check for AC waveform and print out debug
 
-        emonPi_startup();                   // emonPi startup proceadure, check for AC waveform and print out debug
         if (RF_STATUS==1)
                 RF_Setup();
-        numSensors =  check_for_DS18B20();// check for presence of DS18B20 and return number of sensors
+        numSensors = check_for_DS18B20();// check for presence of DS18B20 and return number of sensors
 
         emonPi_LCD_Startup();
 
@@ -197,7 +194,7 @@ void setup()
         serial_print_startup();
         lcd_print_startup();
 
-        attachInterrupt(emonPi_int1, onPulse, FALLING); // Attach pulse counting interrupt on RJ45 (Dig 3 / INT 1)
+        attachInterrupt(digitalPinToInterrupt(emonpi_pulse_pin), onPulse, FALLING); // Attach pulse counting interrupt on RJ45 (Dig 3 / INT 1)
         emonPi.pulseCount = 0;                                            // Reset Pulse Count
 
         ct1.current(1, Ical1);                               // CT ADC channel 1, calibration.  calibration (2000 turns / 22 Ohm burden resistor = 90.909)
