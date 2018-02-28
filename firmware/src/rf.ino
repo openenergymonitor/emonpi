@@ -1,18 +1,16 @@
 void RF_Setup()
-{
-        //--------------------------------------------------Initalize RF and send out RF test packets--------------------------------------------------------------------------------------------
+{       //---- Initalize RF and send out RF test packets ----------------------
         delay(10);
-        rf12_initialize(nodeID, RF_freq, networkGroup);                    // initialize RFM12B/rfm69CW
-        for (int i=10; i>=0; i--)                                                             //Send RF test sequence (for factory testing)
-        {
-                emonPi.power1=i;
+        rf12_initialize(nodeID, RF_freq, networkGroup); // initialize RFM12B/rfm69CW
+        for (int i = 10; i >= 0; i--) {                 //Send RF test sequence (for factory testing)
+                emonPi.power1 = i;
                 rf12_sendNow(0, &emonPi, sizeof emonPi);
                 delay(100);
         }
         rf12_sendWait(2);
         emonPi.power1=0;
 }
-//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 boolean RF_Rx_Handle()
 {
@@ -49,7 +47,7 @@ void serial_print_frame (int len)
     #if RF69_COMPAT
         // display RSSI value after packet data e.g (-xx)
         Serial.print(F("("));
-        Serial.print(-(RF69::rssi>>1));
+        Serial.print(-(RF69::rssi >> 1));
         Serial.print(F(")"));
     #endif
         Serial.println();
@@ -84,7 +82,6 @@ void send_RF()
                         header |= RF12_HDR_DST | dest;
                 rf12_sendStart(header, stack, sendLen);
                 cmd = 0;
-
         }
 }
 
@@ -107,7 +104,8 @@ static void handleInput (char c) {
                 case 'i': //set node ID
                         if (value) {
                                 nodeID = value;
-                                if (RF_STATUS==1) rf12_initialize(nodeID, RF_freq, networkGroup);
+                                if (RF_STATUS == 1)
+                                        rf12_initialize(nodeID, RF_freq, networkGroup);
                                 break;
                         }
 
@@ -115,14 +113,16 @@ static void handleInput (char c) {
                         value = bandToFreq(value);
                         if (value) {
                                 RF_freq = value;
-                                if (RF_STATUS==1) rf12_initialize(nodeID, RF_freq, networkGroup);
+                                if (RF_STATUS == 1)
+                                        rf12_initialize(nodeID, RF_freq, networkGroup);
                         }
                         break;
 
                 case 'g': // set network group
                         if (value>=0) {
                                 networkGroup = value;
-                                if (RF_STATUS==1) rf12_initialize(nodeID, RF_freq, networkGroup);
+                                if (RF_STATUS == 1)
+                                        rf12_initialize(nodeID, RF_freq, networkGroup);
                         }
                         break;
 
@@ -137,7 +137,9 @@ static void handleInput (char c) {
                         break;
 
                 case 'v': // print firmware version
-                        Serial.print(F("[emonPi.")); Serial.print(firmware_version*0.1); Serial.print(F("]"));
+                        Serial.print(F("[emonPi."));
+                        Serial.print(firmware_version*0.1);
+                        Serial.print(F("]"));
                         break;
 
                 case 'a': // send packet to node ID N, request an ack
@@ -152,14 +154,13 @@ static void handleInput (char c) {
                 } //end case
                   //Print Current RF config
 
-                if (RF_STATUS==1)
+                if (RF_STATUS == 1)
                         serial_print_rf_config();
                 Serial.println(F(" "));
 
         }
         value = top = 0;
 }
-
 
 static byte bandToFreq (byte band)
 {
