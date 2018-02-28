@@ -1,5 +1,10 @@
+#include <LiquidCrystal_I2C.h>                                        // https://github.com/openenergymonitor/LiquidCrystal_I2C
+
+static int i2c_lcd_address[2] = {0x27, 0x3f};                                  // I2C addresses to test for I2C LCD device
+static int current_lcd_i2c_addr = 0;                                                  // Used to store current I2C address as found by i2_lcd_detect()
+
 // emonPi used 16 x 2 I2C LCD display
-int i2c_lcd_detect(int i2c_lcd_address[])
+static int i2c_lcd_detect()
 {
         Wire.begin();
         for (int i = 0; i < 2; i++) {
@@ -14,8 +19,13 @@ int i2c_lcd_detect(int i2c_lcd_address[])
 }
 
 
-void emonPi_LCD_Startup(int current_i2c_addr)
+static void emonPi_LCD_Startup()
 {
+        current_lcd_i2c_addr = i2c_lcd_detect();
+
+        if (!current_lcd_i2c_addr)
+                return;
+
         LiquidCrystal_I2C lcd(current_lcd_i2c_addr, 16, 2); // LCD I2C address to 0x27, 16x2 line display
         lcd.init();                // initialize the lcd
         lcd.backlight();           // Or lcd.noBacklight()
@@ -23,7 +33,10 @@ void emonPi_LCD_Startup(int current_i2c_addr)
         lcd.setCursor(0, 1); lcd.print(F("OpenEnergyMon"));
 }
 
-void lcd_print_startup(int current_lcd_i2c_addr){
+static void lcd_print_startup(){
+        if (!current_lcd_i2c_addr)
+                return;
+
         //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         LiquidCrystal_I2C lcd(current_lcd_i2c_addr, 16, 2); // LCD I2C address to 0x27, 16x2 line display
         lcd.clear();
@@ -55,85 +68,4 @@ void lcd_print_startup(int current_lcd_i2c_addr){
         lcd.print(F("Booting..."));
 
         delay(20);
-}
-
-void serial_print_startup()
-{
-        Serial.print(F("CT 1 Cal: ")); Serial.println(Ical1);
-        Serial.print(F("CT 2 Cal: ")); Serial.println(Ical2);
-        Serial.print(F("VRMS AC ~"));
-        Serial.print(vrms); Serial.println(F("V"));
-
-        Serial.print(F("Country mode "));
-        Serial.println(country);
-        if (ACAC) {
-                Serial.println(F("AC Wave Detected - Real Power calc enabled"));
-                Serial.print(F("Vcal: ")); Serial.println(Vcal);
-                Serial.print(F("Vrms: ")); Serial.print(Vrms); Serial.println(F("V"));
-                Serial.print(F("Phase Shift: ")); Serial.println(phase_shift);
-        } else {
-                Serial.println(F("AC NOT detected - Apparent Power calc enabled"));
-                Serial.print(F("Assuming VRMS: "));
-                Serial.print(Vrms); Serial.println(F("V"));
-        }
-
-        Serial.print("Detected "); Serial.print(CT_count); Serial.println(" CT's");
-
-        Serial.print(F("Detected ")); Serial.print(numSensors); Serial.println(F(" DS18B20"));
-
-        if (RF_STATUS == 1) {
-                #if (RF69_COMPAT)
-                Serial.println(F("RFM69CW Init: "));
-                #else
-                Serial.println(F("RFM12B Init: "));
-                #endif
-
-                Serial.print(F("Node ")); Serial.print(nodeID);
-                Serial.print(F(" Freq "));
-                if (RF_freq == RF12_433MHZ) Serial.print(F("433Mhz"));
-                if (RF_freq == RF12_868MHZ) Serial.print(F("868Mhz"));
-                if (RF_freq == RF12_915MHZ) Serial.print(F("915Mhz"));
-                Serial.print(F(" Network ")); Serial.println(networkGroup);
-
-                showString(helpText1);
-        }
-}
-
-void serial_print_emonpi()
-{
-        Serial.print(F("P1:"));
-        Serial.print(emonPi.power1);
-        Serial.print(F(" P2:"));
-        Serial.print(emonPi.power2);
-        Serial.print(F(" Vrms:"));
-        Serial.println(emonPi.Vrms);
-}
-
-//Send emonPi data to Pi serial /dev/ttyAMA0 using struct JeeLabs RF12 packet structure
-void send_emonpi_serial()
-{
-        byte binarray[sizeof(emonPi)];
-        memcpy(binarray, &emonPi, sizeof(emonPi));
-
-        Serial.print(F("OK "));
-        Serial.print(nodeID);
-        for (byte i = 0; i < sizeof(binarray); i++) {
-                Serial.print(F(" "));
-                Serial.print(binarray[i]);
-        }
-        Serial.print(F(" (-0)"));
-        Serial.println();
-
-        delay(10);
-}
-
-static void showString (PGM_P s) {
-        for (;; ) {
-                char c = pgm_read_byte(s++);
-                if (c == 0)
-                        break;
-                if (c == '\n')
-                        Serial.print('\r');
-                Serial.print(c);
-        }
 }

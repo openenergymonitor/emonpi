@@ -64,10 +64,6 @@ EnergyMonitor ct1, ct2;
 #include <DallasTemperature.h>                                        // http://download.milesburton.com/Arduino/MaximTemperature/DallasTemperature_LATEST.zip
 
 #include <Wire.h>                                                     // Arduino I2C library
-#include <LiquidCrystal_I2C.h>                                        // https://github.com/openenergymonitor/LiquidCrystal_I2C
-
-int i2c_lcd_address[2] = {0x27, 0x3f};                                  // I2C addresses to test for I2C LCD device
-int current_lcd_i2c_addr;                                                  // Used to store current I2C address as found by i2_lcd_detect()
 
 //----------------------------emonPi Firmware Version---------------------------------------------------------------------------------------------------------------
 // Changelog: https://github.com/openenergymonitor/emonpi/blob/master/firmware/readme.md
@@ -194,16 +190,12 @@ void setup()
                 RF_Setup();
         numSensors =  check_for_DS18B20();// check for presence of DS18B20 and return number of sensors
 
-        // Detect and startup I2C LCD
-        current_lcd_i2c_addr = i2c_lcd_detect(i2c_lcd_address);
-        if (current_lcd_i2c_addr)
-                emonPi_LCD_Startup(current_lcd_i2c_addr);
+        emonPi_LCD_Startup();
 
         delay(2000);
         CT_Detect();
         serial_print_startup();
-        if (current_lcd_i2c_addr)
-                lcd_print_startup(current_lcd_i2c_addr);
+        lcd_print_startup();
 
         attachInterrupt(emonPi_int1, onPulse, FALLING); // Attach pulse counting interrupt on RJ45 (Dig 3 / INT 1)
         emonPi.pulseCount = 0;                                            // Reset Pulse Count
