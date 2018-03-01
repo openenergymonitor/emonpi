@@ -70,7 +70,7 @@ EnergyMonitor ct1, ct2;
 const int firmware_version = 290; //firmware version x 100 e.g 100 = V1.00
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
-boolean debug =                   TRUE;
+boolean debug =                   FALSE;
 const unsigned long BAUD_RATE=    38400;
 
 byte country = 2;  // 0=EU,1=USA, 2=AU/NZ
