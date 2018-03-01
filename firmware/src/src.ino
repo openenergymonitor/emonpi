@@ -86,7 +86,7 @@ const float Ical_11R = 181.8;  // (2000 turns / 11 Ohm burden)
 const float Ical_22R = 90.9;  // (2000 turns / 22 Ohm burden)
 
 const float Ical1 = Ical_11R;
-const float Ical2 = Ical_11R;
+const float Ical2 = Ical_22R;
 
 const byte min_pulsewidth=        60;    // minimum width of interrupt pulse
 
@@ -104,7 +104,7 @@ boolean RF_STATUS=                 0;  // Turn RF on and off
 const byte LEDpin = 13;             // emonPi LED - on when HIGH
 const byte shutdown_switch_pin = 6; // Push-to-make - Low when pressed
 const byte emonpi_GPIO_pin = 5;     // Connected to Pi GPIO 17, used to activate Pi Shutdown when HIGH
-const byte oneWire_pin = 4;         // DS18B20 Data, RJ45 pin 4
+const byte oneWire_pin = 7;         // DS18B20 Data, RJ45 pin 4
 
 // Only pins 2 or 3 can be used for interrupts:
 const byte emonpi_pulse_pin = 2;    // default pulse count input
