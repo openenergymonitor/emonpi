@@ -101,6 +101,10 @@ static void handleInput (char c) {
 
         if (c > ' ') {
                 switch (c) {
+                case 'd':
+                        debug = !debug;
+                        break;
+
                 case 'i': //set node ID
                         if (value) {
                                 nodeID = value;
