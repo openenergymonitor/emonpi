@@ -49,6 +49,14 @@ void serial_print_emonpi()
         Serial.print(emonPi.power2);
         Serial.print(F(" Vrms:"));
         Serial.println(emonPi.Vrms);
+        Serial.print("Pulsecount:");
+        Serial.println(emonPi.pulseCount);
+        for (int t = 0; t < numSensors; t++) {
+                Serial.print(F(" T "));
+                Serial.print(emonPi.temp[t]);
+        }
+        if (numSensors)
+                Serial.println();
 }
 
 //Send emonPi data to Pi serial /dev/ttyAMA0 using struct JeeLabs RF12 packet structure
