@@ -62,35 +62,27 @@ EnergyMonitor ct1, ct2;
 
 #include <OneWire.h>                                                  // http://www.pjrc.com/teensy/td_libs_OneWire.html
 #include <DallasTemperature.h>                                        // http://download.milesburton.com/Arduino/MaximTemperature/DallasTemperature_LATEST.zip
-
 #include <Wire.h>                                                     // Arduino I2C library
+#include <EEPROM.h>
 
+#include "config.h"
 //----------------------------emonPi Firmware Version---------------------------------------------------------------------------------------------------------------
 // Changelog: https://github.com/openenergymonitor/emonpi/blob/master/firmware/readme.md
 const int firmware_version = 290; //firmware version x 100 e.g 100 = V1.00
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
 boolean debug =                   FALSE;
-const unsigned long BAUD_RATE=    38400;
+const unsigned long BAUD_RATE = 38400;
 
-byte country = 2;  // 0=EU,1=USA, 2=AU/NZ
+byte country;  // 0=EU,1=USA, 2=AU/NZ
 const byte Vrms_c[3] = {230, 120, 240};  // Vrms for apparent power readings (when no AC-AC voltage sample is present)
 const float Vcal_c[3] = {256.8, 130.0, 204};  // (230V x 13) / (9V x 1.2) = 276.9 - Calibration for EU AC-AC adapter 77DE-06-09
 
 const unsigned int TIME_BETWEEN_READINGS = 5000; // Time between readings (ms)
 const unsigned int RF_RESET_PERIOD = 60000;  // Time (ms) between RF resets (hack to keep RFM60CW alive)
 
-//http://openenergymonitor.org/emon/buildingblocks/calibration
-
-const float Ical_11R = 181.8;  // (2000 turns / 11 Ohm burden)
-const float Ical_22R = 90.9;  // (2000 turns / 22 Ohm burden)
-
-const float Ical1 = Ical_11R;
-const float Ical2 = Ical_22R;
-
 const byte min_pulsewidth=        60;    // minimum width of interrupt pulse
 
-const float phase_shift=          1.7;
 const int no_of_samples=          1480;
 const byte no_of_half_wavelengths = 20;
 const int timeout=                2000;  // emonLib timeout
@@ -100,14 +92,6 @@ const byte TEMPERATURE_PRECISION = 12;  // 9 (93.8ms),10 (187.5ms) ,11 (375ms) o
 const byte MaxOnewire=             6;  // maximum number of DS18B20 one wire sensors
 boolean RF_STATUS=                 0;  // Turn RF on and off
 
-//----------------------------emonPi V3 hard-wired connections---------------------------------------------------------------------------------------------------------------
-const byte LEDpin = 13;             // emonPi LED - on when HIGH
-const byte shutdown_switch_pin = 6; // Push-to-make - Low when pressed
-const byte emonpi_GPIO_pin = 5;     // Connected to Pi GPIO 17, used to activate Pi Shutdown when HIGH
-const byte oneWire_pin = 7;         // DS18B20 Data, RJ45 pin 4
-
-// Only pins 2 or 3 can be used for interrupts:
-const byte emonpi_pulse_pin = 2;    // default pulse count input
 //-------------------------------------------------------------------------------------------------------------------------------------------
 
 //Setup DS128B20
@@ -177,11 +161,30 @@ void setCountry(byte value)
         Vrms = Vrms_c[country];
 }
 
+// Default configuration.
+struct Config config = { DEFAULT_CONFIG };
+
+void config_eeprom_read()
+{
+        struct Config eeconfig;
+
+        EEPROM.get(0, eeconfig);
+        if (eeconfig.version == config.version) {
+                config = eeconfig;
+        } else {
+                EEPROM.put(0, config);
+        }
+
+}
+
+
 void setup()
 {
         delay(100);
-        setCountry(2);
+        config_eeprom_read();
+        setCountry(config.country);
         emonPi_startup(); // emonPi startup procedure, check for AC waveform and print out debug
+        serial_print_config(&config);
 
         if (RF_STATUS==1)
                 RF_Setup();
@@ -197,12 +200,12 @@ void setup()
         attachInterrupt(digitalPinToInterrupt(emonpi_pulse_pin), onPulse, FALLING); // Attach pulse counting interrupt on RJ45 (Dig 3 / INT 1)
         emonPi.pulseCount = 0;                                            // Reset Pulse Count
 
-        ct1.current(1, Ical1);                               // CT ADC channel 1, calibration.  calibration (2000 turns / 22 Ohm burden resistor = 90.909)
-        ct2.current(2, Ical2);                               // CT ADC channel 2, calibration.
+        ct1.current(1, config.Ical1); // CT ADC channel 1, calibration.  calibration (2000 turns / 22 Ohm burden resistor = 90.909)
+        ct2.current(2, config.Ical2); // CT ADC channel 2, calibration.
 
         if (ACAC) {                                          //If AC wavefrom has been detected
-                ct1.voltage(0, Vcal, phase_shift);           // ADC pin, Calibration, phase_shift
-                ct2.voltage(0, Vcal, phase_shift);           // ADC pin, Calibration, phase_shift
+                ct1.voltage(0, Vcal, config.phase_shift);           // ADC pin, Calibration, phase_shift
+                ct2.voltage(0, Vcal, config.phase_shift);           // ADC pin, Calibration, phase_shift
         }
 } //end setup
 
@@ -215,8 +218,8 @@ void loop()
         now = millis();
 
         // Update Vcal
-        ct1.voltage(0, Vcal, phase_shift); // ADC pin, Calibration, phase_shift
-        ct2.voltage(0, Vcal, phase_shift); // ADC pin, Calibration, phase_shift
+        ct1.voltage(0, Vcal, config.phase_shift); // ADC pin, Calibration, phase_shift
+        ct2.voltage(0, Vcal, config.phase_shift); // ADC pin, Calibration, phase_shift
 
         if (digitalRead(shutdown_switch_pin) == 0 )
                 digitalWrite(emonpi_GPIO_pin, HIGH);                              // if emonPi shutdown butten pressed then send signal to the Pi on GPIO 11

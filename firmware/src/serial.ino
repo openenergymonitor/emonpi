@@ -1,18 +1,10 @@
 
 void serial_print_startup()
 {
-        Serial.print(F("CT 1 Cal: ")); Serial.println(Ical1);
-        Serial.print(F("CT 2 Cal: ")); Serial.println(Ical2);
-        Serial.print(F("VRMS AC ~"));
-        Serial.print(vrms); Serial.println(F("V"));
-
-        Serial.print(F("Country mode "));
-        Serial.println(country);
         if (ACAC) {
                 Serial.println(F("AC Wave Detected - Real Power calc enabled"));
                 Serial.print(F("Vcal: ")); Serial.println(Vcal);
                 Serial.print(F("Vrms: ")); Serial.print(Vrms); Serial.println(F("V"));
-                Serial.print(F("Phase Shift: ")); Serial.println(phase_shift);
         } else {
                 Serial.println(F("AC NOT detected - Apparent Power calc enabled"));
                 Serial.print(F("Assuming VRMS: "));
@@ -41,6 +33,19 @@ void serial_print_startup()
         }
 }
 
+void serial_print_config(struct Config *c)
+{
+        Serial.print(F("Configuration\n Vcal="));
+        Serial.println(c->Vcal);
+        Serial.print(F(" Ical1="));
+        Serial.println(c->Ical1);
+        Serial.print(F(" Ical2="));
+        Serial.println(c->Ical2);
+        Serial.print(F(" Phase="));
+        Serial.println(c->phase_shift);
+        Serial.print(F(" country="));
+        Serial.println(c->country);
+}
 void serial_print_emonpi()
 {
         Serial.print(F("P1:"));
