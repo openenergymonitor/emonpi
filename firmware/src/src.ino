@@ -74,10 +74,6 @@ const int firmware_version = 290; //firmware version x 100 e.g 100 = V1.00
 boolean debug =                   FALSE;
 const unsigned long BAUD_RATE = 38400;
 
-byte country;  // 0=EU,1=USA, 2=AU/NZ
-const byte Vrms_c[3] = {230, 120, 240};  // Vrms for apparent power readings (when no AC-AC voltage sample is present)
-const float Vcal_c[3] = {256.8, 130.0, 204};  // (230V x 13) / (9V x 1.2) = 276.9 - Calibration for EU AC-AC adapter 77DE-06-09
-
 const unsigned int TIME_BETWEEN_READINGS = 5000; // Time between readings (ms)
 const unsigned int RF_RESET_PERIOD = 60000;  // Time (ms) between RF resets (hack to keep RFM60CW alive)
 
@@ -118,9 +114,8 @@ PayloadTX emonPi;
 //-------------------------------------------------------------------------------------------------------------------------------------------
 
 //Global Variables Energy Monitoring
-double Vcal, vrms;
 boolean ACAC;
-byte CT_count, Vrms;
+byte CT_count;
 unsigned long last_sample=0;                                     // Record millis time of last discrete sample
 byte flag;                                                       // flag to record shutdown push button press
 volatile byte pulseCount = 0;
@@ -152,14 +147,6 @@ const char helpText1[] PROGMEM =                                 // Available Se
 //-------------------------------------------------------------------------------------------------------------------------------------------
 // SETUP ********************************************************************************************
 //-------------------------------------------------------------------------------------------------------------------------------------------
-void setCountry(byte value)
-{
-        value = min(value, 2);
-        value = max(value, 0);
-        country = value;
-        Vcal = Vcal_c[country];
-        Vrms = Vrms_c[country];
-}
 
 // Default configuration.
 struct Config config = { DEFAULT_CONFIG };
@@ -172,17 +159,20 @@ void config_eeprom_read()
         if (eeconfig.version == config.version) {
                 config = eeconfig;
         } else {
-                EEPROM.put(0, config);
+                config_eeprom_update();
         }
 
 }
 
+void config_eeprom_update()
+{
+        EEPROM.put(0, config);
+}
 
 void setup()
 {
         delay(100);
         config_eeprom_read();
-        setCountry(config.country);
         emonPi_startup(); // emonPi startup procedure, check for AC waveform and print out debug
         serial_print_config(&config);
 
@@ -204,8 +194,8 @@ void setup()
         ct2.current(2, config.Ical2); // CT ADC channel 2, calibration.
 
         if (ACAC) {                                          //If AC wavefrom has been detected
-                ct1.voltage(0, Vcal, config.phase_shift);           // ADC pin, Calibration, phase_shift
-                ct2.voltage(0, Vcal, config.phase_shift);           // ADC pin, Calibration, phase_shift
+                ct1.voltage(0, config.Vcal, config.phase_shift); // ADC pin, Calibration, phase_shift
+                ct2.voltage(0, config.Vcal, config.phase_shift); // ADC pin, Calibration, phase_shift
         }
 } //end setup
 
@@ -218,8 +208,8 @@ void loop()
         now = millis();
 
         // Update Vcal
-        ct1.voltage(0, Vcal, config.phase_shift); // ADC pin, Calibration, phase_shift
-        ct2.voltage(0, Vcal, config.phase_shift); // ADC pin, Calibration, phase_shift
+        ct1.voltage(0, config.Vcal, config.phase_shift); // ADC pin, Calibration, phase_shift
+        ct2.voltage(0, config.Vcal, config.phase_shift); // ADC pin, Calibration, phase_shift
 
         if (digitalRead(shutdown_switch_pin) == 0 )
                 digitalWrite(emonpi_GPIO_pin, HIGH);                              // if emonPi shutdown butten pressed then send signal to the Pi on GPIO 11
@@ -255,29 +245,29 @@ void loop()
                                 emonPi.power1=ct1.realPower;
                                 emonPi.Vrms=ct1.Vrms*100;
                         } else {
-                                emonPi.power1 = ct1.calcIrms(no_of_samples)*Vrms; // Calculate Apparent Power if no AC-AC
+                                emonPi.power1 = ct1.calcIrms(no_of_samples) * config.Vrms; // Calculate Apparent Power if no AC-AC
                         }
                 }
 // CT2 ------------------------------------------------------------------------
                 emonPi.power2 = 0;
-                if (analogRead(2) > 0) {                                          // If CT is plugged in then sample
-                        if (ACAC) {                                                // Read from CT 2
-                                ct2.calcVI(no_of_half_wavelengths,timeout);
-                                emonPi.power2=ct2.realPower;
-                                emonPi.Vrms=ct2.Vrms*100;
+                if (analogRead(2) > 0) {  // If CT is plugged in then sample
+                        if (ACAC) {       // Read from CT 2
+                                ct2.calcVI(no_of_half_wavelengths, timeout);
+                                emonPi.power2 = ct2.realPower;
+                                emonPi.Vrms = ct2.Vrms * 100;
                         } else {
-                                emonPi.power2 = ct2.calcIrms(no_of_samples)*Vrms;
+                                emonPi.power2 = ct2.calcIrms(no_of_samples) * config.Vrms;
                         }
                 }
 
                 emonPi.power1_plus_2 = emonPi.power1 + emonPi.power2;                         //Calculate power 1 plus power 2 variable for US and solar PV installs
 
                 if ((ACAC == 0) && (CT_count > 0))
-                        emonPi.Vrms=Vrms*100;                 // If no AC wave detected set VRMS constant
+                        emonPi.Vrms = config.Vrms*100;  // If no AC wave detected set VRMS constant
 
-                if ((ACAC == 1) && (CT_count == 0)) {                                          // If only AC-AC is connected then return just VRMS calculation
-                        ct1.calcVI(no_of_half_wavelengths,timeout);
-                        emonPi.Vrms=ct1.Vrms*100;
+                if ((ACAC == 1) && (CT_count == 0)) {  // If only AC-AC is connected then return just VRMS calculation
+                        ct1.calcVI(no_of_half_wavelengths, timeout);
+                        emonPi.Vrms = ct1.Vrms * 100;
                 }
 
                 if (numSensors) {

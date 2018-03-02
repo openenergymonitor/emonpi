@@ -3,12 +3,12 @@ void serial_print_startup()
 {
         if (ACAC) {
                 Serial.println(F("AC Wave Detected - Real Power calc enabled"));
-                Serial.print(F("Vcal: ")); Serial.println(Vcal);
-                Serial.print(F("Vrms: ")); Serial.print(Vrms); Serial.println(F("V"));
+                Serial.print(F("Vcal: ")); Serial.println(config.Vcal);
+                Serial.print(F("Vrms: ")); Serial.print(config.Vrms); Serial.println(F("V"));
         } else {
                 Serial.println(F("AC NOT detected - Apparent Power calc enabled"));
                 Serial.print(F("Assuming VRMS: "));
-                Serial.print(Vrms); Serial.println(F("V"));
+                Serial.print(config.Vrms); Serial.println(F("V"));
         }
 
         Serial.print("Detected "); Serial.print(CT_count); Serial.println(" CT's");
@@ -37,14 +37,14 @@ void serial_print_config(struct Config *c)
 {
         Serial.print(F("Configuration\n Vcal="));
         Serial.println(c->Vcal);
+        Serial.print(F(" Vrms="));
+        Serial.println(c->Vrms);
         Serial.print(F(" Ical1="));
         Serial.println(c->Ical1);
         Serial.print(F(" Ical2="));
         Serial.println(c->Ical2);
         Serial.print(F(" Phase="));
         Serial.println(c->phase_shift);
-        Serial.print(F(" country="));
-        Serial.println(c->country);
 }
 void serial_print_emonpi()
 {
@@ -65,17 +65,20 @@ void serial_print_emonpi()
 }
 
 //Send emonPi data to Pi serial /dev/ttyAMA0 using struct JeeLabs RF12 packet structure
+void serial_print_bytes(byte len, void* data)
+{
+        byte *bytes = (byte *)data;
+        for (byte i = 0; i < len; i++) {
+                Serial.print(F(" "));
+                Serial.print(bytes[i]);
+        }
+}
+
 void send_emonpi_serial()
 {
-        byte binarray[sizeof(emonPi)];
-        memcpy(binarray, &emonPi, sizeof(emonPi));
-
         Serial.print(F("OK "));
         Serial.print(nodeID);
-        for (byte i = 0; i < sizeof(binarray); i++) {
-                Serial.print(F(" "));
-                Serial.print(binarray[i]);
-        }
+        serial_print_bytes(sizeof(emonPi), &emonPi);
         Serial.print(F(" (-0)"));
         Serial.println();
 

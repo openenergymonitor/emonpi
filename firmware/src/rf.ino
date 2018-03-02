@@ -72,7 +72,7 @@ void serial_print_rf_config()
 
 void send_RF()
 {
-        if (cmd && rf12_canSend() ) {                                            //if command 'cmd' is waiting to be sent then let's send it
+        if (cmd && rf12_canSend() ) {  //if command 'cmd' is waiting to be sent then let's send it
                 digitalWrite(LEDpin, HIGH); delay(200); digitalWrite(LEDpin, LOW);
                 showString(PSTR(" -> "));
                 Serial.print((word) sendLen);
@@ -101,8 +101,22 @@ static void handleInput (char c) {
 
         if (c > ' ') {
                 switch (c) {
-                case 'd':
+                case 'd':  // toggle debug mode
                         debug = !debug;
+                        break;
+
+                case 'c':  // configuration.  n1,n2,...,n18,c
+                           // if data precedes 'c' then update config.
+                           // the print current config both raw, and human
+                        if (top) {
+                                int len = min(top, sizeof(config));
+                                memcpy(&config, stack, len);
+                                config_eeprom_update();
+                        }
+                        Serial.println();
+                        serial_print_bytes(sizeof(config), &config);
+                        Serial.println();
+                        serial_print_config(&config);
                         break;
 
                 case 'i': //set node ID
@@ -132,7 +146,7 @@ static void handleInput (char c) {
 
                 case 'p': // set Vcc Cal
                         if (value) {
-                                setCountry(value - 1);
+                                // setCountry(value - 1);
                         }
                         break;
 

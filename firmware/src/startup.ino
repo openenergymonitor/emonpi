@@ -52,7 +52,10 @@ void CT_Detect()
         delay(500);     //allow things to settle
 
 // Calculate if there is an ACAC adapter on analog input 0
-        vrms = calc_rms(0,1780) * 0.87; //ADC 0   double vrms = calc_rms(0,1780) * (Vcal * (3.3/1024) );
-        if (vrms>90) ACAC = 1; else ACAC=0;
+        double vrms = calc_rms(0,1780) * 0.87; //ADC 0   double vrms = calc_rms(0,1780) * (Vcal * (3.3/1024) );
+        if (vrms > 90)
+                ACAC = 1;
+        else
+                ACAC=0;
 //Serial.print(vrms);
 }
