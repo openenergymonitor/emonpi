@@ -15,7 +15,7 @@ void serial_print_startup()
 
         Serial.print(F("Detected ")); Serial.print(numSensors); Serial.println(F(" DS18B20"));
 
-        if (RF_STATUS == 1) {
+        if (config.rf_enable) {
                 #if (RF69_COMPAT)
                 Serial.println(F("RFM69CW Init: "));
                 #else
@@ -45,6 +45,8 @@ void serial_print_config(struct Config *c)
         Serial.println(c->Ical2);
         Serial.print(F(" Phase="));
         Serial.println(c->phase_shift);
+        Serial.print(F(" rf_enable="));
+        Serial.println(c->rf_enable);
 }
 void serial_print_emonpi()
 {

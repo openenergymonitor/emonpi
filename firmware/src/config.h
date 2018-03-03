@@ -12,6 +12,7 @@ const byte emonpi_pulse_pin = 2;    // default pulse count input
 
 struct Config {
         byte version;
+        byte rf_enable;
         float Vcal;
         float Vrms;
         float Ical1;
@@ -25,7 +26,8 @@ struct Config {
 */
 /* Change version to force rewrite of default to eeprom */
 #define DEFAULT_CONFIG \
-        .version = 1, \
+        .version = 2, \
+        .rf_enable = 0, \
         .Vcal = 225.5, \
         .Vrms = 240, \
         .Ical1 = 60.6, \

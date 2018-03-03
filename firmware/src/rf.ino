@@ -122,7 +122,7 @@ static void handleInput (char c) {
                 case 'i': //set node ID
                         if (value) {
                                 nodeID = value;
-                                if (RF_STATUS == 1)
+                                if (config.rf_enable)
                                         rf12_initialize(nodeID, RF_freq, networkGroup);
                                 break;
                         }
@@ -131,7 +131,7 @@ static void handleInput (char c) {
                         value = bandToFreq(value);
                         if (value) {
                                 RF_freq = value;
-                                if (RF_STATUS == 1)
+                                if (config.rf_enable)
                                         rf12_initialize(nodeID, RF_freq, networkGroup);
                         }
                         break;
@@ -139,7 +139,7 @@ static void handleInput (char c) {
                 case 'g': // set network group
                         if (value>=0) {
                                 networkGroup = value;
-                                if (RF_STATUS == 1)
+                                if (config.rf_enable)
                                         rf12_initialize(nodeID, RF_freq, networkGroup);
                         }
                         break;
@@ -172,7 +172,7 @@ static void handleInput (char c) {
                 } //end case
                   //Print Current RF config
 
-                if (RF_STATUS == 1)
+                if (config.rf_enable)
                         serial_print_rf_config();
                 Serial.println(F(" "));
 

@@ -86,7 +86,6 @@ const int ACAC_DETECTION_LEVEL=   3000;
 
 const byte TEMPERATURE_PRECISION = 12;  // 9 (93.8ms),10 (187.5ms) ,11 (375ms) or 12 (750ms) bits equal to resplution of 0.5C, 0.25C, 0.125C and 0.0625C
 const byte MaxOnewire=             6;  // maximum number of DS18B20 one wire sensors
-boolean RF_STATUS=                 0;  // Turn RF on and off
 
 //-------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -176,9 +175,9 @@ void setup()
         emonPi_startup(); // emonPi startup procedure, check for AC waveform and print out debug
         serial_print_config(&config);
 
-        if (RF_STATUS==1)
+        if (config.rf_enable)
                 RF_Setup();
-        numSensors = check_for_DS18B20();// check for presence of DS18B20 and return number of sensors
+        numSensors = check_for_DS18B20();
 
         emonPi_LCD_Startup();
 
@@ -190,7 +189,7 @@ void setup()
         attachInterrupt(digitalPinToInterrupt(emonpi_pulse_pin), onPulse, FALLING); // Attach pulse counting interrupt on RJ45 (Dig 3 / INT 1)
         emonPi.pulseCount = 0;                                            // Reset Pulse Count
 
-        ct1.current(1, config.Ical1); // CT ADC channel 1, calibration.  calibration (2000 turns / 22 Ohm burden resistor = 90.909)
+        ct1.current(1, config.Ical1); // CT ADC channel 1, calibration.
         ct2.current(2, config.Ical2); // CT ADC channel 2, calibration.
 
         if (ACAC) {                                          //If AC wavefrom has been detected
@@ -221,7 +220,7 @@ void loop()
                 double_LED_flash();
         }
 
-        if (RF_STATUS == 1) {    // IF RF module is present and enabled then perform RF tasks
+        if (config.rf_enable) {    // IF RF module is present and enabled then perform RF tasks
                 if (RF_Rx_Handle() == 1) { // Returns true if RF packet is received
                         double_LED_flash();
                 }
