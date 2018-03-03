@@ -1,3 +1,16 @@
+EliotB's Version
+
+https://github.com/eliotb/emonpi
+
+Changes from standard Arduino firmware:
+* Detect lack of LCD and don't try to access if missing.
+* Move many configuration items (e.g. Vcal, Ical) into a config struct,
+allow the config to be saved and read from eeprom, and updated through
+serial port command 'c'
+* Debug mode can be turned on and off by serial command 'd'
+* Coding style changes - tabs, spacing etc
+* Code tweaks to fix various compiler warnings
+
 # Change Log - emonPi Discrete Sampling Firmware
 
 **See continuous-sampling branch for continuous sampling**
