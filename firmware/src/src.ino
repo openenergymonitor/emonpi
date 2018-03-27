@@ -75,7 +75,7 @@ LiquidCrystal_I2C lcd(0,0,0);
 const int firmware_version = 290;                                     //firmware version x 100 e.g 100 = V1.00
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
-boolean debug =                   TRUE;
+bool debug =                   true;
 const unsigned long BAUD_RATE=    38400;
 
 const byte Vrms_EU=               230;                              // Vrms for apparent power readings (when no AC-AC voltage sample is present)
@@ -90,7 +90,7 @@ const float Ical1=                90.9;                             // (2000 tur
 const float Ical2=                90.9;
 float Vcal_EU=                    256.8;                             // (230V x 13) / (9V x 1.2) = 276.9 - Calibration for EU AC-AC adapter 77DE-06-09
 const float Vcal_USA=             130.0;                             // Calibration for US AC-AC adapter 77DA-10-09
-boolean USA=                      FALSE;
+bool USA=                      false;
 const byte min_pulsewidth=        60;                                // minimum width of interrupt pulse
 
 const float phase_shift=          1.7;
@@ -101,7 +101,7 @@ const int ACAC_DETECTION_LEVEL=   3000;
 
 const byte TEMPERATURE_PRECISION=  12;                                 // 9 (93.8ms),10 (187.5ms) ,11 (375ms) or 12 (750ms) bits equal to resplution of 0.5C, 0.25C, 0.125C and 0.0625C
 const byte MaxOnewire=             6;                                  // maximum number of DS18B20 one wire sensors
-boolean RF_STATUS=                 1;                                  // Turn RF on and off
+bool RF_STATUS=                 true;                                  // Turn RF on and off
 //-------------------------------------------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -145,7 +145,7 @@ PayloadTX emonPi;
 
 //Global Variables Energy Monitoring
 double Vcal, vrms;
-boolean ACAC, DS18B20_STATUS;
+bool ACAC, DS18B20_STATUS;
 byte CT_count, Vrms;
 unsigned long last_sample=0;                                     // Record millis time of last discrete sample
 byte flag;                                                       // flag to record shutdown push button press
@@ -159,7 +159,7 @@ static byte stack[RF12_MAXDATA+4], top, sendLen, dest;           // RF variables
 static char cmd;
 static word value;                                               // Used to store serial input
 long unsigned int start_press=0;                                 // Record time emonPi shutdown push switch is pressed
-boolean quiet_mode = 1;
+bool quiet_mode = true;
 
 const char helpText1[] PROGMEM =                                 // Available Serial Commands
 "\n"
@@ -183,7 +183,7 @@ void setup()
 
   delay(100);
 
-  if (USA==TRUE)
+  if (USA)
   {
     Vcal = Vcal_USA;                                                       // Assume USA AC/AC adatper is being used, set calibration accordingly
     Vrms = Vrms_USA;
@@ -231,7 +231,7 @@ void loop()
 {
   now = millis();
 
-  if (USA==TRUE)
+  if (USA)
   {
     Vcal = Vcal_USA;                                                       // Assume USA AC/AC adatper is being used, set calibration accordingly
     Vrms = Vrms_USA;
