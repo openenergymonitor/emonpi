@@ -5,7 +5,7 @@
   If AC-AC adapter is detected assume emonPi is also powered from adapter (jumper shorted) and take Real Power Readings and disable sleep mode to keep load on power supply constant
   If AC-AC addapter is not detected assume powering from battereis / USB 5V AC sample is not present so take Apparent Power Readings and enable sleep mode
 
-  Transmitt values via RFM69CW radio
+  Transmit values via RFM69CW radio
 
    ------------------------------------------
   Part of the openenergymonitor.org project
@@ -81,7 +81,7 @@ const unsigned long BAUD_RATE=    38400;
 const byte Vrms_EU=               230;                              // Vrms for apparent power readings (when no AC-AC voltage sample is present)
 const byte Vrms_USA=              120;                              // USA apparent power VRMS
 const int TIME_BETWEEN_READINGS=  5000;                             // Time between readings (ms)
-const int RF_RESET_PERIOD=        60000;                            // Time (ms) between RF resets (hack to keep RFM60CW alive)
+const unsigned long RF_RESET_PERIOD=        60000;                            // Time (ms) between RF resets (hack to keep RFM60CW alive)
 
 
 //http://openenergymonitor.org/emon/buildingblocks/calibration
@@ -196,7 +196,7 @@ void setup()
 
   emonPi_startup();                                                     // emonPi startup proceadure, check for AC waveform and print out debug
   if (RF_STATUS==1) RF_Setup();
-  byte numSensors =  check_for_DS18B20();                               // check for presence of DS18B20 and return number of sensors
+  check_for_DS18B20();                               // check for presence of DS18B20 and return number of sensors
 
   // Detect and startup I2C LCD
   current_lcd_i2c_addr = i2c_lcd_detect(i2c_lcd_address);
