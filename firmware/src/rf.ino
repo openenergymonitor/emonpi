@@ -13,9 +13,9 @@ void RF_Setup(){
  //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 }
 
-boolean RF_Rx_Handle(){
-  
-  if (rf12_recvDone()) {		//if RF Packet is received 
+bool RF_Rx_Handle(){
+
+  if (rf12_recvDone()) {		//if RF Packet is received
     if (rf12_crc == 0) {		//Check packet is good
       Serial.print(F("OK"));		//Print "good packet" line prefix
       print_frame(rf12_len);		//Print recieved data
@@ -23,17 +23,15 @@ boolean RF_Rx_Handle(){
         // Serial.print(F(" -> ack"));
         rf12_sendStart(RF12_ACK_REPLY, 0, 0);
       }
-      return(1);
+      return true;
     } else {
       if (quiet_mode == 0) {            //if the packet is bad
         Serial.print(F(" ?"));    	//Print the "bad packet" line prefix
         print_frame(20);          	//Print only the first 20 bytes of a bad packet
       }
-      return(0);
     }
-	       
   } //end recDone
-
+  return false;
 }
 
 void print_frame (int len) {
@@ -138,9 +136,9 @@ static void handleInput (char c) {
 
     if (RF_STATUS==1) {
       Serial.print(F(" "));
--     Serial.print((char) ('@' + (nodeID & RF12_HDR_MASK)));
--     Serial.print(F(" i"));
-      Serial.print(nodeID & RF12_HDR_MASK);   
+      Serial.print((char) ('@' + (nodeID & RF12_HDR_MASK)));
+      Serial.print(F(" i"));
+      Serial.print(nodeID & RF12_HDR_MASK);
       Serial.print(F(" g"));
       Serial.print(networkGroup);
       Serial.print(F(" @ "));

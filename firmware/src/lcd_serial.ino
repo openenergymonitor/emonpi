@@ -40,7 +40,7 @@ void serial_print_startup(int current_lcd_i2c_addr){
   {
     lcd.print(F("AC Wave Detected"));
     Serial.println(F("AC Wave Detected - Real Power calc enabled"));
-    if (USA==TRUE) Serial.print(F("USA mode > "));
+    if (USA) Serial.print(F("USA mode > "));
     Serial.print(F("Vcal: ")); Serial.println(Vcal);
     Serial.print(F("Vrms: ")); Serial.print(Vrms); Serial.println(F("V"));
     Serial.print(F("Phase Shift: ")); Serial.println(phase_shift);
@@ -49,7 +49,7 @@ void serial_print_startup(int current_lcd_i2c_addr){
   {
    lcd.print(F("AC NOT Detected"));
    Serial.println(F("AC NOT detected - Apparent Power calc enabled"));
-   if (USA==TRUE) Serial.println(F("USA mode"));
+   if (USA) Serial.println(F("USA mode"));
    Serial.print(F("Assuming VRMS: ")); Serial.print(Vrms); Serial.println(F("V"));
  }
 
