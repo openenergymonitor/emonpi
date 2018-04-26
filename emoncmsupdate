@@ -254,6 +254,22 @@ else
   git checkout emonpi
 fi
 
+if [ -d /home/pi/sync ]; then
+  echo "git pull /home/pi/sync"
+  cd /home/pi/sync
+  git checkout master
+  git pull
+  ln -sf /home/pi/sync/sync-module /var/www/emoncms/Modules/sync
+else
+  echo "git clone https://github.com/emoncms/sync"
+  cd /home/pi
+  git clone https://github.com/emoncms/sync
+  cd /home/pi/sync
+  git checkout master
+  ln -sf /home/pi/sync/sync-module /var/www/emoncms/Modules/sync
+fi
+
+
 if [ -d /home/pi/backup ]; then
   echo "git pull /home/pi/backup"
   cd /home/pi/backup
