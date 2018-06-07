@@ -29,5 +29,20 @@ do
             echo "COMPLETE: $script > $logfile"
         fi
     done
-    sleep 1
+
+    for flag in /var/lib/php/sessions/emoncms-flag*; do
+        if [ -f $flag ]; then
+            tmp=`cat $flag`
+            IFS=\> read script logfile <<< "$tmp"
+            echo "STARTING: $script > $logfile"
+            sudo rm $flag
+            $script > $logfile
+            if [ ! -e $logfile ]; then
+                touch $logfile
+            fi
+            echo "COMPLETE: $script > $logfile"
+        fi
+    done
+
+    sleep 0.1
 done
