@@ -17,7 +17,7 @@ echo "starting service-runner"
 while :
 do
     flag=$(redis-cli lpop service-runner)
-    if [ $flag ]; then
+    if [ "$flag" ]; then
         echo "flag: "$flag
         IFS=\> read script logfile <<< "$flag"
         echo "STARTING: $script > $logfile"
