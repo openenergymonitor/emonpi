@@ -140,4 +140,5 @@ echo
 printf "\n...................\n"
 printf "emonPi update done\n" # this text string is used by service runner to stop the log window polling, DO NOT CHANGE!
 
-
+echo "restarting service-runner\n"
+killall service-runner
