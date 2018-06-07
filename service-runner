@@ -3,8 +3,6 @@
 ## Used to update log viewer window in Emoncms admin
 # Used in conjunction with: service-runner-update.sh and Emoncms admin module 
 
-echo "update via service-runner"
-
 scriptname=$(basename $0)
 pidfile="/tmp/${scriptname}"
 
@@ -14,35 +12,21 @@ flock -n 200 || exit 1
 pid=$$
 echo $pid 1>&200
 
+echo "starting service-runner"
+
 while :
 do
-    for flag in /tmp/emoncms-flag*; do
-        if [ -f $flag ]; then
-            tmp=`cat $flag`
-            IFS=\> read script logfile <<< "$tmp"
-            echo "STARTING: $script > $logfile"
-            sudo rm $flag
-            $script > $logfile
-            if [ ! -e $logfile ]; then
-                touch $logfile
-            fi
-            echo "COMPLETE: $script > $logfile"
+    flag=$(redis-cli lpop service-runner)
+    if [ $flag ]; then
+        echo "flag: "$flag
+        IFS=\> read script logfile <<< "$flag"
+        echo "STARTING: $script > $logfile"
+        $script > $logfile
+        if [ ! -e $logfile ]; then
+            touch $logfile
         fi
-    done
-
-    for flag in /var/lib/php/sessions/emoncms-flag*; do
-        if [ -f $flag ]; then
-            tmp=`cat $flag`
-            IFS=\> read script logfile <<< "$tmp"
-            echo "STARTING: $script > $logfile"
-            sudo rm $flag
-            $script > $logfile
-            if [ ! -e $logfile ]; then
-                touch $logfile
-            fi
-            echo "COMPLETE: $script > $logfile"
-        fi
-    done
+        echo "COMPLETE: $script > $logfile"
+    fi
 
     sleep 0.1
 done
