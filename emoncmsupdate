@@ -3,7 +3,7 @@
 echo
 echo "================================="
 echo "Emoncms update started"
-echo "Emoncms update script V1.1.1"
+echo "Emoncms update script V1.2.0"
 echo
 
 date
@@ -128,7 +128,12 @@ if [ ! -f /etc/sudoers.d/emoncms-setup-sudoers ]; then
     echo "Emoncms setup module sudoers entry installed"
 fi
 
+#########################################################################################
 
+# Setup user group to enable reading pi GPU temperature
+#https://github.com/emoncms/emoncms/pull/869
+
+sudo usermod -G video www-data
 
 
 #########################################################################################
