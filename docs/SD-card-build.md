@@ -321,6 +321,10 @@ Set `persistence false` and add the lines:
 	allow_anonymous false
 	password_file /etc/mosquitto/passwd
 
+Set logging to errors only
+
+	log_type error
+
 Create a password file for MQTT user `emonpi` with:
 
 	sudo mosquitto_passwd -c /etc/mosquitto/passwd emonpi
