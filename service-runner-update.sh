@@ -10,20 +10,9 @@ echo "#############################################################"
 # Clear log update file
 cat /dev/null >  /home/pi/data/emonpiupdate.log
 
-# Make FS RW
-rpi-rw
-
-
-# Stop emonPi LCD servcice
-sudo service emonPiLCD stop
-
-# Display update message on LCD
-sudo /home/pi/emonpi/lcd/./emonPiLCD_update.py
-
-
 echo "Starting emonPi Update >"
 echo "via service-runner-update.sh"
-echo "Service Runner update script V1.0.0"
+echo "Service Runner update script V1.1.0"
 echo "EUID: $EUID"
 argument=$1
 echo "Argument: "$argument
@@ -46,6 +35,12 @@ else
 fi
 echo
 echo "#############################################################"
+
+# Stop emonPi LCD servcice
+sudo service emonPiLCD stop
+
+# Display update message on LCD
+sudo /home/pi/emonpi/lcd/./emonPiLCD_update.py
 
 # make file system read-write
 rpi-rw
