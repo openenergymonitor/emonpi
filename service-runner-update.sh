@@ -36,7 +36,7 @@ image_version=$(ls /boot | grep emonSD)
 echo "emonSD version: $image_version"
 echo
 
-if [ "$image_version" == "emonSD-07Nov16" ] || [ $image_version == "emonSD-03May16" ] || [ $image_version == "emonSD-26Oct17" ]; then
+if [ "$image_version" == "emonSD-07Nov16" ] || [ $image_version == "emonSD-03May16" ] || [ $image_version == "emonSD-26Oct17" ] || [ $image_version == "emonSD-13Jun18" ]; then
   echo "emonSD base image check passed...continue update"
 else
   echo "ERROR: emonSD base image old or undefined...update will not continue"
