@@ -15,13 +15,14 @@ then
     wlan0ip=$(/sbin/ifconfig wlan0 | grep 'inet addr' | cut -d: -f2 | awk '{print $1}')
     echo "IP Address: $wlan0ip"
 else
-    wificonfig=$(cat /home/pi/data/wpa_supplicant.conf)
-    emptywificonfig=$(cat /home/pi/emonpi/wifiAP/wpa_supplicant_check.conf)
-
-    if [ "$wificonfig" == "$emptywificonfig" ]; then
-        echo "Blank WIFI config detected"
-        echo "Going for WIFI AP startup"
-        touch /home/pi/data/wifiAP-enabled
-        wifiAP start
+    if grep -q "network" /etc/wpa_supplicant/wpa_supplicant.conf
+    then
+       echo "WiFi network config found"
+    else
+       echo "WiFi not configured"
+       echo "Going for WIFI AP startup"
+       touch /home/pi/data/wifiAP-enabled
+       wifiAP start
     fi
 fi
+

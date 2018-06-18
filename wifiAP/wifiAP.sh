@@ -20,11 +20,11 @@ fi
 HWREV=`cat /proc/cpuinfo | grep Revision | cut -d ':' -f 2 | sed -e "s/ //g"`
 echo "RasPi HW Revision: $HWREV"
 
-if [ "$HWREV" != "a02082" ]; then
-   echo "Error WifiAP only works on RasPi3 with BCM43143 WiFi chipset"
-   exit 1
-fi
-echo "OK: RasPi 3 detected"
+# if [ "$HWREV" != "a02082" ]; then
+#   echo "Error WifiAP only works on RasPi3/B+ with BCM43143 WiFi chipset"
+#   exit 1
+# fi
+# echo "OK: RasPi 3/B+ detected"
 
 # TO DO - make script auto read type of WiFi driver in use and determine if it will work with this version of hostpad
 #driver= basename $( readlink /sys/class/net/wlan0/device/driver ) | tr -d "\n"
