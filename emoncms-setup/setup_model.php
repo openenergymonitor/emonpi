@@ -20,8 +20,8 @@ class Setup
             $wifi = $row->wifi;
         }
 
-        $wpa_supplicant = file_get_contents("/home/pi/data/wpa_supplicant.conf");
-        if ($wpa_supplicant=="ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\nupdate_config=1\n") {
+        // check to see if 'network' string is in wpa_supplicant, if present indicates that WiFi has been configured
+        if( strpos(file_get_contents("/etc/wpa_supplicant/wpa_supplicant.conf"),"network") == false) {
             if ($wifi=="client") $wifi = "unconfigured";
         } else {
             if ($wifi=="unconfigured") $wifi = "client";
