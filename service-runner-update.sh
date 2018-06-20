@@ -47,7 +47,7 @@ rpi-rw
 
 echo "git pull /home/pi/emonpi"
 cd /home/pi/emonpi
-rm -rf hardware/emonpi/emonpi2c/
+sudo rm -rf hardware/emonpi/emonpi2c/
 git branch
 git status
 git pull
