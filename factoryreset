@@ -33,7 +33,7 @@ else
 fi
 
 ans=n
-read -p "Shutdown when complete (y/n)? Else rebooting in 5s " -t 5 ans
+read -p "Shutdown when complete (y/n)? Else rebooting in 10s " -t 10 ans
 
 
 
