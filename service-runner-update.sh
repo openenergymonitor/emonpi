@@ -12,7 +12,7 @@ cat /dev/null >  /home/pi/data/emonpiupdate.log
 
 echo "Starting emonPi Update >"
 echo "via service-runner-update.sh"
-echo "Service Runner update script V1.1.0"
+echo "Service Runner update script V1.1.1"
 echo "EUID: $EUID"
 argument=$1
 echo "Argument: "$argument
@@ -47,7 +47,7 @@ rpi-rw
 
 echo "git pull /home/pi/emonpi"
 cd /home/pi/emonpi
-rm -rf hardware/emonpi/emonpi2c/
+sudo rm -rf hardware/emonpi/emonpi2c/
 git branch
 git status
 git pull
