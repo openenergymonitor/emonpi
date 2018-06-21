@@ -2,8 +2,8 @@
 #
 # rc.local
 
-
-/usr/bin/printf " My IP address is\033[0;31m `/sbin/ifconfig | grep "inet addr" | grep -v "127.0.0.1" | awk '{ print $2 }' | awk -F: '{ print $2 }'` \033[0m\n"
+echo" My IP address is":
+hostname -I
 
 # Will only run if /var/log is mounted in tmpfs
 if ( mount | grep "on /var/log "| grep -q "^tmpfs " )
