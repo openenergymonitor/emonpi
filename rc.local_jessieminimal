@@ -5,7 +5,6 @@
 echo" My IP address is":
 hostname -I
 
-sudo ifdown wlan0
 sudo rm /var/run/wpa_supplicant/wlan0
 sudo ifup wlan0
 
