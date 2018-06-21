@@ -5,7 +5,7 @@
 echo" My IP address is":
 hostname -I
 
-sudo rm /var/run/wpa_supplicant/wlan0
+rm /var/run/wpa_supplicant/wlan0
 sleep 1
 ifdown wlan0
 sleep 1
