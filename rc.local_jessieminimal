@@ -6,6 +6,10 @@ echo" My IP address is":
 hostname -I
 
 sudo rm /var/run/wpa_supplicant/wlan0
+sleep 1
+ifdown wlan0
+sleep 1
+ifup wlan0
 
 # Will only run if /var/log is mounted in tmpfs
 if ( mount | grep "on /var/log "| grep -q "^tmpfs " )

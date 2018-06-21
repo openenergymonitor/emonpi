@@ -237,13 +237,17 @@ function wifi_scan()
 {
     $.ajax({url: path+"wifi/scan", dataType: 'json', async: true,
         success: function(data) {
-            for (z in data) {
-                if (networks[z]==undefined) networks[z] = {};
-                for (key in data[z]) {
-                    networks[z][key] = data[z][key];
+            if (data.success!=undefined && data.message!=undefined) {
+                alert(data.message);
+            } else {
+                for (z in data) {
+                    if (networks[z]==undefined) networks[z] = {};
+                    for (key in data[z]) {
+                        networks[z][key] = data[z][key];
+                    }
                 }
+                draw_network_list();
             }
-            draw_network_list();
         }
     });
 }
