@@ -40,11 +40,18 @@ read -p "Shutdown when complete (y/n)? Else rebooting in 10s " -t 10 ans
 
 echo "Ensure tracking latest Emoncms & emonpi stable branch"
 cd /home/pi/emonpi
+git status
 git checkout master
+git reset --hard HEAD
 git pull
+git status
+
 cd /var/www/emoncms
+git status
 git checkout stable
+git reset --hard HEAD
 git pull
+git status
 
 echo "get latest updates"
 echo
