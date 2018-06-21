@@ -27,9 +27,9 @@
 #
 # Run Every 5 mins - Seems like ever min is over kill unless
 # this is a very common problem.  If once a min change */5 to *
-# once every 2 mins */5 to */2 ... 
+# once every 2 mins */5 to */2 ...
 #
-# */5 * * * * /usr/local/bin/wifi_Check 
+# */5 * * * * /usr/local/bin/wifi_Check
 #
 ##################################################################
 # Settings
@@ -42,7 +42,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 echo
 echo "Starting WiFi check for $wlan"
 date
-echo 
+echo
 
 # Check to see if there is a lock file
 if [ -e $lockfile ]; then
@@ -62,29 +62,41 @@ fi
 #echo "Setting Lockfile"
 echo $$ > $lockfile
 
-# We can perform check
-echo "Performing Network check for $wlan"
-if ifconfig $wlan | grep -q "inet addr:" ; then
-    echo "Network is Okay"
+
+# only run wifi-check script if wifi network has been configured
+
+if grep -q "network" /etc/wpa_supplicant/wpa_supplicant.conf
+then
+  # We can perform check
+  echo "Performing network check for $wlan"
+
+  wlanstate="$(cat /sys/class/net/wlan0/operstate)"
+  if [ "$wlanstate" = "up" ]; then
+      echo "wlan0 network is up"
+  else
+
+      # Only allow re-connection if the eth0 is not physically connected
+      # isWireConnected=`cat /sys/class/net/eth0/operstate`
+      # if [ "$isWireConnected" == "down" ]; then
+          echo "wlan0 down! Attempting reconnection."
+          ifdown $wlan
+          sleep 5
+          ifup --force $wlan
+      # else
+      #   echo "Network connection down, but not reconnecting because eth0 is connected and configuring device."
+      # fi
+
+      echo
+      echo "wlan0 Current Setting:"
+      cat /sys/class/net/wlan0/operstate
+      hostname -I
+  fi
 else
-    # Only allow re-connection if the eth0 is not physically connected
-    # isWireConnected=`cat /sys/class/net/eth0/operstate`
-    # if [ "$isWireConnected" == "down" ]; then
-    #   echo "Network connection down! Attempting reconnection."
-        ifdown $wlan
-        sleep 5
-        ifup --force $wlan
-        ifconfig $wlan | grep "inet addr"
-    # else
-    #   echo "Network connection down, but not reconnecting because eth0 is connected and configuring device."
-    # fi
+  echo "WiFi not configured"
 fi
 
-echo 
-echo "Current Setting:"
-ifconfig $wlan | grep "inet addr:"
 echo
- 
+
 # Check is complete, Remove Lock file and exit
 #echo "process is complete, removing lockfile"
 rm $lockfile
