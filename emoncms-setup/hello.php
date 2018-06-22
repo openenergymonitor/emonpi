@@ -238,7 +238,8 @@ function wifi_scan()
     $.ajax({url: path+"wifi/scan", dataType: 'json', async: true,
         success: function(data) {
             if (data.success!=undefined && data.message!=undefined) {
-                alert(data.message);
+                console.log(data.message);
+                setTimeout(wifi_scan,5000);
             } else {
                 for (z in data) {
                     if (networks[z]==undefined) networks[z] = {};
