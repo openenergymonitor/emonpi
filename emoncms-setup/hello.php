@@ -1,5 +1,28 @@
-<?php global $path; ?>
+<?php global $path, $translation; ?>
+<?php 
 
+// Load country list
+$countries = array();
+if (file_exists("/usr/share/zoneinfo/iso3166.tab")) {
+    foreach (array_filter(file("/usr/share/zoneinfo/iso3166.tab")) as $line ) {
+        if($line[0]!="#"){
+            list($code,$name) = explode("\t", $line);
+            $countries[$code] = $name;
+        }
+    }
+    asort($countries);
+}
+
+function t($s) {
+    global $translation,$lang;
+    
+    if (isset($translation->$lang) && isset($translation->$lang->$s)) {
+        echo $translation->$lang->$s;
+    } else {
+        echo $s;
+    }
+}
+?>
 <style>
 
 .welcome { 
@@ -89,6 +112,22 @@ p {
 
 </style>
 <br><br>
+<!--
+<div class="modal-backdrop hide"></div>
+<div id="modal" class="modal hide" style="margin-top:10em">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3><?php t('Please choose your country')?></h3>
+    </div>
+    <div class="modal-body">
+        <select class="input-xlarge" id="country">
+        <?php foreach($countries as $code=>$name) echo "<option value='$code'>$name</option>"; ?>
+        </select>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn btn-primary" id="saveCountry"><?php t('Save Selection')?></a>
+    </div>
+</div>-->
 
 <div id="page1">
   <div class="welcome">Welcome to your</div>
@@ -104,7 +143,7 @@ p {
   </div>
 
   <div id="setup-step2" style="display:none">
-    <p><b>WIFI Configuration</b></p> 
+    <p><b>WIFI Configuration</b></p>
     <p>Select WIFI network to connect to:</p>
     <div class="wifinetworks-bound">
       <div id="networks-scanning">Scanning for networks<br><br><img src="<?php echo $path; ?>Modules/wifi/icons/ajax-loader.gif" loop=infinite></div>
@@ -117,6 +156,14 @@ p {
         <div class="auth-showpass"><input id="showpass" type="checkbox" style="margin-top:-3px"> Show password</div>
         <button id="auth-cancel" class="btn">Cancel</button> <button id="wifi-connect" class="btn">Connect</button>
       </div>
+    </div><br>
+    
+    <div class="input-prepend input-append">
+    <span class="add-on">Select WIFI country:</span>
+    <select id="country">
+        <?php foreach($countries as $code=>$name) echo "<option value='$code'>$name</option>"; ?>
+    </select>
+    <button id="saveCountry" class="btn">Save</button>
     </div>
   </div>
 </div>
@@ -134,7 +181,12 @@ p {
 
 // Authentication required by network
 var path = "<?php echo $path; ?>";
-var networks = [];
+
+var config = wifi_getconfig();
+var networks = config.networks;
+var country = config.country;
+
+$("#country").val(country);
 
 var ethernet = false;
 var wlan0 = false;
@@ -230,14 +282,25 @@ $("#wifi-connect").click(function(){
 
     $.ajax({type: 'POST', url: path+"setup/setwifi?mode=client", dataType: 'text', async: true });
     
-    $.ajax({type: 'POST', url: path+"wifi/setconfig", data: "networks="+JSON.stringify(networks_to_save), dataType: 'text', async: true });
+    $.ajax({type: 'POST', url: path+"wifi/setconfig", data: "networks="+JSON.stringify(networks_to_save)+"&country="+country, dataType: 'text', async: true });
+});
+
+$('#country').change(function(e){
+    $('#saveCountry').show();
+});
+    
+$('#saveCountry').click(function(e){
+    $(this).hide();
+
+    e.preventDefault();
+    saveCountry()
 });
 
 function wifi_scan()
 {
     $.ajax({url: path+"wifi/scan", dataType: 'json', async: true,
         success: function(data) {
-            if (data.success!=undefined && data.message!=undefined) {
+            if ((data.success!=undefined && data.message!=undefined) || data.length==0) {
                 console.log(data.message);
                 setTimeout(wifi_scan,5000);
             } else {
@@ -253,5 +316,25 @@ function wifi_scan()
     });
 }
 
+function wifi_getconfig()
+{
+    var config = {};
+    $.ajax({url: "wifi/getconfig.json", dataType: 'json', async: false,
+        success: function(data) { config = data; }
+    });
+    if (config.length==0) config = {};
+    return config;
+}
+
+/**
+* write country code to wpa_supplicant/wpa_supplicant
+*
+* @param [type] $even
+*/
+function saveCountry(){
+    // /etc/wpa_supplicant/wpa_supplicant.conf
+    country = $('#country').val();
+    $.ajax({type: 'POST', url: path+"wifi/setconfig", data: "networks="+JSON.stringify(networks)+"&country="+country, dataType: 'text', async: true });
+}
 </script>
 
