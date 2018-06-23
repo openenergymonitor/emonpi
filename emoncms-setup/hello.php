@@ -154,16 +154,13 @@ p {
         Password:<br>
         <input id="wifi-password" type="password" style="height:auto">
         <div class="auth-showpass"><input id="showpass" type="checkbox" style="margin-top:-3px"> Show password</div>
+        
+        <div class="auth-message">WIFI country:<br>
+        <select id="country"><?php foreach($countries as $code=>$name) echo "<option value='$code'>$name</option>"; ?></select>
+        </div>
+        
         <button id="auth-cancel" class="btn">Cancel</button> <button id="wifi-connect" class="btn">Connect</button>
       </div>
-    </div><br>
-    
-    <div class="input-prepend input-append">
-    <span class="add-on">Select WIFI country:</span>
-    <select id="country">
-        <?php foreach($countries as $code=>$name) echo "<option value='$code'>$name</option>"; ?>
-    </select>
-    <button id="saveCountry" class="btn">Save</button>
     </div>
   </div>
 </div>
@@ -274,6 +271,8 @@ $("#wifi-connect").click(function(){
     $("#page1").hide();
     $("#page2").show();
     
+    country = $('#country').val();
+    
     var ssid = $("#WIFI_SSID").html();
     var networks_to_save = {};
     networks[ssid]["PSK"] = $("#wifi-password").val();
@@ -283,17 +282,6 @@ $("#wifi-connect").click(function(){
     $.ajax({type: 'POST', url: path+"setup/setwifi?mode=client", dataType: 'text', async: true });
     
     $.ajax({type: 'POST', url: path+"wifi/setconfig", data: "networks="+JSON.stringify(networks_to_save)+"&country="+country, dataType: 'text', async: true });
-});
-
-$('#country').change(function(e){
-    $('#saveCountry').show();
-});
-    
-$('#saveCountry').click(function(e){
-    $(this).hide();
-
-    e.preventDefault();
-    saveCountry()
 });
 
 function wifi_scan()
@@ -324,17 +312,6 @@ function wifi_getconfig()
     });
     if (config.length==0) config = {};
     return config;
-}
-
-/**
-* write country code to wpa_supplicant/wpa_supplicant
-*
-* @param [type] $even
-*/
-function saveCountry(){
-    // /etc/wpa_supplicant/wpa_supplicant.conf
-    country = $('#country').val();
-    $.ajax({type: 'POST', url: path+"wifi/setconfig", data: "networks="+JSON.stringify(networks)+"&country="+country, dataType: 'text', async: true });
 }
 </script>
 
