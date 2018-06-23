@@ -27,6 +27,7 @@ then
 
   # Restart services,they should run happy now log dir's are created
   sleep 11
+  service mysql restart
   service apache2 restart
   service redis-server restart
   service mosquitto restart
