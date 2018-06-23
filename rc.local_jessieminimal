@@ -5,6 +5,7 @@
 echo" My IP address is":
 hostname -I
 
+# WLAN fix on RasPi 3B+ Stretch
 rm /var/run/wpa_supplicant/wlan0
 sleep 1
 ifdown wlan0
@@ -25,29 +26,29 @@ then
   chown -R mosquitto:mosquitto /var/log/mosquitto
   chown -R dataplicity:dataplicity /var/log/supervisor;
 
-  # Restart services,they should run happy now log dir's are created
-  sleep 11
+  # Restart random seed process now ~/data RW partition has been mounted 
+  sudo systemctl restart systemd-random-seed.service
+
+  # Run emonPi Update of first factory boot as Pi user (run condition > web connection exisits && ~/data/emonpiu$
+  su pi -c '/home/pi/emonpi/./firstbootupdate'
+
+  # Start / Restart services,they should run happy now log dir's are created
+  sleep 3
   service mysql restart
-  service apache2 restart
   service redis-server restart
   service mosquitto restart
+  service emonhub restart
+  service emonPiLCD restart
+  service apache2 restart
   service supervisor restart
+  service feedwriter restart
+  service mqtt_input restart
+  service lwrfd restart
+
 fi
-
-# Run emonPi Update of first factory boot as Pi user (run condition > web connection exisits && ~/data/emonpiupdate.log does not exist)
-su pi -c '/home/pi/emonpi/./firstbootupdate'
-
-# wait for mosquitto to restart then restart services than depend on MQTT
-sleep 5
-service emonPiLCD restart
-sleep 5
-service mqtt_input restart
-service lwrfd restart
 
 ## Start Wifi AP (uncomment if required) see emonpi/wifiAP/readme.md
 /home/pi/emonpi/wifiAP/startAP.sh
 
-# Restart random seed process now ~/data RW partition has been mounted 
-sudo systemctl restart systemd-random-seed.service
 
 exit 0
