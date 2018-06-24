@@ -38,9 +38,8 @@ lockfile='/tmp/wifi-check.pid'
 ##################################################################
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 echo
-echo "Starting WiFi check for $wlan"
+echo "Starting WiFi check for wlan0"
 date
-echo
 
 # Check to see if there is a lock file
 if [ -e $lockfile ]; then
@@ -66,10 +65,11 @@ echo $$ > $lockfile
 if grep -q "network" /etc/wpa_supplicant/wpa_supplicant.conf
 then
   # We can perform check
-  echo "Performing network check for $wlan"
+  echo "Performing network check for wlan0"
 
-  wlanstate="$(cat /sys/class/net/wlan0/operstate)"
-  if [ "$wlanstate" = "up" ]; then
+  wlanstate="$(ifconfig wlan0| sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p')"
+  echo $wlanstate
+  if [ ! -z "$wlanstate" ]; then
       echo "wlan0 network is up"
   else
 
@@ -85,12 +85,11 @@ then
       # else
       #   echo "Network connection down, but not reconnecting because eth0 is connected and configuring device."
       # fi
-
+      sleep 10
       echo
-      echo "wlan0 Current Setting:"
-      cat /sys/class/net/wlan0/operstate
       echo "IP addresses"
       hostname -I
+      date
   fi
 else
   echo "WiFi not configured"
