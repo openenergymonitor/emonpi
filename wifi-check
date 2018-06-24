@@ -35,8 +35,6 @@
 # Settings
 # Where and what you want to call the Lockfile
 lockfile='/tmp/wifi-check.pid'
-# Which Interface do you want to check/fix
-wlan='wlan0'
 ##################################################################
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 echo
@@ -79,11 +77,11 @@ then
       # isWireConnected=`cat /sys/class/net/eth0/operstate`
       # if [ "$isWireConnected" == "down" ]; then
           echo "wlan0 down! Attempting reconnection."
-          echo ifdown $wlan
-          ifdown $wlan
+          echo "fconfig wlan0 down"
+          ifconfig wlan0 down
           sleep 5
-          echo ifup $wlan
-          ifup --force $wlan
+          echo "ifconfig wlan0 up"
+          ifconfig wlan0 up
       # else
       #   echo "Network connection down, but not reconnecting because eth0 is connected and configuring device."
       # fi
