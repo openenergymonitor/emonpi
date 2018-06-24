@@ -79,8 +79,10 @@ then
           echo "wlan0 down! Attempting reconnection."
           echo "fconfig wlan0 down"
           ifconfig wlan0 down
+          ifdown wlan0
           sleep 5
           echo "ifconfig wlan0 up"
+          ifup wlan0
           ifconfig wlan0 up
       # else
       #   echo "Network connection down, but not reconnecting because eth0 is connected and configuring device."
