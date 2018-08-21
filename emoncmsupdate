@@ -274,6 +274,19 @@ else
   ln -sf /home/pi/sync/sync-module /var/www/emoncms/Modules/sync
 fi
 
+if [ -d /var/www/emoncms/Modules/device ]; then
+  echo "git pull /var/www/emoncms/Modules/device"
+  cd /var/www/emoncms/Modules/device
+  git checkout master
+  git pull
+else
+  echo "git clone https://github.com/emoncms/device"
+  cd /var/www/emoncms/Modules
+  git clone https://github.com/emoncms/device
+  cd /var/www/emoncms/Modules/device
+  git checkout master
+fi
+
 
 if [ -d /home/pi/backup ]; then
   echo "git pull /home/pi/backup"
