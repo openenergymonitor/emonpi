@@ -55,3 +55,20 @@ pi@emonpi:~ $  sudo i2cdetect -y 1
 ```
 
 Use port 0 for very olde 256Mb RAM pi (rev1) - not recomended to use this pi vesion
+
+# Install emonPiLCD python script
+
+```
+sudo apt-get update
+sudo apt-get install python-smbus i2c-tools python-rpi.gpio python-pip redis-server -y
+sudo pip install redis paho-mqtt xmltodict requests
+```
+
+## Run as service 
+
+sudo ln -s /home/pi/emonpi/lcd/ /usr/share/emonPiLCD
+sudo ln -s /home/pi/emonpi/lcd/emonPiLCD /etc/init.d/emonPiLCD
+
+# Run at startup
+
+sudo update-rc.d emonPiLCD defaults
