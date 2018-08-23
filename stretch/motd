@@ -1,0 +1,25 @@
+[1;34m
+╔══════════════════════════════════════════════════════════════════════╗
+║                                                   ooooooooo.    o8o  ║
+║                                                   `888   `Y88.  `"'  ║
+║  .ooooo.  ooo. .oo.  .oo.    .ooooo.  ooo. .oo.    888   .d88' oooo  ║
+║ d88' `88b `888P"Y88bP"Y88b  d88' `88b `888P"Y88b   888ooo88P'  `888  ║
+║ 888ooo888  888   888   888  888   888  888   888   888          888  ║
+║ 888    .o  888   888   888  888   888  888   888   888          888  ║
+║ `Y8bod8P' o888o o888o o888o `Y8bod8P' o888o o888o o888o        o888o ║
+╚══════════════════════════════════════════════════════════════════════╝
+https://OpenEnergyMonitor.org
+https://guide.openenergymonitor.org
+[1;31m
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+[1;32m
+Unlike olrder emonSD card images the root FS is no longer in read-only mode. 
+To preserve SD-card lifespan avoid installing any high write applications. 
+Log files in /var/log are  mounted to tempfs in RAM
+Emoncms data is logged to ~/data which is mounted to a low-write ext2 file-system
+[0m

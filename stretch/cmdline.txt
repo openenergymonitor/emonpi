@@ -1,0 +1,1 @@
+dwc_otg.lpm_enable=0 console=tty1 elevator=noop root=/dev/mmcblk0p2 rootfstype=ext4 fsck.repair=yes rootwait fastboot noswap

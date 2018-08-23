@@ -15,26 +15,6 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
-# Detect if we're runniing on a RasPi 3 that has got integrated Wifi. If not exit. WiFi AP will actually work on older RasPi with BCM43143 Wifi USB dongle, however this is difficult to detect reliably, see TODO below. Therefore for the moment we simply RasPi3 and abourting for older RasPi:
-
-HWREV=`cat /proc/cpuinfo | grep Revision | cut -d ':' -f 2 | sed -e "s/ //g"`
-echo "RasPi HW Revision: $HWREV"
-
-# if [ "$HWREV" != "a02082" ]; then
-#   echo "Error WifiAP only works on RasPi3/B+ with BCM43143 WiFi chipset"
-#   exit 1
-# fi
-# echo "OK: RasPi 3/B+ detected"
-
-# TO DO - make script auto read type of WiFi driver in use and determine if it will work with this version of hostpad
-#driver= basename $( readlink /sys/class/net/wlan0/device/driver ) | tr -d "\n"
-#echo "$driver"
-#driver="brcmfmac_sdio"
-#if [ "${driver}" != "brcmfmac_sdio " ]; then
-#    echo "Exiting Wifi AP requires rtl8192cu / brcmfmac_sdio driver (BCM43143) e.g. RasPi3 / offical RasPi dongle"
-#    echo "Edimax can be used with different version of hostpad https://github.com/openenergymonitor/emonpi/blob/master/docs/wifiAP.md"
-#    exit 1
-#fi
 
 # Put emonPi file system into RW mode
 rpi-rw
@@ -67,12 +47,21 @@ if [ "$1" = "start" ]; then
     	# sleep 5
 	# Start DHCP server to offer AP clients DHCP
 	echo "Start isc-dhcp-server"
-	if [ -f /home/pi/data/dhcpd.leases ]; then
-  		echo "Removing wifiAP dhcpd.leases"
-   		rm /home/pi/data/dhcpd.leases
-		touch /home/pi/data/dhcpd.leases
+
+         if [ -f /home/pi/data/dhcpd.leases ]; then
+                echo "Removing wifiAP /home/pi/data/dhcpd.leases"
+                rm /home/pi/data/dhcpd.leases
+                touch /home/pi/data/dhcpd.leases
+        else
+                touch /home/pi/data/dhcpd.leases
+        fi
+
+	if [ -f /var/lib/dhcp/dhcpd.leases ]; then
+  		echo "Removing wifiAP /var/lib/dhcp/dhcpd.leases"
+   		rm /var/lib/dhcp/dhcpd.leases
+		touch /var/lib/dhcp/dhcpd.leases
 	else
-		touch /home/pi/data/dhcpd.leases
+		touch /var/lib/dhcp/dhcpd.leases
 	fi
 	sudo service isc-dhcp-server start
 	# sleep 5
