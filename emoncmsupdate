@@ -55,17 +55,17 @@ fi
 #########################################################################################
 
 # Add backup module service-runner
-echo "Checking cron tab for service runner entry..."
-crontab -l > mycron
-# Check crontab entry does not already exist, if not add new entry
-if ! grep -Fxq "* * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1" mycron ; then
-        echo "Add service runner cron entry"
-        echo "* * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1" >> mycron
-        crontab mycron
-else
-  echo "service runner crontab entry already installed"
-fi
-rm mycron
+#echo "Checking cron tab for service runner entry..."
+#crontab -l > mycron
+## Check crontab entry does not already exist, if not add new entry
+#if ! grep -Fxq "* * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1" mycron ; then
+#        echo "Add service runner cron entry"
+#        echo "* * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1" >> mycron
+#        crontab mycron
+#else
+#  echo "service runner crontab entry already installed"
+#fi
+#rm mycron
 
 # Check if double service runner (with space) entry exits, if so remove it
 crontab -l > mycron
