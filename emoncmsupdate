@@ -33,7 +33,7 @@ echo "EUID: $uid"
 
 if [ "$uid" = "0" ] ; then
     # update is being ran mistakenly as root, need to remove all sudo crontab service runner entries
-    echo "update running as root: remove sudo crontab service runner entries"
+    echo "ERROR update running as root: attempting remove sudo crontab service runner entries"
     crontab -l > mycron
     if grep -Fxq " * * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1" mycron ; then
         sed -i  "/\s\* \* \* \* \* \/home\/pi\/emonpi\/service-runner >> \/var\/log\/service-runner.log 2>&1/d" ./mycron
@@ -51,30 +51,6 @@ if [ "$uid" = "0" ] ; then
     su -c $0 pi
     exit
 fi
-
-#########################################################################################
-
-# Add backup module service-runner
-#echo "Checking cron tab for service runner entry..."
-#crontab -l > mycron
-# Check crontab entry does not already exist, if not add new entry
-#if ! grep -Fxq "* * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1" mycron ; then
-#        echo "Add service runner cron entry"
-#        echo "* * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1" >> mycron
-#        crontab mycron
-#else
-#  echo "service runner crontab entry already installed"
-#fi
-#rm mycron
-
-# Check if double service runner (with space) entry exits, if so remove it
-crontab -l > mycron
-if grep -Fxq " * * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1" mycron ; then
-        echo "Remove duplicate service runner entry"
-        sed -i  "/\s\* \* \* \* \* \/home\/pi\/emonpi\/service-runner >> \/var\/log\/service-runner.log 2>&1/d" ./mycron
-        crontab mycron
-fi
-rm mycron
 
 #########################################################################################
 
