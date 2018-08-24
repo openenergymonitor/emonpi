@@ -1,41 +1,23 @@
 #!/usr/bin/python
 
-import fcntl
 import sys
-import os
 import redis
 import subprocess
 import time
-import datetime
 import signal
 
 def handle_sigterm(sig, frame):
-  print(datetime.datetime.now().isoformat(' ') +": Got Termination signal, exiting")
-  fcntl.flock(l, fcntl.LOCK_UN)
-  l.close()
-  os.remove(pidfile)
+  print("Got Termination signal, exiting")
   sys.exit(0)
 
 ## Used to update log viewer window in Emoncms admin
 # Used in conjunction with: service-runner-update.sh and Emoncms admin module
 
-scriptname = os.path.basename(sys.argv[0])
-pidfile = '/tmp/' + scriptname
-
-# lock it
-try:
-  l = open(pidfile, 'w')
-  fcntl.flock(l, fcntl.LOCK_EX | fcntl.LOCK_NB)
-except:
-  sys.exit(1)
-
 # Setup the signal handler to gracefully exit
 signal.signal(signal.SIGTERM, handle_sigterm)
 signal.signal(signal.SIGINT, handle_sigterm)
 
-l.write("%s\n" % os.getpid())
-
-print(datetime.datetime.now().isoformat(' ') +": Starting service-runner")
+print("Starting service-runner")
 sys.stdout.flush()
 
 server = redis.Redis()
@@ -43,18 +25,19 @@ while True:
   try:
     if server.exists('service-runner'):
       flag = server.lpop('service-runner')
-      print(datetime.datetime.now().isoformat(' ') +": got flag: %s\n" % flag)
+      print("Got flag: %s\n" % flag)
       sys.stdout.flush()
       script, logfile = flag.split('>')
       cmdstring = "{s} > {l}".format(s=script, l=logfile)
-      print(datetime.datetime.now().isoformat(' ') + ": STARTING: " + cmdstring)
+      print("STARTING: " + cmdstring)
       sys.stdout.flush()
       subprocess.call(cmdstring, shell=True)
       if not (os.path.isfile(logfile)):
         f = open(logfile, 'a')
         f.close()
-      print(datetime.datetime.now().isoformat(' ') + ": COMPLETE: " + cmdstring)
+      print("COMPLETE: " + cmdstring)
       sys.stdout.flush()
   except:
     print("Exception occurred", sys.exc_info()[0])
   time.sleep(0.2)
+
