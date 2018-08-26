@@ -16,9 +16,9 @@ The process is as follows:
 sudo pip install redis
 sudo ln -s /home/pi/emonpi/service-runner.service /etc/systemd/system
 sudo systemctl daemon-reload
-sudo systemctl enable service-runner
-sudo systemctl start service-runner
-sudo systemctl status service-runner
+sudo systemctl enable service-runner.service
+sudo systemctl start service-runner.service
+sudo systemctl status service-runner.service
 ```
 
 Tested on emonPi running Raspiben Stretch
