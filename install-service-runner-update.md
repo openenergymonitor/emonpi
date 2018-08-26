@@ -21,6 +21,10 @@ sudo systemctl start service-runner.service
 sudo systemctl status service-runner.service
 ```
 
+View log with 
+
+`sudo journalctl -f -u service-runner -o cat`
+
 Tested on emonPi running Raspiben Stretch
 
 Prior to September 2018 the service runner was ran as a bash script triggered by cron. Thanks to @greeebs for re-writing using Python and systemd see https://github.com/openenergymonitor/emonpi/pull/65. The python service is more efficient since a constant connetion to redis can be kept open
