@@ -20,7 +20,19 @@ signal.signal(signal.SIGINT, handle_sigterm)
 print("Starting service-runner")
 sys.stdout.flush()
 
-server = redis.Redis()
+while True:
+  try:
+    server = redis.Redis()
+    if server.ping():
+      print("Connected to redis-server")
+      sys.stdout.flush()
+      break
+  except:
+    print("Exception occurred", sys.exc_info()[0])
+    print("Unable to connect to redi-server, sleeping")
+    sys.stdout.flush()
+  time.sleep(5)
+
 while True:
   try:
     if server.exists('service-runner'):
@@ -39,5 +51,6 @@ while True:
       sys.stdout.flush()
   except:
     print("Exception occurred", sys.exc_info()[0])
+    sys.stdout.flush()
   time.sleep(0.2)
 

@@ -1,7 +1,7 @@
 # Systemd unit file for mqtt input script
 
 # INSTALL:
-# sudo cp /home/pi/emonpi/service-runner.service /etc/systemd/system/service-runner.service
+# sudo ln -s /home/pi/emonpi/service-runner.service /lib/systemd/system
 
 # RUN AT STARTUP
 # sudo systemctl daemon-reload
@@ -9,12 +9,12 @@
 
 # START / STOP With:
 # sudo systemctl start service-runner
-# sudo systemctl stop service-runner    
+# sudo systemctl stop service-runner
 
 # VIEW STATUS / LOG
 # If Using Syslog:
 # sudo systemctl status service-runner -n50
-# where -nX is the number of log lines to view 
+# where -nX is the number of log lines to view
 # sudo journalctl -f -u service-runner -o cat
 # Otherwise:
 # tail -f /var/log/service-runner.log
@@ -32,7 +32,9 @@
 
 [Unit]
 Description=Emoncms service-runner Input Script
-After=redis.service
+Wants=redis-server.service
+After=redis-server.service
+StartLimitIntervalSec=5
 #Documentation=https://github.com/openenergymonitor/emonpi/blob/master/docs/service-runner.md
 
 [Service]
@@ -44,7 +46,7 @@ User=pi
 # Restart script if stopped
 Restart=always
 # Wait 60s before restart
-RestartSec=60
+RestartSec=30s
 
 # Tag things in the log
 # If you want to use the journal instead of the file above, uncomment SyslogIdentifier below
@@ -53,3 +55,4 @@ SyslogIdentifier=service-runner
 
 [Install]
 WantedBy=multi-user.target
+
