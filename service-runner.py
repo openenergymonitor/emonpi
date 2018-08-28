@@ -8,6 +8,7 @@ import redis
 import subprocess
 import time
 import signal
+import os
 
 def handle_sigterm(sig, frame):
   print("Got Termination signal, exiting")
