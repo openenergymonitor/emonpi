@@ -14,16 +14,16 @@ The process is as follows:
 
 ```
 sudo pip install redis
-sudo ln -s /home/pi/emonpi/service-runner.service /etc/systemd/system
+sudo ln -s /home/pi/emonpi/service-runner.service /lib/systemd/system
 sudo systemctl daemon-reload
 sudo systemctl enable service-runner.service
 sudo systemctl start service-runner.service
-sudo systemctl status service-runner.service
+systemctl status service-runner.service
 ```
 
 View log with 
 
-`sudo journalctl -f -u service-runner -o cat`
+`journalctl -f -u service-runner`
 
 Tested on emonPi running Raspiben Stretch
 
