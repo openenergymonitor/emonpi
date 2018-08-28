@@ -13,9 +13,9 @@
 
 # VIEW STATUS / LOG
 # If Using Syslog:
-# sudo systemctl status service-runner -n50
+# systemctl status service-runner -n50
 # where -nX is the number of log lines to view
-# sudo journalctl -f -u service-runner -o cat
+# journalctl -f -u service-runner
 # Otherwise:
 # tail -f /var/log/service-runner.log
 
