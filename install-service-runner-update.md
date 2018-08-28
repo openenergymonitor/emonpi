@@ -14,7 +14,7 @@ The process is as follows:
 
 ```
 sudo pip install redis
-sudo ln -s /home/pi/emonpi/service-runner.service /etc/systemd/system
+sudo ln -s /home/pi/emonpi/service-runner.service /lib/systemd/system
 sudo systemctl daemon-reload
 sudo systemctl enable service-runner.service
 sudo systemctl start service-runner.service
