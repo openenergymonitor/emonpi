@@ -13,6 +13,10 @@ echo
 # sudo pip install requests
 sudo pip install paho-mqtt --upgrade
 
+# Ensure rpi gpio is latest version and gpiozero is installed, required for V2.2.0 LCD script
+sudo apt-get update
+sudo apt-get install python-gpiozero python-rpi.gpio
+
 sudo /etc/init.d/emonhub stop
 
 echo "Start ATmega328 serial upload using avrdude with latest.hex"
