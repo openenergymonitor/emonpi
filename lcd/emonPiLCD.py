@@ -17,6 +17,7 @@ import logging.handlers
 import atexit
 import os
 from select import select
+from gpiozero import Button
 
 # Local files
 import lcddriver
@@ -72,6 +73,22 @@ max_number_pages = 7
 uselogfile = True
 
 
+
+
+# ------------------------------------------------------------------------------------
+# Create interrupt call for emonPi LCD button  
+# ------------------------------------------------------------------------------------
+shortPress = False
+longPress = False
+
+def buttonPressLong():
+   global longPress
+   longPress = True
+
+def buttonPress():
+   global shortPress
+   shortPress = True
+
 class IPAddress(object):
     def __init__(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -94,7 +111,7 @@ def shutdown(lcd):
         lcd[1] = ''.join(str(y) + '..' for y in range(5, 5-x, -1))
         time.sleep(1)
 
-        if GPIO.input(11) == 0:
+        if GPIO.input(17) == 0:
             return
     lcd[1] = "SHUTDOWN NOW!"
     time.sleep(2)
@@ -153,22 +170,9 @@ class LCD(object):
     def lcd_clear(self):
         self.lcd.lcd_clear()
 
-
-class ButtonInput(object):
-    def __init__(self, logger, fd):
-        GPIO.add_event_detect(16, GPIO.RISING, callback=self.buttonPress, bouncetime=1000)
-        self.logger = logger
-        self.press_num = 0
-        self.pressed = False
-        self.fd = fd
-
-    def buttonPress(self, channel):
-        self.pressed = True
-        self.logger.info("lcd button press " + str(self.press_num))
-        self.fd.write('1')
-
-
 def main():
+    global longPress
+    global shortPress
     # First set up logging
     atexit.register(logging.shutdown)
     if not uselogfile:
@@ -187,7 +191,7 @@ def main():
     logger.addHandler(loghandler)
     logger.setLevel(logging.INFO)
 
-    logger.info("Starting emonPiLCD V" + version)
+    logger.info("Starting TEST emonPiLCD V" + version)
 
     # Now check the LCD and initialise the object
     lcd = LCD(logger)
@@ -214,20 +218,17 @@ def main():
     logger.info("SD card image build version: " + sd_image_version)
 
     # Set up the buttons and install handlers
-    atexit.register(GPIO.cleanup)
-    # Use Pi board pin numbers as these as always consistent between revisions
-    GPIO.setmode(GPIO.BOARD)
-    # emonPi LCD push button Pin 16 GPIO 23
-    GPIO.setup(16, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-    # emonPi Shutdown button, Pin 11 GPIO 17
-    GPIO.setup(11, GPIO.IN)
 
-    # Create a pipe with no buffering, make the read end non-blocking and pass
-    # the other to the ButtonInput class
-    pipe = os.pipe()
-    pipe = (os.fdopen(pipe[0], 'r', 0), os.fdopen(pipe[1], 'w', 0))
-    fcntl.fcntl(pipe[0], fcntl.F_SETFL, os.O_NONBLOCK)
-    buttoninput = ButtonInput(logger, pipe[1])
+    # emonPi LCD push button Pin 16 GPIO 23
+    # Uses gpiozero library to handle short and long press https://gpiozero.readthedocs.io/en/stable/api_input.html?highlight=button
+    # push_btn = Button(23, pull_up=False, hold_time=5, bounce_time=0.1)
+    # No bounce time increases responce time but may result in switch bouncing...
+    push_btn = Button(23, pull_up=False, hold_time=5)
+    push_btn.when_pressed = buttonPress
+    push_btn.when_held = buttonPressLong
+
+    # emonPi Shutdown button, Pin 11 GPIO 17
+    GPIO.setup(17, GPIO.IN)
 
     logger.info("Connecting to redis server...")
 
@@ -283,8 +284,8 @@ def main():
         if now - buttonPress_time > backlight_timeout and lcd.backlight:
             lcd.backlight = 0
 
-        if buttoninput.pressed:
-            buttoninput.pressed = False
+        if shortPress:
+            shortPress = False
             if lcd.backlight:
                 page += 1
             if page > max_number_pages:
@@ -292,9 +293,27 @@ def main():
             buttonPress_time = now
             if not lcd.backlight:
                 lcd.backlight = 1
-            logger.info("Mode button pressed")
+            logger.info("Mode button SHORT press")
             logger.info("Page: " + str(page))
-
+        
+        if longPress:
+            longPress = False
+            logger.info("Mode button LONG press")
+            subprocess.call("./enablessh.sh")
+            logger.info("SSH Enabled")
+            lcd[0] = 'SSH Access      '
+            lcd[1] = 'Enabled         '
+            time.sleep(2)            
+            lcd[0] = 'Change password '
+            lcd[1] = 'on first login >'
+            time.sleep(2) 
+            if eval(r.get("eth:active")):
+               lcd[0] = 'ss pi@' + r.get("eth:ip")
+            if eval(r.get("wlan:active")):
+               lcd[0] = 'pi@' + r.get("wlan:ip")
+            lcd[1] = 'pass: emonpi2018'
+            push_btn.wait_for_press()
+            
         # Get system parameters and store in redis
         # Get uptime
         with open('/proc/uptime', 'r') as f:
@@ -403,17 +422,10 @@ def main():
             lcd[1] = sd_image_version
 
         # If Shutdown button is pressed initiate shutdown sequence
-        if GPIO.input(11) == 1:
+        if GPIO.input(17) == 1:
             logger.info("shutdown button pressed")
             shutdown(lcd)
 
-        # Wait up to one second or until the button is pressed.
-        read, _, _ = select([pipe[0]], [], [], 1)
-        if read:  # pipe is readable, consume the byte.
-            try:
-                read[0].read(1)
-            except IOError:
-                pass
 
 if __name__ == '__main__':
     main()
