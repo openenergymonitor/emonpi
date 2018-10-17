@@ -298,7 +298,7 @@ def main():
         if longPress:
             longPress = False
             logger.info("Mode button LONG press")
-            subprocess.call("./enablessh.sh")
+            subprocess.call("/home/pi/emonpi/lcd/enablessh.sh")
             logger.info("SSH Enabled")
             lcd[0] = 'SSH Access      '
             lcd[1] = 'Enabled         '
