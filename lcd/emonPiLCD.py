@@ -72,9 +72,6 @@ max_number_pages = 7
 # ------------------------------------------------------------------------------------
 uselogfile = True
 
-
-
-
 # ------------------------------------------------------------------------------------
 # Create interrupt call for emonPi LCD button  
 # ------------------------------------------------------------------------------------
@@ -191,7 +188,7 @@ def main():
     logger.addHandler(loghandler)
     logger.setLevel(logging.INFO)
 
-    logger.info("Starting TEST emonPiLCD V" + version)
+    logger.info("Starting emonPiLCD V" + version)
 
     # Now check the LCD and initialise the object
     lcd = LCD(logger)
@@ -251,7 +248,8 @@ def main():
             r.set("basedata", msg.payload)
 
     def on_connect(client, userdata, flags, rc):
-        mqttc.subscribe(mqtt_topic)
+        if (rc==0):
+            mqttc.subscribe(mqtt_topic)
 
     mqttc = mqtt.Client()
     mqttc.on_message = on_message
@@ -259,7 +257,8 @@ def main():
 
     try:
         mqttc.username_pw_set(mqtt_user, mqtt_passwd)
-        mqttc.connect(mqtt_host, mqtt_port, 60)
+        mqttc.reconnect_delay_set(min_delay=1, max_delay=120)
+        mqttc.connect_async(mqtt_host, mqtt_port, 60)
         # Run MQTT background thread which handles reconnects
         mqttc.loop_start()
     except Exception:
