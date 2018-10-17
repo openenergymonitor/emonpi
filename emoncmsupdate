@@ -12,21 +12,10 @@ echo
 #########################################################################################
 echo "#############################################################"
 echo
-# Check emonSD base image is minimum required release date, else don't update
+# Check emonSD version
 image_version=$(ls /boot | grep emonSD)
 echo "emonSD version: $image_version"
 echo
-
-if [ "$image_version" == "emonSD-07Nov16" ] || [ "$image_version" == "emonSD-03May16" ] || [ $image_version == "emonSD-26Oct17" ] || [ $image_version == "emonSD-13Jun18" ]; then
-  echo "emonSD base image check pass...continue update"
-else
-  echo "ERROR: emonSD base image old or undefined...update will not continue"
-  echo "See latest verson: https://github.com/openenergymonitor/emonpi/wiki/emonSD-pre-built-SD-card-Download-&-Change-Log"
-  echo "Stopping update"
-  exit
-fi
-echo
-echo "#############################################################"
 
 uid=`id -u`
 echo "EUID: $uid"

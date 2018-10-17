@@ -35,7 +35,16 @@ fi
 ans=n
 read -p "Shutdown when complete (y/n)? Else rebooting in 10s " -t 10 ans
 
+VERSION=$(sed 's/\..*//' /etc/debian_version)
 
+# if version is greater than 8 then we must be running Stretch or newer
+if [ "$VERSION"  -gt "8" ]; then
+        VERSION="stretch"
+        echo "Detected $VERSION or newer"
+else
+        VERSION="jessie"
+        echo "$VERSION or older distro detected"
+fi
 
 
 echo "Ensure tracking latest Emoncms & emonpi stable branch"
@@ -173,7 +182,11 @@ sudo dpkg-reconfigure openssh-server
 echo "Clean up packages"
 sudo apt-get clean
 
-
+if [ "$VERSION" = "stretch" ]; then
+   echo "Disabling SSH"
+   sudo update-rc.d ssh disable
+   sudo invoke-rc.d ssh stop
+fi
 
 echo
 if [[ "$ans" == "" ]] ; then ans=n;fi
