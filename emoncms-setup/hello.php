@@ -136,26 +136,26 @@ p {
   <div style="clear:both; height:20px"></div>
 
   <div id="setup-step1">
-    <p><b>WIFI Configuration:</b> Would you like to:</p>
+    <p><b>Network Configuration:</b> Would you like to:</p>
     <div id="setup-ethernet" class="setupbox hide">Continue on Ethernet</div>
-    <div id="setup-standalone" class="setupbox hide">Continue in stand-alone WIFI Access Point mode</div>
-    <div id="setup-wificlient" class="setupbox">Connect to WIFI network</div>
+    <div id="setup-standalone" class="setupbox hide">Continue in stand-alone WiFi Access Point mode</div>
+    <div id="setup-wificlient" class="setupbox">Connect to WiFi network</div>
   </div>
 
   <div id="setup-step2" style="display:none">
-    <p><b>WIFI Configuration</b></p>
-    <p>Select WIFI network to connect to:</p>
+    <p><b>WiFi Configuration</b></p>
+    <p>Select WiFi network to connect to:</p>
     <div class="wifinetworks-bound">
-      <div id="networks-scanning">Scanning for networks<br><br><img src="<?php echo $path; ?>Modules/wifi/icons/ajax-loader.gif" loop=infinite></div>
+      <div id="networks-scanning">Scanning for networks, this may take a few min..<br><br><img src="<?php echo $path; ?>Modules/wifi/icons/ajax-loader.gif" loop=infinite></div>
       <div id="networks"></div>
       <div id="network-authentication" style="display:none">
         <div class="auth-heading">Authentication required</div>
-        <div class="auth-message">Passwords or encryption keys are required to access Wi-Fi network:<br><b><span id="WIFI_SSID"></span></b></div>
+        <div class="auth-message">Passwords or encryption keys are required to access WiFi network:<br><b><span id="WIFI_SSID"></span></b></div>
         Password:<br>
         <input id="wifi-password" type="password" style="height:auto">
         <div class="auth-showpass"><input id="showpass" type="checkbox" style="margin-top:-3px"> Show password</div>
         
-        <div class="auth-message">WIFI country:<br>
+        <div class="auth-message">WiFi country:<br>
         <select id="country"><?php foreach($countries as $code=>$name) echo "<option value='$code'>$name</option>"; ?></select>
         </div>
         
@@ -167,10 +167,10 @@ p {
 
 <div id="page2" style="display:none; text-align:center">
   <div class="welcome">WiFi network setting saved. Rebooting system... please wait a couple of minutes before navigating to your emonpi's hostname:</div>
-  <div class="welcome2"><a href="http://emonpi.local">http://emonpi.local</a> <span style="color:#c8e9f6">or</span> <a href="http://emonpi">http://emonpi</a></div>
+  <div class="welcome"><a href="http://emonpi.local">http://emonpi.local</a> <span style="color:#c8e9f6">or</span> <a href="http://emonpi">http://emonpi</a></div>
   <br>
   <p>If the hostname does not work on your network, navigate to the IP address shown on the emonPi LCD.</p>
-  <p><b>Note:</b> If incorrect password is entered and wifi connection fails, connect emonpi via Ethernet to complete setup</p></p>
+  <p><b>Note:</b> If incorrect password is entered and WiFi connection fails, connect via Ethernet to complete setup</p></p>
 
 </div>
 
