@@ -1,3 +1,5 @@
+# NOT USED ANYMORE
+# SEE emonpi/stretch/fstab 
 tmpfs           /tmp             tmpfs   nodev,nosuid,size=30M,mode=1777 0  0
 tmpfs           /var/tmp         tmpfs   nodev,nosuid,size=1M,mode=1777  0  0
 tmpfs           /var/log         tmpfs   nodev,nosuid,size=50M,mode=1777 0  0
