@@ -167,8 +167,9 @@ echo "Set default emonpi default git credentials"
 git config --global user.email "pi@emonpi.com"
 git config --global user.name "emonPi"
 
-echo "restore nodered flow"
-cp /home/pi/oem_node-red/flows_emonpi.json /home/pi/data/node-red/flows_emonpi.json 
+# Dont touch NodeRED this is an Emoncms factory reset 
+#echo "restore nodered flow"
+#cp /home/pi/oem_node-red/flows_emonpi.json /home/pi/data/node-red/flows_emonpi.json 
 
 echo "Clear bash history"
 history -c
@@ -187,6 +188,7 @@ if [ "$VERSION" = "stretch" ]; then
    echo "Disabling SSH"
    sudo update-rc.d ssh disable
    sudo invoke-rc.d ssh stop
+   sudo rm /boot/ssh
 fi
 
 echo

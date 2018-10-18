@@ -27,7 +27,7 @@ then
   service redis-server restart
   service mosquitto restart
   service emonhub restart
-  #service emonPiLCD restart
+  service emonPiLCD restart
   service apache2 restart
   #service supervisor restart
   service feedwriter restart
