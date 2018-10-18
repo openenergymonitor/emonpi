@@ -151,6 +151,7 @@ echo "clear WiFi config /etc/wpa_supplicant/wpa_supplicant.conf"
 echo "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev" > /etc/wpa_supplicant/wpa_supplicant.conf
 echo "update_config=1" >> /etc/wpa_supplicant/wpa_supplicant.conf
 echo "country=GB" >> /etc/wpa_supplicant/wpa_supplicant.conf
+sudo chmod 776 /etc/wpa_supplicant/wpa_supplicant.conf
 
 
 if [ -f /home/pi/data/dhcpd.leases ]; then
