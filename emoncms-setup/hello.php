@@ -166,11 +166,11 @@ p {
 </div>
 
 <div id="page2" style="display:none; text-align:center">
-  <div class="welcome">WiFi network setting saved. Rebooting system... please wait a couple of minutes before navigating to your emonpi's hostname:</div>
+  <div class="welcome">WiFi network setting saved. Rebooting system... please wait a few minutes then navigate to:</div>
   <div class="welcome"><a style="color:inherit" href="http://emonpi.local">http://emonpi.local</a> or <a style="color:inherit" href="http://emonpi">http://emonpi</a></div>
   <br>
-  <p>If the hostname does not work on your network, navigate to the IP address shown on the emonPi LCD.</p>
-  <p><b>Note:</b> If incorrect password is entered and WiFi connection fails, connect via Ethernet to complete setup</p></p>
+  <p>Note: If hostname lookup does not work on your network, navigate to the IP address shown on the emonPi LCD.</p>
+  <p><b>Note:</b> If incorrect password is entered and WiFi connection fails, connect via Ethernet to complete setup.</p></p>
 
 </div>
 
