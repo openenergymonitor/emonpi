@@ -139,4 +139,4 @@ echo "restarting service-runner\n"
 # old service runner
 killall service-runner
 # new service runner
-sudo systemctl status service-runner.service
+systemctl restart service-runner.service 
