@@ -126,7 +126,7 @@ echo
 echo
 # Wait for update to finish
 echo "Starting emonPi LCD service.."
-sleep 20
+sleep 5
 sudo service emonPiLCD start
 echo
 rpi-ro
@@ -136,4 +136,7 @@ printf "\n...................\n"
 printf "emonPi update done\n" # this text string is used by service runner to stop the log window polling, DO NOT CHANGE!
 
 echo "restarting service-runner\n"
+# old service runner
 killall service-runner
+# new service runner
+sudo systemctl status service-runner.service
