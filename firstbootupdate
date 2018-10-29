@@ -8,9 +8,7 @@
 
 # Check if update log file is empty if so then proceed to update
 
-button="$(sudo cat /sys/class/gpio/gpio23/value)"
-
-if [ ! -s /home/pi/data/emonpiupdate.log ] || [ "$button" == 1 ]; then
+if [ ! -s /home/pi/data/emonpiupdate.log ]; then
 	echo "First Boot Update.."
 	printf "Checking internet connectivity..,\n"
 	WGET="/usr/bin/wget"

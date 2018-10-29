@@ -127,7 +127,7 @@ echo
 # Wait for update to finish
 echo "Starting emonPi LCD service.."
 sleep 5
-sudo service emonPiLCD start
+sudo service emonPiLCD restart
 echo
 rpi-ro
 date
