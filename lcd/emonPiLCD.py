@@ -25,7 +25,7 @@ import gsmhuaweistatus
 
 # ------------------------------------------------------------------------------------
 # Script version
-version = '2.2.0'
+version = '2.2.1'
 # ------------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------------
@@ -220,9 +220,13 @@ def main():
     # Uses gpiozero library to handle short and long press https://gpiozero.readthedocs.io/en/stable/api_input.html?highlight=button
     # push_btn = Button(23, pull_up=False, hold_time=5, bounce_time=0.1)
     # No bounce time increases responce time but may result in switch bouncing...
-    push_btn = Button(23, pull_up=False, hold_time=5)
-    push_btn.when_pressed = buttonPress
-    push_btn.when_held = buttonPressLong
+    logger.info("Attaching push button interrupt...")
+    try:
+       push_btn = Button(23, pull_up=False, hold_time=5)
+       push_btn.when_pressed = buttonPress
+       push_btn.when_held = buttonPressLong
+    except: 
+       logger.error("Failed to attach LCD push button interrupt...")
 
     # emonPi Shutdown button, Pin 11 GPIO 17
     GPIO.setup(17, GPIO.IN)
@@ -364,7 +368,14 @@ def main():
 
         if page == 1:
             if eval(r.get("wlan:active")):
-                lcd[0] = "WIFI: YES  " + r.get("wlan:signallevel") + "%"
+                if int(r.get("wlan:signallevel")) > 0:
+                   lcd[0] = "WiFi: YES  " + r.get("wlan:signallevel") + "%"
+                else:
+                   if r.get("wlan:ip") == "192.168.42.1":
+                      lcd[0] = "WiFi: AP MODE"
+                   else:
+                      lcd[0] = "WiFi: YES  "
+
                 lcd[1] = r.get("wlan:ip")
             elif eval(r.get("gsm:active")) or eval(r.get("eth:active")):
                 page += 1
@@ -401,6 +412,7 @@ def main():
             else:
                 lcd[0] = 'Connecting...'
                 lcd[1] = 'Please Wait'
+                page +=1
 
         elif page == 5:
             basedata = r.get("basedata")
@@ -411,6 +423,7 @@ def main():
             else:
                 lcd[0] = 'Connecting...'
                 lcd[1] = 'Please Wait'
+                page +=1
 
         elif page == 6:
             lcd[0] = datetime.now().strftime('%b %d %H:%M')
@@ -428,3 +441,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+GPIO.cleanup()           # clean up GPIO on normal exit  
