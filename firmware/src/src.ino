@@ -60,6 +60,8 @@ EnergyMonitor ct1, ct2;
 
 #include <OneWire.h>                                                  // http://www.pjrc.com/teensy/td_libs_OneWire.html
 #include <DallasTemperature.h>                                        // http://download.milesburton.com/Arduino/MaximTemperature/DallasTemperature_LATEST.zip
+#include <DS2438.h>                                                   // https://github.com/jbechter/arduino-onewire-DS2438
+
 
 #include <Wire.h>                                                     // Arduino I2C library
 #include <LiquidCrystal_I2C.h>                                        // https://github.com/openenergymonitor/LiquidCrystal_I2C
