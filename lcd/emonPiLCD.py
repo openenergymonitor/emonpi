@@ -314,7 +314,7 @@ def main():
                lcd[0] = 'pi@' + r.get("eth:ip")
             if eval(r.get("wlan:active")):
                lcd[0] = 'pi@' + r.get("wlan:ip")
-            lcd[1] = 'pass: emonpi2018'
+            lcd[1] = 'pass: emonpi2016'
             push_btn.wait_for_press()
             
         # Get system parameters and store in redis
