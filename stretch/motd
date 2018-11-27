@@ -18,7 +18,7 @@ individual files in /usr/share/doc/*/copyright.
 Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
 permitted by applicable law.
 [1;32m
-Unlike olrder emonSD card images the root FS is no longer in read-only mode. 
+Unlike older emonSD card images the root FS is no longer in read-only mode. 
 To preserve SD-card lifespan avoid installing any high write applications. 
 Log files in /var/log are  mounted to tempfs in RAM
 Emoncms data is logged to ~/data which is mounted to a low-write ext2 file-system
