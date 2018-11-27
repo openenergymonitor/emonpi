@@ -311,7 +311,7 @@ def main():
             lcd[1] = 'on first login >'
             time.sleep(2) 
             if eval(r.get("eth:active")):
-               lcd[0] = 'ss pi@' + r.get("eth:ip")
+               lcd[0] = 'pi@' + r.get("eth:ip")
             if eval(r.get("wlan:active")):
                lcd[0] = 'pi@' + r.get("wlan:ip")
             lcd[1] = 'pass: emonpi2018'
