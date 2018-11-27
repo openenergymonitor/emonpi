@@ -6,7 +6,6 @@ import time
 from datetime import datetime
 import subprocess
 import sys
-import RPi.GPIO as GPIO
 import redis
 import paho.mqtt.client as mqtt
 import socket
@@ -43,8 +42,8 @@ mqtt_passwd = config.get('mqtt','mqtt_passwd')
 mqtt_host = config.get('mqtt','mqtt_host')
 mqtt_port = config.getint('mqtt','mqtt_port')
 mqtt_emonpi_topic = config.get('mqtt','mqtt_emonpi_topic') 
-mqtt_utilityKw_topic = config.get('mqtt','mqtt_utilityKw_topic')
-mqtt_pvW_topic = config.get('mqtt','mqtt_pvW_topic')
+mqtt_feed1_topic = config.get('mqtt','mqtt_feed1_topic')
+mqtt_feed2_topic = config.get('mqtt','mqtt_feed2_topic')
 
 
 # ------------------------------------------------------------------------------------
@@ -54,6 +53,22 @@ redis_host = config.get('redis', 'redis_host')
 redis_port = config.get('redis', 'redis_port') 
 r = redis.Redis(host=redis_host, port=redis_port, db=0)
 
+# ------------------------------------------------------------------------------------
+# General Settings
+# ------------------------------------------------------------------------------------
+
+# LCD backlight timeout in seconds 0: always on, 300: off after 5 min
+backlight_timeout = config.getint('general','backlight_timeout') 
+default_page = config.getint('general','default_page') 
+
+#Names to be displayed on power reading page
+feed1_name = config.get('general','feed1_name')
+feed2_name = config.get('general','feed2_name')
+feed1_unit = config.get('general','feed1_unit')
+feed2_unit = config.get('general','feed2_unit')
+
+#How often the LCD is updated when a button is not pressed
+lcd_update_sec = config.getint('general','lcd_update_sec') 
 # ------------------------------------------------------------------------------------
 # Huawei Hi-Link GSM/3G USB dongle IP address on eth1
 # ------------------------------------------------------------------------------------
@@ -65,12 +80,9 @@ hilink_device_ip = config.get('huawei', 'hilink_device_ip')
 # ------------------------------------------------------------------------------------
 lcd_i2c = ['27', '3f']
 current_lcd_i2c = ''
-# LCD backlight timeout in seconds 0: always on, 300: off after 5 min
-backlight_timeout = config.getint('general','backlight_timeout') 
 # ------------------------------------------------------------------------------------
 
 # Default Startup Page
-default_page = config.getint('general','default_page') 
 max_number_pages = 7
 page = default_page
 
@@ -82,45 +94,22 @@ sd_image_version = ''
 uselogfile =  config.get('general','uselogfile') 
 logger = logging.getLogger("emonPiLCD")
 
-# ------------------------------------------------------------------------------------
-# Create interrupt call for emonPi LCD button  
-# ------------------------------------------------------------------------------------
-shortPress = False
 
 def buttonPressLong():
-   
-   global logger
-   global lcd
-
    logger.info("Mode button LONG press")
    subprocess.call("/home/pi/emonpi/lcd/enablessh.sh")
    logger.info("SSH Enabled")
-   lcd[0] = 'SSH Access      '
-   lcd[1] = 'Enabled         '
-   time.sleep(2)            
-   lcd[0] = 'Change password '
-   lcd[1] = 'on first login >'
-   time.sleep(2) 
-   if eval(r.get("eth:active")):
-      lcd[0] = 'ss pi@' + r.get("eth:ip")
-   if eval(r.get("wlan:active")):
-      lcd[0] = 'pi@' + r.get("wlan:ip")
-   lcd[1] = 'pass: emonpi2018'
-   push_btn.wait_for_press()
+   lcd[0] = 'SSH Enabled      '
+   lcd[1] = 'Change password!'
 
 
 def buttonPress():
-   global shortPress
    global page
    global lcd
-   global r
    global logger
 
-   shortPress = True
    now = time.time()
 
-   # Create object for getting IP addresses of interfaces
-   ipaddress = IPAddress()
 
    if lcd.backlight:
         page += 1
@@ -131,6 +120,18 @@ def buttonPress():
     lcd.backlight = 1
    logger.info("Mode button SHORT press")
    logger.info("Page: " + str(page))
+   updateLCD() 
+
+
+def updateLCD() :
+
+   global page
+   global lcd
+   global r
+   global logger
+
+   # Create object for getting IP addresses of interfaces
+   ipaddress = IPAddress()
 
    # Now display the appropriate LCD page
    if page == 0:
@@ -205,23 +206,23 @@ def buttonPress():
             lcd[1] = "NO DEVICE"
 
    if page == 3:
-
-        if r.get("utilitykw") is not None:
-            lcd[0] = 'Utility: ' + r.get("utilitykw") + "KW"
+        if r.get("feed1") is not None:
+            lcd[0] = feed1_name + ':'  + r.get("feed1") + feed1_unit 
         else:
-            lcd[0] = "Utility:No data yet"
+            lcd[0] = feed1_name + ':'  + "No data yet"
+ 
 
-        if r.get("pvw") is not None:
-            lcd[1] = 'PV: ' + r.get("pvw") + "W"
+        if r.get("feed2") is not None:
+            lcd[1] = feed2_name + ':'  + r.get("feed2") + feed2_unit 
         else:
-            lcd[1] = "PV:No data yet"
+            lcd[1] = feed2_name + ':'  + "No data yet"
 
    elif page == 4:
         basedata = r.get("basedata")
         if basedata is not None:
             basedata = basedata.split(",")
             lcd[0] = 'VRMS: ' + basedata[3] + "V"
-            lcd[1] = 'Temp 1: ' + basedata[4] + " C"
+	    lcd[1] = 'Pulse: ' + basedata[10] + "p"
         else:
             lcd[0] = 'Connecting...'
             lcd[1] = 'Please Wait'
@@ -231,8 +232,8 @@ def buttonPress():
         basedata = r.get("basedata")
         if basedata is not None:
             basedata = basedata.split(",")
-            lcd[0] = 'Temp 2: ' + basedata[5] + "C"
-            lcd[1] = 'Pulse: ' + basedata[10] + "p"
+            lcd[0] = 'Temp 1: ' + basedata[4] + "C"
+            lcd[1] = 'Temp 2: ' + basedata[5] + "C"
         else:
             lcd[0] = 'Connecting...'
             lcd[1] = 'Please Wait'
@@ -331,8 +332,6 @@ class LCD(object):
         self.lcd.lcd_clear()
 
 def main():
-    global longPress
-    global shortPress
     global page
     global sd_image_version
 
@@ -417,20 +416,21 @@ def main():
     def on_message(client, userdata, msg):
         topic_parts = msg.topic.split("/")
 
-        if mqtt_utilityKw_topic in msg.topic: 
-            r.set("utilitykw" , msg.payload)
+        if mqtt_feed1_topic in msg.topic: 
+            r.set("feed1" , msg.payload)
 
-        if mqtt_pvW_topic in msg.topic:
-            r.set("pvw" , msg.payload)
+        if mqtt_feed2_topic in msg.topic:
+            r.set("feed2" , msg.payload)
 
         if mqtt_emonpi_topic in msg.topic:
             r.set("basedata", msg.payload)
 
+
     def on_connect(client, userdata, flags, rc):
         if (rc==0):
             mqttc.subscribe(mqtt_emonpi_topic)
-            mqttc.subscribe(mqtt_utilityKw_topic)
-            mqttc.subscribe(mqtt_pvW_topic)
+            mqttc.subscribe(mqtt_feed1_topic)
+            mqttc.subscribe(mqtt_feed2_topic)
 
     mqttc = mqtt.Client()
     mqttc.on_message = on_message
@@ -456,9 +456,7 @@ def main():
     if not backlight_timeout: 
       lcd.backlight = 1
 
-    #fake a button press to the default page showing
     page = default_page
-    buttonPress() 
 
     # Enter main loop
     while True:
@@ -467,9 +465,10 @@ def main():
         if (backlight_timeout) and now - buttonPress_time > backlight_timeout and lcd.backlight:
             lcd.backlight = 0
 
-	time.sleep(5) 
+	#Update LCD in case it is left at a screen where values can change (e.g uptime etc)
+	updateLCD() ;
+	time.sleep(lcd_update_sec) 
 
 if __name__ == '__main__':
     main()
 
-GPIO.cleanup()           # clean up GPIO on normal exit  
