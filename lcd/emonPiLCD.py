@@ -31,9 +31,8 @@ version = '2.2.1'
 # ------------------------------------------------------------------------------------
 
 
-config = ConfigParser.ConfigParser() 
+config = ConfigParser.ConfigParser()
 config.read('/usr/share/emonPiLCD/emonPiLCD.cfg') 
-
 
 
 # ------------------------------------------------------------------------------------
@@ -44,7 +43,7 @@ mqtt_passwd = config.get('mqtt','mqtt_passwd')
 mqtt_host = config.get('mqtt','mqtt_host')
 mqtt_port = config.getint('mqtt','mqtt_port')
 mqtt_emonpi_topic = config.get('mqtt','mqtt_emonpi_topic') 
-mqtt_utilityW_topic = config.get('mqtt','mqtt_utilityW_topic')
+mqtt_utilityKw_topic = config.get('mqtt','mqtt_utilityKw_topic')
 mqtt_pvW_topic = config.get('mqtt','mqtt_pvW_topic')
 
 
@@ -53,6 +52,7 @@ mqtt_pvW_topic = config.get('mqtt','mqtt_pvW_topic')
 # ------------------------------------------------------------------------------------
 redis_host = config.get('redis', 'redis_host') 
 redis_port = config.get('redis', 'redis_port') 
+r = redis.Redis(host=redis_host, port=redis_port, db=0)
 
 # ------------------------------------------------------------------------------------
 # Huawei Hi-Link GSM/3G USB dongle IP address on eth1
@@ -72,25 +72,186 @@ backlight_timeout = config.getint('general','backlight_timeout')
 # Default Startup Page
 default_page = config.getint('general','default_page') 
 max_number_pages = 7
+page = default_page
+
+sd_image_version = ''
 
 # ------------------------------------------------------------------------------------
 # Start Logging
 # ------------------------------------------------------------------------------------
 uselogfile =  config.get('general','uselogfile') 
+logger = logging.getLogger("emonPiLCD")
 
 # ------------------------------------------------------------------------------------
 # Create interrupt call for emonPi LCD button  
 # ------------------------------------------------------------------------------------
 shortPress = False
-longPress = False
 
 def buttonPressLong():
-   global longPress
-   longPress = True
+   
+   global logger
+   global lcd
+
+   logger.info("Mode button LONG press")
+   subprocess.call("/home/pi/emonpi/lcd/enablessh.sh")
+   logger.info("SSH Enabled")
+   lcd[0] = 'SSH Access      '
+   lcd[1] = 'Enabled         '
+   time.sleep(2)            
+   lcd[0] = 'Change password '
+   lcd[1] = 'on first login >'
+   time.sleep(2) 
+   if eval(r.get("eth:active")):
+      lcd[0] = 'ss pi@' + r.get("eth:ip")
+   if eval(r.get("wlan:active")):
+      lcd[0] = 'pi@' + r.get("wlan:ip")
+   lcd[1] = 'pass: emonpi2018'
+   push_btn.wait_for_press()
+
 
 def buttonPress():
    global shortPress
+   global page
+   global lcd
+   global r
+   global logger
+
    shortPress = True
+   now = time.time()
+
+   # Create object for getting IP addresses of interfaces
+   ipaddress = IPAddress()
+
+   if lcd.backlight:
+        page += 1
+   if page > max_number_pages:
+    page = 0
+   buttonPress_time = now
+   if not lcd.backlight:
+    lcd.backlight = 1
+   logger.info("Mode button SHORT press")
+   logger.info("Page: " + str(page))
+
+   # Now display the appropriate LCD page
+   if page == 0:
+    # Update ethernet
+        eth0ip = ipaddress.get_ip_address('eth0')
+        r.set("eth:active", bool(eth0ip))
+        r.set("eth:ip", eth0ip)
+
+        if eval(r.get("eth:active")):
+            lcd[0] = "Ethernet: YES"
+            lcd[1] = r.get("eth:ip")
+        elif eval(r.get("wlan:active")) or eval(r.get("gsm:active")):
+            page += 1
+        else:
+            lcd[0] = "Ethernet:"
+            lcd[1] = "NOT CONNECTED"
+
+   if page == 1:
+   # Update wifi
+        wlan0ip = ipaddress.get_ip_address('wlan0')
+
+        r.set("wlan:active", bool(wlan0ip))
+        r.set("wlan:ip", wlan0ip)
+
+        signallevel = 0
+        if wlan0ip:
+            # wlan link status
+            with open('/proc/net/wireless', 'r') as f:
+                wireless = f.readlines()
+                signals = [x.split()[3] for x in wireless if x.strip().startswith('wlan0')]
+            if signals:
+                signallevel = signals[0].partition('.')[0]
+            if signallevel.startswith('-'): # Detect the alternate signal strength reporting via dBm
+                signallevel = 2 * ( int(signallevel) + 100 ) # Convert to percent
+            r.set("wlan:signallevel", signallevel)
+
+
+        if eval(r.get("wlan:active")):
+            if int(r.get("wlan:signallevel")) > 0:
+               lcd[0] = "WiFi: YES  " + r.get("wlan:signallevel") + "%"
+            else:
+               if r.get("wlan:ip") == "192.168.42.1":
+                  lcd[0] = "WiFi: AP MODE"
+               else:
+                  lcd[0] = "WiFi: YES  "
+
+            lcd[1] = r.get("wlan:ip")
+        elif eval(r.get("gsm:active")) or eval(r.get("eth:active")):
+            page += 1
+        else:
+            lcd[0] = "WiFi:"
+            lcd[1] = "NOT CONNECTED"
+
+   if page == 2:
+    # Update Hi-Link 3G Dongle - connects on eth1
+        if ipaddress.get_ip_address("eth1") and gsmhuaweistatus.is_hilink(hilink_device_ip):
+            gsm_connection_status = gsmhuaweistatus.return_gsm_connection_status(hilink_device_ip)
+            r.set("gsm:connection", gsm_connection_status[0])
+            r.set("gsm:signal", gsm_connection_status[1])
+            r.set("gsm:active", 1)
+        else:
+            r.set("gsm:active", 0)
+
+
+        if eval(r.get("gsm:active")):
+            lcd[0] = r.get("gsm:connection")
+            lcd[1] = r.get("gsm:signal")
+        elif eval(r.get("eth:active")) or eval(r.get("wlan:active")):
+            page += 1
+        else:
+            lcd[0] = "GSM:"
+            lcd[1] = "NO DEVICE"
+
+   if page == 3:
+
+        if r.get("utilitykw") is not None:
+            lcd[0] = 'Utility: ' + r.get("utilitykw") + "KW"
+        else:
+            lcd[0] = "Utility:No data yet"
+
+        if r.get("pvw") is not None:
+            lcd[1] = 'PV: ' + r.get("pvw") + "W"
+        else:
+            lcd[1] = "PV:No data yet"
+
+   elif page == 4:
+        basedata = r.get("basedata")
+        if basedata is not None:
+            basedata = basedata.split(",")
+            lcd[0] = 'VRMS: ' + basedata[3] + "V"
+            lcd[1] = 'Temp 1: ' + basedata[4] + " C"
+        else:
+            lcd[0] = 'Connecting...'
+            lcd[1] = 'Please Wait'
+            page +=1
+
+   elif page == 5:
+        basedata = r.get("basedata")
+        if basedata is not None:
+            basedata = basedata.split(",")
+            lcd[0] = 'Temp 2: ' + basedata[5] + "C"
+            lcd[1] = 'Pulse: ' + basedata[10] + "p"
+        else:
+            lcd[0] = 'Connecting...'
+            lcd[1] = 'Please Wait'
+            page +=1
+
+   elif page == 6:
+    # Get uptime
+        with open('/proc/uptime', 'r') as f:
+            seconds = float(f.readline().split()[0])
+        r.set('uptime', seconds)
+
+        lcd[0] = datetime.now().strftime('%b %d %H:%M')
+        lcd[1] = 'Uptime %.2f days' % (seconds / 86400)
+
+   elif page == 7:
+        lcd[0] = "emonPi Build:"
+        lcd[1] = sd_image_version
+
+
 
 class IPAddress(object):
     def __init__(self):
@@ -107,15 +268,11 @@ class IPAddress(object):
             return 0
 
 
-def shutdown(lcd):
+def shutdown():
+
+    global lcd
     lcd.backlight = 1
     lcd[0] = "emonPi Shutdown"
-    for x in range(1, 6):
-        lcd[1] = ''.join(str(y) + '..' for y in range(5, 5-x, -1))
-        time.sleep(1)
-
-        if GPIO.input(17) == 0:
-            return
     lcd[1] = "SHUTDOWN NOW!"
     time.sleep(2)
     lcd.lcd_clear()
@@ -176,6 +333,9 @@ class LCD(object):
 def main():
     global longPress
     global shortPress
+    global page
+    global sd_image_version
+
     # First set up logging
     atexit.register(logging.shutdown)
     if not uselogfile:
@@ -190,13 +350,13 @@ def main():
                                                          )
 
     loghandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
-    logger = logging.getLogger("emonPiLCD")
     logger.addHandler(loghandler)
     logger.setLevel(logging.INFO)
 
     logger.info("Starting emonPiLCD V" + version)
 
     # Now check the LCD and initialise the object
+    global lcd 
     lcd = LCD(logger)
     lcd.backlight = 1
 
@@ -204,7 +364,6 @@ def main():
     # Discover & display emonPi SD card image version
     # ------------------------------------------------------------------------------------
 
-    sd_image_version = ''
     sd_card_image = subprocess.call("ls /boot | grep emonSD", shell=True)
     if not sd_card_image:  # if emonSD file exists
         sd_image_version = subprocess.check_output("ls /boot | grep emonSD", shell=True)
@@ -234,13 +393,15 @@ def main():
     except: 
        logger.error("Failed to attach LCD push button interrupt...")
 
-    # emonPi Shutdown button, Pin 11 GPIO 17
-    GPIO.setup(17, GPIO.IN)
+    logger.info("Attaching shutdown button interrupt...")
+    try:
+       shut_btn = Button(17, pull_up=False, hold_time=5)
+       shut_btn.when_held = shutdown 
+    except: 
+       logger.error("Failed to attach shutdown button interrupt...")
+
 
     logger.info("Connecting to redis server...")
-
-    r = redis.Redis(host=redis_host, port=redis_port, db=0)
-
     # We wait here until redis has successfully started up
     while True:
         try:
@@ -256,8 +417,8 @@ def main():
     def on_message(client, userdata, msg):
         topic_parts = msg.topic.split("/")
 
-	if mqtt_utilityW_topic in msg.topic: 
-	    r.set("utilityw" , msg.payload)
+        if mqtt_utilityKw_topic in msg.topic: 
+            r.set("utilitykw" , msg.payload)
 
         if mqtt_pvW_topic in msg.topic:
             r.set("pvw" , msg.payload)
@@ -267,9 +428,8 @@ def main():
 
     def on_connect(client, userdata, flags, rc):
         if (rc==0):
-	    logger.info(mqtt_emonpi_topic) 
             mqttc.subscribe(mqtt_emonpi_topic)
-            mqttc.subscribe(mqtt_utilityW_topic)
+            mqttc.subscribe(mqtt_utilityKw_topic)
             mqttc.subscribe(mqtt_pvW_topic)
 
     mqttc = mqtt.Client()
@@ -291,175 +451,23 @@ def main():
     time.sleep(2)
 
     buttonPress_time = time.time()
-    page = default_page
 
-    # Create object for getting IP addresses of interfaces
-    ipaddress = IPAddress()
 
     if not backlight_timeout: 
       lcd.backlight = 1
 
+    #fake a button press to the default page showing
+    page = default_page
+    buttonPress() 
+
     # Enter main loop
     while True:
-        now = time.time()
 
         # turn backight off after backlight_timeout seconds
         if (backlight_timeout) and now - buttonPress_time > backlight_timeout and lcd.backlight:
             lcd.backlight = 0
 
-        if shortPress:
-            shortPress = False
-            if lcd.backlight:
-                page += 1
-            if page > max_number_pages:
-                page = 0
-            buttonPress_time = now
-            if not lcd.backlight:
-                lcd.backlight = 1
-            logger.info("Mode button SHORT press")
-            logger.info("Page: " + str(page))
-        
-        if longPress:
-            longPress = False
-            logger.info("Mode button LONG press")
-            subprocess.call("/home/pi/emonpi/lcd/enablessh.sh")
-            logger.info("SSH Enabled")
-            lcd[0] = 'SSH Access      '
-            lcd[1] = 'Enabled         '
-            time.sleep(2)            
-            lcd[0] = 'Change password '
-            lcd[1] = 'on first login >'
-            time.sleep(2) 
-            if eval(r.get("eth:active")):
-               lcd[0] = 'ss pi@' + r.get("eth:ip")
-            if eval(r.get("wlan:active")):
-               lcd[0] = 'pi@' + r.get("wlan:ip")
-            lcd[1] = 'pass: emonpi2018'
-            push_btn.wait_for_press()
-            
-        # Get system parameters and store in redis
-        # Get uptime
-        with open('/proc/uptime', 'r') as f:
-            seconds = float(f.readline().split()[0])
-            r.set('uptime', seconds)
-
-        # Update ethernet
-        eth0ip = ipaddress.get_ip_address('eth0')
-        r.set("eth:active", bool(eth0ip))
-        r.set("eth:ip", eth0ip)
-
-        # Update wifi
-        wlan0ip = ipaddress.get_ip_address('wlan0')
-
-        r.set("wlan:active", bool(wlan0ip))
-        r.set("wlan:ip", wlan0ip)
-
-        signallevel = 0
-        if wlan0ip:
-            # wlan link status
-            with open('/proc/net/wireless', 'r') as f:
-                wireless = f.readlines()
-            signals = [x.split()[3] for x in wireless if x.strip().startswith('wlan0')]
-            if signals:
-                signallevel = signals[0].partition('.')[0]
-                if signallevel.startswith('-'): # Detect the alternate signal strength reporting via dBm
-                    signallevel = 2 * ( int(signallevel) + 100 ) # Convert to percent
-        r.set("wlan:signallevel", signallevel)
-
-        # Update Hi-Link 3G Dongle - connects on eth1
-        if ipaddress.get_ip_address("eth1") and gsmhuaweistatus.is_hilink(hilink_device_ip):
-            gsm_connection_status = gsmhuaweistatus.return_gsm_connection_status(hilink_device_ip)
-            r.set("gsm:connection", gsm_connection_status[0])
-            r.set("gsm:signal", gsm_connection_status[1])
-            r.set("gsm:active", 1)
-        else:
-            r.set("gsm:active", 0)
-
-        # Now display the appropriate LCD page
-        if page == 0:
-            if eval(r.get("eth:active")):
-                lcd[0] = "Ethernet: YES"
-                lcd[1] = r.get("eth:ip")
-            elif eval(r.get("wlan:active")) or eval(r.get("gsm:active")):
-                page += 1
-            else:
-                lcd[0] = "Ethernet:"
-                lcd[1] = "NOT CONNECTED"
-
-        if page == 1:
-            if eval(r.get("wlan:active")):
-                if int(r.get("wlan:signallevel")) > 0:
-                   lcd[0] = "WiFi: YES  " + r.get("wlan:signallevel") + "%"
-                else:
-                   if r.get("wlan:ip") == "192.168.42.1":
-                      lcd[0] = "WiFi: AP MODE"
-                   else:
-                      lcd[0] = "WiFi: YES  "
-
-                lcd[1] = r.get("wlan:ip")
-            elif eval(r.get("gsm:active")) or eval(r.get("eth:active")):
-                page += 1
-            else:
-                lcd[0] = "WiFi:"
-                lcd[1] = "NOT CONNECTED"
-
-        if page == 2:
-            if eval(r.get("gsm:active")):
-                lcd[0] = r.get("gsm:connection")
-                lcd[1] = r.get("gsm:signal")
-            elif eval(r.get("eth:active")) or eval(r.get("wlan:active")):
-                page += 1
-            else:
-                lcd[0] = "GSM:"
-                lcd[1] = "NO DEVICE"
-
-        if page == 3:
-	
-            if r.get("utilityw") is not None:
-                lcd[0] = 'Utility: ' + r.get("utilityw") + "W"
-            else:
-                lcd[0] = "Utility:No data yet"
-
-            if r.get("pvw") is not None:
-                lcd[1] = 'PV: ' + r.get("pvw") + "W"
-            else:
-                lcd[1] = "PV:No data yet"
-
-        elif page == 4:
-            basedata = r.get("basedata")
-            if basedata is not None:
-                basedata = basedata.split(",")
-                lcd[0] = 'VRMS: ' + basedata[3] + "V"
-                lcd[1] = 'Temp 1: ' + basedata[4] + " C"
-            else:
-                lcd[0] = 'Connecting...'
-                lcd[1] = 'Please Wait'
-                page +=1
-
-        elif page == 5:
-            basedata = r.get("basedata")
-            if basedata is not None:
-                basedata = basedata.split(",")
-                lcd[0] = 'Temp 2: ' + basedata[5] + "C"
-                lcd[1] = 'Pulse: ' + basedata[10] + "p"
-            else:
-                lcd[0] = 'Connecting...'
-                lcd[1] = 'Please Wait'
-                page +=1
-
-        elif page == 6:
-            lcd[0] = datetime.now().strftime('%b %d %H:%M')
-            lcd[1] = 'Uptime %.2f days' % (seconds / 86400)
-
-        elif page == 7:
-            lcd[0] = "emonPi Build:"
-            lcd[1] = sd_image_version
-
-        # If Shutdown button is pressed initiate shutdown sequence
-        if GPIO.input(17) == 1:
-            logger.info("shutdown button pressed")
-            shutdown(lcd)
-
+	time.sleep(5) 
 
 if __name__ == '__main__':
     main()
