@@ -16,6 +16,8 @@ import logging
 import logging.handlers
 import atexit
 import os
+import ConfigParser
+
 from select import select
 from gpiozero import Button
 
@@ -28,30 +30,34 @@ import gsmhuaweistatus
 version = '2.2.1'
 # ------------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------------
-# emonPi Node ID (default 5)
-# ------------------------------------------------------------------------------------
-emonPi_nodeID = 5
+
+config = ConfigParser.ConfigParser() 
+config.read('/usr/share/emonPiLCD/emonPiLCD.cfg') 
+
+
 
 # ------------------------------------------------------------------------------------
 # MQTT Settings
 # ------------------------------------------------------------------------------------
-mqtt_user = "emonpi"
-mqtt_passwd = "emonpimqtt2016"
-mqtt_host = "127.0.0.1"
-mqtt_port = 1883
-mqtt_topic = "emonhub/rx/" + str(emonPi_nodeID) + "/values"
+mqtt_user = config.get('mqtt','mqtt_user')
+mqtt_passwd = config.get('mqtt','mqtt_passwd')
+mqtt_host = config.get('mqtt','mqtt_host')
+mqtt_port = config.getint('mqtt','mqtt_port')
+mqtt_emonpi_topic = config.get('mqtt','mqtt_emonpi_topic') 
+mqtt_utilityKw_topic = config.get('mqtt','mqtt_utilityKw_topic')
+mqtt_pvW_topic = config.get('mqtt','mqtt_pvW_topic')
+
 
 # ------------------------------------------------------------------------------------
 # Redis Settings
 # ------------------------------------------------------------------------------------
-redis_host = 'localhost'
-redis_port = 6379
+redis_host = config.get('redis', 'redis_host') 
+redis_port = config.get('redis', 'redis_port') 
 
 # ------------------------------------------------------------------------------------
 # Huawei Hi-Link GSM/3G USB dongle IP address on eth1
 # ------------------------------------------------------------------------------------
-hilink_device_ip = '192.168.1.1'
+hilink_device_ip = config.get('huawei', 'hilink_device_ip') 
 
 # ------------------------------------------------------------------------------------
 # I2C LCD: each I2C address will be tried in consecutive order until LCD is found
@@ -59,18 +65,18 @@ hilink_device_ip = '192.168.1.1'
 # ------------------------------------------------------------------------------------
 lcd_i2c = ['27', '3f']
 current_lcd_i2c = ''
-# LCD backlight timeout in seconds
-# 0: always on, 300: off after 5 min
-backlight_timeout = 300
+# LCD backlight timeout in seconds 0: always on, 300: off after 5 min
+backlight_timeout = config.getint('general','backlight_timeout') 
 # ------------------------------------------------------------------------------------
 
 # Default Startup Page
+default_page = config.getint('general','default_page') 
 max_number_pages = 7
 
 # ------------------------------------------------------------------------------------
 # Start Logging
 # ------------------------------------------------------------------------------------
-uselogfile = True
+uselogfile =  config.get('general','uselogfile') 
 
 # ------------------------------------------------------------------------------------
 # Create interrupt call for emonPi LCD button  
@@ -246,14 +252,25 @@ def main():
     logger.info("Connected to redis")
 
     logger.info("Connecting to MQTT Server: " + mqtt_host + " on port: " + str(mqtt_port) + " with user: " + mqtt_user)
+
     def on_message(client, userdata, msg):
         topic_parts = msg.topic.split("/")
-        if int(topic_parts[2]) == emonPi_nodeID:
+
+	if mqtt_utilityKw_topic in msg.topic: 
+	    r.set("utilitykw" , msg.payload)
+
+        if mqtt_pvW_topic in msg.topic:
+            r.set("pvw" , msg.payload)
+
+        if mqtt_emonpi_topic in msg.topic:
             r.set("basedata", msg.payload)
 
     def on_connect(client, userdata, flags, rc):
         if (rc==0):
-            mqttc.subscribe(mqtt_topic)
+	    logger.info(mqtt_emonpi_topic) 
+            mqttc.subscribe(mqtt_emonpi_topic)
+            mqttc.subscribe(mqtt_utilityKw_topic)
+            mqttc.subscribe(mqtt_pvW_topic)
 
     mqttc = mqtt.Client()
     mqttc.on_message = on_message
@@ -274,17 +291,20 @@ def main():
     time.sleep(2)
 
     buttonPress_time = time.time()
-    page = 0
+    page = default_page
 
     # Create object for getting IP addresses of interfaces
     ipaddress = IPAddress()
+
+    if not backlight_timeout: 
+      lcd.backlight = 1
 
     # Enter main loop
     while True:
         now = time.time()
 
         # turn backight off after backlight_timeout seconds
-        if now - buttonPress_time > backlight_timeout and lcd.backlight:
+        if (backlight_timeout) and now - buttonPress_time > backlight_timeout and lcd.backlight:
             lcd.backlight = 0
 
         if shortPress:
@@ -394,14 +414,16 @@ def main():
                 lcd[1] = "NO DEVICE"
 
         if page == 3:
-            basedata = r.get("basedata")
-            if basedata is not None:
-                basedata = basedata.split(",")
-                lcd[0] = 'Power 1: ' + basedata[0] + "W"
-                lcd[1] = 'Power 2: ' + basedata[1] + "W"
+	
+            if r.get("utilitykw") is not None:
+                lcd[0] = 'Utility: ' + r.get("utilitykw") + "KW"
             else:
-                lcd[0] = 'Connecting...'
-                lcd[1] = 'Please Wait'
+                lcd[0] = "Utility:No data yet"
+
+            if r.get("pvw") is not None:
+                lcd[1] = 'PV: ' + r.get("pvw") + "W"
+            else:
+                lcd[1] = "PV:No data yet"
 
         elif page == 4:
             basedata = r.get("basedata")
