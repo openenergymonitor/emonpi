@@ -44,7 +44,7 @@ mqtt_passwd = config.get('mqtt','mqtt_passwd')
 mqtt_host = config.get('mqtt','mqtt_host')
 mqtt_port = config.getint('mqtt','mqtt_port')
 mqtt_emonpi_topic = config.get('mqtt','mqtt_emonpi_topic') 
-mqtt_utilityKw_topic = config.get('mqtt','mqtt_utilityKw_topic')
+mqtt_utilityW_topic = config.get('mqtt','mqtt_utilityW_topic')
 mqtt_pvW_topic = config.get('mqtt','mqtt_pvW_topic')
 
 
@@ -256,8 +256,8 @@ def main():
     def on_message(client, userdata, msg):
         topic_parts = msg.topic.split("/")
 
-	if mqtt_utilityKw_topic in msg.topic: 
-	    r.set("utilitykw" , msg.payload)
+	if mqtt_utilityW_topic in msg.topic: 
+	    r.set("utilityw" , msg.payload)
 
         if mqtt_pvW_topic in msg.topic:
             r.set("pvw" , msg.payload)
@@ -269,7 +269,7 @@ def main():
         if (rc==0):
 	    logger.info(mqtt_emonpi_topic) 
             mqttc.subscribe(mqtt_emonpi_topic)
-            mqttc.subscribe(mqtt_utilityKw_topic)
+            mqttc.subscribe(mqtt_utilityW_topic)
             mqttc.subscribe(mqtt_pvW_topic)
 
     mqttc = mqtt.Client()
@@ -415,8 +415,8 @@ def main():
 
         if page == 3:
 	
-            if r.get("utilitykw") is not None:
-                lcd[0] = 'Utility: ' + r.get("utilitykw") + "KW"
+            if r.get("utilityw") is not None:
+                lcd[0] = 'Utility: ' + r.get("utilityw") + "W"
             else:
                 lcd[0] = "Utility:No data yet"
 
