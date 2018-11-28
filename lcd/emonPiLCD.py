@@ -334,6 +334,12 @@ class LCD(object):
 def main():
     global page
     global sd_image_version
+    global r
+
+    # Initialise some redis variables
+    r.set("gsm:active", 0)
+    r.set("wlan:active", 0)
+    r.set("eth:active", 0)
 
     # First set up logging
     atexit.register(logging.shutdown)
