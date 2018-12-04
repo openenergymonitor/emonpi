@@ -83,10 +83,13 @@ current_lcd_i2c = ''
 # ------------------------------------------------------------------------------------
 
 # Default Startup Page
-max_number_pages = 7
+max_number_pages = 11
 page = default_page
 
 sd_image_version = ''
+
+sshConfirm = False 
+shutConfirm = False
 
 # ------------------------------------------------------------------------------------
 # Start Logging
@@ -96,11 +99,19 @@ logger = logging.getLogger("emonPiLCD")
 
 
 def buttonPressLong():
+
    logger.info("Mode button LONG press")
-   subprocess.call("/home/pi/emonpi/lcd/enablessh.sh")
-   logger.info("SSH Enabled")
-   lcd[0] = 'SSH Enabled      '
-   lcd[1] = 'Change password!'
+
+   if sshConfirm:
+      subprocess.call("/home/pi/emonpi/lcd/enablessh.sh")
+      logger.info("SSH Enabled")
+      lcd[0] = 'SSH Enabled      '
+      lcd[1] = 'Change password!'
+   elif shutConfirm:
+      logger.info("Shutting down")
+      shutdown()
+   else:
+      lcd.backlight = not lcd.backlight
 
 
 def buttonPress():
@@ -129,9 +140,17 @@ def updateLCD() :
    global lcd
    global r
    global logger
+   global sshConfirm
+   global shutConfirm
 
    # Create object for getting IP addresses of interfaces
    ipaddress = IPAddress()
+
+   if not page == 9:
+       sshConfirm = False
+   if not page == 11:
+       shutConfirm = False
+
 
    # Now display the appropriate LCD page
    if page == 0:
@@ -251,6 +270,22 @@ def updateLCD() :
    elif page == 7:
         lcd[0] = "emonPi Build:"
         lcd[1] = sd_image_version
+
+   elif page == 8:
+        lcd[0] = "SSH enable?"
+        lcd[1] = "Y press & hold"
+	sshConfirm = False
+   elif page == 9:
+        lcd[0] = "SSH enable?"
+        sshConfirm = True
+
+   elif page == 10:
+        lcd[0] = "Shutdown?"
+        lcd[1] = "Y press & hold"
+	shutConfirm = False
+   elif page == 11:
+        lcd[0] = "Shutdown?"
+	shutConfirm = True
 
 
 
