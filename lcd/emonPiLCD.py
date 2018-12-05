@@ -303,6 +303,9 @@ class IPAddress(object):
         except Exception:
             return 0
 
+def preShutdown():
+    lcd[0] = "Shutdown?"
+    lcd[1] = "Hold 5 secs"
 
 def shutdown():
 
@@ -436,6 +439,7 @@ def main():
     logger.info("Attaching shutdown button interrupt...")
     try:
        shut_btn = Button(17, pull_up=False, hold_time=5)
+       shut_btn.when_pressed = preShutdown
        shut_btn.when_held = shutdown 
     except: 
        logger.error("Failed to attach shutdown button interrupt...")
