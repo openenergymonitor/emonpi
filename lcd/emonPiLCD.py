@@ -228,13 +228,13 @@ def updateLCD() :
         if r.get("feed1") is not None:
             lcd[0] = feed1_name + ':'  + r.get("feed1") + feed1_unit 
         else:
-            lcd[0] = feed1_name + ':'  + "No data yet"
+            lcd[0] = feed1_name + ':'  + "---"
  
 
         if r.get("feed2") is not None:
             lcd[1] = feed2_name + ':'  + r.get("feed2") + feed2_unit 
         else:
-            lcd[1] = feed2_name + ':'  + "No data yet"
+            lcd[1] = feed2_name + ':'  + "---"
 
    elif page == 4:
         basedata = r.get("basedata")
