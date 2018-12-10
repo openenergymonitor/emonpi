@@ -98,11 +98,11 @@ uselogfile =  config.get('general','uselogfile')
 logger = logging.getLogger("emonPiLCD")
 
 #ssh enable/disable/check commands
-ssh_enable = "systemctl enable sshd > /dev/null"
-ssh_start = "systemctl start sshd > /dev/null"
-ssh_disable = "systemctl disable sshd > /dev/null"
-ssh_stop = "systemctl stop sshd > /dev/null"
-ssh_status = "systemctl status sshd > /dev/null"
+ssh_enable = "systemctl enable ssh > /dev/null"
+ssh_start = "systemctl start ssh > /dev/null"
+ssh_disable = "systemctl disable ssh > /dev/null"
+ssh_stop = "systemctl stop ssh > /dev/null"
+ssh_status = "systemctl status ssh > /dev/null"
 
 
 
