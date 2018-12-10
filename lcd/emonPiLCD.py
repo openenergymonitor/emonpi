@@ -183,6 +183,9 @@ def updateLCD() :
         r.set("eth:active", bool(eth0ip))
         r.set("eth:ip", eth0ip)
 
+        wlan0ip = ipaddress.get_ip_address('wlan0')
+        r.set("wlan:active", bool(wlan0ip))
+
         if eval(r.get("eth:active")):
             lcd[0] = "Ethernet: YES"
             lcd[1] = r.get("eth:ip")
