@@ -97,16 +97,40 @@ shutConfirm = False
 uselogfile =  config.get('general','uselogfile') 
 logger = logging.getLogger("emonPiLCD")
 
+#ssh enable/disable/check commands
+ssh_enable = "systemctl enable ssh > /dev/null"
+ssh_start = "systemctl start ssh > /dev/null"
+ssh_disable = "systemctl disable ssh > /dev/null"
+ssh_stop = "systemctl stop ssh > /dev/null"
+ssh_status = "systemctl status ssh > /dev/null"
+
+
+
+
 
 def buttonPressLong():
 
    logger.info("Mode button LONG press")
 
    if sshConfirm:
-      subprocess.call("/home/pi/emonpi/lcd/enablessh.sh")
-      logger.info("SSH Enabled")
-      lcd[0] = 'SSH Enabled      '
-      lcd[1] = 'Change password!'
+
+      ret=subprocess.call(ssh_status, shell=True)
+      if ret > 0 :
+         #ssh not running, enable & start it
+         subprocess.call(ssh_enable, shell=True)
+         subprocess.call(ssh_start, shell=True)
+         logger.info("SSH Enabled")
+         lcd[0] = 'SSH Enabled      '
+         lcd[1] = 'Change password!'
+      else:
+         #disable ssh
+         subprocess.call(ssh_disable, shell=True)
+         subprocess.call(ssh_stop, shell=True)
+         logger.info("SSH Disabled")
+         lcd[0] = 'SSH Disabled      '
+         lcd[1] = '                '
+         
+
    elif shutConfirm:
       logger.info("Shutting down")
       shutdown()
@@ -229,7 +253,6 @@ def updateLCD() :
             lcd[0] = feed1_name + ':'  + r.get("feed1") + feed1_unit 
         else:
             lcd[0] = feed1_name + ':'  + "---"
- 
 
         if r.get("feed2") is not None:
             lcd[1] = feed2_name + ':'  + r.get("feed2") + feed2_unit 
@@ -272,11 +295,18 @@ def updateLCD() :
         lcd[1] = sd_image_version
 
    elif page == 8:
-        lcd[0] = "SSH enable?"
+        ret=subprocess.call(ssh_status, shell=True)
+        if ret > 0 : 
+          #ssh not running
+          lcd[0] = "SSH Enable?"
+        else:
+          #ssh not running
+          lcd[0] = "SSH Disable?"
+
         lcd[1] = "Y press & hold"
 	sshConfirm = False
+
    elif page == 9:
-        lcd[0] = "SSH enable?"
         sshConfirm = True
 
    elif page == 10:
