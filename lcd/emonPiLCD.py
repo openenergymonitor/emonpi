@@ -542,11 +542,10 @@ def main():
         # turn backight off after backlight_timeout seconds
         if (backlight_timeout) and now - buttonPress_time > backlight_timeout and lcd.backlight:
             lcd.backlight = 0
-
-	#Update LCD in case it is left at a screen where values can change (e.g uptime etc)
-	updateLCD() ;
-	time.sleep(lcd_update_sec) 
-
+        
+        #Update LCD in case it is left at a screen where values can change (e.g uptime etc)
+        updateLCD() ;
+        time.sleep(lcd_update_sec) 
 
 if __name__ == '__main__':
     main()

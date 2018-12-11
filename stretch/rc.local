@@ -10,13 +10,14 @@ hostname -I
 # Will only run if /var/log is mounted in tmpfs
 if ( mount | grep "on /var/log "| grep -q "^tmpfs " )
 then
-  for i in "redis" "apache2" "mysql" "openhab" "logrotate" "mosquitto" "supervisor"; do mkdir /var/log/"$i"; done
+  for i in "redis" "apache2" "mysql" "openhab" "openhab2" "logrotate" "mosquitto" "supervisor"; do mkdir /var/log/"$i"; done
   for i in "emoncms.log" "mysql.log" "mqtt_input.log" "redis/redis-server.log" "service-runner.log" "mysql/error.log" "apache2/error.log" "supervisor/supervisord.log" "ntp_update.log"; do touch /var/log/"$i"; done
   for i in "emoncms.log" "mysql.log" "mqtt_input.log" "redis/redis-server.log" "service-runner.log" "mysql/error.log" "apache2/error.log" "supervisor/supervisord.log" "ntp_update.log"; do ""chmod 666"" /var/log/"$i"; done
   chown -R root:adm /var/log/apache2
   chown -R redis:redis /var/log/redis
   chown -R mysql:adm /var/log/mysql
   chown -R openhab:openhab /var/log/openhab
+  chown -R openhab:openhab /var/log/openhab2
   chown -R pi:pi /var/log/logrotate
   chown -R mosquitto:mosquitto /var/log/mosquitto
   chown -R dataplicity:dataplicity /var/log/supervisor;
