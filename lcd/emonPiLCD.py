@@ -26,7 +26,7 @@ import gsmhuaweistatus
 
 # ------------------------------------------------------------------------------------
 # Script version
-version = '3.0.0'
+version = '3.0.1'
 # ------------------------------------------------------------------------------------
 
 
@@ -540,6 +540,7 @@ def main():
     while True:
 
         # turn backight off after backlight_timeout seconds
+        now = time.time()
         if (backlight_timeout) and now - buttonPress_time > backlight_timeout and lcd.backlight:
             lcd.backlight = 0
         
