@@ -367,11 +367,15 @@ class LCD(object):
             print "I2C LCD DETECTED Ox%s" % i2c_address
             logger.info("I2C LCD DETECTED 0x%s" % i2c_address)
             current_lcd_i2c = "0x%s" % i2c_address
+            # add file to identify device as emonpi
+            open('/home/pi/data/emonpi', 'a').close()
             break
 
         if lcd_status.rstrip() == 'False':
           print ("I2C LCD NOT DETECTED on either 0x" + str(lcd_i2c) + " ...exiting LCD script")
           logger.error("I2C LCD NOT DETECTED on either 0x" + str(lcd_i2c) + " ...exiting LCD script")
+          # add file to identify device as emonbase
+          open('/home/pi/data/emonbase', 'a').close()
           sys.exit(1)
 
         # Init LCD using detected I2C address with 16 characters
