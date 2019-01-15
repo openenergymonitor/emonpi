@@ -14,8 +14,9 @@ echo
 sudo pip install paho-mqtt --upgrade
 
 # Ensure rpi gpio is latest version and gpiozero is installed, required for V2.2.0 LCD script
+# rng-tools used to speed up entropy generation https://community.openenergymonitor.org/t/cant-connect-to-local-emoncms/9498/7
 sudo apt-get update
-sudo apt-get install python-gpiozero python-rpi.gpio -y
+sudo apt-get install python-gpiozero python-rpi.gpio apt-get install rng-tools -y
 
 sudo /etc/init.d/emonhub stop
 
