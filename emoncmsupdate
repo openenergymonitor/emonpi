@@ -276,17 +276,39 @@ echo
 ################################################################################################
 if [ -d /etc/systemd ] && [ -f /var/www/emoncms/scripts/mqtt_input.service ]; then
     if [ -f /etc/init.d/mqtt_input ]; then
-      echo "replacing initd mqtt_input with systemd mqtt input"
+      echo "removing initd mqtt_input service"
       sudo /etc/init.d/mqtt_input stop
       sudo rm /etc/init.d/mqtt_input
-      sudo cp /var/www/emoncms/scripts/mqtt_input.service /etc/systemd/system/mqtt_input.service
-      sudo systemctl daemon-reload
+    fi
+
+    if [ -f /etc/systemd/system/mqtt_input.service ]; then
+      echo "removing mqtt_input.service from /etc/systemd/system"
+      sudo systemctl mqtt_input stop
+      sudo rm /etc/systemd/system/mqtt_input.service
+    fi
+    
+    if [ ! -f /lib/systemd/system/mqtt_input.service ]; then
+      echo "install mqtt_input.service in /lib/systemd/system"
+      sudo ln /var/www/emoncms/scripts/mqtt_input.service /lib/systemd/system
       sudo systemctl enable mqtt_input.service
+      sudo systemctl stop mqtt_input.service
       sudo systemctl start mqtt_input.service
-    else
-     echo "update mqtt_input systemd unit file"
-     sudo cp /var/www/emoncms/scripts/mqtt_input.service /etc/systemd/system/mqtt_input.service
-     sudo systemctl daemon-reload
+    fi
+fi
+################################################################################################
+if [ -d /etc/systemd ] && [ -f /var/www/emoncms/scripts/services/feedwriter/feedwriter.service ]; then
+    if [ -f /etc/init.d/feedwriter ]; then
+      echo "removing initd feedwriter"
+      sudo /etc/init.d/feedwriter stop
+      sudo rm /etc/init.d/feedwriter
+    fi
+    
+    if [ ! -f /lib/systemd/system/feedwriter.service ]; then
+      echo "installing feedwriter systemd unit file"
+      sudo ln -s /var/www/emoncms/scripts/services/feedwriter/feedwriter.service /lib/systemd/system
+      sudo systemctl enable feedwriter.service
+      sudo systemctl stop feedwriter.service
+      sudo systemctl start feedwriter.service
     fi
 fi
 
