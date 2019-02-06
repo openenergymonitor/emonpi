@@ -274,44 +274,47 @@ fi
 echo
 
 ################################################################################################
-if [ -d /etc/systemd ] && [ -f /var/www/emoncms/scripts/mqtt_input.service ]; then
-    if [ -f /etc/init.d/mqtt_input ]; then
-      echo "removing initd mqtt_input service"
-      sudo /etc/init.d/mqtt_input stop
-      sudo rm /etc/init.d/mqtt_input
-    fi
+for service in "mqtt_input" "feedwriter" "service-runner"; do
 
-    if [ -f /etc/systemd/system/mqtt_input.service ]; then
-      echo "removing mqtt_input.service from /etc/systemd/system"
-      sudo systemctl mqtt_input stop
-      sudo rm /etc/systemd/system/mqtt_input.service
+  if [ -d /etc/systemd ] && [ -f /var/www/emoncms/scripts/services/$service/$service.service ]; then
+    if [ -f /etc/init.d/$service ]; then
+      echo "removing initd $service service"
+      sudo /etc/init.d/$service stop
+      sudo rm /etc/init.d/$service
     fi
     
-    if [ ! -f /lib/systemd/system/mqtt_input.service ]; then
-      echo "install mqtt_input.service in /lib/systemd/system"
-      sudo ln /var/www/emoncms/scripts/mqtt_input.service /lib/systemd/system
-      sudo systemctl enable mqtt_input.service
-      sudo systemctl stop mqtt_input.service
-      sudo systemctl start mqtt_input.service
+    # service will be symlinked to /etc/systemd/system by "systemctl enable"
+    if [ -f /etc/systemd/system/$service.service ]; then
+      if ! [ -L /etc/systemd/system/$service.service ]; then
+        echo "Removing hard copy of $service.service from /etc/systemd/system (should be symlink)"
+        sudo systemctl stop $service.service
+        sudo systemctl disable $service.service
+        sudo rm /etc/systemd/system/$service.service
+        sudo systemctl daemon-reload
+      fi
     fi
-fi
+    
+    if [ -f /lib/systemd/system/$service.service ]; then
+      if ! [ -L /lib/systemd/system/$service.service ]; then
+        echo "Removing hard copy of $service.service in /lib/systemd/system (should be symlink)"
+        sudo systemctl stop $service.service
+        sudo systemctl disable $service.service
+        sudo rm /lib/systemd/system/$service.service
+        sudo systemctl daemon-reload
+      fi
+    fi
+    
+    if [ ! -f /lib/systemd/system/$service.service ]; then
+      echo "Installing $service.service in /lib/systemd/system (creating symlink)"
+      sudo ln -s /var/www/emoncms/scripts/services/$service/$service.service /lib/systemd/system
+      sudo systemctl enable $service.service
+      sudo systemctl start $service.service
+    else 
+      echo "$service.service already installed"
+    fi
+  fi
+done
 ################################################################################################
-if [ -d /etc/systemd ] && [ -f /var/www/emoncms/scripts/services/feedwriter/feedwriter.service ]; then
-    if [ -f /etc/init.d/feedwriter ]; then
-      echo "removing initd feedwriter"
-      sudo /etc/init.d/feedwriter stop
-      sudo rm /etc/init.d/feedwriter
-    fi
-    
-    if [ ! -f /lib/systemd/system/feedwriter.service ]; then
-      echo "installing feedwriter systemd unit file"
-      sudo ln -s /var/www/emoncms/scripts/services/feedwriter/feedwriter.service /lib/systemd/system
-      sudo systemctl enable feedwriter.service
-      sudo systemctl stop feedwriter.service
-      sudo systemctl start feedwriter.service
-    fi
-fi
-
 ## Don't overwrite settings unless required (un comment if required)
 # echo "Copy new default.emonpi.settings.php to settings.php & make backup old.emonpi.settings.php"
 # sudo cp /var/www/emoncms/settings.php /var/www/emoncms/old.settings.php
