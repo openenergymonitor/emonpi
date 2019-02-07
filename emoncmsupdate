@@ -412,6 +412,7 @@ for service in "feedwriter" "mqtt_input" "emoncms_mqtt" "emoncms-nodes-service" 
   elif [ -f /etc/init.d/$service ]; then
     echo "- sudo /etc/init.d/$service restart"
     sudo /etc/init.d/$service restart
+    sudo /etc/init.d/$service status
   fi
 done
 echo
