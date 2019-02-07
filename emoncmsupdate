@@ -411,7 +411,7 @@ for service in "feedwriter" "mqtt_input" "emoncms_mqtt" "emoncms-nodes-service" 
   fi
 done
 echo
-if [ "$env_pi" = "1" ]; then 
+if [ "$emonSD_pi_env" = "1" ]; then 
   echo "set log rotate config owner to root"
   sudo chown root:root /etc/logrotate.conf
 fi
