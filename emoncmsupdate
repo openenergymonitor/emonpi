@@ -294,7 +294,7 @@ for module in "postprocess" "sync" "backup"; do
 done
 echo
 #########################################################################################
-sudo service apache2 restart
+# sudo service apache2 restart
 
 if [ "$emonSD_pi_env" = "1" ]; then 
   # Install emoncms-setup module (symlink from emonpi repo)
