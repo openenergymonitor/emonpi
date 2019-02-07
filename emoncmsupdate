@@ -370,6 +370,9 @@ if [ "$env_pi" = "1" ]; then
 fi
 
 echo "Restarting Services..."
+if [ -d /lib/systemd/system ]; then
+  sudo systemctl daemon-reload
+fi
 
 for service in "feedwriter" "mqtt_input" "emoncms_mqtt" "emoncms-nodes-service" "emonhub" "openhab"; do
   if [ -f /lib/systemd/system/$service.service ]; then
