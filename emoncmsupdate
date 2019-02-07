@@ -336,6 +336,10 @@ for service in "mqtt_input"; do
     echo "Removing $service.service from /etc/systemd/system"
     sudo rm /etc/systemd/system/$service.service
   fi
+  
+  # testing on emonpi the above attempts to stop did not work?
+  # make sure its dead!!
+  sudo pkill -f phpmqtt_input.php
 done
 ################################################################################################
 # Installation or correction of services
