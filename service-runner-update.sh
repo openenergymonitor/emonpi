@@ -43,7 +43,9 @@ sudo service emonPiLCD stop
 sudo /home/pi/emonpi/lcd/./emonPiLCD_update.py
 
 # make file system read-write
-rpi-rw
+if [ -f /usr/bin/rpi-rw ]; then
+  rpi-rw
+fi
 
 echo "git pull /home/pi/emonpi"
 cd /home/pi/emonpi
@@ -129,7 +131,11 @@ echo "Starting emonPi LCD service.."
 sleep 5
 sudo service emonPiLCD restart
 echo
-rpi-ro
+
+if [ -f /usr/bin/rpi-ro ]; then
+  rpi-ro
+fi
+
 date
 echo
 printf "\n...................\n"
