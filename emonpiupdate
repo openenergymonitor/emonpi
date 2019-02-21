@@ -18,7 +18,7 @@ sudo pip install paho-mqtt --upgrade
 sudo apt-get update
 sudo apt-get install python-gpiozero python-rpi.gpio rng-tools -y
 
-sudo /etc/init.d/emonhub stop
+sudo service emonhub stop
 
 echo "Start ATmega328 serial upload using avrdude with latest.hex"
 
@@ -33,7 +33,7 @@ avrdude -c arduino -p ATMEGA328P -P /dev/ttyAMA0 -b 115200 -U flash:w:/home/pi/e
 # RFM69Pi with RFM69CW Update
 # avrdude -v -c arduino -p ATMEGA328P -P /dev/ttyAMA0 -b 38400 -U flash:w:/home/pi/RFM2Pi/firmware/RFM69CW_RF_Demo_ATmega328/RFM69CW_RF12_Demo_ATmega328.cpp.hex
 
-sudo /etc/init.d/emonhub start
+sudo service emonhub start
 
 #########################################################################################################
 
