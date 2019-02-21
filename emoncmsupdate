@@ -104,14 +104,13 @@ fi
 #########################################################################################
 # Install sudoers entry to enable emonhub reboot button
 
-if [ ! -f /etc/sudoers.d/emonhub-sudoers ]; then
-    # double check correct sudo syntax
-    sudo visudo -cf $homedir/emonpi/emonhub-sudoers && \
-    sudo cp $homedir/emonpi/emonhub-sudoers /etc/sudoers.d/
-    sudo chmod 0440 /etc/sudoers.d/emonhub-sudoers
-    echo
-    echo "emonhub service control sudoers entry installed"
-fi
+# double check correct sudo syntax
+sudo visudo -cf $homedir/emonpi/emonhub-sudoers && \
+sudo cp $homedir/emonpi/emonhub-sudoers /etc/sudoers.d/
+sudo chmod 0440 /etc/sudoers.d/emonhub-sudoers
+echo
+echo "emonhub service control sudoers entry installed"
+
 
 #########################################################################################
 # Install sudoers entry for WiFI AP
