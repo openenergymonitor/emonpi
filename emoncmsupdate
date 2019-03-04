@@ -129,8 +129,12 @@ fi
 # Setup user group to enable reading GPU temperature (pi only)
 #https://github.com/emoncms/emoncms/pull/869
 if [ "$emonSD_pi_env" = "1" ]; then 
-    sudo usermod -G video www-data
+    sudo usermod -a -G video www-data
 fi
+
+# Add www-data to systemd group to enable read logfiles e.g emonhub 
+sudo usermod -a -G systemd-journal www-data
+groups www-data
 
 #########################################################################################
 # Record current state of emoncms settings.php
@@ -293,7 +297,7 @@ for module in "postprocess" "sync" "backup"; do
 done
 echo
 #########################################################################################
-# sudo service apache2 restart
+
 
 if [ "$emonSD_pi_env" = "1" ]; then 
   # Install emoncms-setup module (symlink from emonpi repo)
@@ -414,6 +418,8 @@ for service in "feedwriter" "mqtt_input" "emoncms_mqtt" "emoncms-nodes-service" 
     sudo /etc/init.d/$service status
   fi
 done
+# Reload rather than restart apache so we dont loose the interface 
+sudo service apache2 reload 
 echo
 if [ "$emonSD_pi_env" = "1" ]; then 
   echo "set log rotate config owner to root"
