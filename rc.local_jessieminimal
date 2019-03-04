@@ -40,6 +40,8 @@ then
   service feedwriter restart
   service mqtt_input restart
   service lwrfd restart
+  service service-runner restart
+  service emoncms_mqtt restart
 
 fi
 
