@@ -424,14 +424,21 @@ done
 ###################################################################################
 echo "Installing emoncms logrotate..."
 echo
+
 # Remove already roated old log files to free up space incase /var/log is full
-sudo rm syslog.*
-sudo rm /var/log/*.log.*
+if ls /var/log/syslog.* > /dev/null 2>&1; then
+  sudo rm /var/log/syslog.*
+fi
+
+if ls /var/log/*.log.* > /dev/null 2>&1; then
+  sudo rm /var/log/*.log.*
+fi
+
 # Install emonPi log rotate config
-sudo var/www/emoncms/scripts/logger/install.sh
+sudo /var/www/emoncms/scripts/logger/install.sh
 # Run log roate manually
 echo "Running logrotate..."
-sudo /usr/sbin/logrotate -v -s /var/log/logrotate/logrotate.status /etc/logrotate.conf
+sudo /usr/sbin/logrotate -v -s /var/log/logrotate/logrotate.status /etc/logrotate.conf > /dev/null 2>&1
 
 
 
