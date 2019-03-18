@@ -418,6 +418,32 @@ for service in "feedwriter" "mqtt_input" "emoncms_mqtt" "emoncms-nodes-service" 
     sudo /etc/init.d/$service status
   fi
 done
+
+###################################################################################
+# Intalll log rotate config
+###################################################################################
+echo "Installing emoncms logrotate..."
+echo
+# Remove already roated old log files to free up space incase /var/log is full
+sudo rm syslog.*
+sudo rm /var/log/*.log.*
+# Install emonPi log rotate config
+sudo var/www/emoncms/scripts/logger/install.sh
+# Run log roate manually
+echo "Running logrotate..."
+sudo /usr/sbin/logrotate -v -s /var/log/logrotate/logrotate.status /etc/logrotate.conf
+
+
+
+
+
+
+
+
+
+
+
+
 # Reload rather than restart apache so we dont loose the interface 
 sudo service apache2 reload 
 echo
