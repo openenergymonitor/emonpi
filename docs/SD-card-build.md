@@ -1,6 +1,4 @@
-# emonSD (emonPi & emonBase) SD card build
-
-**As used to build emonSD-26Oct17**
+# Archived emonSD-26Oct17 build guide
 
 **For download: See [emonSD releases page (Git wiki)](https://github.com/openenergymonitor/emonpi/wiki/emonSD-pre-built-SD-card-Download-%26-Change-Log)**.
 
