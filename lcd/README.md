@@ -39,7 +39,7 @@ Enter "sudo reboot" to restart the pi and now the I2C pins will be available to 
 
  	$ sudo i2cdetect -y 1
 
-Expected output LCD is detect on 0x27:
+Expected output LCD is detect is `0x27` or `0x3F` e.g 
 
 ```
 pi@emonpi:~ $  sudo i2cdetect -y 1
