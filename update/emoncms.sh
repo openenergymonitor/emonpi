@@ -11,27 +11,6 @@ emonSD_pi_env=$2
 emoncms_dir=$3
 emoncms_symlinked_modules="/usr/emoncms/modules"
 
-if [ "$emonSD_pi_env" = "1" ]; then
-
-    # Sudoers installation (provides sudo access to specific commands from emoncms)
-    for sudoersfile in "emoncms-rebootbutton" "emoncms-filesystem" "emoncms-filesystem" "emoncms-setup-sudoers"; do
-        if [ ! -f /etc/sudoers.d/$sudoersfile ]; then
-            sudo visudo -cf $homedir/emonpi/sudoers.d/$sudoersfile && \
-            sudo cp $homedir/emonpi/sudoers.d/$sudoersfile /etc/sudoers.d/
-            sudo chmod 0440 /etc/sudoers.d/$sudoersfile
-            echo
-            echo "$sudoersfile sudoers entry installed"
-        fi
-    done
-    
-    # Setup user group to enable reading GPU temperature (pi only)
-    sudo usermod -a -G video www-data
-    
-    # Add www-data to systemd group to enable read logfiles e.g emonhub 
-    sudo usermod -a -G systemd-journal www-data
-    groups www-data
-fi
-
 # -----------------------------------------------------------------
 # Record current state of emoncms settings.php
 # This needs to be run prior to emoncms git pull
@@ -156,12 +135,11 @@ for module in "postprocess" "sync" "backup"; do
   echo
 done
 
-exit 0
 #########################################################################################
 # Automatic installation of new modules if they dont already exist
-echo "=========================================="
-echo "AUTO INSTALL EMONCMS MODULES"
-echo "=========================================="
+echo "------------------------------------------"
+echo "Auto Installation of Emoncms Modules"
+echo "------------------------------------------"
 
 # Direct installation in Modules folder
 for module in "graph" "device"; do
@@ -181,13 +159,13 @@ done
 
 # Direct installation in Modules folder
 for module in "postprocess" "sync" "backup"; do
-  if ! [ -d $homedir/$module ]; then
+  if ! [ -d $emoncms_symlinked_modules/$module ]; then
     echo
     echo "- Installing Emoncms $module module https://github.com/emoncms/$module"
-    cd $homedir
+    cd $emoncms_symlinked_modules
     git clone https://github.com/emoncms/$module
-    ln -s $homedir/$module/$module-module $emoncms_dir/Modules
-    cd $homedir/$module/$module-module
+    ln -s $emoncms_symlinked_modules/$module/$module-module $emoncms_dir/Modules
+    cd $emoncms_symlinked_modules/$module/$module-module
     if [ `git branch --list stable` ]; then
        echo "-- git checkout stable"
        git checkout stable
@@ -198,10 +176,29 @@ for module in "postprocess" "sync" "backup"; do
   fi
 done
 echo
+
 #########################################################################################
 
+if [ "$emonSD_pi_env" = "1" ]; then
 
-if [ "$emonSD_pi_env" = "1" ]; then 
+  # Sudoers installation (provides sudo access to specific commands from emoncms)
+  for sudoersfile in "emoncms-rebootbutton" "emoncms-filesystem" "emoncms-filesystem" "emoncms-setup-sudoers"; do
+      if [ ! -f /etc/sudoers.d/$sudoersfile ]; then
+          sudo visudo -cf $homedir/emonpi/sudoers.d/$sudoersfile && \
+          sudo cp $homedir/emonpi/sudoers.d/$sudoersfile /etc/sudoers.d/
+          sudo chmod 0440 /etc/sudoers.d/$sudoersfile
+          echo
+          echo "$sudoersfile sudoers entry installed"
+      fi
+  done
+  
+  # Setup user group to enable reading GPU temperature (pi only)
+  sudo usermod -a -G video www-data
+  
+  # Add www-data to systemd group to enable read logfiles e.g emonhub 
+  sudo usermod -a -G systemd-journal www-data
+  groups www-data
+ 
   # Install emoncms-setup module (symlink from emonpi repo)
   if [ -d $homedir/emonpi/emoncms-setup ] && [ ! -d $emoncms_dir/Modules/setup ]; then
     echo "Installing emoncms/emonPi setup module: symlink from ~/emonpi/emoncms-setup"
@@ -214,14 +211,13 @@ if [ "$emonSD_pi_env" = "1" ]; then
   echo
 fi
 
-
-echo "=========================================="
+echo "------------------------------------------"
 echo "SERVICES"
-echo "=========================================="
+echo "------------------------------------------"
 # Removal of services
 # 6th Feb 2019: mqtt_input renamed to emoncms_mqtt
 for service in "mqtt_input"; do
-  /home/pi/emonpi/update/remove_emoncms_service.sh $service
+  $homedir/emonpi/update/remove_emoncms_service.sh $service
 done
 # testing on emonpi the above attempts to stop did not work?
 # make sure its dead!!
@@ -229,26 +225,19 @@ sudo pkill -f phpmqtt_input.php
 
 # Installation or correction of services
 for service in "emoncms_mqtt" "feedwriter" "service-runner"; do
-  /home/pi/emonpi/update/install_emoncms_service.sh $emoncms_dir $service
+  $homedir/emonpi/update/install_emoncms_service.sh $emoncms_dir $service
 done
 echo "------------------------------------------"
 
-################################################################################################
-## Don't overwrite settings unless required (un comment if required)
-# echo "Copy new default.emonpi.settings.php to settings.php & make backup old.emonpi.settings.php"
-# sudo cp $emoncms_dir/settings.php $emoncms_dir/old.settings.php
-# sudo cp $emoncms_dir/default.emonpi.settings.php $emoncms_dir/settings.php
-
-#if [ "$emonSD_pi_env" = "1" ]; then 
-echo "Update Emoncms database"
-php $homedir/emonpi/emoncmsdbupdate.php
-echo
-#fi
-
-echo "Restarting Services..."
 if [ -d /lib/systemd/system ]; then
   sudo systemctl daemon-reload
 fi
+
+echo "Update Emoncms database"
+php $homedir/emonpi/update/emoncmsdbupdate.php
+echo
+
+echo "Restarting Services..."
 
 for service in "feedwriter" "mqtt_input" "emoncms_mqtt" "emoncms-nodes-service" "emonhub" "openhab"; do
   if [ -f /lib/systemd/system/$service.service ]; then
@@ -264,33 +253,33 @@ for service in "feedwriter" "mqtt_input" "emoncms_mqtt" "emoncms-nodes-service" 
 done
 
 ###################################################################################
-# Intalll log rotate config
-###################################################################################
-echo "Installing emoncms logrotate..."
-echo
+# Install log rotate config
+####################################################################################
+# echo "Installing emoncms logrotate..."
+# echo
 
 # Remove already roated old log files to free up space incase /var/log is full
-if ls /var/log/syslog.* > /dev/null 2>&1; then
-  sudo rm /var/log/syslog.*
-fi
+# if ls /var/log/syslog.* > /dev/null 2>&1; then
+#   sudo rm /var/log/syslog.*
+# fi
 
-if ls /var/log/*.log.* > /dev/null 2>&1; then
-  sudo rm /var/log/*.log.*
-fi
+# if ls /var/log/*.log.* > /dev/null 2>&1; then
+#   sudo rm /var/log/*.log.*
+# fi
 
 # Install emonPi log rotate config
-sudo /var/www/emoncms/scripts/logger/install.sh
+#  sudo /var/www/emoncms/scripts/logger/install.sh
 # Run log roate manually
-echo "Running logrotate..."
-sudo /usr/sbin/logrotate -v -s /var/log/logrotate/logrotate.status /etc/logrotate.conf > /dev/null 2>&1
+# echo "Running logrotate..."
+# sudo /usr/sbin/logrotate -v -s /var/log/logrotate/logrotate.status /etc/logrotate.conf > /dev/null 2>&1
 
 # Reload rather than restart apache so we dont loose the interface 
 sudo service apache2 reload 
 echo
-if [ "$emonSD_pi_env" = "1" ]; then 
-  echo "set log rotate config owner to root"
-  sudo chown root:root /etc/logrotate.conf
-fi
+#if [ "$emonSD_pi_env" = "1" ]; then 
+#  echo "set log rotate config owner to root"
+#  sudo chown root:root /etc/logrotate.conf
+#fi
 echo
 echo "------------------------------------------"
 echo "Emoncms update script complete"

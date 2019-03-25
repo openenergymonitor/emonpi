@@ -168,8 +168,6 @@ echo "Start emoncms update:"
 /home/pi/emonpi/update/emoncms.sh $homedir $emonSD_pi_env $emoncms_dir
 echo
 
-exit 0
-
 echo
 # Wait for update to finish
 echo "Starting emonPi LCD service.."
