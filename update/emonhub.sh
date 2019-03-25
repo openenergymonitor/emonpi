@@ -1,8 +1,13 @@
 #!/bin/bash
-echo
-echo "================================="
+echo "-------------------------------------------------------------"
 echo "emonHub update started"
-echo "================================="
+echo "-------------------------------------------------------------"
+
+echo "git pull /home/pi/emonhub"
+cd /home/pi/emonhub
+git branch
+git status
+git pull
 
 username="pi"
 homedir="/home/$username"
@@ -53,6 +58,6 @@ fi
 
 echo
 echo "Running emonhub automatic node addition script"
-echo "EUID: $EUID"
+
 $homedir/emonhub/conf/nodes/emonpi_auto_add_nodes.sh
 

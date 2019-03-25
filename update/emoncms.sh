@@ -78,7 +78,6 @@ fi
 
 #########################################################################################
 if [ "$emonSD_pi_env" = "1" ]; then 
-
     # Install sudoers entry to enable emoncms reboot button
     if [ ! -f /etc/sudoers.d/emoncms-rebootbutton ]; then
         # double check correct sudo syntax
@@ -91,7 +90,6 @@ if [ "$emonSD_pi_env" = "1" ]; then
 
     #########################################################################################
     # Install sudoers entry to enable toggling file-system RO/RW mount via Emoncms admin
-
     if [ ! -f /etc/sudoers.d/emoncms-filesystem ]; then
         # double check correct sudo syntax
         sudo visudo -cf $homedir/emonpi/emoncms-filesystem && \
@@ -439,17 +437,6 @@ sudo /var/www/emoncms/scripts/logger/install.sh
 # Run log roate manually
 echo "Running logrotate..."
 sudo /usr/sbin/logrotate -v -s /var/log/logrotate/logrotate.status /etc/logrotate.conf > /dev/null 2>&1
-
-
-
-
-
-
-
-
-
-
-
 
 # Reload rather than restart apache so we dont loose the interface 
 sudo service apache2 reload 

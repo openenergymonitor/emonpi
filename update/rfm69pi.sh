@@ -1,6 +1,8 @@
 #!/bin/bash
-echo "RFM69Pi Update Started"
-echo  date
+echo "-------------------------------------------------------------"
+echo "RFM69Pi Firmware Update"
+echo "-------------------------------------------------------------"
+
 echo "Getting latest RFM69Pi release info from github"
 download_url="$(curl -s https://api.github.com/repos/openenergymonitor/RFM2Pi/releases | grep browser_download_url | head -n 1 | cut -d '"' -f 4)"
 version="$(curl -s https://api.github.com/repos/openenergymonitor/RFM2Pi/releases | grep tag_name | head -n 1 |  cut -d '"' -f 4)"
@@ -18,10 +20,6 @@ wget -q $download_url -O /home/pi/data/firmware/rfm69pi-$version.hex
 
 if [ -f /home/pi/data/firmware/rfm69pi-$version.hex ]; then
   sudo service emonhub stop
-  echo
-  echo "================================="
-  echo "RFM69Pi update started"
-  echo "================================="
   echo
   echo "Flashing RFM69Pi with V" $version
   echo
