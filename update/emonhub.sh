@@ -17,5 +17,5 @@ $homedir/emonpi/update/install_emoncms_service.sh $servicepath $service
 
 echo
 echo "Running emonhub automatic node addition script"
-$homedir/emonhub/conf/nodes/emonpi_auto_add_nodes.sh
+$homedir/emonhub/conf/nodes/emonpi_auto_add_nodes.sh $homedir
 

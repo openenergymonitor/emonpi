@@ -27,7 +27,7 @@ fi
 emonSD_pi_env=0
 # Check for pi user
 pi=$(id -u pi)
-if [ $pi ] && [ -d /home/pi ]; then
+if [ $pi ] && [ -d $homedir ]; then
   echo "- pi user and pi user directory found"
   emonSD_pi_env=1
 else 
@@ -77,17 +77,19 @@ if [ "$uid" = "0" ] ; then
     exit
 fi
 
-# Check if we have an emonpi LCD connected, 
-# if we do assume EmonPi hardware else assume RFM69Pi
-lcd27=$(sudo /home/pi/emonpi/lcd/emonPiLCD_detect.sh 27 1)
-lcd3f=$(sudo /home/pi/emonpi/lcd/emonPiLCD_detect.sh 3f 1)
+if [ "$emonSD_pi_env" = "1" ]; then
+    # Check if we have an emonpi LCD connected, 
+    # if we do assume EmonPi hardware else assume RFM69Pi
+    lcd27=$(sudo $homedir/emonpi/lcd/emonPiLCD_detect.sh 27 1)
+    lcd3f=$(sudo $homedir/emonpi/lcd/emonPiLCD_detect.sh 3f 1)
 
-if [ $lcd27 == 'True' ] || [ $lcd3f == 'True' ]; then
-    hardware="EmonPi"
-else
-    hardware="rfm2pi"
+    if [ $lcd27 == 'True' ] || [ $lcd3f == 'True' ]; then
+        hardware="EmonPi"
+    else
+        hardware="rfm2pi"
+    fi
+    echo "Hardware detected: $hardware"
 fi
-echo "Hardware detected: $hardware"
 
 # sudo apt-get update
 
@@ -98,45 +100,45 @@ echo "Hardware detected: $hardware"
 
 # -----------------------------------------------------------------
 
-if [ -d /home/pi/RFM2Pi ]; then
-    echo "git pull /home/pi/RFM2Pi"
-    cd /home/pi/RFM2Pi
+if [ -d $homedir/RFM2Pi ]; then
+    echo "git pull $homedir/RFM2Pi"
+    cd $homedir/RFM2Pi
     git branch
     git status
     git pull
     echo
 fi
 
-if [ -d /home/pi/usefulscripts ]; then
-    echo "git pull /home/pi/usefulscripts"
-    cd /home/pi/usefulscripts
+if [ -d $homedir/usefulscripts ]; then
+    echo "git pull $homedir/usefulscripts"
+    cd $homedir/usefulscripts
     git branch
     git status
     git pull
     echo
 fi
 
-if [ -d /home/pi/huawei-hilink-status ]; then
-    echo "git pull /home/pi/huawei-hilink-status"
-    cd /home/pi/huawei-hilink-status
+if [ -d $homedir/huawei-hilink-status ]; then
+    echo "git pull $homedir/huawei-hilink-status"
+    cd $homedir/huawei-hilink-status
     git branch
     git status
     git pull
     echo
 fi
 
-if [ -d /home/pi/oem_openHab ]; then
-    echo "git pull /home/pi/oem_openHab"
-    cd /home/pi/oem_openHab
+if [ -d $homedir/oem_openHab ]; then
+    echo "git pull $homedir/oem_openHab"
+    cd $homedir/oem_openHab
     git branch
     git status
     git pull
     echo
 fi
 
-if [ -d /home/pi/oem_node-red ]; then
-    echo "git pull /home/pi/oem_node-red"
-    cd /home/pi/oem_node-red
+if [ -d $homedir/oem_node-red ]; then
+    echo "git pull $homedir/oem_node-red"
+    cd $homedir/oem_node-red
     git branch
     git status
     git pull
@@ -149,9 +151,9 @@ fi
 
 # Run relevant hardware update script
 # if [ "$hardware" == "rfm2pi" ]; then
-  # /home/pi/emonpi/update/rfm69pi.sh
+  # $homedir/emonpi/update/rfm69pi.sh
 # else
-  # /home/pi/emonpi/update/emonpi.sh
+  # $homedir/emonpi/update/emonpi.sh
 # fi
 
 # -----------------------------------------------------------------
@@ -159,23 +161,25 @@ fi
 echo
 echo "Start emonhub update script:"
 # Run emonHub update script to update emonhub.conf nodes
-/home/pi/emonpi/update/emonhub.sh $homedir
+$homedir/emonpi/update/emonhub.sh $homedir
 echo
 
 echo "Start emoncms update:"
 # Run emoncms update script to pull in latest emoncms & emonhub updates
-/home/pi/emonpi/update/emoncms.sh $homedir $emonSD_pi_env $emoncms_dir
+$homedir/emonpi/update/emoncms.sh $homedir $emonSD_pi_env $emoncms_dir
 echo
 
-echo
-# Wait for update to finish
-echo "Starting emonPi LCD service.."
-sleep 5
-sudo service emonPiLCD restart
-echo
+if [ "$emonSD_pi_env" = "1" ]; then
+    echo
+    # Wait for update to finish
+    echo "Starting emonPi LCD service.."
+    sleep 5
+    sudo service emonPiLCD restart
+    echo
 
-if [ -f /usr/bin/rpi-ro ]; then
-  rpi-ro
+    if [ -f /usr/bin/rpi-ro ]; then
+      rpi-ro
+    fi
 fi
 
 date
