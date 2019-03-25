@@ -1,141 +1,41 @@
 #!/bin/bash
 
 echo
-echo "==========================================="
+echo "-------------------------------------------------------------"
 echo "Emoncms update started"
 echo "Emoncms update script V1.2.1 (6th Feb 2019)"
-date
-echo "==========================================="
+echo "-------------------------------------------------------------"
 echo
-username="pi"
-homedir="/home/$username"
+homedir=$1 
+emonSD_pi_env=$2
+emoncms_dir=$3
+emoncms_symlinked_modules="/usr/emoncms/modules"
 
-echo "username: $username"
-echo
+if [ "$emonSD_pi_env" = "1" ]; then
 
-echo "Checking environment:"
-
-# Check that specified user directory exists
-if [ -d $homedir ]; then 
-    echo "- User directory $homedir found"
-else 
-    echo "- User directory $homedir not found (please ammend username)"
-    exit 0
-fi
-
-emonSD_pi_env=0
-# Check for pi user
-pi=$(id -u pi)
-if [ $pi ] && [ -d /home/pi ]; then
-  echo "- pi user and pi user directory found"
-  emonSD_pi_env=1
-else 
-  echo "- could not find pi user or pi user directory"
-  emonSD_pi_env=0
-fi
-
-# Check emonSD version
-image_version=$(ls /boot | grep emonSD)
-
-if [ "$image_version" = "" ]; then
-    echo "- Could not find emonSD version file"
-    emonSD_pi_env=0
-else 
-    echo "- emonSD version: $image_version"
-fi
-
-if [ "$emonSD_pi_env" = "0" ]; then
-    echo "- Assuming non emonSD install"
-fi
-
-# Check emoncms directory
-if [ -d /var/www/emoncms ]; then
-    emoncms_dir="/var/www/emoncms"
-else
-    if [ -d /var/www/html/emoncms ]; then
-        emoncms_dir="/var/www/html/emoncms"
-    else
-        echo "emoncms directory not found"
-        exit 0
-    fi
-fi
-echo "- emoncms directory: $emoncms_dir"
-
-echo
-uid=`id -u`
-echo "EUID: $uid"
-
-if [ "$uid" = "0" ] ; then
-    # update is being ran mistakenly as root, switch to user
-    echo "update running as root: switching to $username user & restarting script"
-    echo
-    echo "**MANUAL SYSTEM REBOOT REQUIRED**"
-    echo
-    echo "Please reboot and run update again"
-    su -c $0 $username
-    exit
-fi
-
-#########################################################################################
-if [ "$emonSD_pi_env" = "1" ]; then 
-    # Install sudoers entry to enable emoncms reboot button
-    if [ ! -f /etc/sudoers.d/emoncms-rebootbutton ]; then
-        # double check correct sudo syntax
-        sudo visudo -cf $homedir/emonpi/emoncms-rebootbutton && \
-        sudo cp $homedir/emonpi/emoncms-rebootbutton /etc/sudoers.d/
-        sudo chmod 0440 /etc/sudoers.d/emoncms-rebootbutton
-        echo
-        echo "Install emonPi Emoncms admin reboot button sudoers entry"
-    fi
-
-    #########################################################################################
-    # Install sudoers entry to enable toggling file-system RO/RW mount via Emoncms admin
-    if [ ! -f /etc/sudoers.d/emoncms-filesystem ]; then
-        # double check correct sudo syntax
-        sudo visudo -cf $homedir/emonpi/emoncms-filesystem && \
-        sudo cp $homedir/emonpi/emoncms-filesystem /etc/sudoers.d/
-        sudo chmod 0440 /etc/sudoers.d/emoncms-filesystem
-        echo
-        echo "emonPi Emoncms admin file-system toggle buttons sudoers entry installed"
-    fi
-fi
-#########################################################################################
-# Install sudoers entry to enable emonhub reboot button
-
-# double check correct sudo syntax
-sudo visudo -cf $homedir/emonpi/emonhub-sudoers && \
-sudo cp $homedir/emonpi/emonhub-sudoers /etc/sudoers.d/
-sudo chmod 0440 /etc/sudoers.d/emonhub-sudoers
-echo
-echo "emonhub service control sudoers entry installed"
-
-
-#########################################################################################
-# Install sudoers entry for WiFI AP
-
-if [ ! -f /etc/sudoers.d/emoncms-setup-sudoers ]; then
-    # double check correct sudo syntax
-    sudo visudo -cf $homedir/emonpi/emoncms-setup/emoncms-setup-sudoers && \
-    sudo cp $homedir/emonpi/emoncms-setup/emoncms-setup-sudoers /etc/sudoers.d/
-    sudo chmod 0440 /etc/sudoers.d/emoncms-setup-sudoers
-    echo
-    echo "Emoncms setup module sudoers entry installed"
-fi
-
-#########################################################################################
-
-# Setup user group to enable reading GPU temperature (pi only)
-#https://github.com/emoncms/emoncms/pull/869
-if [ "$emonSD_pi_env" = "1" ]; then 
+    # Sudoers installation (provides sudo access to specific commands from emoncms)
+    for sudoersfile in "emoncms-rebootbutton" "emoncms-filesystem" "emoncms-filesystem" "emoncms-setup-sudoers"; do
+        if [ ! -f /etc/sudoers.d/$sudoersfile ]; then
+            sudo visudo -cf $homedir/emonpi/sudoers.d/$sudoersfile && \
+            sudo cp $homedir/emonpi/sudoers.d/$sudoersfile /etc/sudoers.d/
+            sudo chmod 0440 /etc/sudoers.d/$sudoersfile
+            echo
+            echo "$sudoersfile sudoers entry installed"
+        fi
+    done
+    
+    # Setup user group to enable reading GPU temperature (pi only)
     sudo usermod -a -G video www-data
+    
+    # Add www-data to systemd group to enable read logfiles e.g emonhub 
+    sudo usermod -a -G systemd-journal www-data
+    groups www-data
 fi
 
-# Add www-data to systemd group to enable read logfiles e.g emonhub 
-sudo usermod -a -G systemd-journal www-data
-groups www-data
-
-#########################################################################################
+# -----------------------------------------------------------------
 # Record current state of emoncms settings.php
+# This needs to be run prior to emoncms git pull
+# -----------------------------------------------------------------
 echo
 current_settings_md5="$($homedir/emonpi/./md5sum.py $emoncms_dir/settings.php)"
 echo "current settings.php md5: $current_settings_md5"
@@ -143,9 +43,17 @@ echo "current settings.php md5: $current_settings_md5"
 current_default_settings_md5="$($homedir/emonpi/md5sum.py $emoncms_dir/default.emonpi.settings.php)"
 echo "Default settings.php md5: $current_default_settings_md5"
 
-#########################################################################################
+if [ "$current_default_settings_md5" == "$current_settings_md5" ]; then
+  echo "settings.php has NOT been user modifed"
+  settings_unmodified=true
+else
+  echo "settings.php HAS been user modified"
+  settings_unmodified=false
+fi
 
+# -----------------------------------------------------------------
 # Pulling in latest Emoncms changes
+# -----------------------------------------------------------------
 echo
 echo "Checking status of $emoncms_dir git repository"
 cd $emoncms_dir
@@ -161,19 +69,12 @@ else
     echo "- changes"
 fi
 
-#########################################################################################
+# -----------------------------------------------------------------
 # check to see if user has modifed settings.php and if update is need. Auto apply of possible
+# -----------------------------------------------------------------
 echo
 new_default_settings_md5="$($homedir/emonpi/md5sum.py $emoncms_dir/default.emonpi.settings.php)"
 echo "NEW default settings.php md5: $new_default_settings_md5"
-
-if [ "$current_default_settings_md5" == "$current_settings_md5" ]; then
-  echo "settings.php has NOT been user modifed"
-  settings_unmodified=true
-else
-  echo "settings.php HAS been user modified"
-  settings_unmodified=false
-fi
 
 # check to see if there is an update waiting for settings.php
 if [ "$new_default_settings_md5" != "$current_default_settings_md5" ]; then
@@ -187,11 +88,12 @@ if [ "$new_default_settings_md5" != "$current_default_settings_md5" ]; then
 else
   echo "settings.php not updated"
 fi
+
+# -----------------------------------------------------------------
 echo
-#########################################################################################
-echo "=========================================="
-echo "UPDATING EMONCMS MODULES"
-echo "=========================================="
+echo "-------------------------------------------------------------"
+echo "Updating Emoncms Modules"
+echo "-------------------------------------------------------------"
 echo
 
 # Update modules installed directly in the Modules folder
@@ -229,8 +131,8 @@ for module in "postprocess" "sync" "backup"; do
   echo "------------------------------------------"
   echo "Updating $module module"
   echo "------------------------------------------"
-  if [ -d $homedir/$module ]; then
-    cd $homedir/$module
+  if [ -d $emoncms_symlinked_modules/$module ]; then
+    cd $emoncms_symlinked_modules/$module
     branch=$(git branch | grep \* | cut -d ' ' -f2)
     echo "- git branch: $branch"
     tags=$(git describe --tags)
@@ -253,6 +155,8 @@ for module in "postprocess" "sync" "backup"; do
   fi
   echo
 done
+
+exit 0
 #########################################################################################
 # Automatic installation of new modules if they dont already exist
 echo "=========================================="
@@ -309,81 +213,23 @@ if [ "$emonSD_pi_env" = "1" ]; then
   fi
   echo
 fi
-################################################################################################
-# Removal of services
-################################################################################################
+
+
 echo "=========================================="
 echo "SERVICES"
 echo "=========================================="
+# Removal of services
 # 6th Feb 2019: mqtt_input renamed to emoncms_mqtt
 for service in "mqtt_input"; do
-
-  if [ -f /etc/init.d/$service ]; then
-    echo "removing initd $service service"
-    sudo /etc/init.d/$service stop
-    sudo rm /etc/init.d/$service
-  fi
-
-  if [ -L /lib/systemd/system/$service.service ] || [ -f /lib/systemd/system/$service.service ]; then
-    echo "Removing $service.service"
-    sudo systemctl stop $service.service
-    sudo systemctl disable $service.service
-    sudo rm /lib/systemd/system/$service.service
-    sudo systemctl daemon-reload
-  fi
-
-  # if the service still exists in /etc then remove it
-  if [ -L /etc/systemd/system/$service.service ] || [ -f /etc/systemd/system/$service.service ]; then
-    echo "Removing $service.service from /etc/systemd/system"
-    sudo rm /etc/systemd/system/$service.service
-  fi
-  
-  # testing on emonpi the above attempts to stop did not work?
-  # make sure its dead!!
-  sudo pkill -f phpmqtt_input.php
+  /home/pi/emonpi/update/remove_emoncms_service.sh $service
 done
-################################################################################################
-# Installation or correction of services
-################################################################################################
-for service in "emoncms_mqtt" "feedwriter" "service-runner"; do
+# testing on emonpi the above attempts to stop did not work?
+# make sure its dead!!
+sudo pkill -f phpmqtt_input.php
 
-  if [ -d /etc/systemd ] && [ -f $emoncms_dir/scripts/services/$service/$service.service ]; then
-    if [ -f /etc/init.d/$service ]; then
-      echo "removing initd $service service"
-      sudo /etc/init.d/$service stop
-      sudo rm /etc/init.d/$service
-    fi
-    
-    # service will be symlinked to /etc/systemd/system by "systemctl enable"
-    if [ -f /etc/systemd/system/$service.service ]; then
-      if ! [ -L /etc/systemd/system/$service.service ]; then
-        echo "Removing hard copy of $service.service from /etc/systemd/system (should be symlink)"
-        sudo systemctl stop $service.service
-        sudo systemctl disable $service.service
-        sudo rm /etc/systemd/system/$service.service
-        sudo systemctl daemon-reload
-      fi
-    fi
-    
-    if [ -f /lib/systemd/system/$service.service ]; then
-      if ! [ -L /lib/systemd/system/$service.service ]; then
-        echo "Removing hard copy of $service.service in /lib/systemd/system (should be symlink)"
-        sudo systemctl stop $service.service
-        sudo systemctl disable $service.service
-        sudo rm /lib/systemd/system/$service.service
-        sudo systemctl daemon-reload
-      fi
-    fi
-    
-    if [ ! -f /lib/systemd/system/$service.service ]; then
-      echo "Installing $service.service in /lib/systemd/system (creating symlink)"
-      sudo ln -s $emoncms_dir/scripts/services/$service/$service.service /lib/systemd/system
-      sudo systemctl enable $service.service
-      sudo systemctl start $service.service
-    else 
-      echo "$service.service already installed"
-    fi
-  fi
+# Installation or correction of services
+for service in "emoncms_mqtt" "feedwriter" "service-runner"; do
+  /home/pi/emonpi/update/install_emoncms_service.sh $emoncms_dir $service
 done
 echo "------------------------------------------"
 
@@ -449,4 +295,3 @@ echo
 echo "------------------------------------------"
 echo "Emoncms update script complete"
 echo "------------------------------------------"
-
