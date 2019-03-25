@@ -8,7 +8,7 @@ echo "-------------------------------------------------------------"
 # Check environment
 # -----------------------------------------------------------------
 
-username="pi"
+username=$1
 homedir="/home/$username"
 echo "username: $username"
 echo

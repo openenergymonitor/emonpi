@@ -36,4 +36,4 @@ git status
 git pull
 
 # Run update in main update script
-$homedir/emonpi/update/main.sh
+$homedir/emonpi/update/main.sh $username
