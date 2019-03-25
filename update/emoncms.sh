@@ -225,7 +225,8 @@ sudo pkill -f phpmqtt_input.php
 
 # Installation or correction of services
 for service in "emoncms_mqtt" "feedwriter" "service-runner"; do
-  $homedir/emonpi/update/install_emoncms_service.sh $emoncms_dir $service
+  servicepath="$emoncms_dir/scripts/services/$service/$service.service"
+  $homedir/emonpi/update/install_emoncms_service.sh $servicepath $service
 done
 echo "------------------------------------------"
 

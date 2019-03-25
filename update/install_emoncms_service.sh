@@ -1,9 +1,9 @@
 #!/bin/bash
 
-emoncms_dir=$1
+servicepath=$1
 service=$2
 
-if [ -d /etc/systemd ] && [ -f $emoncms_dir/scripts/services/$service/$service.service ]; then
+if [ -d /etc/systemd ] && [ -f $servicepath ]; then
   if [ -f /etc/init.d/$service ]; then
     echo "removing initd $service service"
     sudo /etc/init.d/$service stop
@@ -33,7 +33,7 @@ if [ -d /etc/systemd ] && [ -f $emoncms_dir/scripts/services/$service/$service.s
   
   if [ ! -f /lib/systemd/system/$service.service ]; then
     echo "Installing $service.service in /lib/systemd/system (creating symlink)"
-    sudo ln -s $emoncms_dir/scripts/services/$service/$service.service /lib/systemd/system
+    sudo ln -s $servicepath /lib/systemd/system
     sudo systemctl enable $service.service
     sudo systemctl start $service.service
   else 

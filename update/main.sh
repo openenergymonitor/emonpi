@@ -147,7 +147,6 @@ fi
 # Firmware update
 # -----------------------------------------------------------------
 
-
 # Run relevant hardware update script
 # if [ "$hardware" == "rfm2pi" ]; then
   # /home/pi/emonpi/update/rfm69pi.sh
@@ -160,7 +159,7 @@ fi
 echo
 echo "Start emonhub update script:"
 # Run emonHub update script to update emonhub.conf nodes
-/home/pi/emonpi/update/emonhub.sh
+/home/pi/emonpi/update/emonhub.sh $homedir
 echo
 
 echo "Start emoncms update:"
