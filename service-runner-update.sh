@@ -2,6 +2,7 @@
 
 # emonPi update for use with service-runner add following entry to crontab:
 # * * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 if [ -z "$2" ]; then
     type="all"
@@ -12,6 +13,10 @@ else
 fi
 
 username="pi"
+if [ -f $DIR/update/username ]; then
+    username=$(cat $DIR/update/username)
+fi
+
 homedir="/home/$username"
 
 # Clear log update file
