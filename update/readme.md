@@ -4,31 +4,31 @@ Current directory is emonpi/update
 
 ### Update Emoncms
 
-    ./emoncms.sh HOME_DIR IS_EMONSD EMONCMS_DIR
-    ./emoncms.sh /home/pi 0 /var/www/emoncms
+    ./emoncms.sh IS_EMONSD
+    ./emoncms.sh 0
     
 ### Update EmonHub
 
-    ./emonhub.sh HOME_DIR
-    ./emonhub.sh /home/pi
+    ./emonhub.sh
+    ./emonhub.sh
     
 ### Update Firmware: EmonPi
 
-    ./emonpi.sh HOME_DIR
-    ./emonpi.sh /home/pi
+    ./emonpi.sh
+    ./emonpi.sh
     
 ### Update Firmware: rfm69pi
 
-    ./rfm69pi.sh HOME_DIR
-    ./rfm69pi.sh /home/pi
+    ./rfm69pi.sh
+    ./rfm69pi.sh
     
 ### Via main.sh
 
-    ./main.sh USERNAME UPDATE_TYPE FIRMWARE
-    ./main.sh pi all emonpi
-    ./main.sh pi emoncms
-    ./main.sh pi emonhub
-    ./main.sh pi firmware emonpi
+    ./main.sh UPDATE_TYPE FIRMWARE
+    ./main.sh all emonpi
+    ./main.sh emoncms
+    ./main.sh emonhub
+    ./main.sh firmware emonpi
     
 ### Via service-runner-update.sh
 

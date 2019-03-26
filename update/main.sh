@@ -3,42 +3,33 @@
 echo "-------------------------------------------------------------"
 echo "Main Update Script"
 echo "-------------------------------------------------------------"
-
 # -----------------------------------------------------------------
 # Check environment
 # -----------------------------------------------------------------
 
-username=$1
-type=$2
-firmware=$3
-homedir="/home/$username"
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+usrdir=${DIR/\/emonpi\/update/}
+
+type=$1
+firmware=$2
 datestr=$(date)
 
 echo "Date:" $datestr
 echo "EUID: $EUID"
-echo "username: $username"
-echo "homedir: $homedir"
+echo "usrdir: $usrdir"
 echo "type: $type"
 echo "firmware: $firmware"
 
 echo "Checking environment:"
 
-# Check that specified user directory exists
-if [ -d $homedir ]; then 
-    echo "- User directory $homedir found"
-else 
-    echo "- User directory $homedir not found (please ammend username)"
-    exit 0
-fi
-
 emonSD_pi_env=0
 # Check for pi user
 pi=$(id -u pi)
-if [ $pi ] && [ -d $homedir ]; then
-  echo "- pi user and pi user directory found"
+if [ $pi ]; then
+  echo "- pi user found"
   emonSD_pi_env=1
 else 
-  echo "- could not find pi user or pi user directory"
+  echo "- could not find pi user"
   emonSD_pi_env=0
 fi
 
@@ -67,39 +58,21 @@ if [ "$emonSD_pi_env" = "0" ]; then
     echo "- Assuming non emonSD install"
 fi
 
-# Check emoncms directory
-if [ -d /var/www/emoncms ]; then
-    emoncms_dir="/var/www/emoncms"
-else
-    if [ -d /var/www/html/emoncms ]; then
-        emoncms_dir="/var/www/html/emoncms"
-    else
-        echo "emoncms directory not found"
-        exit 0
-    fi
-fi
-echo "- emoncms directory: $emoncms_dir"
-
 echo
 uid=`id -u`
 echo "EUID: $uid"
 
 if [ "$uid" = "0" ] ; then
     # update is being ran mistakenly as root, switch to user
-    echo "update running as root: switching to $username user & restarting script"
-    echo
-    echo "**MANUAL SYSTEM REBOOT REQUIRED**"
-    echo
-    echo "Please reboot and run update again"
-    su -c $0 $username
-    exit
+    echo "update running as root, switch to user"
+    exit 0
 fi
 
 if [ "$emonSD_pi_env" = "1" ]; then
     # Check if we have an emonpi LCD connected, 
     # if we do assume EmonPi hardware else assume RFM69Pi
-    lcd27=$(sudo $homedir/emonpi/lcd/emonPiLCD_detect.sh 27 1)
-    lcd3f=$(sudo $homedir/emonpi/lcd/emonPiLCD_detect.sh 3f 1)
+    lcd27=$(sudo $usrdir/emonpi/lcd/emonPiLCD_detect.sh 27 1)
+    lcd3f=$(sudo $usrdir/emonpi/lcd/emonPiLCD_detect.sh 3f 1)
 
     if [ $lcd27 == 'True' ] || [ $lcd3f == 'True' ]; then
         hardware="EmonPi"
@@ -112,7 +85,7 @@ if [ "$emonSD_pi_env" = "1" ]; then
     # sudo service emonPiLCD stop
 
     # Display update message on LCD
-    # sudo $homedir/emonpi/lcd/./emonPiLCD_update.py
+    # sudo $usrdir/emonpi/lcd/./emonPiLCD_update.py
 fi
 
 # sudo apt-get update
@@ -126,45 +99,45 @@ fi
 
 if [ "$type" == "all" ]; then
 
-    if [ -d $homedir/RFM2Pi ]; then
-        echo "git pull $homedir/RFM2Pi"
-        cd $homedir/RFM2Pi
+    if [ -d $usrdir/RFM2Pi ]; then
+        echo "git pull $usrdir/RFM2Pi"
+        cd $usrdir/RFM2Pi
         git branch
         git status
         git pull
         echo
     fi
 
-    if [ -d $homedir/usefulscripts ]; then
-        echo "git pull $homedir/usefulscripts"
-        cd $homedir/usefulscripts
+    if [ -d $usrdir/usefulscripts ]; then
+        echo "git pull $usrdir/usefulscripts"
+        cd $usrdir/usefulscripts
         git branch
         git status
         git pull
         echo
     fi
 
-    if [ -d $homedir/huawei-hilink-status ]; then
-        echo "git pull $homedir/huawei-hilink-status"
-        cd $homedir/huawei-hilink-status
+    if [ -d $usrdir/huawei-hilink-status ]; then
+        echo "git pull $usrdir/huawei-hilink-status"
+        cd $usrdir/huawei-hilink-status
         git branch
         git status
         git pull
         echo
     fi
 
-    if [ -d $homedir/oem_openHab ]; then
-        echo "git pull $homedir/oem_openHab"
-        cd $homedir/oem_openHab
+    if [ -d $usrdir/oem_openHab ]; then
+        echo "git pull $usrdir/oem_openHab"
+        cd $usrdir/oem_openHab
         git branch
         git status
         git pull
         echo
     fi
 
-    if [ -d $homedir/oem_node-red ]; then
-        echo "git pull $homedir/oem_node-red"
-        cd $homedir/oem_node-red
+    if [ -d $usrdir/oem_node-red ]; then
+        echo "git pull $usrdir/oem_node-red"
+        cd $usrdir/oem_node-red
         git branch
         git status
         git pull
@@ -177,15 +150,15 @@ fi
 if [ "$type" == "all" ] || [ "$type" == "firmware" ]; then
 
     if [ "$firmware" == "emonpi" ]; then
-        $homedir/emonpi/update/emonpi.sh $homedir
+        $usrdir/emonpi/update/emonpi.sh
     fi
 
     if [ "$firmware" == "rfm69pi" ]; then
-        $homedir/emonpi/update/rfm69pi.sh $homedir
+        $usrdir/emonpi/update/rfm69pi.sh
     fi
     
     if [ "$firmware" == "rfm12pi" ]; then
-        $homedir/emonpi/update/rfm12pi.sh $homedir
+        $usrdir/emonpi/update/rfm12pi.sh
     fi
 fi
 
@@ -194,7 +167,7 @@ fi
 if [ "$type" == "all" ] || [ "$type" == "emonhub" ]; then
     echo "Start emonhub update script:"
     # Run emonHub update script to update emonhub.conf nodes
-    $homedir/emonpi/update/emonhub.sh $homedir
+    $usrdir/emonpi/update/emonhub.sh
     echo
 fi
 
@@ -203,7 +176,7 @@ fi
 if [ "$type" == "all" ] || [ "$type" == "emoncms" ]; then    
     echo "Start emoncms update:"
     # Run emoncms update script to pull in latest emoncms & emonhub updates
-    $homedir/emonpi/update/emoncms.sh $homedir $emonSD_pi_env $emoncms_dir
+    $usrdir/emonpi/update/emoncms.sh $emonSD_pi_env
     echo
 fi
 

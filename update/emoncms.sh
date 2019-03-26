@@ -3,27 +3,41 @@
 echo
 echo "-------------------------------------------------------------"
 echo "Emoncms update started"
-echo "Emoncms update script V1.2.1 (6th Feb 2019)"
+echo "Emoncms update script V1.3 (26th March 2019)"
 echo "-------------------------------------------------------------"
-echo
-homedir=$1 
-emonSD_pi_env=$2
-emoncms_dir=$3
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+usrdir=${DIR/\/emonpi\/update/}
+echo "- usr directory: $usrdir"
+
+emonSD_pi_env=$1
+
+# Check emoncms directory
+if [ -d /var/www/emoncms ]; then
+    emoncms_dir="/var/www/emoncms"
+else
+    if [ -d /var/www/html/emoncms ]; then
+        emoncms_dir="/var/www/html/emoncms"
+    else
+        echo "emoncms directory not found"
+        exit 0
+    fi
+fi
+echo "- emoncms directory: $emoncms_dir"
+
+emoncms_symlinked_modules=$usrdir
 
 if [ -d "/usr/emoncms/modules" ]; then
     emoncms_symlinked_modules="/usr/emoncms/modules"
-else
-    emoncms_symlinked_modules=$homedir
 fi
 # -----------------------------------------------------------------
 # Record current state of emoncms settings.php
 # This needs to be run prior to emoncms git pull
 # -----------------------------------------------------------------
 echo
-current_settings_md5="$($homedir/emonpi/./md5sum.py $emoncms_dir/settings.php)"
+current_settings_md5="$($usrdir/emonpi/./md5sum.py $emoncms_dir/settings.php)"
 echo "current settings.php md5: $current_settings_md5"
 
-current_default_settings_md5="$($homedir/emonpi/md5sum.py $emoncms_dir/default.emonpi.settings.php)"
+current_default_settings_md5="$($usrdir/emonpi/md5sum.py $emoncms_dir/default.emonpi.settings.php)"
 echo "Default settings.php md5: $current_default_settings_md5"
 
 if [ "$current_default_settings_md5" == "$current_settings_md5" ]; then
@@ -56,7 +70,7 @@ fi
 # check to see if user has modifed settings.php and if update is need. Auto apply of possible
 # -----------------------------------------------------------------
 echo
-new_default_settings_md5="$($homedir/emonpi/md5sum.py $emoncms_dir/default.emonpi.settings.php)"
+new_default_settings_md5="$($usrdir/emonpi/md5sum.py $emoncms_dir/default.emonpi.settings.php)"
 echo "NEW default settings.php md5: $new_default_settings_md5"
 
 # check to see if there is an update waiting for settings.php
@@ -126,7 +140,7 @@ for module in "postprocess" "sync" "backup"; do
         echo "- running: git pull origin $branch"
         echo
         git pull origin $branch
-        # ln -sf $homedir/$module/$module-module $emoncms_dir/Modules/$module
+        # ln -sf $usrdir/$module/$module-module $emoncms_dir/Modules/$module
     else
         echo "- git status:"
         echo
@@ -188,8 +202,8 @@ if [ "$emonSD_pi_env" = "1" ]; then
   # Sudoers installation (provides sudo access to specific commands from emoncms)
   for sudoersfile in "emoncms-rebootbutton" "emoncms-filesystem" "emoncms-filesystem" "emoncms-setup-sudoers"; do
       if [ ! -f /etc/sudoers.d/$sudoersfile ]; then
-          sudo visudo -cf $homedir/emonpi/sudoers.d/$sudoersfile && \
-          sudo cp $homedir/emonpi/sudoers.d/$sudoersfile /etc/sudoers.d/
+          sudo visudo -cf $usrdir/emonpi/sudoers.d/$sudoersfile && \
+          sudo cp $usrdir/emonpi/sudoers.d/$sudoersfile /etc/sudoers.d/
           sudo chmod 0440 /etc/sudoers.d/$sudoersfile
           echo
           echo "$sudoersfile sudoers entry installed"
@@ -204,11 +218,11 @@ if [ "$emonSD_pi_env" = "1" ]; then
   groups www-data
  
   # Install emoncms-setup module (symlink from emonpi repo)
-  if [ -d $homedir/emonpi/emoncms-setup ] && [ ! -d $emoncms_dir/Modules/setup ]; then
+  if [ -d $usrdir/emonpi/emoncms-setup ] && [ ! -d $emoncms_dir/Modules/setup ]; then
     echo "Installing emoncms/emonPi setup module: symlink from ~/emonpi/emoncms-setup"
-    ln -s $homedir/emonpi/emoncms-setup $emoncms_dir/Modules/setup
+    ln -s $usrdir/emonpi/emoncms-setup $emoncms_dir/Modules/setup
   else
-    if [ ! -d $homedir/emonpi/emoncms-setup ]; then
+    if [ ! -d $usrdir/emonpi/emoncms-setup ]; then
       echo "Cannot find emoncms-setup module, please update ~/emonpi repo"
     fi
   fi
@@ -221,7 +235,7 @@ echo "------------------------------------------"
 # Removal of services
 # 6th Feb 2019: mqtt_input renamed to emoncms_mqtt
 for service in "mqtt_input"; do
-  $homedir/emonpi/update/remove_emoncms_service.sh $service
+  $usrdir/emonpi/update/remove_emoncms_service.sh $service
 done
 # testing on emonpi the above attempts to stop did not work?
 # make sure its dead!!
@@ -230,7 +244,7 @@ sudo pkill -f phpmqtt_input.php
 # Installation or correction of services
 for service in "emoncms_mqtt" "feedwriter" "service-runner"; do
   servicepath="$emoncms_dir/scripts/services/$service/$service.service"
-  $homedir/emonpi/update/install_emoncms_service.sh $servicepath $service
+  $usrdir/emonpi/update/install_emoncms_service.sh $servicepath $service
 done
 echo "------------------------------------------"
 
@@ -239,7 +253,7 @@ if [ -d /lib/systemd/system ]; then
 fi
 
 echo "Update Emoncms database"
-php $homedir/emonpi/update/emoncmsdbupdate.php
+php $usrdir/emonpi/update/emoncmsdbupdate.php
 echo
 
 echo "Restarting Services..."
