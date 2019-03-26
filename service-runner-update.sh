@@ -3,24 +3,21 @@
 # emonPi update for use with service-runner add following entry to crontab:
 # * * * * * /home/pi/emonpi/service-runner >> /var/log/service-runner.log 2>&1
 
+if [ -z "$2" ]; then
+    type="all"
+    firmware=$1
+else
+    type=$1
+    firmware=$2
+fi
+
 username="pi"
 homedir="/home/$username"
-echo "username: $username"
-echo
-
-echo "-------------------------------------------------------------"
 
 # Clear log update file
 cat /dev/null > $homedir/data/emonpiupdate.log
 
-echo "Starting emonPi Update >"
-echo "via service-runner-update.sh"
-echo "Service Runner update script V1.1.1"
-echo "EUID: $EUID"
-argument=$1
-echo "Argument: "$argument
-# Date and time
-date
+echo "Starting update via service-runner-update.sh (v1.1.1) >"
 
 # make file system read-write
 if [ -f /usr/bin/rpi-rw ]; then
@@ -36,4 +33,4 @@ git status
 git pull
 
 # Run update in main update script
-$homedir/emonpi/update/main.sh $username
+$homedir/emonpi/update/main.sh $username $type $firmware

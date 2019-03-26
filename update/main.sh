@@ -9,9 +9,17 @@ echo "-------------------------------------------------------------"
 # -----------------------------------------------------------------
 
 username=$1
+type=$2
+firmware=$3
 homedir="/home/$username"
+datestr=$(date)
+
+echo "Date:" $datestr
+echo "EUID: $EUID"
 echo "username: $username"
-echo
+echo "homedir: $homedir"
+echo "type: $type"
+echo "firmware: $firmware"
 
 echo "Checking environment:"
 
@@ -116,95 +124,111 @@ fi
 
 # -----------------------------------------------------------------
 
-if [ -d $homedir/RFM2Pi ]; then
-    echo "git pull $homedir/RFM2Pi"
-    cd $homedir/RFM2Pi
-    git branch
-    git status
-    git pull
-    echo
-fi
+if [ "$type" == "all" ]; then
 
-if [ -d $homedir/usefulscripts ]; then
-    echo "git pull $homedir/usefulscripts"
-    cd $homedir/usefulscripts
-    git branch
-    git status
-    git pull
-    echo
-fi
+    if [ -d $homedir/RFM2Pi ]; then
+        echo "git pull $homedir/RFM2Pi"
+        cd $homedir/RFM2Pi
+        git branch
+        git status
+        git pull
+        echo
+    fi
 
-if [ -d $homedir/huawei-hilink-status ]; then
-    echo "git pull $homedir/huawei-hilink-status"
-    cd $homedir/huawei-hilink-status
-    git branch
-    git status
-    git pull
-    echo
-fi
+    if [ -d $homedir/usefulscripts ]; then
+        echo "git pull $homedir/usefulscripts"
+        cd $homedir/usefulscripts
+        git branch
+        git status
+        git pull
+        echo
+    fi
 
-if [ -d $homedir/oem_openHab ]; then
-    echo "git pull $homedir/oem_openHab"
-    cd $homedir/oem_openHab
-    git branch
-    git status
-    git pull
-    echo
-fi
+    if [ -d $homedir/huawei-hilink-status ]; then
+        echo "git pull $homedir/huawei-hilink-status"
+        cd $homedir/huawei-hilink-status
+        git branch
+        git status
+        git pull
+        echo
+    fi
 
-if [ -d $homedir/oem_node-red ]; then
-    echo "git pull $homedir/oem_node-red"
-    cd $homedir/oem_node-red
-    git branch
-    git status
-    git pull
-    echo
+    if [ -d $homedir/oem_openHab ]; then
+        echo "git pull $homedir/oem_openHab"
+        cd $homedir/oem_openHab
+        git branch
+        git status
+        git pull
+        echo
+    fi
+
+    if [ -d $homedir/oem_node-red ]; then
+        echo "git pull $homedir/oem_node-red"
+        cd $homedir/oem_node-red
+        git branch
+        git status
+        git pull
+        echo
+    fi
 fi
 
 # -----------------------------------------------------------------
 # Firmware update
 # -----------------------------------------------------------------
 
-# Run relevant hardware update script
-# if [ "$hardware" == "rfm2pi" ]; then
-  # $homedir/emonpi/update/rfm69pi.sh
-# else
-  # $homedir/emonpi/update/emonpi.sh
-# fi
+if [ "$type" = "firmware" ]; then
 
-# -----------------------------------------------------------------
+    if [ "$firmware" == "emonpi" ]; then
+      $homedir/emonpi/update/emonpi.sh
+    fi
 
-echo
-echo "Start emonhub update script:"
-# Run emonHub update script to update emonhub.conf nodes
-$homedir/emonpi/update/emonhub.sh $homedir
-echo
-
-echo "Start emoncms update:"
-# Run emoncms update script to pull in latest emoncms & emonhub updates
-$homedir/emonpi/update/emoncms.sh $homedir $emonSD_pi_env $emoncms_dir
-echo
-
-if [ "$emonSD_pi_env" = "1" ]; then
-    echo
-    # Wait for update to finish
-    echo "Starting emonPi LCD service.."
-    sleep 5
-    sudo service emonPiLCD restart
-    echo
-
-    if [ -f /usr/bin/rpi-ro ]; then
-      rpi-ro
+    if [ "$firmware" == "rfm69pi" ]; then
+      $homedir/emonpi/update/rfm69pi.sh
+    fi
+    
+    if [ "$firmware" == "rfm12pi" ]; then
+      $homedir/emonpi/update/rfm12pi.sh
     fi
 fi
 
-date
-echo
-printf "\n...................\n"
-printf "emonPi update done\n" # this text string is used by service runner to stop the log window polling, DO NOT CHANGE!
+# -----------------------------------------------------------------
 
-printf "restarting service-runner\n"
-# old service runner
-killall service-runner
-# new service runner
-sudo systemctl restart service-runner.service 
+if [ "$type" != "firmware" ]; then
+    echo
+    echo "Start emonhub update script:"
+    # Run emonHub update script to update emonhub.conf nodes
+    $homedir/emonpi/update/emonhub.sh $homedir
+    echo
+
+    echo "Start emoncms update:"
+    # Run emoncms update script to pull in latest emoncms & emonhub updates
+    $homedir/emonpi/update/emoncms.sh $homedir $emonSD_pi_env $emoncms_dir
+    echo
+
+    if [ "$emonSD_pi_env" = "1" ]; then
+        echo
+        # Wait for update to finish
+        echo "Starting emonPi LCD service.."
+        sleep 5
+        sudo service emonPiLCD restart
+        echo
+
+        if [ -f /usr/bin/rpi-ro ]; then
+          rpi-ro
+        fi
+    fi
+fi
+
+datestr=$(date)
+echo
+echo "-------------------------------------------------------------"
+echo "Update done: $datestr" # this text string is used by service runner to stop the log window polling, DO NOT CHANGE!
+echo "-------------------------------------------------------------"
+echo
+if [ "$type" != "firmware" ]; then
+    echo "restarting service-runner"
+    # old service runner
+    killall service-runner
+    # new service runner
+    sudo systemctl restart service-runner.service 
+fi
