@@ -1,6 +1,6 @@
 # How to run scripts manually
 
-All commands assume current directory is emonpi/update
+Current directory is emonpi/update
 
 ### Update Emoncms
 
@@ -24,8 +24,17 @@ All commands assume current directory is emonpi/update
     
 ### Via main.sh
 
-    ./main.sh USERNAME TYPE FIRMWARE
+    ./main.sh USERNAME UPDATE_TYPE FIRMWARE
     ./main.sh pi all emonpi
     ./main.sh pi emoncms
     ./main.sh pi emonhub
     ./main.sh pi firmware emonpi
+    
+### Via service-runner-update.sh
+
+Current directory is emonpi.
+
+This script is triggered from emoncms via service-runner.
+
+    ./service-runner-update.sh UPDATE_TYPE FIRMWARE
+    ./service-runner-update.sh all emonpi
