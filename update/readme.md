@@ -14,16 +14,13 @@ Current directory is emonpi/update
 ### Update EmonHub
 
     ./emonhub.sh
-    ./emonhub.sh
     
 ### Update Firmware: EmonPi
 
     ./emonpi.sh
-    ./emonpi.sh
     
 ### Update Firmware: rfm69pi
 
-    ./rfm69pi.sh
     ./rfm69pi.sh
     
 ### Via main.sh
