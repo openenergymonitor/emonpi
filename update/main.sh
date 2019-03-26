@@ -177,15 +177,15 @@ fi
 if [ "$type" == "all" ] || [ "$type" == "firmware" ]; then
 
     if [ "$firmware" == "emonpi" ]; then
-        $homedir/emonpi/update/emonpi.sh
+        $homedir/emonpi/update/emonpi.sh $homedir
     fi
 
     if [ "$firmware" == "rfm69pi" ]; then
-        $homedir/emonpi/update/rfm69pi.sh
+        $homedir/emonpi/update/rfm69pi.sh $homedir
     fi
     
     if [ "$firmware" == "rfm12pi" ]; then
-        $homedir/emonpi/update/rfm12pi.sh
+        $homedir/emonpi/update/rfm12pi.sh $homedir
     fi
 fi
 
