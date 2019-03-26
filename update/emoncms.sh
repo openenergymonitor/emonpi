@@ -182,7 +182,7 @@ for module in "postprocess" "sync" "backup"; do
     echo "- Installing Emoncms $module module https://github.com/emoncms/$module"
     cd $emoncms_symlinked_modules
     git clone https://github.com/emoncms/$module
-    ln -s $emoncms_symlinked_modules/$module/$module-module $emoncms_dir/Modules
+    ln -s $emoncms_symlinked_modules/$module/$module-module $emoncms_dir/Modules/$module
     cd $emoncms_symlinked_modules/$module/$module-module
     if [ `git branch --list stable` ]; then
        echo "-- git checkout stable"
