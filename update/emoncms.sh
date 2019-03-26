@@ -9,8 +9,12 @@ echo
 homedir=$1 
 emonSD_pi_env=$2
 emoncms_dir=$3
-emoncms_symlinked_modules="/usr/emoncms/modules"
 
+if [ -d "/usr/emoncms/modules" ]; then
+    emoncms_symlinked_modules="/usr/emoncms/modules"
+else
+    emoncms_symlinked_modules=$homedir
+fi
 # -----------------------------------------------------------------
 # Record current state of emoncms settings.php
 # This needs to be run prior to emoncms git pull
