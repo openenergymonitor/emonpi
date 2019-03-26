@@ -26,8 +26,8 @@ echo "- emoncms directory: $emoncms_dir"
 
 emoncms_symlinked_modules=$usrdir
 
-if [ -d "/usr/emoncms/modules" ]; then
-    emoncms_symlinked_modules="/usr/emoncms/modules"
+if [ -d "$usrdir/modules" ]; then
+    emoncms_symlinked_modules="$usrdir/modules"
 fi
 # -----------------------------------------------------------------
 # Record current state of emoncms settings.php
