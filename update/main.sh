@@ -173,62 +173,70 @@ if [ "$type" == "all" ]; then
 fi
 
 # -----------------------------------------------------------------
-# Firmware update
-# -----------------------------------------------------------------
 
-if [ "$type" = "firmware" ]; then
+if [ "$type" == "all" ] || [ "$type" == "firmware" ]; then
 
     if [ "$firmware" == "emonpi" ]; then
-      $homedir/emonpi/update/emonpi.sh
+        $homedir/emonpi/update/emonpi.sh
     fi
 
     if [ "$firmware" == "rfm69pi" ]; then
-      $homedir/emonpi/update/rfm69pi.sh
+        $homedir/emonpi/update/rfm69pi.sh
     fi
     
     if [ "$firmware" == "rfm12pi" ]; then
-      $homedir/emonpi/update/rfm12pi.sh
+        $homedir/emonpi/update/rfm12pi.sh
     fi
 fi
 
 # -----------------------------------------------------------------
 
-if [ "$type" != "firmware" ]; then
-    echo
+if [ "$type" == "all" ] || [ "$type" == "emonhub" ]; then
     echo "Start emonhub update script:"
     # Run emonHub update script to update emonhub.conf nodes
     $homedir/emonpi/update/emonhub.sh $homedir
     echo
+fi
 
+# -----------------------------------------------------------------
+
+if [ "$type" == "all" ] || [ "$type" == "emoncms" ]; then    
     echo "Start emoncms update:"
     # Run emoncms update script to pull in latest emoncms & emonhub updates
     $homedir/emonpi/update/emoncms.sh $homedir $emonSD_pi_env $emoncms_dir
     echo
+fi
 
-    if [ "$emonSD_pi_env" = "1" ]; then
-        echo
-        # Wait for update to finish
-        echo "Starting emonPi LCD service.."
-        sleep 5
-        sudo service emonPiLCD restart
-        echo
+# -----------------------------------------------------------------
 
-        if [ -f /usr/bin/rpi-ro ]; then
-          rpi-ro
-        fi
+if [ "$type" == "all" ] && [ "$emonSD_pi_env" = "1" ]; then
+    echo
+    # Wait for update to finish
+    echo "Starting emonPi LCD service.."
+    sleep 5
+    sudo service emonPiLCD restart
+    echo
+
+    if [ -f /usr/bin/rpi-ro ]; then
+        rpi-ro
     fi
 fi
 
-datestr=$(date)
-echo
-echo "-------------------------------------------------------------"
-echo "Update done: $datestr" # this text string is used by service runner to stop the log window polling, DO NOT CHANGE!
-echo "-------------------------------------------------------------"
-echo
-if [ "$type" != "firmware" ]; then
+# -----------------------------------------------------------------
+
+if [ "$type" == "all" ] || [ "$type" == "emoncms" ]; then
     echo "restarting service-runner"
     # old service runner
     killall service-runner
     # new service runner
     sudo systemctl restart service-runner.service 
 fi
+
+# -----------------------------------------------------------------
+
+datestr=$(date)
+
+echo
+echo "-------------------------------------------------------------"
+echo "Update done: $datestr" # this text string is used by service runner to stop the log window polling, DO NOT CHANGE!
+echo "-------------------------------------------------------------"
