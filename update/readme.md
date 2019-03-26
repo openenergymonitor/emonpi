@@ -1,5 +1,9 @@
 # How to run scripts manually
 
+Following works well with the suggested /usr/emoncms location. Assuming repo is installed in that directory e.g /usr/emoncms/emonpi. It also works fine with the /home/pi/emonpi path. Path is automatically detected.
+
+---
+
 Current directory is emonpi/update
 
 ### Update Emoncms
