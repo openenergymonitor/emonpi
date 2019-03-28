@@ -25,11 +25,11 @@ Current directory is emonpi/update
     
 ### Via main.sh
 
-    ./main.sh UPDATE_TYPE FIRMWARE
-    ./main.sh all emonpi
-    ./main.sh emoncms
-    ./main.sh emonhub
-    ./main.sh firmware emonpi
+    ./main.sh UPDATE_TYPE FIRMWARE IMAGE_NAME
+    ./main.sh all emonpi emonSD-30Oct18
+    ./main.sh emoncms emonSD-30Oct18
+    ./main.sh emonhub emonSD-30Oct18
+    ./main.sh firmware emonpi emonSD-30Oct18
     
 ### Via service-runner-update.sh
 
