@@ -1,0 +1,6 @@
+#!/bin/bash
+# REDIRECT FOR UPDATE TO NEW UPDATE PATH LOCATIONS
+# KEEP THIS FILE HERE FOR ALL UPDATED FROM OCT17 and OCT18 IMAGES
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+usrdir=${DIR/\/emonpi/}
+$usrdir/emonpi/service-runner-update.sh all custom
