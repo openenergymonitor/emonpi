@@ -77,16 +77,16 @@ if [ "$emonSD_pi_env" = "1" ]; then
     sudo $usrdir/emonpi/lcd/./emonPiLCD_update.py
 fi
 
-echo "-------------------------------------------------------------"
-
-sudo apt-get update
-
-# Ensure rpi gpio is latest version and gpiozero is installed, required for V2.2.0 LCD script
-# rng-tools used to speed up entropy generation https://community.openenergymonitor.org/t/cant-connect-to-local-emoncms/9498/7
-sudo apt-get install python-gpiozero python-rpi.gpio rng-tools -y
-sudo pip install paho-mqtt --upgrade
-
-echo "-------------------------------------------------------------"
+# OS & Packages
+if [ "$type" == "all" ] && [ "$emonSD_pi_env" = "1" ]; then
+    echo "-------------------------------------------------------------"
+    sudo apt-get update
+    # Ensure rpi gpio is latest version and gpiozero is installed, required for V2.2.0 LCD script
+    # rng-tools used to speed up entropy generation https://community.openenergymonitor.org/t/cant-connect-to-local-emoncms/9498/7
+    sudo apt-get install python-gpiozero python-rpi.gpio rng-tools -y
+    sudo pip install paho-mqtt --upgrade
+    echo "-------------------------------------------------------------"
+fi
 
 # -----------------------------------------------------------------
 
