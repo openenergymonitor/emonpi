@@ -188,6 +188,15 @@ fi
 
 # -----------------------------------------------------------------
 
+datestr=$(date)
+
+echo
+echo "-------------------------------------------------------------"
+echo "emonPi update done: $datestr" # this text string is used by service runner to stop the log window polling, DO NOT CHANGE!
+echo "-------------------------------------------------------------"
+
+# -----------------------------------------------------------------
+
 if [ "$type" == "all" ] || [ "$type" == "emoncms" ]; then
     echo "restarting service-runner"
     # old service runner
@@ -196,11 +205,3 @@ if [ "$type" == "all" ] || [ "$type" == "emoncms" ]; then
     sudo systemctl restart service-runner.service 
 fi
 
-# -----------------------------------------------------------------
-
-datestr=$(date)
-
-echo
-echo "-------------------------------------------------------------"
-echo "emonPi update done: $datestr" # this text string is used by service runner to stop the log window polling, DO NOT CHANGE!
-echo "-------------------------------------------------------------"
