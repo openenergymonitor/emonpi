@@ -42,16 +42,20 @@ if [ "$image_version" = "" ]; then
 else 
     echo "- emonSD version: $image_version"
     
+    valid=0
     for image_name in "emonSD-07Nov16" "emonSD-03May16" "emonSD-26Oct17" "emonSD-13Jun18" "emonSD-30Oct18"; do
         if [ "$image_version" == "$image_name" ]; then
             echo "emonSD base image check passed...continue update"
-        else
-            echo "ERROR: emonSD base image old or undefined...update will not continue"
-            echo "See latest verson: https://github.com/openenergymonitor/emonpi/wiki/emonSD-pre-built-SD-card-Download-&-Change-Log"
-            echo "Stopping update"
-            exit 0
-        fi 
+            valid=1
+        fi
     done
+
+    if [ $valid == 0 ]; then
+        echo "ERROR: emonSD base image old or undefined...update will not continue"
+        echo "See latest verson: https://github.com/openenergymonitor/emonpi/wiki/emonSD-pre-built-SD-card-Download-&-Change-Log"
+        echo "Stopping update"
+        exit 0
+    fi
 fi
 
 if [ "$emonSD_pi_env" = "0" ]; then
