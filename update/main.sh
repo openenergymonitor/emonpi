@@ -175,7 +175,7 @@ fi
 
 # -----------------------------------------------------------------
 
-if [ "$type" == "all" ] && [ "$emonSD_pi_env" = "1" ]; then
+if [ "$emonSD_pi_env" = "1" ]; then
     echo
     # Wait for update to finish
     echo "Starting emonPi LCD service.."
