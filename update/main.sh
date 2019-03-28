@@ -12,7 +12,6 @@ usrdir=${DIR/\/emonpi\/update/}
 
 type=$1
 firmware=$2
-image_version=$3
 
 datestr=$(date)
 
@@ -35,8 +34,29 @@ else
   emonSD_pi_env=0
 fi
 
+# Check emonSD version
+image_version=$(ls /boot | grep emonSD)
+
 if [ "$image_version" = "" ]; then
+    echo "- Could not find emonSD version file"
     emonSD_pi_env=0
+else 
+    echo "- emonSD version: $image_version"
+    
+    valid=0
+    for image_name in "emonSD-26Oct17" "emonSD-30Oct18"; do
+        if [ "$image_version" == "$image_name" ]; then
+            echo "emonSD base image check passed...continue update"
+            valid=1
+        fi
+    done
+
+    if [ $valid == 0 ]; then
+        echo "ERROR: emonSD base image old or undefined...update will not continue"
+        echo "See latest verson: https://github.com/openenergymonitor/emonpi/wiki/emonSD-pre-built-SD-card-Download-&-Change-Log"
+        echo "Stopping update"
+        exit 0
+    fi
 fi
 
 if [ "$emonSD_pi_env" = "0" ]; then
