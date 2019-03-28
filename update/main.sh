@@ -86,18 +86,24 @@ if [ "$emonSD_pi_env" = "1" ]; then
     echo "Hardware detected: $hardware"
     
     # Stop emonPi LCD servcice
-    # sudo service emonPiLCD stop
+    echo "Stopping emonPiLCD service"
+    sudo service emonPiLCD stop
 
     # Display update message on LCD
-    # sudo $usrdir/emonpi/lcd/./emonPiLCD_update.py
+    echo "Display update message on LCD"
+    sudo $usrdir/emonpi/lcd/./emonPiLCD_update.py
 fi
 
-# sudo apt-get update
+echo "-------------------------------------------------------------"
+
+sudo apt-get update
 
 # Ensure rpi gpio is latest version and gpiozero is installed, required for V2.2.0 LCD script
 # rng-tools used to speed up entropy generation https://community.openenergymonitor.org/t/cant-connect-to-local-emoncms/9498/7
-# sudo apt-get install python-gpiozero python-rpi.gpio rng-tools -y
-# sudo pip install paho-mqtt --upgrade
+sudo apt-get install python-gpiozero python-rpi.gpio rng-tools -y
+sudo pip install paho-mqtt --upgrade
+
+echo "-------------------------------------------------------------"
 
 # -----------------------------------------------------------------
 
