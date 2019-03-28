@@ -274,30 +274,32 @@ done
 ###################################################################################
 # Install log rotate config
 ####################################################################################
-echo "Installing emoncms logrotate..."
-echo
+if [ "$emonSD_pi_env" = "1" ]; then
+    echo "Installing emoncms logrotate..."
+    echo
 
-# Remove already roated old log files to free up space incase /var/log is full
-if ls /var/log/syslog.* > /dev/null 2>&1; then
-  sudo rm /var/log/syslog.*
-fi
+    # Remove already roated old log files to free up space incase /var/log is full
+    if ls /var/log/syslog.* > /dev/null 2>&1; then
+      sudo rm /var/log/syslog.*
+    fi
 
-if ls /var/log/*.log.* > /dev/null 2>&1; then
-  sudo rm /var/log/*.log.*
-fi
+    if ls /var/log/*.log.* > /dev/null 2>&1; then
+      sudo rm /var/log/*.log.*
+    fi
 
-# Install emonPi log rotate config
-sudo /var/www/emoncms/scripts/logger/install.sh
-# Run log roate manually
-echo "Running logrotate..."
-sudo /usr/sbin/logrotate -v -s /var/log/logrotate/logrotate.status /etc/logrotate.conf > /dev/null 2>&1
+    # Install emonPi log rotate config
+    sudo /var/www/emoncms/scripts/logger/install.sh
+    # Run log roate manually
+    echo "Running logrotate..."
+    sudo /usr/sbin/logrotate -v -s /var/log/logrotate/logrotate.status /etc/logrotate.conf > /dev/null 2>&1
 
-# Reload rather than restart apache so we dont loose the interface 
-sudo service apache2 reload 
-echo
-if [ "$emonSD_pi_env" = "1" ]; then 
-    echo "set log rotate config owner to root"
-    sudo chown root:root /etc/logrotate.conf
+    # Reload rather than restart apache so we dont loose the interface 
+    sudo service apache2 reload 
+    echo
+    if [ "$emonSD_pi_env" = "1" ]; then 
+        echo "set log rotate config owner to root"
+        sudo chown root:root /etc/logrotate.conf
+    fi
 fi
 echo
 echo "------------------------------------------"
