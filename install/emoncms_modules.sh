@@ -5,13 +5,11 @@ echo "-------------------------------------------------------------"
 echo "Install Emoncms Modules"
 echo "-------------------------------------------------------------"
 # Review default branch: e.g stable
-cd /var/www/emoncms/Modules
-git clone https://github.com/emoncms/config.git
-git clone https://github.com/emoncms/graph.git
-git clone https://github.com/emoncms/dashboard.git
-git clone https://github.com/emoncms/device.git
-git clone https://github.com/emoncms/app.git
-git clone https://github.com/emoncms/wifi.git
+cd $emoncms_www/Modules
+for module in ${emoncms_modules[*]}; do
+    echo "Installing module: $module"
+    git clone https://github.com/emoncms/$module.git
+done
 
 # wifi module sudoers entry
 sudo visudo -cf $usrdir/emonpi/wifi-sudoers && \
@@ -34,15 +32,12 @@ cd $usrdir
 git clone https://github.com/emoncms/usefulscripts.git
 
 cd $usrdir/modules
-# postprocess
-git clone https://github.com/emoncms/postprocess.git
-ln -s $usrdir/modules/postprocess/postprocess-module $emoncms_www/Modules/postprocess
-# demandshaper
-git clone https://github.com/emoncms/demandshaper.git
-ln -s $usrdir/modules/demandshaper/demandshaper-module $emoncms_www/Modules/demandshaper
-# sync
-git clone https://github.com/emoncms/sync.git
-ln -s $usrdir/modules/sync/sync-module $emoncms_www/Modules/sync
+for module in ${emoncms_modules_usrdir[*]}; do
+    echo "Installing module: $module"
+    git clone https://github.com/emoncms/$module.git
+    ln -s $usrdir/modules/$module/$module-module $emoncms_www/Modules/$module
+done
+
 # backup
 # Rename emoncms module component to backup-module
 git clone https://github.com/emoncms/backup.git
