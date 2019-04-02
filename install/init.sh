@@ -9,7 +9,7 @@ sudo mkdir /usr/emoncms
 sudo chown $USER /usr/emoncms
 cd /usr/emoncms
 
-git clone -b update_refactor https://github.com/openenergymonitor/emonpi.git
+git clone https://github.com/openenergymonitor/emonpi.git
 
 /usr/emoncms/emonpi/install/emonSD_build_test.sh
 
