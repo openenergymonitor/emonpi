@@ -26,21 +26,30 @@ if [ "$emonSD_pi_env" = "1" ]; then
 fi
 
 cd $usrdir
-if [ -d $usrdir/data ]; then
+if [ ! -d $usrdir/data ]; then
     mkdir data
 fi
 
-git clone https://github.com/openenergymonitor/emonhub.git
+if [ ! -d $usrdir/emonhub ]; then
+    git clone https://github.com/openenergymonitor/emonhub.git
+else 
+    echo "- emonhub repository already installed"
+fi
 
-cd $usrdir/emonhub
-sudo ./install.systemd
-sudo systemctl start emonhub.service
+if [ ! -f $usrdir/data/emonhub.conf ]; then
+    sudo mv $usrdir/emonhub/conf/emonpi.default.emonhub.conf $usrdir/data/emonhub.conf
+fi
+
+# Install service
+service="emonhub"
+servicepath="$usrdir/emonhub/service/emonhub.service"
+$usrdir/emonpi/update/install_emoncms_service.sh $servicepath $service
 
 # Temporary: replace with update to default settings file
-sed -i "s/loglevel = DEBUG/loglevel = WARNING/" /$usrdir/data/emonhub.conf
+sed -i "s/loglevel = DEBUG/loglevel = WARNING/" $usrdir/data/emonhub.conf
 
 # Sudoers entry (review!)
-sudo visudo -cf $usrdir/emonpi/emonhub-sudoers && \
-sudo cp $usrdir/emonpi/emonhub-sudoers /etc/sudoers.d/
+sudo visudo -cf $usrdir/emonpi/sudoers.d/emonhub-sudoers && \
+sudo cp $usrdir/emonpi/sudoers.d/emonhub-sudoers /etc/sudoers.d/
 sudo chmod 0440 /etc/sudoers.d/emonhub-sudoers
 echo "emonhub service control sudoers entry installed"

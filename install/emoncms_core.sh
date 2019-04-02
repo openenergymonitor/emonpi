@@ -4,60 +4,72 @@ source config.ini
 echo "-------------------------------------------------------------"
 echo "Install Emoncms Core"
 echo "-------------------------------------------------------------"
+
 # Emoncms install
 # Give pi user ownership over /var/www/ folder
 sudo chown $user /var/www
-cd /var/www && git clone -b master https://github.com/emoncms/emoncms.git
+if [ ! -d $emoncms_www ]; then
+    cd /var/www && git clone -b master https://github.com/emoncms/emoncms.git
+else
+    echo "- emoncms already installed"
+fi
 
 # Create logfile
+echo "- creating emoncms log file"
 sudo touch /var/log/emoncms.log
 sudo chmod 666 /var/log/emoncms.log
 
 # Configure emoncms database settings
 # Make a copy of default.settings.php and call it settings.php:
+echo "- installing default emoncms settings.php"
 cp $usrdir/emonpi/install/default.emonpi.settings.php /var/www/emoncms/settings.php
 
 # Create data repositories for emoncms feed engines:
-echo " - Creating phpfina, phpiwa, phptimeseries emoncms feed directories"
-sudo mkdir /var/lib/phpfiwa
-sudo mkdir /var/lib/phpfina
-sudo mkdir /var/lib/phptimeseries
-sudo chown www-data:root /var/lib/phpfiwa
-sudo chown www-data:root /var/lib/phpfina
-sudo chown www-data:root /var/lib/phptimeseries
+for engine in "phpfina" "phpfiwa" "phptimeseries"; do
+    if [ ! -d /var/lib/$engine ]; then
+        echo "- create $engine dir"
+        sudo mkdir /var/lib/$engine
+        sudo chown www-data:root /var/lib/$engine
+    else
+        echo "- datadir $engine already exists"
+    fi
+done
+
 
 # Create a symlink to reference emoncms within the web root folder:
-cd /var/www/html && sudo ln -s /var/www/emoncms
+if [ ! -d /var/www/html/emoncms ]; then
+    cd /var/www/html && sudo ln -s /var/www/emoncms
+fi
 
 # Redirect
 echo "<?php header('Location: ../emoncms'); ?>" > /home/pi/index.php
 sudo mv /home/pi/index.php /var/www/html/index.php
-sudo rm /var/www/html/index.html
+if [ -f /var/www/html/emoncms ]; then
+    sudo rm /var/www/html/index.html
+fi
 
 echo "-------------------------------------------------------------"
 echo "Install Emoncms Services"
 echo "-------------------------------------------------------------"
-# Emoncms MQTT
-sudo ln -s /var/www/emoncms/scripts/services/emoncms_mqtt/emoncms_mqtt.service /lib/systemd/system
-sudo systemctl enable emoncms_mqtt.service
-sudo systemctl start emoncms_mqtt.service
-# Feedwriter
-sudo ln -s /var/www/emoncms/scripts/services/feedwriter/feedwriter.service /lib/systemd/system
-sudo systemctl enable feedwriter.service
-sudo systemctl start feedwriter.service
-# Service runner
-sudo pip install redis
-sudo ln -s /var/www/emoncms/scripts/services/service-runner/service-runner.service /lib/systemd/system
-sudo systemctl enable service-runner.service
-sudo systemctl start service-runner.service
+for service in "emoncms_mqtt" "feedwriter" "service-runner"; do
+    servicepath=/var/www/emoncms/scripts/services/$service/$service.service
+    if [ ! -f /lib/systemd/system/$service.service ]; then
+        echo "- Installing $service.service in /lib/systemd/system (creating symlink)"
+        sudo ln -s $servicepath /lib/systemd/system
+        sudo systemctl enable $service.service
+        sudo systemctl start $service.service
+    else
+        echo "- $service.service already installed"
+    fi
+done
 
 # Sudoers entry (review)
-sudo visudo -cf $usrdir/emonpi/emoncms-rebootbutton && \
-sudo cp $usrdir/emonpi/emoncms-rebootbutton /etc/sudoers.d/
+sudo visudo -cf $usrdir/emonpi/sudoers.d/emoncms-rebootbutton && \
+sudo cp $usrdir/emonpi/sudoers.d/emoncms-rebootbutton /etc/sudoers.d/
 sudo chmod 0440 /etc/sudoers.d/emoncms-rebootbutton
-echo "Install emonPi Emoncms admin reboot button sudoers entry"
+echo "- Install emonPi Emoncms admin reboot button sudoers entry"
 
-sudo visudo -cf $usrdir/emonpi/emoncms-setup/emoncms-setup-sudoers && \
-sudo cp $usrdir/emonpi/emoncms-setup/emoncms-setup-sudoers /etc/sudoers.d/
+sudo visudo -cf $usrdir/emonpi/sudoers.d/emoncms-setup-sudoers && \
+sudo cp $usrdir/emonpi/sudoers.d/emoncms-setup-sudoers /etc/sudoers.d/
 sudo chmod 0440 /etc/sudoers.d/emoncms-setup-sudoers
-echo "Emoncms setup module sudoers entry installed"
+echo "- Emoncms setup module sudoers entry installed"
