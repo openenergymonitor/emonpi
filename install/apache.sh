@@ -1,5 +1,5 @@
 #!/bin/bash
-usrdir=$1
+source config.ini
 
 echo "-------------------------------------------------------------"
 echo "Apache configuration"

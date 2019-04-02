@@ -1,6 +1,5 @@
 #!/bin/bash
-mqtt_user=$1
-mqtt_password=$2
+source config.ini
 
 echo "-------------------------------------------------------------"
 echo "Mosquitto configuration"

@@ -1,4 +1,5 @@
 #! /bin/sh
+source config.ini
 
 # --------------------------------------------------------------------------------
 # Enable serial uploads with avrdude and autoreset

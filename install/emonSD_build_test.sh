@@ -1,3 +1,4 @@
+#! /bin/sh
 # --------------------------------------------------------------------------------
 # RaspberryPi Strech Build Script
 # Emoncms, Emoncms Modules, EmonHub & dependencies
@@ -11,25 +12,10 @@
 # Review splitting this up into seperate scripts
 # - emoncms installer
 # - emonhub installer
-
 # Format as documentation
 
-#! /bin/sh
-
-# auto detect install location (e.g /usr/emoncms or /home/pi)
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-usrdir=${DIR/\/emonpi\/install/}
-
-USER=pi
-DEFAULT_SSH_PASSWORD=emonpi2016
-hostname=emonpi
-emonSD_pi_env=1
-
-mysql_user=emonpi
-mysql_password=emonpiemoncmsmysql2016
-
-mqtt_user=emonpi
-mqtt_password=emonpimqtt2016
+# Load config
+source config.ini
 
 sudo apt-get update -y
 # sudo apt-get upgrade -y
@@ -47,12 +33,12 @@ sudo apt-get install -y apache2 mariadb-server mysql-client php7.0 libapache2-mo
 sudo pecl channel-update pecl.php.net
 
 $usrdir/emonpi/install/redis.sh
-$usrdir/emonpi/install/mosquitto.sh $mqtt_user $mqtt_password
-$usrdir/emonpi/install/apache.sh $usrdir
-$usrdir/emonpi/install/mysql.sh $mysql_user $mysql_password
+$usrdir/emonpi/install/mosquitto.sh
+$usrdir/emonpi/install/apache.sh
+$usrdir/emonpi/install/mysql.sh
 $usrdir/emonpi/install/emoncms_core.sh
 $usrdir/emonpi/install/emoncms_modules.sh
-$usrdir/emonpi/install/emonhub.sh $emonSD_pi_env
+$usrdir/emonpi/install/emonhub.sh
 
 if [ "$emonSD_pi_env" = "1" ]; then
     $usrdir/emonpi/install/emonpilcd.sh

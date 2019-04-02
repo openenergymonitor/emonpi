@@ -1,4 +1,6 @@
 #! /bin/sh
+source config.ini
+
 # --------------------------------------------------------------------------------
 # Install log2ram, so that logging is on RAM to reduce SD card wear.
 # Logs are written to disk every hour or at shutdown

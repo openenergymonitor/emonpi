@@ -1,11 +1,9 @@
 #!/bin/bash
+source config.ini
+
 echo "-------------------------------------------------------------"
 echo "emonHub install"
 echo "-------------------------------------------------------------"
-emonSD_pi_env=$1
-
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-usrdir=${DIR/\/emonpi\/install/}
 
 sudo apt-get install -y python-serial python-configobj
 sudo pip install paho-mqtt requests
