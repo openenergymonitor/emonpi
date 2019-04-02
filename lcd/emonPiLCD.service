@@ -1,0 +1,40 @@
+# Systemd unit file for emonPiLCD script
+
+# INSTALL:
+# sudo ln -s /usr/share/emonPiLCD/emonPiLCD.service /lib/systemd/system
+
+# RUN AT STARTUP
+# sudo systemctl daemon-reload
+# sudo systemctl enable emonPiLCD.service
+
+# START / STOP With:
+# sudo systemctl start emonPiLCD
+# sudo systemctl stop emonPiLCD
+
+# VIEW STATUS
+# systemctl status emonPiLCD
+# VIEW LOG
+# journalctl -f -u emonPiLCD
+
+[Unit]
+Description=emonPiLCD Script
+Wants=mosquitto.service
+After=mosquitto.service
+
+[Service]
+Type=idle
+ExecStart=/usr/bin/python /usr/share/emonPiLCD/emonPiLCD.py
+User=pi
+
+# Restart script if stopped on a failure. Will not restart if not configured correctly
+Restart=on-failure
+# Wait 60s before restart
+RestartSec=60
+
+# Tag things in the log
+# If you want to use the journal instead of the file above, uncomment SyslogIdentifier below
+# View with: sudo journalctl -f -u emonPiLCD -o cat
+SyslogIdentifier=emonPiLCD
+
+[Install]
+WantedBy=multi-user.target
