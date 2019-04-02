@@ -19,7 +19,7 @@ rm -r log2ram-master
 # Review: provide configuration file for default password and hostname
 
 # Set default SSH password:
-printf "raspberry\n$DEFAULT_SSH_PASSWORD\n$DEFAULT_SSH_PASSWORD" | passwd
+printf "raspberry\n$ssh_password\n$ssh_password" | passwd
 
 # Set hostname
 sudo sed -i "s/raspberrypi/$hostname/g" /etc/hosts

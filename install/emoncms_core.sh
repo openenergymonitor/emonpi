@@ -6,7 +6,7 @@ echo "Install Emoncms Core"
 echo "-------------------------------------------------------------"
 # Emoncms install
 # Give pi user ownership over /var/www/ folder
-sudo chown $USER /var/www
+sudo chown $user /var/www
 cd /var/www && git clone -b master https://github.com/emoncms/emoncms.git
 
 # Create logfile

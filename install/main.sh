@@ -41,6 +41,7 @@ $usrdir/emonpi/install/emoncms_modules.sh
 $usrdir/emonpi/install/emonhub.sh
 
 if [ "$emonSD_pi_env" = "1" ]; then
+    $usrdir/emonpi/install/firmware.sh
     $usrdir/emonpi/install/emonpilcd.sh
     $usrdir/emonpi/install/emonsd.sh
     

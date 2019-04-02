@@ -1,12 +1,12 @@
 #! /bin/sh
 
-USER=pi
+user=pi
 
 sudo apt-get update -y
 sudo apt-get install -y git-core
 
 sudo mkdir /usr/emoncms
-sudo chown $USER /usr/emoncms
+sudo chown $user /usr/emoncms
 cd /usr/emoncms
 
 git clone https://github.com/openenergymonitor/emonpi.git

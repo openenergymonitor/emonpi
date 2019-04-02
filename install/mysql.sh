@@ -1,7 +1,5 @@
 #!/bin/bash
-mysql_user=$1
-mysql_password=$2
-mysql_database=emoncms
+source config.ini
 
 echo "-------------------------------------------------------------"
 echo "Setup the Mariadb server (MYSQL)"
