@@ -32,6 +32,12 @@ fi
 
 if [ ! -d $usrdir/emonhub ]; then
     git clone https://github.com/openenergymonitor/emonhub.git
+    # modify service file to point to correct config file location
+    sudo sed -i "s~/home/pi/data/emonhub.conf~$usrdir/data/emonhub.conf~g" $usrdir/emonhub/service/emonhub.service
+    
+    sudo rm /usr/share/emonhub
+    sudo ln -s $usrdir/emonhub/src /usr/share/emonhub
+    sudo useradd -M -r -G dialout,tty -c "emonHub user" emonhub
 else 
     echo "- emonhub repository already installed"
 fi
