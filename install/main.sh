@@ -1,4 +1,3 @@
-#! /bin/sh
 # --------------------------------------------------------------------------------
 # RaspberryPi Strech Build Script
 # Emoncms, Emoncms Modules, EmonHub & dependencies
@@ -14,7 +13,7 @@
 # - emonhub installer
 # Format as documentation
 
-# Load config
+#! /bin/sh
 source config.ini
 
 sudo apt-get update -y
