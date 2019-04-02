@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/bash
 
 sudo apt-get install -y python-smbus i2c-tools python-rpi.gpio python-gpiozero
 sudo pip install xmltodict
