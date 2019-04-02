@@ -26,3 +26,5 @@ Thumbs.db
 
 # ignore all compiled python binaries
 *.pyc
+
+update/username

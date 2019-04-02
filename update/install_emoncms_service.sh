@@ -1,16 +1,8 @@
 #!/bin/bash
-echo
-echo "================================="
-echo "emonHub update started"
-echo "================================="
 
-username="pi"
-homedir="/home/$username"
+servicepath=$1
+service=$2
 
-service="emonhub"
-servicepath="$homedir/emonhub/service/emonhub.service"
-
-# Remove old init.d emonhub service
 if [ -d /etc/systemd ] && [ -f $servicepath ]; then
   if [ -f /etc/init.d/$service ]; then
     echo "removing initd $service service"
@@ -29,7 +21,6 @@ if [ -d /etc/systemd ] && [ -f $servicepath ]; then
     fi
   fi
   
-  # remove old incorrectly installed systemd service
   if [ -f /lib/systemd/system/$service.service ]; then
     if ! [ -L /lib/systemd/system/$service.service ]; then
       echo "Removing hard copy of $service.service in /lib/systemd/system (should be symlink)"
@@ -40,7 +31,6 @@ if [ -d /etc/systemd ] && [ -f $servicepath ]; then
     fi
   fi
   
-  # Install new emonhub systemd service
   if [ ! -f /lib/systemd/system/$service.service ]; then
     echo "Installing $service.service in /lib/systemd/system (creating symlink)"
     sudo ln -s $servicepath /lib/systemd/system
@@ -50,9 +40,3 @@ if [ -d /etc/systemd ] && [ -f $servicepath ]; then
     echo "$service.service already installed"
   fi
 fi
-
-echo
-echo "Running emonhub automatic node addition script"
-echo "EUID: $EUID"
-$homedir/emonhub/conf/nodes/emonpi_auto_add_nodes.sh
-
