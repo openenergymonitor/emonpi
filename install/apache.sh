@@ -1,0 +1,27 @@
+#!/bin/bash
+usrdir=$1
+
+echo "-------------------------------------------------------------"
+echo "Apache configuration"
+echo "-------------------------------------------------------------"
+# Enable apache mod rewrite
+sudo a2enmod rewrite
+cat <<EOF >> $usrdir/emoncms.conf
+<Directory /var/www/html/emoncms>
+    Options FollowSymLinks
+    AllowOverride All
+    DirectoryIndex index.php
+    Order allow,deny
+    Allow from all
+</Directory>
+EOF
+sudo mv $usrdir/emoncms.conf /etc/apache2/sites-available/emoncms.conf
+# Review is this line needed? if so check for existing entry
+# printf "ServerName localhost" | sudo tee -a /etc/apache2/apache2.conf 1>&2
+sudo a2ensite emoncms
+
+# Disable apache2 access logs
+sudo sed -i "s/^\tCustomLog/\t#CustomLog/" /etc/apache2/sites-available/000-default.conf
+sudo sed -i "s/^CustomLog/#CustomLog/" /etc/apache2/conf-available/other-vhosts-access-log.conf
+
+sudo service apache2 restart

@@ -40,3 +40,9 @@ sudo systemctl start emonhub.service
 
 # Temporary: replace with update to default settings file
 sed -i "s/loglevel = DEBUG/loglevel = WARNING/" /$usrdir/data/emonhub.conf
+
+# Sudoers entry (review!)
+sudo visudo -cf $usrdir/emonpi/emonhub-sudoers && \
+sudo cp $usrdir/emonpi/emonhub-sudoers /etc/sudoers.d/
+sudo chmod 0440 /etc/sudoers.d/emonhub-sudoers
+echo "emonhub service control sudoers entry installed"
