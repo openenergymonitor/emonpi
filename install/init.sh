@@ -11,7 +11,7 @@ cd /usr/emoncms
 
 git clone https://github.com/openenergymonitor/emonpi.git
 
-/usr/emoncms/emonpi/install/emonSD_build_test.sh
+/usr/emoncms/emonpi/install/main.sh
 
 cd
 

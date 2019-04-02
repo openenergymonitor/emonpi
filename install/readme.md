@@ -4,5 +4,5 @@ Base requirement: Raspbian Strech
 
 Run install:
 
-    wget https://raw.githubusercontent.com/openenergymonitor/emonpi/update_refactor/install/init.sh
+    wget https://raw.githubusercontent.com/openenergymonitor/emonpi/master/install/init.sh
     sh init.sh
