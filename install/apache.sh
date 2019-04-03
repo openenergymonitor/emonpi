@@ -6,7 +6,7 @@ echo "Apache configuration"
 echo "-------------------------------------------------------------"
 # Enable apache mod rewrite
 sudo a2enmod rewrite
-cat <<EOF >> $usrdir/emoncms.conf
+sudo cat <<EOF >> /tmp/emoncms.conf
 <Directory /var/www/html/emoncms>
     Options FollowSymLinks
     AllowOverride All
@@ -15,7 +15,7 @@ cat <<EOF >> $usrdir/emoncms.conf
     Allow from all
 </Directory>
 EOF
-sudo mv $usrdir/emoncms.conf /etc/apache2/sites-available/emoncms.conf
+sudo mv /tmp/emoncms.conf /etc/apache2/sites-available/emoncms.conf
 # Review is this line needed? if so check for existing entry
 # printf "ServerName localhost" | sudo tee -a /etc/apache2/apache2.conf 1>&2
 sudo a2ensite emoncms

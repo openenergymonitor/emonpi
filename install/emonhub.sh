@@ -23,6 +23,7 @@ if [ "$emonSD_pi_env" = "1" ]; then
     # stop and disable serial service??
     sudo systemctl stop serial-getty@ttyAMA0.service
     sudo systemctl disable serial-getty@ttyAMA0.service
+    sudo systemctl mask serial-getty@ttyAMA0.service
 fi
 
 cd $usrdir
