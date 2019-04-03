@@ -31,24 +31,28 @@ if [ ! -d $usrdir/modules ]; then
     mkdir $usrdir/modules/data
 fi
 
-# usefulscripts
-if [ ! -d $usrdir/usefulscripts ]; then
-    cd $usrdir
-    git clone https://github.com/emoncms/usefulscripts.git
-fi
-
 cd $usrdir/modules
 for module in ${emoncms_modules_usrdir[*]}; do
     if [ ! -d $module ]; then
         echo "- Installing module: $module"
         git clone https://github.com/emoncms/$module.git
-        ln -s $usrdir/modules/$module/$module-module $emoncms_www/Modules/$module
+        # If module contains emoncms UI folder, symlink to $emoncms_www/Modules
+        if [ -d $usrdir/modules/$module/$module-module ]; then
+            echo "-- UI directory symlink"
+            ln -s $usrdir/modules/$module/$module-module $emoncms_www/Modules/$module
+        fi
+        # If module contains service script: install
+        if [ -f $usrdir/modules/$module/$module.service ]; then
+            echo "-- installing service"
+            servicepath=$usrdir/modules/$module/$module.service
+            $usrdir/emonpi/update/install_emoncms_service.sh $servicepath $module      
+        fi
     else
         echo "- Module $module already exists"
     fi
 done
 
-# backup
+# backup module
 if [ ! -d $usrdir/modules/backup ]; then
     # Rename emoncms module component to backup-module
     git clone https://github.com/emoncms/backup.git
