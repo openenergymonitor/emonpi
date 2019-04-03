@@ -47,6 +47,10 @@ for module in ${emoncms_modules_usrdir[*]}; do
             servicepath=$usrdir/modules/$module/$module.service
             $usrdir/emonpi/update/install_emoncms_service.sh $servicepath $module      
         fi
+        # run module install script if present
+        if [ -f $usrdir/modules/$module/install.sh ]; then
+            $usrdir/modules/$module/install.sh $usrdir
+        fi
     else
         echo "- Module $module already exists"
     fi
@@ -55,7 +59,9 @@ done
 # backup module
 if [ -d $usrdir/modules/backup ]; then
     cd backup
-    git checkout multienv
+    git checkout multienv                     # remove this line once merged to master
+    $usrdir/modules/backup/install.sh $usrdir # remove this line once merged to master
+    
     if [ ! -f config.cfg ]; then
         cp default.config.cfg config.cfg
         sed -i "s~USER~$user~" config.cfg
