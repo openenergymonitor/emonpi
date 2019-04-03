@@ -11,8 +11,8 @@ cd /usr/emoncms
 
 git clone https://github.com/openenergymonitor/emonpi.git
 
-/usr/emoncms/emonpi/install/main.sh
-
+cd /usr/emoncms/emonpi/install
+./main.sh
 cd
 
 rm init.sh
