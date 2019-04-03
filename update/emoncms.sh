@@ -140,7 +140,9 @@ for module in "postprocess" "sync" "backup"; do
         echo "- running: git pull origin $branch"
         echo
         git pull origin $branch
-        # ln -sf $usrdir/$module/$module-module $emoncms_dir/Modules/$module
+        # relink symlink 
+        # rm $emoncms_dir/Modules/$module
+        # ln -s $emoncms_symlinked_modules/$module/$module-module $emoncms_dir/Modules/$module
     else
         echo "- git status:"
         echo

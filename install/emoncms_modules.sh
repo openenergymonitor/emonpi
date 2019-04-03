@@ -53,14 +53,18 @@ for module in ${emoncms_modules_usrdir[*]}; do
 done
 
 # backup module
-if [ ! -d $usrdir/modules/backup ]; then
-    # Rename emoncms module component to backup-module
-    git clone https://github.com/emoncms/backup.git
+if [ -d $usrdir/modules/backup ]; then
     cd backup
     git checkout multienv
-    cp default.emonpi.config.cfg config.cfg
-    sed -i "s/\/home\/pi\/backup/\/usr\/emoncms\/modules\/backup/" config.cfg
-    ln -s $usrdir/modules/backup/backup $emoncms_www/Modules/backup
-else
-    echo "- Module backup already exists"
+    if [ ! -f config.cfg ]; then
+        cp default.config.cfg config.cfg
+        sed -i "s~USER~$user~" config.cfg
+        sed -i "s~BACKUP_SCRIPT_LOCATION~$usrdir/modules/backup~" config.cfg
+        sed -i "s~EMONCMS_LOCATION~$emoncms_www~" config.cfg
+        sed -i "s~BACKUP_LOCATION~$usrdir~" config.cfg
+        sed -i "s~DATABASE_PATH~/var/lib~" config.cfg
+        sed -i "s~EMONHUB_CONFIG_PATH~$usrdir/data/emonhub.conf~" config.cfg
+        sed -i "s~EMONHUB_SPECIMEN_CONFIG~$usrdir/emonhub/conf~" config.cfg
+        sed -i "s~BACKUP_SOURCE_PATH~$usrdir/uploads~" config.cfg
+    fi
 fi
