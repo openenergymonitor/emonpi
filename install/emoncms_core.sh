@@ -47,15 +47,13 @@ done
 # Create a symlink to reference emoncms within the web root folder (review):
 if [ ! -d /var/www/html/emoncms ]; then
     echo "- symlinking emoncms folder to /var/www/html/emoncms"
-    ln -s $emoncms_www /var/www/html/emoncms
+    sudo ln -s $emoncms_www /var/www/html/emoncms
     
     # Redirect (review)
     echo "- creating redirect to $emoncms_www"
     echo "<?php header('Location: ../emoncms'); ?>" > $usrdir/index.php
     sudo mv $usrdir/index.php /var/www/html/index.php
-    if [ -f /var/www/html/emoncms ]; then
-        sudo rm /var/www/html/index.html
-    fi
+    sudo rm /var/www/html/index.html
 fi
 
 echo "-------------------------------------------------------------"
