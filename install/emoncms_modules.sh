@@ -23,8 +23,8 @@ echo "wifi sudoers entry installed"
 
 # Install emoncms modules that do not reside in /var/www/emoncms/Modules
 if [ ! -d $usrdir/modules ]; then
-    # sudo mkdir /usr/emoncms
-    # sudo chown $user /usr/emoncms
+    # sudo mkdir $usrdir
+    # sudo chown $user $usrdir
     mkdir $usrdir/modules
     # emoncms-sync.log is written to data folder
     # change to /var/log or use emoncms logger

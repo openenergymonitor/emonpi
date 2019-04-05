@@ -70,7 +70,7 @@
         )
     );
 
-    $homedir = "/usr/emoncms";
+    $homedir = "USRDIR";
 
     // Max number of allowed different inputs per user. For limiting garbage rf data
     $max_node_id_limit = 32;

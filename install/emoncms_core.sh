@@ -29,6 +29,7 @@ fi
 if [ ! -f $emoncms_www/settings.php ]; then
     echo "- installing default emoncms settings.php"
     cp $usrdir/emonpi/install/default.emonpi.settings.php $emoncms_www/settings.php
+    sed -i "s~USRDIR~$usrdir~" $emoncms_www/settings.php
 else
     echo "- emoncms settings.php already exists"
 fi
