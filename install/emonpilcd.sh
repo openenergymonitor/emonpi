@@ -12,8 +12,9 @@ sudo sed -i -n '/i2c-dev/!p;$a i2c-dev' /etc/modules
 if [ ! -d /var/log/emonpilcd ]; then
     # emonPiLCD Logger
     sudo mkdir /var/log/emonpilcd
+    sudo chown $user /var/log/emonpilcd
     # Permissions?
-    sudo touch /var/log/emonpilcd/emonpilcd.log
+    touch /var/log/emonpilcd/emonpilcd.log
 fi
 
 # EmonBase / EmonPi flags are stored in /home/pi/data (needs removing)
