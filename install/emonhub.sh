@@ -13,7 +13,7 @@ else
 fi
 
 if [ -f $usrdir/emonhub/install.sh ]; then
-    $usrdir/emonhub/install.sh $usrdir $emonSD_pi_env
+    $usrdir/emonhub/install.sh $emonSD_pi_env
 else
     echo "ERROR: $usrdir/emonhub/install.sh script does not exist"
 fi
