@@ -24,15 +24,14 @@ from gpiozero import Button
 import lcddriver
 import gsmhuaweistatus
 
+path = os.path.dirname(os.path.realpath(__file__))
 # ------------------------------------------------------------------------------------
 # Script version
 version = '3.0.1'
 # ------------------------------------------------------------------------------------
 
-
 config = ConfigParser.ConfigParser()
-config.read('/usr/share/emonPiLCD/emonPiLCD.cfg') 
-
+config.read(path+'/emonPiLCD.cfg') 
 
 # ------------------------------------------------------------------------------------
 # MQTT Settings
@@ -44,7 +43,6 @@ mqtt_port = config.getint('mqtt','mqtt_port')
 mqtt_emonpi_topic = config.get('mqtt','mqtt_emonpi_topic') 
 mqtt_feed1_topic = config.get('mqtt','mqtt_feed1_topic')
 mqtt_feed2_topic = config.get('mqtt','mqtt_feed2_topic')
-
 
 # ------------------------------------------------------------------------------------
 # Redis Settings
@@ -180,11 +178,15 @@ def updateLCD() :
    if page == 0:
     # Update ethernet
         eth0ip = ipaddress.get_ip_address('eth0')
-        r.set("eth:active", bool(eth0ip))
+        active = 1
+        if eth0ip==0: active = 0
+        r.set("eth:active", active)
         r.set("eth:ip", eth0ip)
 
         wlan0ip = ipaddress.get_ip_address('wlan0')
-        r.set("wlan:active", bool(wlan0ip))
+        active = 1
+        if wlan0ip==0: active = 0
+        r.set("wlan:active", active)
 
         if eval(r.get("eth:active")):
             lcd[0] = "Ethernet: YES"
@@ -362,7 +364,7 @@ class LCD(object):
         # Scan I2C bus for LCD I2C addresses as defined in led_i2c, we have a couple of models of LCD which have different adreses that are shipped with emonPi. First I2C device to match address is used.
         self.logger = logger
         for i2c_address in lcd_i2c:
-          lcd_status = subprocess.check_output(["/home/pi/emonpi/lcd/emonPiLCD_detect.sh", "%s" % i2c_address])
+          lcd_status = subprocess.check_output([path+"/emonPiLCD_detect.sh", "%s" % i2c_address])
           if lcd_status.rstrip() == 'True':
             print "I2C LCD DETECTED Ox%s" % i2c_address
             logger.info("I2C LCD DETECTED 0x%s" % i2c_address)
