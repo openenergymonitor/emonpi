@@ -33,27 +33,45 @@ fi
 
 if [ ! -d $usrdir/emonhub ]; then
     git clone https://github.com/openenergymonitor/emonhub.git
-    # modify service file to point to correct config file location
-    sudo sed -i "s~/home/pi/data/emonhub.conf~$usrdir/data/emonhub.conf~g" $usrdir/emonhub/service/emonhub.service
-    
-    sudo rm /usr/share/emonhub
-    sudo ln -s $usrdir/emonhub/src /usr/share/emonhub
     sudo useradd -M -r -G dialout,tty -c "emonHub user" emonhub
 else 
     echo "- emonhub repository already installed"
 fi
 
 if [ ! -f $usrdir/data/emonhub.conf ]; then
-    sudo mv $usrdir/emonhub/conf/emonpi.default.emonhub.conf $usrdir/data/emonhub.conf
+    sudo cp $usrdir/emonhub/conf/emonpi.default.emonhub.conf $usrdir/data/emonhub.conf
+
+    # Temporary: replace with update to default settings file
+    sed -i "s/loglevel = DEBUG/loglevel = WARNING/" $usrdir/data/emonhub.conf
 fi
 
+# ---------------------------------------------------------
 # Install service
-service="emonhub"
-servicepath="$usrdir/emonhub/service/emonhub.service"
-$usrdir/emonpi/update/install_emoncms_service.sh $servicepath $service
+# ---------------------------------------------------------
+service=emonhub
+emonhub_src_path=$usrdir/emonhub/src
+emonhub_conf_path=$usrdir/data
 
-# Temporary: replace with update to default settings file
-sed -i "s/loglevel = DEBUG/loglevel = WARNING/" $usrdir/data/emonhub.conf
+if [ -f /lib/systemd/system/$service.service ]; then
+    echo "- reinstalling $service.service"
+    sudo systemctl stop $service.service
+    sudo systemctl disable $service.service
+    sudo rm /lib/systemd/system/$service.service
+else
+    echo "- installing $service.service"
+fi
+
+sudo cp $usrdir/emonhub/service/$service.service /lib/systemd/system
+sudo sed -i "s~ExecStart=.*~ExecStart=$emonhub_src_path/emonhub.py --config-file=$emonhub_conf_path/emonhub.conf~" /lib/systemd/system/$service.service
+sudo systemctl enable $service.service
+sudo systemctl restart $service.service
+
+state=$(systemctl show $service | grep ActiveState)
+echo "- Service $state"
+
+# ---------------------------------------------------------
+
+
 
 # Sudoers entry (review!)
 sudo visudo -cf $usrdir/emonpi/sudoers.d/emonhub-sudoers && \
