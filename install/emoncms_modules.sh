@@ -41,15 +41,10 @@ for module in ${emoncms_modules_usrdir[*]}; do
             echo "-- UI directory symlink"
             ln -s $usrdir/modules/$module/$module-module $emoncms_www/Modules/$module
         fi
-        # If module contains service script: install
-        if [ -f $usrdir/modules/$module/$module.service ]; then
-            echo "-- installing service"
-            servicepath=$usrdir/modules/$module/$module.service
-            $usrdir/emonpi/update/install_emoncms_service.sh $servicepath $module      
-        fi
         # run module install script if present
         if [ -f $usrdir/modules/$module/install.sh ]; then
             $usrdir/modules/$module/install.sh $usrdir
+            echo
         fi
     else
         echo "- Module $module already exists"

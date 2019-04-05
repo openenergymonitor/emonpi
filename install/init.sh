@@ -1,7 +1,7 @@
 #!/bin/bash
 
 user=pi
-usrdir=/usr/emoncms
+usrdir=/opt/emon
 
 sudo apt-get update -y
 sudo apt-get install -y git-core
