@@ -212,7 +212,7 @@ def updateLCD() :
                 signals = [x.split()[3] for x in wireless if x.strip().startswith('wlan0')]
             if signals:
                 signallevel = signals[0].partition('.')[0]
-            if signallevel.startswith('-'): # Detect the alternate signal strength reporting via dBm
+            if str(signallevel).startswith('-'): # Detect the alternate signal strength reporting via dBm
                 signallevel = 2 * ( int(signallevel) + 100 ) # Convert to percent
             r.set("wlan:signallevel", signallevel)
 
