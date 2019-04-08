@@ -4,6 +4,7 @@ source config.ini
 echo "-------------------------------------------------------------"
 echo "emonHub install"
 echo "-------------------------------------------------------------"
+cd $usrdir
 
 if [ ! -d $usrdir/emonhub ]; then
     cd $usrdir
