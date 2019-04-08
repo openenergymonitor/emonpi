@@ -6,6 +6,7 @@ echo "emonHub install"
 echo "-------------------------------------------------------------"
 
 if [ ! -d $usrdir/emonhub ]; then
+    cd $usrdir
     git clone https://github.com/openenergymonitor/emonhub.git
 else 
     echo "- emonhub repository already installed"
