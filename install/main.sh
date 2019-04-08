@@ -53,6 +53,7 @@ if [ "$emonSD_pi_env" = "1" ]; then
     if [ "$install_firmware" = true ]; then $usrdir/emonpi/install/firmware.sh; fi
     if [ "$install_emonpilcd" = true ]; then $usrdir/emonpi/install/emonpilcd.sh; fi
     if [ "$install_emonsd" = true ]; then $usrdir/emonpi/install/emonsd.sh; fi
+    if [ "$install_wifiap" = true ]; then $usrdir/emonpi/install/wifiap.sh; fi
 
     # Enable service-runner update
     # emonpi update checks for image type and only runs with a valid image name file in the boot partition
