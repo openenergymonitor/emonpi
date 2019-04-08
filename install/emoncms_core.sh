@@ -28,18 +28,22 @@ fi
 # Copy and install default.settings.php
 if [ ! -f $emoncms_www/settings.php ]; then
     echo "- installing default emoncms settings.php"
-    cp $usrdir/emonpi/install/default.emonpi.settings.php $emoncms_www/settings.php
+    cp $usrdir/emonpi/install/default.settings.php $emoncms_www/settings.php
     sed -i "s~USRDIR~$usrdir~" $emoncms_www/settings.php
 else
     echo "- emoncms settings.php already exists"
 fi
 
+if [ ! -d $emoncms_datadir/$engine ]; then
+    sudo mkdir $emoncms_datadir
+fi
+
 # Create data directories for emoncms feed engines:
 for engine in "phpfina" "phpfiwa" "phptimeseries"; do
-    if [ ! -d /var/lib/$engine ]; then
+    if [ ! -d $emoncms_datadir/$engine ]; then
         echo "- create $engine dir"
-        sudo mkdir /var/lib/$engine
-        sudo chown www-data:root /var/lib/$engine
+        sudo mkdir $emoncms_datadir/$engine
+        sudo chown www-data:root $emoncms_datadir/$engine
     else
         echo "- datadir $engine already exists"
     fi
