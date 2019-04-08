@@ -70,3 +70,6 @@ if [ -d $usrdir/modules/backup ]; then
         sed -i "s~BACKUP_SOURCE_PATH~$usrdir/data/uploads~" config.cfg
     fi
 fi
+
+echo "Update Emoncms database"
+php $usrdir/emonpi/update/emoncmsdbupdate.php
