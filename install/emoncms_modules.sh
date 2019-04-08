@@ -56,7 +56,8 @@ if [ -d $usrdir/modules/backup ]; then
     cd backup
     git checkout multienv                     # remove this line once merged to master
     $usrdir/modules/backup/install.sh $usrdir # remove this line once merged to master
-    
+    ln -s $usrdir/modules/backup/backup-module $emoncms_www/Modules/backup
+
     if [ ! -f config.cfg ]; then
         cp default.config.cfg config.cfg
         sed -i "s~USER~$user~" config.cfg
