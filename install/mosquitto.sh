@@ -5,8 +5,9 @@ echo "-------------------------------------------------------------"
 echo "Mosquitto configuration"
 echo "-------------------------------------------------------------"
 sudo apt-get install -y libmosquitto-dev mosquitto
+echo "-------------------------------------------------------------"
 printf "\n" | sudo pecl install Mosquitto-beta
-
+echo "-------------------------------------------------------------"
 # Add mosquitto to php mods available
 printf "extension=mosquitto.so" | sudo tee /etc/php/7.0/mods-available/mosquitto.ini 1>&2
 sudo phpenmod mosquitto
