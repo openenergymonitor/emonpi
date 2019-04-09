@@ -1,6 +1,6 @@
 # emonSD image build script
 
-The following build script can be used to build a fully fledged emoncms installation on debian operating systems. 
+The following build script can be used to build a fully fledged emoncms installation on debian operating systems, including: installation of LAMP server and related packages, redis, mqtt, emoncms core, emoncms modules, emonhub and if applicable: raspberrypi support for serial port and wifi access point.
 
 Tested on: 
 
@@ -17,4 +17,3 @@ Run default install:
 The default configuration is for the RaspberryPi platform and Raspbian Stretch image specifically. To run the installation on a different distribution, you may need to change the configuration to reflect the target environment.
 
 See explanation and settings in installation configuration file here: [config.ini](https://github.com/openenergymonitor/emonpi/blob/master/install/config.ini)
-
