@@ -32,11 +32,11 @@ The installation process is broken out into seperate scripts that can be run ind
 
 **[redis.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/redis.sh)** Installs redis and configures the redis configuration file: turning off redis database persistance.
 
-**[mosquitto.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/mosquitto.sh)**
+**[mosquitto.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/mosquitto.sh)** Installation and configuration of mosquitto MQTT server, used for emoncms MQTT interface with emonhub and smart control e.g: demandshaper module.
 
-**[apache.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/apache.sh)**
+**[apache.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/apache.sh)** Apache configuration, mod rewrite and apache logging.
 
-**[mysql.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/mysql.sh)**
+**[mysql.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/mysql.sh)** Removal of test databases, creation of emoncms database and emoncms mysql user.
 
 **[emoncms_core.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/emoncms_core.sh)**
 
