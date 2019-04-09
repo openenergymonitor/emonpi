@@ -32,4 +32,25 @@ The installation process is broken out into seperate scripts that can be run ind
 
 **[redis.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/redis.sh)** Installs redis and configures the redis configuration file: turning off redis database persistance.
 
+**[mosquitto.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/mosquitto.sh)**
+
+**[apache.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/apache.sh)**
+
+**[mysql.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/mysql.sh)**
+
+**[emoncms_core.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/emoncms_core.sh)**
+
+**[emoncms_modules.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/emoncms_modules.sh)**
+
+**[emonhub.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/emonhub.sh)**
+
+**[firmware.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/firmware.sh)** 
+
+**[emonpilcd.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/emonpilcd.sh)** Support for emonPi LCD.
+
+**[wifiap.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/wifiap.sh)** RaspberryPi 3B+ WIFI Access Point support.
+
+**[emonsd.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/emonsd.sh)**
+
+
 
