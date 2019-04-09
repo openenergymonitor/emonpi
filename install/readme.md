@@ -38,19 +38,19 @@ The installation process is broken out into seperate scripts that can be run ind
 
 **[mysql.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/mysql.sh)** Removal of test databases, creation of emoncms database and emoncms mysql user.
 
-**[emoncms_core.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/emoncms_core.sh)**
+**[emoncms_core.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/emoncms_core.sh)** Installation of emoncms core, data directories and emoncms core services.
 
-**[emoncms_modules.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/emoncms_modules.sh)**
+**[emoncms_modules.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/emoncms_modules.sh)** Installation of emoncms optional modules listed in config.ini e.g: Graphs, Dashboards, Apps & Backup
 
-**[emonhub.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/emonhub.sh)**
+**[emonhub.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/emonhub.sh)** Emonhub is used in the OpenEnergyMonitor system to read data received over serial from either the EmonPi board or the RFM12/69Pi adapter board then forward the data to emonCMS in a decoded ready-to-use form
 
-**[firmware.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/firmware.sh)** 
+**[firmware.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/firmware.sh)** Requirements for firmware upload to directly connected emonPi hardware or rfm69pi adapter board.
 
 **[emonpilcd.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/emonpilcd.sh)** Support for emonPi LCD.
 
 **[wifiap.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/wifiap.sh)** RaspberryPi 3B+ WIFI Access Point support.
 
-**[emonsd.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/emonsd.sh)**
+**[emonsd.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/emonsd.sh)** RaspberryPi specific configuration e.g: logging, default SSH password and hostname.
 
 
 
