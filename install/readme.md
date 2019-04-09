@@ -17,3 +17,19 @@ Run default install:
 The default configuration is for the RaspberryPi platform and Raspbian Stretch image specifically. To run the installation on a different distribution, you may need to change the configuration to reflect the target environment.
 
 See explanation and settings in installation configuration file here: [config.ini](https://github.com/openenergymonitor/emonpi/blob/master/install/config.ini)
+
+### Running scripts individually
+
+The installation process is broken out into seperate scripts that can be run individually.
+
+---
+
+**[init.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/init.sh)** Launches the full installation script, first downloading the 'emonpi' repository that contains the rest of the installation scripts.
+
+**[main.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/main.sh)** Loads the configuration file and runs the individual installation scripts as applicable.
+
+---
+
+**[redis.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/redis.sh)** Installs redis and configures the redis configuration file: turning off redis database persistance.
+
+
