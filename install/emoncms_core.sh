@@ -76,9 +76,4 @@ sudo cp $usrdir/emonpi/sudoers.d/emoncms-rebootbutton /etc/sudoers.d/
 sudo chmod 0440 /etc/sudoers.d/emoncms-rebootbutton
 echo "- Install emonPi Emoncms admin reboot button sudoers entry"
 
-sudo visudo -cf $usrdir/emonpi/sudoers.d/emoncms-setup-sudoers && \
-sudo cp $usrdir/emonpi/sudoers.d/emoncms-setup-sudoers /etc/sudoers.d/
-sudo chmod 0440 /etc/sudoers.d/emoncms-setup-sudoers
-echo "- Emoncms setup module sudoers entry installed"
-
 echo
