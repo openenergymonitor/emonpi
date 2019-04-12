@@ -56,10 +56,6 @@ done
 # backup module
 if [ -d $usrdir/modules/backup ]; then
     cd backup
-    git checkout multienv                     # remove this line once merged to master
-    $usrdir/modules/backup/install.sh $usrdir # remove this line once merged to master
-    ln -s $usrdir/modules/backup/backup-module $emoncms_www/Modules/backup
-
     if [ ! -f config.cfg ]; then
         cp default.config.cfg config.cfg
         sed -i "s~USER~$user~" config.cfg
@@ -71,6 +67,7 @@ if [ -d $usrdir/modules/backup ]; then
         sed -i "s~EMONHUB_SPECIMEN_CONFIG~$usrdir/emonhub/conf~" config.cfg
         sed -i "s~BACKUP_SOURCE_PATH~$usrdir/data/uploads~" config.cfg
     fi
+    cd
 fi
 
 echo "Update Emoncms database"
