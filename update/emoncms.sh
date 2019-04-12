@@ -204,7 +204,7 @@ if [ ! -f config.cfg ]; then
   emoncms_datadir=/home/pi/data
   emoncms_www=/var/www/emoncms
   sed -i "s~USER~$user~" config.cfg
-  sed -i "s~BACKUP_SCRIPT_LOCATION~$usrdir/modules/backup~" config.cfg
+  sed -i "s~BACKUP_SCRIPT_LOCATION~$usrdir/backup~" config.cfg
   sed -i "s~EMONCMS_LOCATION~$emoncms_www~" config.cfg
   sed -i "s~BACKUP_LOCATION~$usrdir/data~" config.cfg
   sed -i "s~DATABASE_PATH~$emoncms_datadir~" config.cfg
