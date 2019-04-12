@@ -20,6 +20,8 @@ sudo visudo -cf $usrdir/emonpi/sudoers.d/wifi-sudoers && \
 sudo cp $usrdir/emonpi/sudoers.d/wifi-sudoers /etc/sudoers.d/
 sudo chmod 0440 /etc/sudoers.d/wifi-sudoers
 echo "wifi sudoers entry installed"
+# wpa_supplicant permissions
+sudo chmod 644 /etc/wpa_supplicant/wpa_supplicant.conf 
 
 # Install emoncms modules that do not reside in /var/www/emoncms/Modules
 if [ ! -d $usrdir/modules ]; then
