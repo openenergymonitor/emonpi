@@ -1,5 +1,17 @@
 # emonSD image build script
 
+**Todo**
+
+- fix flexible emoncms_core install location (currently /var/www/emoncms symlinked to /var/www/html)
+- review emoncms logfile location
+- review /var/www/html/emoncms symlink
+- review rebootbutton and emoncms-setup sudoers
+- emoncms module branch options
+- review wifi sudoers
+- emoncms-sync.log written to $usrdir/modules/data
+- merge multienv branch
+- ext2 data partition, mount /var/opt/emon as ext2?
+
 The following build script can be used to build a fully fledged emoncms installation on debian operating systems, including: installation of LAMP server and related packages, redis, mqtt, emoncms core, emoncms modules, emonhub and if applicable: raspberrypi support for serial port and wifi access point.
 
 Tested on: 
