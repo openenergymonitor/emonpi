@@ -7,7 +7,6 @@
 - review /var/www/html/emoncms symlink
 - emoncms module branch options
 - emoncms-sync.log written to $usrdir/modules/data
-- merge multienv branch
 - ext2 data partition, mount /var/opt/emon as ext2?
 
 The following build script can be used to build a fully fledged emoncms installation on debian operating systems, including: installation of LAMP server and related packages, redis, mqtt, emoncms core, emoncms modules, emonhub and if applicable: raspberrypi support for serial port and wifi access point.
