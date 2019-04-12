@@ -66,7 +66,7 @@ if [ -d $usrdir/modules/backup ]; then
         sed -i "s~BACKUP_SCRIPT_LOCATION~$usrdir/modules/backup~" config.cfg
         sed -i "s~EMONCMS_LOCATION~$emoncms_www~" config.cfg
         sed -i "s~BACKUP_LOCATION~$usrdir/data~" config.cfg
-        sed -i "s~DATABASE_PATH~/var/lib~" config.cfg
+        sed -i "s~DATABASE_PATH~$emoncms_datadir~" config.cfg
         sed -i "s~EMONHUB_CONFIG_PATH~$usrdir/data~" config.cfg
         sed -i "s~EMONHUB_SPECIMEN_CONFIG~$usrdir/emonhub/conf~" config.cfg
         sed -i "s~BACKUP_SOURCE_PATH~$usrdir/data/uploads~" config.cfg

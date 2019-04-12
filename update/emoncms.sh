@@ -140,9 +140,8 @@ for module in "postprocess" "sync" "backup"; do
         echo "- running: git pull origin $branch"
         echo
         git pull origin $branch
-        # relink symlink 
-        # rm $emoncms_dir/Modules/$module
-        # ln -s $emoncms_symlinked_modules/$module/$module-module $emoncms_dir/Modules/$module
+        # relink symlink
+        ln -sf $emoncms_symlinked_modules/$module/$module-module $emoncms_dir/Modules/$module
     else
         echo "- git status:"
         echo
@@ -196,6 +195,24 @@ for module in "postprocess" "sync" "backup"; do
   fi
 done
 echo
+
+# Create backup config.cfg if missing
+cd $emoncms_symlinked_modules/backup
+if [ ! -f config.cfg ]; then
+  cp default.config.cfg config.cfg
+  user=pi
+  emoncms_datadir=/home/pi/data
+  emoncms_www=/var/www/emoncms
+  sed -i "s~USER~$user~" config.cfg
+  sed -i "s~BACKUP_SCRIPT_LOCATION~$usrdir/modules/backup~" config.cfg
+  sed -i "s~EMONCMS_LOCATION~$emoncms_www~" config.cfg
+  sed -i "s~BACKUP_LOCATION~$usrdir/data~" config.cfg
+  sed -i "s~DATABASE_PATH~$emoncms_datadir~" config.cfg
+  sed -i "s~EMONHUB_CONFIG_PATH~$usrdir/data~" config.cfg
+  sed -i "s~EMONHUB_SPECIMEN_CONFIG~$usrdir/emonhub/conf~" config.cfg
+  sed -i "s~BACKUP_SOURCE_PATH~$usrdir/data/uploads~" config.cfg
+fi
+cd
 
 #########################################################################################
 
