@@ -6,10 +6,11 @@ echo "Install Emoncms Modules"
 echo "-------------------------------------------------------------"
 # Review default branch: e.g stable
 cd $emoncms_www/Modules
-for module in ${emoncms_modules[*]}; do
+for module in ${!emoncms_modules[@]}; do
+    branch=${emoncms_modules[$module]}
     if [ ! -d $module ]; then
         echo "- Installing module: $module"
-        git clone https://github.com/emoncms/$module.git
+        git clone -b $branch https://github.com/emoncms/$module.git
     else
         echo "- Module $module already exists"
     fi
@@ -34,10 +35,11 @@ if [ ! -d $usrdir/modules ]; then
 fi
 
 cd $usrdir/modules
-for module in ${emoncms_modules_usrdir[*]}; do
+for module in ${!emoncms_modules_usrdir[@]}; do
+    branch=${emoncms_modules_usrdir[$module]}
     if [ ! -d $module ]; then
         echo "- Installing module: $module"
-        git clone https://github.com/emoncms/$module.git
+        git clone -b $branch https://github.com/emoncms/$module.git
         # If module contains emoncms UI folder, symlink to $emoncms_www/Modules
         if [ -d $usrdir/modules/$module/$module-module ]; then
             echo "-- UI directory symlink"
