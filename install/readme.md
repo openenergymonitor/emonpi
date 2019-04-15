@@ -4,6 +4,7 @@
 
 - emoncms module branch options
 - ext2 data partition, mount /var/opt/emon as ext2?
+- review log2ram
 
 **Todo 2nd release**
 
