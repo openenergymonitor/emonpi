@@ -34,7 +34,7 @@ else
     echo "- emoncms settings.php already exists"
 fi
 
-if [ ! -d $emoncms_datadir/$engine ]; then
+if [ ! -d $emoncms_datadir ]; then
     sudo mkdir $emoncms_datadir
 fi
 
