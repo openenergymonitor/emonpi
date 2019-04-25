@@ -24,4 +24,4 @@ sudo a2ensite emoncms
 sudo sed -i "s/^\tCustomLog/\t#CustomLog/" /etc/apache2/sites-available/000-default.conf
 sudo sed -i "s/^CustomLog/#CustomLog/" /etc/apache2/conf-available/other-vhosts-access-log.conf
 
-sudo service apache2 restart
+sudo systemctl restart apache2
