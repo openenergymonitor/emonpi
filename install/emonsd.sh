@@ -37,8 +37,9 @@ sudo apt-get install -y ufw
 # sudo ufw enable
 
 # Disable duplicate daemon.log logging to syslog
-sudo sed -i "s/*.*;auth,authpriv.none\t\t-\/var\/log\/syslog/*.*;auth,authpriv.none,daemon.none\t\t-\/var\/log\/syslog/" /etc/rsyslog.conf
-sudo service rsyslog restart
+# This line is no longer needed if emonhub + emoncms handles its own logging
+# sudo sed -i "s/*.*;auth,authpriv.none\t\t-\/var\/log\/syslog/*.*;auth,authpriv.none,daemon.none\t\t-\/var\/log\/syslog/" /etc/rsyslog.conf
+# sudo service rsyslog restart
 # REVIEW: https://openenergymonitor.org/forum-archive/node/12566.html
 
 # Review: Memory Tweak
