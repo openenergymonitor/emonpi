@@ -1,6 +1,6 @@
 #!/bin/bash
 
-user=pi
+user=$USER
 usrdir=/opt/emon
 
 sudo apt-get update -y
