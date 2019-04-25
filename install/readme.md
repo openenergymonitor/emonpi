@@ -2,7 +2,10 @@
 
 **Todo 1st release**
 
-- ext2 data partition, mount /var/opt/emon as ext2
+- finalise emoncms log locations i.e: /var/log/emon/emoncms/sync.log
+- update emoncms & modules with configurable log directory paths for sync/update etc.
+- finalise logrotate config
+- move install and update from emonpi repo to emonscripts or other suitable name
 
 **Todo 2nd release**
 
