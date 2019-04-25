@@ -20,7 +20,7 @@ echo "-------------------------------------------------------------"
 echo "EmonSD Install"
 echo "-------------------------------------------------------------"
 
-if [ "$install_packages" = true ]; then
+if [ "$apt_get_upgrade_and_clean" = true ]; then
     echo "apt-get update"
     sudo apt-get update -y
     echo "-------------------------------------------------------------"
@@ -35,25 +35,17 @@ if [ "$install_packages" = true ]; then
 
     # Needed on stock raspbian lite 19th March 2019
     sudo apt --fix-broken install
-
-    echo "-------------------------------------------------------------"
-        
-    # Emoncms install process from:
-    # https://github.com/emoncms/emoncms/blob/master/docs/RaspberryPi/readme.md
-    sudo apt-get install -y apache2 mariadb-server mysql-client php7.0 libapache2-mod-php7.0 php7.0-mysql php7.0-gd php7.0-opcache php7.0-curl php-pear php7.0-dev php7.0-mcrypt php7.0-common git build-essential php7.0-mbstring python-pip python-dev gettext
-
-    echo "-------------------------------------------------------------"
-    
-    # Install the pecl dependencies
-    sudo pecl channel-update pecl.php.net
-    
-    echo "-------------------------------------------------------------"
 fi
 
-if [ "$install_redis" = true ]; then $usrdir/emonpi/install/redis.sh; fi
-if [ "$install_mosquitto" = true ]; then $usrdir/emonpi/install/mosquitto.sh; fi
+echo "-------------------------------------------------------------"
+sudo apt-get install -y git build-essential python-pip python-dev gettext
+echo "-------------------------------------------------------------"
+
 if [ "$install_apache" = true ]; then $usrdir/emonpi/install/apache.sh; fi
 if [ "$install_mysql" = true ]; then $usrdir/emonpi/install/mysql.sh; fi
+if [ "$install_php" = true ]; then $usrdir/emonpi/install/php.sh; fi
+if [ "$install_redis" = true ]; then $usrdir/emonpi/install/redis.sh; fi
+if [ "$install_mosquitto" = true ]; then $usrdir/emonpi/install/mosquitto.sh; fi
 if [ "$install_emoncms_core" = true ]; then $usrdir/emonpi/install/emoncms_core.sh; fi
 if [ "$install_emoncms_modules" = true ]; then $usrdir/emonpi/install/emoncms_modules.sh; fi
 if [ "$install_emonhub" = true ]; then $usrdir/emonpi/install/emonhub.sh; fi

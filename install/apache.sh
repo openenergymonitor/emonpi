@@ -4,6 +4,8 @@ source config.ini
 echo "-------------------------------------------------------------"
 echo "Apache configuration"
 echo "-------------------------------------------------------------"
+sudo apt-get install -y apache2
+
 # Enable apache mod rewrite
 sudo a2enmod rewrite
 sudo cat <<EOF >> /tmp/emoncms.conf

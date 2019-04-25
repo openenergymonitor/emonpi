@@ -3,12 +3,16 @@ echo "-------------------------------------------------------------"
 echo "Redis configuration"
 echo "-------------------------------------------------------------"
 sudo apt-get install -y redis-server
-echo "-------------------------------------------------------------"
-printf "\n" | sudo pecl install redis
-echo "-------------------------------------------------------------"
-# Add redis to php mods available 
-printf "extension=redis.so" | sudo tee /etc/php/7.0/mods-available/redis.ini 1>&2
-sudo phpenmod redis
+
+if [ "$install_php" = true ]; then 
+    echo "-------------------------------------------------------------"
+    printf "\n" | sudo pecl install redis
+    echo "-------------------------------------------------------------"
+
+    # Add redis to php mods available 
+    printf "extension=redis.so" | sudo tee /etc/php/7.0/mods-available/redis.ini 1>&2
+    sudo phpenmod redis
+fi
 
 sudo pip install redis
 
