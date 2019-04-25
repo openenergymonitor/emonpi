@@ -87,9 +87,12 @@ On reboot, login and run:
 
 Create a directory that will be a mount point for the rw data partition
 
-    mkdir /var/opt/emon
+    sudo mkdir /var/opt/emon
+    sudo chwon www-data /var/opt/emon
 
 Use modified fstab
 
-    sudo cp install/fstab /etc/fstab
+    wget https://raw.githubusercontent.com/openenergymonitor/emonpi/master/install/fstab
+    sudo cp fstab /etc/fstab
+    sudo reboot
 
