@@ -2,14 +2,11 @@
 
 **Todo 1st release**
 
-- emoncms module branch options
-- ext2 data partition, mount /var/opt/emon as ext2?
-- review log2ram
+- ext2 data partition, mount /var/opt/emon as ext2
 
 **Todo 2nd release**
 
 - fix flexible emoncms_core install location (currently /var/www/emoncms symlinked to /var/www/html)
-- review emoncms logfile location
 - review /var/www/html/emoncms symlink
 
 The following build script can be used to build a fully fledged emoncms installation on debian operating systems, including: installation of LAMP server and related packages, redis, mqtt, emoncms core, emoncms modules, emonhub and if applicable: raspberrypi support for serial port and wifi access point.
@@ -18,12 +15,14 @@ Tested on:
 
 - [Raspbian Stretch Lite](https://www.raspberrypi.org/downloads/raspbian/), Version: November 2018, Release date: 2018-11-13
 
+**Before starting it is recommended to create an ext2 partition for emoncms data, see below.**
+
 Run default install:
 
     wget https://raw.githubusercontent.com/openenergymonitor/emonpi/master/install/init.sh
     chmod +x init.sh
     ./init.sh
-
+    
 ### Configure install
 
 The default configuration is for the RaspberryPi platform and Raspbian Stretch image specifically. To run the installation on a different distribution, you may need to change the configuration to reflect the target environment.
@@ -64,5 +63,33 @@ The installation process is broken out into seperate scripts that can be run ind
 
 **[emonsd.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/emonsd.sh)** RaspberryPi specific configuration e.g: logging, default SSH password and hostname.
 
+### Setup ext2 data partition
 
+Use a partition editor to resize the raspbian stretch OS partition, select 3-4GB for the OS partition and expand the new partition to the remaining space.
+
+Steps for creating 3rd partition for data using fdisk and mkfs:
+
+    sudo fdisk -l
+    Note end of last partition (5785599 on standard sd card)
+    sudo fdisk /dev/mmcblk0
+    enter: n->p->3
+    enter: 5785600
+    enter: default or 7626751
+    enter: w (write partition to disk)
+    fails with error, will write at reboot
+    sudo reboot
+
+On reboot, login and run:
+
+    sudo mkfs.ext2 -b 1024 /dev/mmcblk0p3
+
+*Note: We create here an ext2 filesystem with a blocksize of 1024 bytes instead of the default 4096 bytes. A lower block size results in significant write load reduction when using an application like emoncms that only makes small but frequent and across many files updates to disk. Ext2 is choosen because it supports multiple linux user ownership options which are needed for the mysql data folder. Ext2 is non-journaling which reduces the write load a little although it may make data recovery harder vs Ext4, The data disk size is small however and the downtime from running fsck is perhaps less critical.*
+
+Create a directory that will be a mount point for the rw data partition
+
+    mkdir /var/opt/emon
+
+Use modified fstab
+
+    sudo cp install/fstab /etc/fstab
 
