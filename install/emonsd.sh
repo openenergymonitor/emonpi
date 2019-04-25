@@ -5,13 +5,12 @@ source config.ini
 # Install log2ram, so that logging is on RAM to reduce SD card wear.
 # Logs are written to disk every hour or at shutdown
 # --------------------------------------------------------------------------------
-# Review: @pb66 modifications, rotated logs are moved out of ram&sync cycle
-curl -Lo log2ram.tar.gz https://github.com/azlux/log2ram/archive/master.tar.gz
-tar xf log2ram.tar.gz
-cd log2ram-master
+cd
+git clone -b rsync_mods https://github.com/pb66/log2ram.git
+cd log2ram
 chmod +x install.sh && sudo ./install.sh
 cd ..
-rm -r log2ram-master
+rm -r log2ram
 
 # --------------------------------------------------------------------------------
 # Misc
