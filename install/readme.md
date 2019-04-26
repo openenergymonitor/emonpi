@@ -1,6 +1,8 @@
 # emonSD image build script
 
-**Todo 1st release**
+The following build script is currently development in progress April 2019. It is already more comprehensive than the altenative debian install guides. To see what is installed open each script as listed below.
+
+**Todo 1st release (Target: Early May 2019)**
 
 - finalise emoncms log locations i.e: /var/log/emon/emoncms/sync.log
 - update emoncms & modules with configurable log directory paths for sync/update etc.
@@ -44,13 +46,17 @@ The installation process is broken out into seperate scripts that can be run ind
 
 ---
 
+**[apache.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/apache.sh)** Apache configuration, mod rewrite and apache logging.
+
+**[mysql.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/mysql.sh)** Removal of test databases, creation of emoncms database and emoncms mysql user.
+
+**[php.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/php.sh)** PHP packages installation and configuration
+
 **[redis.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/redis.sh)** Installs redis and configures the redis configuration file: turning off redis database persistance.
 
 **[mosquitto.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/mosquitto.sh)** Installation and configuration of mosquitto MQTT server, used for emoncms MQTT interface with emonhub and smart control e.g: demandshaper module.
 
-**[apache.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/apache.sh)** Apache configuration, mod rewrite and apache logging.
-
-**[mysql.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/mysql.sh)** Removal of test databases, creation of emoncms database and emoncms mysql user.
+---
 
 **[emoncms_core.sh:](https://github.com/openenergymonitor/emonpi/blob/master/install/emoncms_core.sh)** Installation of emoncms core, data directories and emoncms core services.
 
