@@ -270,7 +270,7 @@ echo "------------------------------------------"
 # Configure mariadb to allow db in home folder /home/pi/data
 if [ ! -f /etc/systemd/system/mariadb.service.d/override.conf ]; then
   echo "Installing mariadb service config"
-  sudo mkdir /etc/systemd/system/mariadb.service.d/
+  sudo mkdir -p /etc/systemd/system/mariadb.service.d/
   sudo cp /home/pi/emonpi/stretch/mariadb-service-d-override.conf /etc/systemd/system/mariadb.service.d/override.conf
 fi
 

@@ -18,6 +18,7 @@ sudo mysql -e "CREATE USER '$mysql_user'@'localhost' IDENTIFIED BY '$mysql_passw
 
 # Allow MYSQL db to be located in home folder /home/pi/data
 echo "Edit mariadb service file to allow db to be located in ~/data"
+sudo mkdir -p /etc/systemd/system/mariadb.service.d
 sudo cp /home/pi/emonpi/stretch/mariadb-service-d-override.conf /etc/systemd/system/mariadb.service.d/override.conf
 
 echo "Reload mariadb service"
