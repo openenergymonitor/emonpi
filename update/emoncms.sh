@@ -268,7 +268,7 @@ done
 echo "------------------------------------------"
 
 # Configure mariadb to allow db in home folder /home/pi/data
-if [ ! -f /etc/systemd/system/mariadb.service.d/override.conf ]; then
+if [ ! -f /etc/systemd/system/mariadb.service.d/override.conf ] && [ -d /home/pi/data/mysql/mysql/ ]; then
   echo "Installing mariadb service config"
   sudo mkdir -p /etc/systemd/system/mariadb.service.d/
   printf "[Service]\nProtectHome=false\n" | sudo tee /etc/systemd/system/mariadb.service.d/override.conf
