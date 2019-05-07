@@ -271,7 +271,7 @@ echo "------------------------------------------"
 if [ ! -f /etc/systemd/system/mariadb.service.d/override.conf ]; then
   echo "Installing mariadb service config"
   sudo mkdir -p /etc/systemd/system/mariadb.service.d/
-  sudo cp /home/pi/emonpi/stretch/mariadb-service-d-override.conf /etc/systemd/system/mariadb.service.d/override.conf
+  printf "[Service]\nProtectHome=false\n" | sudo tee /etc/systemd/system/mariadb.service.d/override.conf
 fi
 
 if [ -d /lib/systemd/system ]; then
