@@ -14,9 +14,10 @@ if [ -d $usrdir/emonhub ]; then
     git status
     git pull
 
-    service="emonhub"
-    servicepath="$usrdir/emonhub/service/emonhub.service"
-    $usrdir/emonpi/update/install_emoncms_service.sh $servicepath $service
+    # PUT ON HOLD
+    #service="emonhub"
+    #servicepath="$usrdir/emonhub/service/emonhub.service"
+    #$usrdir/emonpi/update/install_emoncms_service.sh $servicepath $service
 
     echo
     echo "Running emonhub automatic node addition script"
