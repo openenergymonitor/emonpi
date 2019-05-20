@@ -139,7 +139,8 @@ for module in "postprocess" "sync" "backup"; do
         echo "- no local changes"
         echo "- running: git pull origin $branch"
         echo
-        git pull origin $branch
+        git pull
+        git checkout $branch
         # relink symlink
         ln -sf $emoncms_symlinked_modules/$module/$module-module $emoncms_dir/Modules/$module
     else
