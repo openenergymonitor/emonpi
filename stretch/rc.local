@@ -10,7 +10,7 @@ hostname -I
 # Will only run if /var/log is mounted in tmpfs
 if ( mount | grep "on /var/log "| grep -q "^tmpfs " )
 then
-  for i in "redis" "apache2" "mysql" "openhab" "openhab2" "logrotate" "mosquitto" "supervisor"; do mkdir /var/log/"$i"; done
+  for i in "redis" "apache2" "mysql" "openhab" "openhab2" "logrotate" "mosquitto" "supervisor" "emonhub"; do mkdir /var/log/"$i"; done
   for i in "emoncms.log" "mysql.log" "mqtt_input.log" "redis/redis-server.log" "service-runner.log" "mysql/error.log" "apache2/error.log" "supervisor/supervisord.log" "ntp_update.log"; do touch /var/log/"$i"; done
   for i in "emoncms.log" "mysql.log" "mqtt_input.log" "redis/redis-server.log" "service-runner.log" "mysql/error.log" "apache2/error.log" "supervisor/supervisord.log" "ntp_update.log"; do ""chmod 666"" /var/log/"$i"; done
   chown -R root:adm /var/log/apache2
@@ -21,6 +21,7 @@ then
   chown -R pi:pi /var/log/logrotate
   chown -R mosquitto:mosquitto /var/log/mosquitto
   chown -R dataplicity:dataplicity /var/log/supervisor;
+  chown -R emonhub:emonhub /var/log/emonhub
 
   # Start / Restart services,they should run happy now log dir's are created
   # sleep 3
