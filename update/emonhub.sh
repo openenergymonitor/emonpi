@@ -26,8 +26,8 @@ if [ -d $usrdir/emonhub ]; then
     fi
     sudo ln -sf $usrdir/data/emonhub.conf /etc/emonhub
     
-    echo "Symlinking emonhub.py to /usr/local/bin"
-    sudo ln -sf $usrdir/emonhub/src/emonhub.py /usr/local/bin
+    # echo "Symlinking emonhub.py to /usr/local/bin"
+    # sudo ln -sf $usrdir/emonhub/src/emonhub.py /usr/local/bin
 
     service="emonhub"
     servicepath="$usrdir/emonhub/service/emonhub.service"
