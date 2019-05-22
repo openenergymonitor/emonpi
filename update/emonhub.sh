@@ -19,6 +19,13 @@ if [ -d $usrdir/emonhub ]; then
         sudo chown emonhub:emonhub /var/log/emonhub
     fi
     
+    if [ ! -d /etc/emonhub ]; then
+        sudo mkdir /etc/emonhub
+        if [ -f /home/pi/data/emonhub.conf ]; then
+            sudo ln -s /home/pi/data/emonhub.conf /etc/emonhub
+        fi
+    fi
+    
     service="emonhub"
     servicepath="$usrdir/emonhub/service/emonhub.service"
     $usrdir/emonpi/update/install_emoncms_service.sh $servicepath $service
