@@ -14,19 +14,21 @@ if [ -d $usrdir/emonhub ]; then
     git status
     git pull
     
+    echo "Creating emonhub logfile"
     if [ ! -d /var/log/emonhub ]; then
         sudo mkdir /var/log/emonhub
         sudo chown emonhub:emonhub /var/log/emonhub
     fi
     
+    echo "Symlinking emonhub.conf to /etc/emonhub/emonhub.conf"
     if [ ! -d /etc/emonhub ]; then
         sudo mkdir /etc/emonhub
     fi
+    sudo ln -sf $usrdir/data/emonhub.conf /etc/emonhub
     
-    if [ -f /home/pi/data/emonhub.conf ]; then
-        sudo ln -s /home/pi/data/emonhub.conf /etc/emonhub
-    fi
-    
+    echo "Symlinking emonhub.py to /usr/local/bin"
+    sudo ln -sf $usrdir/emonhub/src/emonhub.py /usr/local/bin
+
     service="emonhub"
     servicepath="$usrdir/emonhub/service/emonhub.service"
     $usrdir/emonpi/update/install_emoncms_service.sh $servicepath $service
