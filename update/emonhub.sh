@@ -21,14 +21,18 @@ if [ -d $usrdir/emonhub ]; then
     
     if [ ! -d /etc/emonhub ]; then
         sudo mkdir /etc/emonhub
-        if [ -f /home/pi/data/emonhub.conf ]; then
-            sudo ln -s /home/pi/data/emonhub.conf /etc/emonhub
-        fi
+    fi
+    
+    if [ -f /home/pi/data/emonhub.conf ]; then
+        sudo ln -s /home/pi/data/emonhub.conf /etc/emonhub
     fi
     
     service="emonhub"
     servicepath="$usrdir/emonhub/service/emonhub.service"
     $usrdir/emonpi/update/install_emoncms_service.sh $servicepath $service
+    
+    sudo systemctl daemon-reload
+    sudo systemctl restart emonhub.service
 
     echo
     echo "Running emonhub automatic node addition script"
