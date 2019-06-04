@@ -24,10 +24,11 @@ if [ -d $usrdir/emonhub ]; then
     if [ ! -d /etc/emonhub ]; then
         sudo mkdir /etc/emonhub
     fi
+    # emonhub.conf
     sudo ln -sf $usrdir/data/emonhub.conf /etc/emonhub
+    # emonhub env setting
+    sudo cp $usrdir/emonpi/defaults/etc/emonhub/emonhub.env /etc/emonhub/emonhub.env
     
-    # echo "Symlinking emonhub.py to /usr/local/bin"
-    # sudo ln -sf $usrdir/emonhub/src/emonhub.py /usr/local/bin
 
     service="emonhub"
     servicepath="$usrdir/emonhub/service/emonhub.service"
