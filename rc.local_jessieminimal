@@ -14,7 +14,7 @@ ifup wlan0
 # Will only run if /var/log is mounted in tmpfs
 if ( mount | grep "on /var/log "| grep -q "^tmpfs " )
 then
-  for i in "redis" "apache2" "mysql" "openhab" "logrotate" "mosquitto" "supervisor"; do mkdir /var/log/"$i"; done
+  for i in "redis" "apache2" "mysql" "openhab" "logrotate" "mosquitto" "supervisor" "emonhub" "emoncms"; do mkdir /var/log/"$i"; done
   for i in "emoncms.log" "mysql.log" "mqtt_input.log" "redis/redis-server.log" "service-runner.log" "mysql/error.log" "apache2/error.log" "supervisor/supervisord.log" "ntp_update.log"; do touch /var/log/"$i"; done
   for i in "emoncms.log" "mysql.log" "mqtt_input.log" "redis/redis-server.log" "service-runner.log" "mysql/error.log" "apache2/error.log" "supervisor/supervisord.log" "ntp_update.log"; do ""chmod 666"" /var/log/"$i"; done
   chown -R root:adm /var/log/apache2
@@ -24,6 +24,11 @@ then
   chown -R pi:pi /var/log/logrotate
   chown -R mosquitto:mosquitto /var/log/mosquitto
   chown -R dataplicity:dataplicity /var/log/supervisor;
+  chown -R emonhub:emonhub /var/log/emonhub
+  chown -R pi:pi /var/log/emoncms
+  
+  touch /home/pi/data/emonpiupdate.log
+  ln -s /home/pi/data/emonpiupdate.log /var/log/emoncms/emonpiupdate.log
 
   # Restart random seed process now ~/data RW partition has been mounted 
   sudo systemctl restart systemd-random-seed.service

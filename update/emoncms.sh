@@ -299,6 +299,10 @@ for service in "feedwriter" "mqtt_input" "emoncms_mqtt" "emoncms-nodes-service" 
   fi
 done
 
+echo "Symlinking emonpiupdate.log"
+touch $usrdir/data/emonpiupdate.log
+ln -sf $usrdir/data/emonpiupdate.log /var/log/emoncms/emonpiupdate.log
+
 ###################################################################################
 # Install log rotate config
 ####################################################################################
