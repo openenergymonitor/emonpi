@@ -24,11 +24,22 @@ if [ -d $usrdir/emonhub ]; then
     if [ ! -d /etc/emonhub ]; then
         sudo mkdir /etc/emonhub
     fi
-    # emonhub.conf
-    sudo ln -sf $usrdir/data/emonhub.conf /etc/emonhub
-    # emonhub env setting
-    sudo cp $usrdir/emonpi/defaults/etc/emonhub/emonhub.env /etc/emonhub/emonhub.env
     
+    # emonhub source
+    sudo ln -sf $usrdir/emonhub/src /usr/local/bin/emonhub
+    
+    # emonhub.conf
+    sudo ln -sf $usrdir/data/emonhub.conf /etc/emonhub/emonhub.conf
+
+    # remove emonhub from old symlinked location
+    if [ -L /usr/share/emonhub ]; then
+        sudo rm /usr/share/emonhub
+    fi
+
+    # remove emonhub.env
+    if [ -f /etc/emonhub/emonhub.env ]; then
+        sudo rm /etc/emonhub/emonhub.env
+    fi
 
     service="emonhub"
     servicepath="$usrdir/emonhub/service/emonhub.service"
