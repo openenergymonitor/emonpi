@@ -221,13 +221,13 @@ if [ "$emonSD_pi_env" = "1" ]; then
 
   # Sudoers installation (provides sudo access to specific commands from emoncms)
   for sudoersfile in "emoncms-rebootbutton" "emoncms-filesystem" "wifi-sudoers"; do
-      if [ ! -f /etc/sudoers.d/$sudoersfile ]; then
+      # if [ ! -f /etc/sudoers.d/$sudoersfile ]; then
           sudo visudo -cf $usrdir/emonpi/sudoers.d/$sudoersfile && \
           sudo cp $usrdir/emonpi/sudoers.d/$sudoersfile /etc/sudoers.d/
           sudo chmod 0440 /etc/sudoers.d/$sudoersfile
           echo
           echo "$sudoersfile sudoers entry installed"
-      fi
+      # fi
   done
   
   # Setup user group to enable reading GPU temperature (pi only)
