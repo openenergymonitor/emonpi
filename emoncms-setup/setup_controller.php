@@ -32,7 +32,7 @@ function setup_controller()
     
     else if ($route->action=="wlan0-status" && $setup_access) {
         $route->format = "text";
-        $result = exec("/sys/class/net/wlan0/operstate");
+        $result = exec("cat /sys/class/net/wlan0/operstate");
         if ($result=="down") $result = "false";
     }
 
