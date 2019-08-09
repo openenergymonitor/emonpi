@@ -279,9 +279,12 @@ $("#wifi-connect").click(function(){
     networks[ssid].enabled = true;
     networks_to_save[ssid] = networks[ssid];
 
-    $.ajax({type: 'POST', url: path+"setup/setwifi?mode=client", dataType: 'text', async: true });
-    
-    $.ajax({type: 'POST', url: path+"wifi/setconfig", data: "networks="+JSON.stringify(networks_to_save)+"&country="+country, dataType: 'text', async: true });
+    $.ajax({type: 'POST', url: path+"setup/setwifi?mode=client", dataType: 'text', async: true, success: function(result) {
+        console.log(result);
+        $.ajax({type: 'POST', url: path+"wifi/setconfig", data: "networks="+JSON.stringify(networks_to_save)+"&country="+country, dataType: 'text', async: true, success: function(result) {
+            console.log(result);
+        }});
+    }});
 });
 
 function wifi_scan()
