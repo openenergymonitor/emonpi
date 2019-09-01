@@ -61,6 +61,7 @@ if $changes; then
     echo "- no local changes"
     echo "- running: git pull origin $branch"
     echo
+    git fetch --prune --all
     git pull origin $branch
 else
     echo "- changes"
@@ -100,6 +101,7 @@ for M in $emoncms_dir/Modules/*; do
     echo "Updating $M module"
     echo "------------------------------------------"
     
+    git fetch --prune --all
     branch=$(git -C $M branch | grep \* | cut -d ' ' -f2)
     echo "- git branch: $branch"
     tags=$(git -C $M describe --tags)
@@ -130,6 +132,7 @@ for module in "postprocess" "sync" "backup"; do
   echo "------------------------------------------"
   if [ -d $emoncms_symlinked_modules/$module ]; then
     cd $emoncms_symlinked_modules/$module
+    git fetch --prune --all
     branch=$(git branch | grep \* | cut -d ' ' -f2)
     echo "- git branch: $branch"
     tags=$(git describe --tags)
