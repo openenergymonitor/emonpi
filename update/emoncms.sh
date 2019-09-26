@@ -29,6 +29,7 @@ emoncms_symlinked_modules=$usrdir
 if [ -d "$usrdir/modules" ]; then
     emoncms_symlinked_modules="$usrdir/modules"
 fi
+
 # -----------------------------------------------------------------
 # Record current state of emoncms settings.php
 # This needs to be run prior to emoncms git pull
@@ -116,6 +117,7 @@ for M in $emoncms_dir/Modules/*; do
         echo "- no local changes"
         echo "- running: git pull origin $branch"
         echo
+        git fetch --prune --all
         git -C $M pull origin $branch
     else
         echo "- git status:"
@@ -146,8 +148,8 @@ for module in "postprocess" "sync" "backup"; do
         echo "- no local changes"
         echo "- running: git pull origin $branch"
         echo
-        git pull
-        git checkout $branch
+        git fetch --prune --all
+        git pull origin $branch
         # relink symlink
         ln -sf $emoncms_symlinked_modules/$module/$module-module $emoncms_dir/Modules/$module
     else
