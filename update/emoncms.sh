@@ -58,6 +58,7 @@ fi
 echo
 echo "Checking status of $emoncms_dir git repository"
 cd $emoncms_dir
+git fetch --prune --all
 branch=$(git branch | grep \* | cut -d ' ' -f2)
 echo "- git branch: $branch"
 changes=$(git diff-index --quiet HEAD --)
@@ -65,8 +66,8 @@ if $changes; then
     echo "- no local changes"
     echo "- running: git pull origin $branch"
     echo
-    git fetch --prune --all
-    git pull origin $branch
+    git branch --set-upstream-to=origin/$branch
+    git pull
 else
     echo "- changes"
 fi
@@ -106,7 +107,7 @@ for M in $emoncms_dir/Modules/*; do
     echo "Updating $M module"
     echo "------------------------------------------"
     
-    git fetch --prune --all
+    git -C $M fetch --prune --all
     branch=$(git -C $M branch | grep \* | cut -d ' ' -f2)
     echo "- git branch: $branch"
     tags=$(git -C $M describe --tags)
@@ -117,8 +118,8 @@ for M in $emoncms_dir/Modules/*; do
         echo "- no local changes"
         echo "- running: git pull origin $branch"
         echo
-        git fetch --prune --all
-        git -C $M pull origin $branch
+        git -C $M branch --set-upstream-to=origin/$branch
+        git -C $M pull
     else
         echo "- git status:"
         echo
@@ -148,8 +149,8 @@ for module in "postprocess" "sync" "backup"; do
         echo "- no local changes"
         echo "- running: git pull origin $branch"
         echo
-        git fetch --prune --all
-        git pull origin $branch
+        git branch --set-upstream-to=origin/$branch
+        git pull
         # relink symlink
         ln -sf $emoncms_symlinked_modules/$module/$module-module $emoncms_dir/Modules/$module
     else
