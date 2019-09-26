@@ -162,27 +162,32 @@ for module in "postprocess" "sync" "backup"; do
   echo
 done
 
-# Switch postprocess module to stable branch if on emonpi branch
-branch=$(git -C /home/pi/postprocess branch | grep \* | cut -d ' ' -f2)
-if [ $branch == "emonpi" ]; then
-    echo "switching postprocess module to stable branch"
-    git -C /home/pi/postprocess checkout stable
-fi
+core_branch=$(git -C /var/www/emoncms branch | grep \* | cut -d ' ' -f2)
 
-# Switch device module to stable branch
-branch=$(git -C /home/pi/device branch | grep \* | cut -d ' ' -f2)
-if [ $branch == "master" ]; then
-    echo "switching device module to stable branch"
-    git -C /var/www/emoncms/Modules/device checkout stable
-fi
+if [ $core_branch == "stable" ]; then
 
-# Switch sync module to stable branch
-branch=$(git -C /home/pi/sync branch | grep \* | cut -d ' ' -f2)
-if [ $branch == "master" ]; then
-    echo "switching sync module to stable branch"
-    git -C /home/pi/sync checkout stable
-fi
+    # Switch postprocess module to stable branch if on emonpi branch
+    branch=$(git -C /home/pi/postprocess branch | grep \* | cut -d ' ' -f2)
+    if [ $branch == "emonpi" ]; then
+        echo "switching postprocess module to stable branch"
+        git -C /home/pi/postprocess checkout stable
+    fi
 
+    # Switch device module to stable branch
+    branch=$(git -C /home/pi/device branch | grep \* | cut -d ' ' -f2)
+    if [ $branch == "master" ]; then
+        echo "switching device module to stable branch"
+        git -C /var/www/emoncms/Modules/device checkout stable
+    fi
+
+    # Switch sync module to stable branch
+    branch=$(git -C /home/pi/sync branch | grep \* | cut -d ' ' -f2)
+    if [ $branch == "master" ]; then
+        echo "switching sync module to stable branch"
+        git -C /home/pi/sync checkout stable
+    fi
+
+fi
 
 #########################################################################################
 # Automatic installation of new modules if they dont already exist
