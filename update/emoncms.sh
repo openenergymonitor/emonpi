@@ -33,19 +33,22 @@ fi
 # Record current state of emoncms settings.php
 # This needs to be run prior to emoncms git pull
 # -----------------------------------------------------------------
-echo
-current_settings_md5="$($usrdir/emonpi/./md5sum.py $emoncms_dir/settings.php)"
-echo "current settings.php md5: $current_settings_md5"
 
-current_default_settings_md5="$($usrdir/emonpi/md5sum.py $emoncms_dir/default.emonpi.settings.php)"
-echo "Default settings.php md5: $current_default_settings_md5"
+if [ -f $emoncms_dir/settings.php ]; then
+    echo
+    current_settings_md5="$($usrdir/emonpi/./md5sum.py $emoncms_dir/settings.php)"
+    echo "current settings.php md5: $current_settings_md5"
 
-if [ "$current_default_settings_md5" == "$current_settings_md5" ]; then
-  echo "settings.php has NOT been user modifed"
-  settings_unmodified=true
-else
-  echo "settings.php HAS been user modified"
-  settings_unmodified=false
+    current_default_settings_md5="$($usrdir/emonpi/md5sum.py $emoncms_dir/default.emonpi.settings.php)"
+    echo "Default settings.php md5: $current_default_settings_md5"
+
+    if [ "$current_default_settings_md5" == "$current_settings_md5" ]; then
+      echo "settings.php has NOT been user modifed"
+      settings_unmodified=true
+    else
+      echo "settings.php HAS been user modified"
+      settings_unmodified=false
+    fi
 fi
 
 # -----------------------------------------------------------------
@@ -70,23 +73,24 @@ fi
 # -----------------------------------------------------------------
 # check to see if user has modifed settings.php and if update is need. Auto apply of possible
 # -----------------------------------------------------------------
-echo
-new_default_settings_md5="$($usrdir/emonpi/md5sum.py $emoncms_dir/default.emonpi.settings.php)"
-echo "NEW default settings.php md5: $new_default_settings_md5"
+if [ -f $emoncms_dir/settings.php ]; then
+  echo
+  new_default_settings_md5="$($usrdir/emonpi/md5sum.py $emoncms_dir/default.emonpi.settings.php)"
+  echo "NEW default settings.php md5: $new_default_settings_md5"
 
-# check to see if there is an update waiting for settings.php
-if [ "$new_default_settings_md5" != "$current_default_settings_md5" ]; then
-  echo "Update required to settings.php..."
-  if [ $settings_unmodified == true ]; then
-    sudo cp $emoncms_dir/default.emonpi.settings.php $emoncms_dir/settings.php
-    echo "settings.php autoupdated"
+  # check to see if there is an update waiting for settings.php
+  if [ "$new_default_settings_md5" != "$current_default_settings_md5" ]; then
+    echo "Update required to settings.php..."
+    if [ $settings_unmodified == true ]; then
+      sudo cp $emoncms_dir/default.emonpi.settings.php $emoncms_dir/settings.php
+      echo "settings.php autoupdated"
+    else
+      echo "**ERROR: unable to autoupdate settings.php since user changes are present, manual review required**"
+    fi
   else
-    echo "**ERROR: unable to autoupdate settings.php since user changes are present, manual review required**"
+    echo "settings.php not updated"
   fi
-else
-  echo "settings.php not updated"
 fi
-
 # -----------------------------------------------------------------
 echo
 echo "-------------------------------------------------------------"
@@ -157,6 +161,13 @@ for module in "postprocess" "sync" "backup"; do
   fi
   echo
 done
+
+# Switch postprocess module to stable branch if on emonpi branch
+branch=$(git -C /home/pi/postprocess branch | grep \* | cut -d ' ' -f2)
+if [ $branch == "emonpi" ]; then
+    echo "switching postprocess module to stable branch"
+    git -C /home/pi/postprocess checkout stable
+fi
 
 #########################################################################################
 # Automatic installation of new modules if they dont already exist
