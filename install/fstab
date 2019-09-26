@@ -1,9 +1,0 @@
-proc            /proc           proc    defaults          0       0
-/dev/mmcblk0p1  /boot           vfat    defaults          0       2
-/dev/mmcblk0p2  /               ext4    defaults,noatime,nodiratime  0  1
-/dev/mmcblk0p3  /var/opt/emon   ext2    defaults,noatime,nodiratime  0  2
-# a swapfile is not a swap partition, no line here
-#   use  dphys-swapfile swap[on|off]  for that
-
-tmpfs           /tmp             tmpfs   nodev,nosuid,size=30M,mode=1777 0  0
-tmpfs           /var/tmp         tmpfs   nodev,nosuid,size=1M,mode=1777  0  0
