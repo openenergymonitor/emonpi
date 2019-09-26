@@ -169,6 +169,21 @@ if [ $branch == "emonpi" ]; then
     git -C /home/pi/postprocess checkout stable
 fi
 
+# Switch device module to stable branch
+branch=$(git -C /home/pi/device branch | grep \* | cut -d ' ' -f2)
+if [ $branch == "master" ]; then
+    echo "switching device module to stable branch"
+    git -C /var/www/emoncms/Modules/device checkout stable
+fi
+
+# Switch sync module to stable branch
+branch=$(git -C /home/pi/sync branch | grep \* | cut -d ' ' -f2)
+if [ $branch == "master" ]; then
+    echo "switching sync module to stable branch"
+    git -C /home/pi/sync checkout stable
+fi
+
+
 #########################################################################################
 # Automatic installation of new modules if they dont already exist
 echo "------------------------------------------"
