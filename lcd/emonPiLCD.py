@@ -380,7 +380,7 @@ class LCD(object):
           # add file to identify device as emonbase
           if os.path.isdir('/home/pi/data/'):
               open('/home/pi/data/emonbase', 'a').close()
-          sys.exit(1)
+          sys.exit(0)
 
         # Init LCD using detected I2C address with 16 characters
         self.lcd = lcddriver.lcd(int(current_lcd_i2c, 16))
