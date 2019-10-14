@@ -21,6 +21,7 @@ Description=emonPiLCD Script
 Wants=mosquitto.service
 After=mosquitto.service
 
+# Needs to run as root so disable/enable ssh and shutdown emonpi
 [Service]
 Type=idle
 ExecStart=/usr/bin/python /usr/share/emonPiLCD/emonPiLCD.py
