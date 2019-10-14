@@ -24,7 +24,7 @@ After=mosquitto.service
 [Service]
 Type=idle
 ExecStart=/usr/bin/python /usr/share/emonPiLCD/emonPiLCD.py
-User=pi
+User=root
 
 # Restart script if stopped on a failure. Will not restart if not configured correctly
 Restart=on-failure
