@@ -112,15 +112,15 @@ def buttonPressLong():
             subprocess.call(ssh_enable, shell=True)
             subprocess.call(ssh_start, shell=True)
             logger.info("SSH Enabled")
-            lcd[0] = 'SSH Enabled      '
+            lcd[0] = 'SSH Enabled'
             lcd[1] = 'Change password!'
         else:
             #disable ssh
             subprocess.call(ssh_disable, shell=True)
             subprocess.call(ssh_stop, shell=True)
             logger.info("SSH Disabled")
-            lcd[0] = 'SSH Disabled      '
-            lcd[1] = '                '
+            lcd[0] = 'SSH Disabled'
+            lcd[1] = ''
 
     elif shutConfirm:
         logger.info("Shutting down")
@@ -208,7 +208,7 @@ def updateLCD():
                 if r.get("wlan:ip") == "192.168.42.1":
                     lcd[0] = "WiFi: AP MODE"
                 else:
-                    lcd[0] = "WiFi: YES  "
+                    lcd[0] = "WiFi: YES"
 
             lcd[1] = r.get("wlan:ip")
         elif eval(r.get("gsm:active")) or eval(r.get("eth:active")):
