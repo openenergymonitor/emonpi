@@ -318,7 +318,7 @@ class IPAddress(object):
                 struct.pack('256s', ifname[:15])
             )[20:24])
         except Exception:
-            return 0
+            return ''
 
 def preShutdown():
     lcd[0] = "Shutdown?"
