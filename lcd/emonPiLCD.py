@@ -200,8 +200,10 @@ def updateLCD() :
    if page == 1:
    # Update wifi
         wlan0ip = ipaddress.get_ip_address('wlan0')
-
-        r.set("wlan:active", bool(wlan0ip))
+        active = 1
+        if wlan0ip==0: active = 0
+		
+        r.set("wlan:active", active)
         r.set("wlan:ip", wlan0ip)
 
         signallevel = 0
