@@ -15,12 +15,11 @@ if [[ -n $2 ]]; then
     bus=$2
 fi
 
-mapfile -t data < <(i2cdetect -y $bus)
+mapfile -t data < <(i2cdetect -y "$bus")
 
 for i in $(seq 1 ${#data[@]}); do
     line=(${data[$i]})
-    echo ${line[@]:1} | grep -q $1
-    if [ $? -eq 0 ]; then
+    if echo ${line[@]:1} | grep -q $1; then
         echo "True"
         exit 0
     fi
