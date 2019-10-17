@@ -2,12 +2,11 @@
 
 # pylint: disable=line-too-long
 
+from __future__ import print_function  # FIXME Python2 compatibility
 import time
 from datetime import datetime
 import subprocess
 import sys
-import redis
-import paho.mqtt.client as mqtt
 import socket
 import fcntl
 import struct
@@ -15,9 +14,14 @@ import logging
 import logging.handlers
 import atexit
 import os
-import ConfigParser
+try:
+    import configparser
+except ImportError:
+    # FIXME Python2 compatibility
+    import ConfigParser as configparser
 
-from select import select
+import redis
+import paho.mqtt.client as mqtt
 from gpiozero import Button
 
 # Local files
@@ -30,8 +34,8 @@ path = os.path.dirname(os.path.realpath(__file__))
 version = '3.0.1'
 # ------------------------------------------------------------------------------------
 
-config = ConfigParser.ConfigParser()
-config.read(path + '/emonPiLCD.cfg')
+config = configparser.ConfigParser()
+config.read(path + '/emonPiLCD.cfg')  # FIXME should live in /etc, not /usr/share/emonPiLCD
 
 # ------------------------------------------------------------------------------------
 # MQTT Settings
@@ -306,7 +310,7 @@ def updateLCD():
         shutConfirm = True
 
 
-class IPAddress(object):
+class IPAddress(object):  # FIXME python2 compatibility, remove (object)
     def __init__(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -341,14 +345,14 @@ def shutdown():
     sys.exit(0)  # end script
 
 
-class LCD(object):
+class LCD(object):  # FIXME python2 compatibility, remove (object)
     def __init__(self, logger):
         # Scan I2C bus for LCD I2C addresses as defined in led_i2c, we have a couple of models of LCD which have different addreses that are shipped with emonPi. First I2C device to match address is used.
         self.logger = logger
         for i2c_address in lcd_i2c:
             lcd_status = subprocess.check_output([path+"/emonPiLCD_detect.sh", "%s" % i2c_address])
             if lcd_status.rstrip() == 'True':
-                print "I2C LCD DETECTED Ox%s" % i2c_address
+                print("I2C LCD DETECTED Ox%s" % i2c_address)
                 logger.info("I2C LCD DETECTED 0x%s" % i2c_address)
                 current_lcd_i2c = "0x%s" % i2c_address
                 # add file to identify device as emonpi
@@ -408,7 +412,7 @@ def main():
         loghandler = logging.StreamHandler()
     else:
         logfile = "/var/log/emonpilcd/emonpilcd.log"
-        print "emonPiLCD logging to:", logfile
+        print("emonPiLCD logging to:", logfile)
         loghandler = logging.handlers.RotatingFileHandler(logfile,
                                                           mode='a',
                                                           maxBytes=1000 * 1024,
@@ -456,7 +460,7 @@ def main():
         push_btn = Button(23, pull_up=False, hold_time=5)
         push_btn.when_pressed = buttonPress
         push_btn.when_held = buttonPressLong
-    except:
+    except Exception:
         logger.error("Failed to attach LCD push button interrupt...")
 
     logger.info("Attaching shutdown button interrupt...")
@@ -464,7 +468,7 @@ def main():
         shut_btn = Button(17, pull_up=False, hold_time=5)
         shut_btn.when_pressed = preShutdown
         shut_btn.when_held = shutdown
-    except:
+    except Exception:
         logger.error("Failed to attach shutdown button interrupt...")
 
     logger.info("Connecting to redis server...")
