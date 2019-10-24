@@ -4,6 +4,9 @@ import lcddriver
 import time
 import sys
 import subprocess
+import os
+
+dir = os.path.dirname(os.path.realpath(__file__))
 
 # ------------------------------------------------------------------------------------
 # Check to see if LCD is connected if not then stop here
@@ -12,7 +15,7 @@ lcd_i2c = ['27', '3f']
 current_lcd_i2c = ''
 
 for i2c_address in lcd_i2c:
-  lcd_status = subprocess.check_output(["/home/pi/emonpi/lcd/emonPiLCD_detect.sh", "%s" % i2c_address])
+  lcd_status = subprocess.check_output([dir+"/emonPiLCD_detect.sh", "%s" % i2c_address])
   if lcd_status.rstrip() == 'True':
     print "I2C LCD DETECTED Ox%s" % i2c_address
     current_lcd_i2c = "0x%s" % i2c_address
