@@ -268,6 +268,7 @@ void loop()
 
     if ((now - last_rf_rest) > RF_RESET_PERIOD) {
       rf12_initialize(nodeID, RF_freq, networkGroup);                             // Periodically reset RFM69CW to keep it alive :-(
+      last_rf_rest = now;
     }
 
    }
