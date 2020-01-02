@@ -12,7 +12,6 @@ import fcntl
 import struct
 import logging
 import logging.handlers
-import atexit
 import os
 try:
     import configparser
@@ -407,7 +406,6 @@ def main():
     r.set("eth:active", 0)
 
     # First set up logging
-    atexit.register(logging.shutdown)
     if not uselogfile:
         loghandler = logging.StreamHandler()
     else:
