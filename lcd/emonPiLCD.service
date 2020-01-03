@@ -24,7 +24,7 @@ After=mosquitto.service
 # Needs to run as root so disable/enable ssh and shutdown emonpi
 [Service]
 Type=idle
-ExecStart=/usr/bin/python /usr/share/emonPiLCD/emonPiLCD.py
+ExecStart=/usr/bin/python3 /usr/share/emonPiLCD/emonPiLCD.py
 User=root
 
 # Restart script if stopped on a failure. Will not restart if not configured correctly

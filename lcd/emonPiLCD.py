@@ -1,8 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 # pylint: disable=line-too-long
 
-from __future__ import print_function  # FIXME Python2 compatibility
 import time
 from datetime import datetime
 import subprocess
@@ -13,11 +12,7 @@ import struct
 import logging
 import logging.handlers
 import os
-try:
-    import configparser
-except ImportError:
-    # FIXME Python2 compatibility
-    import ConfigParser as configparser
+import configparser
 
 import redis
 import paho.mqtt.client as mqtt
@@ -309,7 +304,7 @@ def updateLCD():
         shutConfirm = True
 
 
-class IPAddress(object):  # FIXME python2 compatibility, remove (object)
+class IPAddress:
     def __init__(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -344,7 +339,7 @@ def shutdown():
     sys.exit(0)  # end script
 
 
-class LCD(object):  # FIXME python2 compatibility, remove (object)
+class LCD:
     def __init__(self, logger):
         # Scan I2C bus for LCD I2C addresses as defined in led_i2c, we have a couple of models of LCD which have different addreses that are shipped with emonPi. First I2C device to match address is used.
         self.logger = logger
