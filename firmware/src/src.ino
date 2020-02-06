@@ -74,7 +74,7 @@ LiquidCrystal_I2C lcd(0,0,0);
 
 //----------------------------emonPi Firmware Version---------------------------------------------------------------------------------------------------------------
 // Changelog: https://github.com/openenergymonitor/emonpi/blob/master/firmware/readme.md
-const int firmware_version = 290;                                     //firmware version x 100 e.g 100 = V1.00
+const int firmware_version = 292;                                     //firmware version x 100 e.g 100 = V1.00
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
 bool debug =                   true;
@@ -268,6 +268,7 @@ void loop()
 
     if ((now - last_rf_rest) > RF_RESET_PERIOD) {
       rf12_initialize(nodeID, RF_freq, networkGroup);                             // Periodically reset RFM69CW to keep it alive :-(
+      last_rf_rest = now;
     }
 
    }
