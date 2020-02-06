@@ -59,8 +59,8 @@ Use port 0 for very old 256Mb RAM pi (rev1) - not recommended to use this pi ver
 
 ```
 sudo apt-get update
-sudo apt-get install python-smbus i2c-tools python-rpi.gpio python-pip redis-server  python-gpiozero -y
-sudo pip install redis paho-mqtt xmltodict requests
+sudo apt-get install python3-smbus i2c-tools python3-rpi.gpio python3-pip redis-server python3-gpiozero -y
+sudo pip3 install redis paho-mqtt xmltodict requests
 ```
 
 ## Run as service
