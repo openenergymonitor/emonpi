@@ -47,7 +47,8 @@ mqtt_feed2_topic = config.get('mqtt', 'mqtt_feed2_topic')
 # ------------------------------------------------------------------------------------
 redis_host = config.get('redis', 'redis_host')
 redis_port = config.get('redis', 'redis_port')
-r = redis.Redis(host=redis_host, port=redis_port, db=0)
+#r = redis.Redis(host=redis_host, port=redis_port, db=0)
+r = redis.Redis(host=redis_host, port=redis_port, db=0, charset="utf-8", decode_responses=True)
 
 # ------------------------------------------------------------------------------------
 # General Settings
@@ -278,7 +279,7 @@ def updateLCD():
 
     elif page == 7:
         lcd[0] = "emonPi Build:"
-        lcd[1] = sd_image_version
+        lcd[1] = sd_image_version.decode('utf-8')
 
     elif page == 8:
         ret = subprocess.call(ssh_status, shell=True)
@@ -313,7 +314,7 @@ class IPAddress:
             return socket.inet_ntoa(fcntl.ioctl(
                 self.sock.fileno(),
                 0x8915,  # SIOCGIFADDR
-                struct.pack('256s', ifname[:15])
+                struct.pack('256s', ifname[:15].encode('utf-8'))
             )[20:24])
         except Exception:
             return ''
@@ -344,8 +345,8 @@ class LCD:
         # Scan I2C bus for LCD I2C addresses as defined in led_i2c, we have a couple of models of LCD which have different addreses that are shipped with emonPi. First I2C device to match address is used.
         self.logger = logger
         for i2c_address in lcd_i2c:
-            lcd_status = subprocess.check_output([path+"/emonPiLCD_detect.sh", "%s" % i2c_address])
-            if lcd_status.rstrip() == 'True':
+            lcd_status=subprocess.run([path+"/emonPiLCD_detect.sh", "%s" % i2c_address])
+            if lcd_status:
                 print("I2C LCD DETECTED Ox%s" % i2c_address)
                 logger.info("I2C LCD DETECTED 0x%s" % i2c_address)
                 current_lcd_i2c = "0x%s" % i2c_address
@@ -354,7 +355,7 @@ class LCD:
                     open('/home/pi/data/emonpi', 'a').close()
                 break
 
-        if lcd_status.rstrip() == 'False':
+        if not lcd_status:
             print("I2C LCD NOT DETECTED on either 0x" + str(lcd_i2c) + " ...exiting LCD script")
             logger.error("I2C LCD NOT DETECTED on either 0x" + str(lcd_i2c) + " ...exiting LCD script")
             # add file to identify device as emonbase
@@ -439,8 +440,8 @@ def main():
     sd_image_version = sd_image_version.rstrip()
 
     lcd[0] = "emonPi Build:"
-    lcd[1] = sd_image_version
-    logger.info("SD card image build version: " + sd_image_version)
+    lcd[1] = sd_image_version.decode('utf-8')
+    logger.info("SD card image build version: %s", sd_image_version)
 
     # Set up the buttons and install handlers
 
