@@ -17,7 +17,7 @@
 # journalctl -f -u emonPiLCD
 
 [Unit]
-Description=emonPiLCD Script
+Description=emonPi LCD driver
 Wants=mosquitto.service
 After=mosquitto.service
 

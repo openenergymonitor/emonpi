@@ -47,7 +47,7 @@ mqtt_feed2_topic = config.get('mqtt', 'mqtt_feed2_topic')
 # ------------------------------------------------------------------------------------
 redis_host = config.get('redis', 'redis_host')
 redis_port = config.get('redis', 'redis_port')
-r = redis.Redis(host=redis_host, port=redis_port, db=0)
+r = redis.Redis(host=redis_host, port=redis_port, db=0, charset="utf-8", decode_responses=True)
 
 # ------------------------------------------------------------------------------------
 # General Settings
@@ -344,21 +344,21 @@ class LCD:
         # Scan I2C bus for LCD I2C addresses as defined in led_i2c, we have a couple of models of LCD which have different addreses that are shipped with emonPi. First I2C device to match address is used.
         self.logger = logger
         for i2c_address in lcd_i2c:
-          lcd_status = subprocess.check_output([path+"/emonPiLCD_detect.sh", "%s" % i2c_address])
-          if lcd_status.rstrip() == 'True':
-            print "I2C LCD DETECTED Ox%s" % i2c_address
-            logger.info("I2C LCD DETECTED 0x%s" % i2c_address)
-            current_lcd_i2c = "0x%s" % i2c_address
-            # identify device as emonpi
-            r.set("describe", "emonpi")
-            break
+            lcd_status = subprocess.check_output([path + "/emonPiLCD_detect.sh", "%s" % i2c_address], encoding='utf-8')
+            if lcd_status.rstrip() == 'True':
+                print("I2C LCD DETECTED Ox%s" % i2c_address)
+                logger.info("I2C LCD DETECTED 0x%s" % i2c_address)
+                current_lcd_i2c = "0x%s" % i2c_address
+                # identify device as emonpi
+                r.set("describe", "emonpi")
+                break
 
         if lcd_status.rstrip() == 'False':
-          print ("I2C LCD NOT DETECTED on either 0x" + str(lcd_i2c) + " ...exiting LCD script")
-          logger.error("I2C LCD NOT DETECTED on either 0x" + str(lcd_i2c) + " ...exiting LCD script")
-          # identify device as emonbase
-          r.set("describe", "emonbase")
-          sys.exit(0)
+            print("I2C LCD NOT DETECTED on either 0x" + str(lcd_i2c) + " ...exiting LCD script")
+            logger.error("I2C LCD NOT DETECTED on either 0x" + str(lcd_i2c) + " ...exiting LCD script")
+            # identify device as emonbase
+            r.set("describe", "emonbase")
+            sys.exit(0)
 
         # Init LCD using detected I2C address with 16 characters
         self.lcd = lcddriver.lcd(int(current_lcd_i2c, 16))
@@ -427,25 +427,25 @@ def main():
 
     sd_card_image = subprocess.call("ls /boot | grep emonSD", shell=True)
     if not sd_card_image:  # if emonSD file exists
-        sd_image_version = subprocess.check_output("ls /boot | grep emonSD", shell=True)
+        sd_image_version = subprocess.check_output("ls /boot | grep emonSD", shell=True, encoding='utf-8')
     else:
-        sd_card_image = subprocess.call("ls /boot | grep emonpi", shell=True)
+        sd_card_image = subprocess.call("ls /boot | grep emonpi", shell=True, encoding='utf-8')
         if not sd_card_image:
-            sd_image_version = subprocess.check_output("ls /boot | grep emonpi", shell=True)
+            sd_image_version = subprocess.check_output("ls /boot | grep emonpi", shell=True, encoding='utf-8')
         else:
             sd_image_version = "N/A"
     sd_image_version = sd_image_version.rstrip()
 
     lcd[0] = "emonPi Build:"
     lcd[1] = sd_image_version
-    logger.info("SD card image build version: " + sd_image_version)
+    logger.info("SD card image build version: %s", sd_image_version)
 
     # Set up the buttons and install handlers
 
     # emonPi LCD push button Pin 16 GPIO 23
     # Uses gpiozero library to handle short and long press https://gpiozero.readthedocs.io/en/stable/api_input.html?highlight=button
     # push_btn = Button(23, pull_up=False, hold_time=5, bounce_time=0.1)
-    # No bounce time increases responce time but may result in switch bouncing...
+    # No bounce time increases response time but may result in switch bouncing...
     logger.info("Attaching push button interrupt...")
     try:
         push_btn = Button(23, pull_up=False, hold_time=5)
