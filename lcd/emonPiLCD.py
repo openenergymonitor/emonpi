@@ -13,6 +13,7 @@ import logging
 import logging.handlers
 import os
 import configparser
+import itertools
 
 import redis
 import paho.mqtt.client as mqtt
@@ -393,16 +394,14 @@ def main():
     # Discover & display emonPi SD card image version
     # ------------------------------------------------------------------------------------
 
-    sd_card_image = subprocess.call("ls /boot | grep emonSD", shell=True, encoding='utf-8')
-    if not sd_card_image:  # if emonSD file exists
-        sd_image_version = subprocess.check_output("ls /boot | grep emonSD", shell=True, encoding='utf-8')
+    boot_files = os.listdir('/boot')
+    patterns = ['emonSD', 'emonpi']
+    for filename, pattern in itertools.product(boot_files, patterns):
+        if pattern in filename:
+            sd_image_version = filename
+            break
     else:
-        sd_card_image = subprocess.call("ls /boot | grep emonpi", shell=True, encoding='utf-8')
-        if not sd_card_image:
-            sd_image_version = subprocess.check_output("ls /boot | grep emonpi", shell=True, encoding='utf-8')
-        else:
-            sd_image_version = "N/A"
-    sd_image_version = sd_image_version.rstrip()
+        sd_image_version = 'N/A'
 
     lcd[0] = "emonPi Build:"
     lcd[1] = sd_image_version
