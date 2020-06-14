@@ -344,8 +344,8 @@ class LCD:
         # Scan I2C bus for LCD I2C addresses as defined in led_i2c, we have a couple of models of LCD which have different addreses that are shipped with emonPi. First I2C device to match address is used.
         self.logger = logger
         for i2c_address in lcd_i2c:
-            lcd_status=subprocess.run([path+"/emonPiLCD_detect.sh", "%s" % i2c_address])
-            if lcd_status:
+            lcd_status = subprocess.check_output([path+"/emonPiLCD_detect.sh", "%s" % i2c_address])
+            if lcd_status.rstrip().decode() == 'True':
                 print("I2C LCD DETECTED Ox%s" % i2c_address)
                 logger.info("I2C LCD DETECTED 0x%s" % i2c_address)
                 current_lcd_i2c = "0x%s" % i2c_address
@@ -354,7 +354,7 @@ class LCD:
                     open('/home/pi/data/emonpi', 'a').close()
                 break
 
-        if not lcd_status:
+        if lcd_status.rstrip().decode() == 'False':
             print("I2C LCD NOT DETECTED on either 0x" + str(lcd_i2c) + " ...exiting LCD script")
             logger.error("I2C LCD NOT DETECTED on either 0x" + str(lcd_i2c) + " ...exiting LCD script")
             # add file to identify device as emonbase
