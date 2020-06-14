@@ -39,9 +39,14 @@ mqtt_user = config.get('mqtt', 'mqtt_user')
 mqtt_passwd = config.get('mqtt', 'mqtt_passwd')
 mqtt_host = config.get('mqtt', 'mqtt_host')
 mqtt_port = config.getint('mqtt', 'mqtt_port')
-mqtt_emonpi_topic = config.get('mqtt', 'mqtt_emonpi_topic')
-mqtt_feed1_topic = config.get('mqtt', 'mqtt_feed1_topic')
-mqtt_feed2_topic = config.get('mqtt', 'mqtt_feed2_topic')
+mqtt_topics = {config.get('mqtt', 'mqtt_emonpi_topic'): 'basedata',
+               config.get('mqtt', 'mqtt_temp1_topic'): 'temp1',
+               config.get('mqtt', 'mqtt_temp2_topic'): 'temp2',
+               config.get('mqtt', 'mqtt_feed1_topic'): 'feed1',
+               config.get('mqtt', 'mqtt_feed2_topic'): 'feed2',
+               config.get('mqtt', 'mqtt_vrms_topic'): 'vrms',
+               config.get('mqtt', 'mqtt_pulse_topic'): 'pulse',
+              }
 
 # ------------------------------------------------------------------------------------
 # Redis Settings
@@ -247,10 +252,15 @@ def updateLCD():
 
     elif page == 4:
         basedata = r.get("basedata")
+        vrms = r.get("vrms")
+        pulse = r.get("pulse")
         if basedata is not None:
             basedata = basedata.split(",")
             lcd[0] = 'VRMS: ' + basedata[3] + "V"
             lcd[1] = 'Pulse: ' + basedata[10] + "p"
+        elif vrms is not None and pulse is not None:
+            lcd[0] = 'VRMS: ' + vrms + 'V'
+            lcd[1] = 'Pulse: ' + pulse + 'p'
         else:
             lcd[0] = 'Connecting...'
             lcd[1] = 'Please Wait'
@@ -258,10 +268,15 @@ def updateLCD():
 
     elif page == 5:
         basedata = r.get("basedata")
+        temp1 = r.get('temp1')
+        temp2 = r.get('temp2')
         if basedata is not None:
             basedata = basedata.split(",")
             lcd[0] = 'Temp 1: ' + basedata[4] + "C"
             lcd[1] = 'Temp 2: ' + basedata[5] + "C"
+        elif temp1 is not None and temp2 is not None:
+            lcd[0] = 'Temp 1: ' + temp1 + 'C'
+            lcd[1] = 'Temp 2: ' + temp2 + 'C'
         else:
             lcd[0] = 'Connecting...'
             lcd[1] = 'Please Wait'
@@ -443,21 +458,13 @@ def main():
     logger.info("Connecting to MQTT Server: " + mqtt_host + " on port: " + str(mqtt_port) + " with user: " + mqtt_user)
 
     def on_message(client, userdata, msg):
-        if mqtt_feed1_topic in msg.topic:
-            r.set("feed1", msg.payload)
-
-        if mqtt_feed2_topic in msg.topic:
-            r.set("feed2", msg.payload)
-
-        if mqtt_emonpi_topic in msg.topic:
-            r.set("basedata", msg.payload)
-
+        if msg.topic in mqtt_topics:
+            r.set(mqtt_topics[msg.topic], msg.payload)
 
     def on_connect(client, userdata, flags, rc):
         if rc == 0:
-            mqttc.subscribe(mqtt_emonpi_topic)
-            mqttc.subscribe(mqtt_feed1_topic)
-            mqttc.subscribe(mqtt_feed2_topic)
+            for topic in mqtt_topics:
+                mqttc.subscribe(topic)
 
     mqttc = mqtt.Client()
     mqttc.on_message = on_message
