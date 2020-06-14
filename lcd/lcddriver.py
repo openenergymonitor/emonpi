@@ -120,3 +120,11 @@ class lcd(object):
     def lcd_clear(self):
         self.lcd_write(LCD_CLEARDISPLAY)
         self.lcd_write(LCD_RETURNHOME)
+
+    # install a custom character
+    def lcd_create_char(self, location, charmap):
+        if not 0 <= location <= 7:
+            raise ValueError('There are only 8 character locations (0-7)')
+        self.lcd_write(LCD_SETCGRAMADDR | (location << 3), 0)
+        for row in charmap:
+            self.lcd_write(row, Rs)

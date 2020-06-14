@@ -272,11 +272,11 @@ def updateLCD():
         temp2 = r.get('temp2')
         if basedata is not None:
             basedata = basedata.split(",")
-            lcd[0] = 'Temp 1: ' + basedata[4] + "C"
-            lcd[1] = 'Temp 2: ' + basedata[5] + "C"
+            lcd[0] = 'Temp 1: ' + basedata[4] + "\0C"
+            lcd[1] = 'Temp 2: ' + basedata[5] + "\0C"
         elif temp1 is not None and temp2 is not None:
-            lcd[0] = 'Temp 1: ' + temp1 + 'C'
-            lcd[1] = 'Temp 2: ' + temp2 + 'C'
+            lcd[0] = 'Temp 1: ' + temp1 + '\0C'
+            lcd[1] = 'Temp 2: ' + temp2 + '\0C'
         else:
             lcd[0] = 'Connecting...'
             lcd[1] = 'Please Wait'
@@ -404,6 +404,10 @@ def main():
         # identify device as emonbase
         r.set("describe", "emonbase")
         sys.exit(0)
+
+    # This is a row-major bitmap of a character.
+    degree_sign = [ 6, 9, 9, 6, 0, 0, 0, 0 ]
+    lcd.lcd_create_char(0, degree_sign)
 
     # ------------------------------------------------------------------------------------
     # Discover & display emonPi SD card image version
