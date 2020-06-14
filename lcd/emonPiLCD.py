@@ -425,7 +425,7 @@ def main():
     # Discover & display emonPi SD card image version
     # ------------------------------------------------------------------------------------
 
-    sd_card_image = subprocess.call("ls /boot | grep emonSD", shell=True)
+    sd_card_image = subprocess.call("ls /boot | grep emonSD", shell=True, encoding='utf-8')
     if not sd_card_image:  # if emonSD file exists
         sd_image_version = subprocess.check_output("ls /boot | grep emonSD", shell=True, encoding='utf-8')
     else:
