@@ -80,6 +80,12 @@ class lcd(object):
         self._backlight = state and LCD_BACKLIGHT or LCD_NOBACKLIGHT
         self.bus.write_byte(self.i2c_address, self._backlight)
 
+    def __setitem__(self, line, string):
+        if not 0 <= line <= 1:
+            raise IndexError("line number out of range")
+        # Format string to exactly the width of LCD
+        self.lcd_display_string('{0!s:<16.16}'.format(string), line + 1)
+
     # clocks EN to latch command
     def lcd_strobe(self, data):
         self.bus.write_byte(self.i2c_address, data | En | self._backlight)

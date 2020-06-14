@@ -337,33 +337,6 @@ def shutdown():
     sys.exit(0)  # end script
 
 
-class LCD:
-    def __init__(self, logger, i2c_address):
-        self.logger = logger
-        self.lcd = lcddriver.lcd(i2c_address)
-        self._display = ['', '']
-
-    def __setitem__(self, line, string):
-        if not 0 <= line <= 1:
-            raise IndexError("line number out of range")
-        # Format string to exactly the width of LCD
-        string = '{0!s:<16.16}'.format(string)
-        if string != self._display[line]:
-            self._display[line] = string
-            self.logger.debug("LCD line {0}: {1}".format(line, string))
-            self.lcd.lcd_display_string(string, line + 1)
-
-    @property
-    def backlight(self):
-        return self.lcd.backlight
-
-    @backlight.setter
-    def backlight(self, state):
-        if not 0 <= state <= 1:
-            raise IndexError("backlight state out of range")
-        self.logger.debug("LCD backlight: " + repr(state))
-        self.lcd.backlight = state
-
 def main():
     global page
     global sd_image_version
@@ -396,26 +369,25 @@ def main():
     # Scan I2C bus for LCD I2C addresses as defined in led_i2c, we have a
     # couple of models of LCD which have different addreses that are shipped
     # with emonPi. First I2C device to match address is used.
+    global lcd
     for i2c_address in lcd_i2c:
-        lcd_status = subprocess.check_output([path+"/emonPiLCD_detect.sh", i2c_address], encoding='utf-8')
-        if lcd_status.rstrip() == 'True':
-            print("I2C LCD DETECTED Ox%s" % i2c_address)
-            logger.info("I2C LCD DETECTED 0x%s" % i2c_address)
-            current_lcd_i2c = "0x%s" % i2c_address
-            # identify device as emonpi
-            r.set("describe", "emonpi")
-            break
+        try:
+            lcd = lcddriver.lcd(int(i2c_address, 16))
+            lcd.backlight = 1
+        except OSError:
+            # No LCD at this address, try the next...
+            continue
+        print("I2C LCD DETECTED Ox%s" % i2c_address)
+        logger.info("I2C LCD DETECTED 0x%s" % i2c_address)
+        # identify device as emonpi
+        r.set("describe", "emonpi")
+        break
     else:  # no break
         print("I2C LCD NOT DETECTED on either 0x" + str(lcd_i2c) + " ...exiting LCD script")
         logger.error("I2C LCD NOT DETECTED on either 0x" + str(lcd_i2c) + " ...exiting LCD script")
         # identify device as emonbase
         r.set("describe", "emonbase")
         sys.exit(0)
-
-    # Init LCD using detected I2C address with 16 characters
-    global lcd
-    lcd = LCD(logger, int(current_lcd_i2c, 16))
-    lcd.backlight = 1
 
     # ------------------------------------------------------------------------------------
     # Discover & display emonPi SD card image version
