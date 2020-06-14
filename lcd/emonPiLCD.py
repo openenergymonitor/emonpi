@@ -134,8 +134,6 @@ def buttonPressLong():
 
 def buttonPress():
     global page
-    global lcd
-    global logger
 
     now = time.time()
 
@@ -153,9 +151,6 @@ def buttonPress():
 
 def updateLCD():
     global page
-    global lcd
-    global r
-    global logger
     global sshConfirm
     global shutConfirm
 
@@ -338,8 +333,6 @@ def preShutdown():
     lcd[1] = "Hold 5 secs"
 
 def shutdown():
-
-    global lcd
     lcd.backlight = 1
     lcd[0] = "emonPi Shutdown"
     lcd[1] = "SHUTDOWN NOW!"
@@ -356,7 +349,6 @@ def shutdown():
 def main():
     global page
     global sd_image_version
-    global r
 
     # Initialise some redis variables
     r.set("gsm:active", 0)
