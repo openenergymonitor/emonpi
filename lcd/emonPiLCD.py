@@ -47,7 +47,6 @@ mqtt_feed2_topic = config.get('mqtt', 'mqtt_feed2_topic')
 # ------------------------------------------------------------------------------------
 redis_host = config.get('redis', 'redis_host')
 redis_port = config.get('redis', 'redis_port')
-#r = redis.Redis(host=redis_host, port=redis_port, db=0)
 r = redis.Redis(host=redis_host, port=redis_port, db=0, charset="utf-8", decode_responses=True)
 
 # ------------------------------------------------------------------------------------
@@ -279,7 +278,7 @@ def updateLCD():
 
     elif page == 7:
         lcd[0] = "emonPi Build:"
-        lcd[1] = sd_image_version.decode('utf-8')
+        lcd[1] = sd_image_version.decode()
 
     elif page == 8:
         ret = subprocess.call(ssh_status, shell=True)
@@ -314,7 +313,7 @@ class IPAddress:
             return socket.inet_ntoa(fcntl.ioctl(
                 self.sock.fileno(),
                 0x8915,  # SIOCGIFADDR
-                struct.pack('256s', ifname[:15].encode('utf-8'))
+                struct.pack('256s', ifname[:15].encode())
             )[20:24])
         except Exception:
             return ''
