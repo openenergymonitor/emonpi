@@ -1,5 +1,5 @@
 from time import sleep
-import i2c_lib
+import smbus
 
 # LCD Address
 # ADDRESS = 0x27
@@ -54,10 +54,12 @@ Rs = 0b00000001  # Register select bit
 
 class lcd(object):
     # initializes objects and lcd
-    def __init__(self, i2c_address):
-        self.lcd_device = i2c_lib.i2c_device(i2c_address)
+    def __init__(self, i2c_address=0x27, bus=1):
+        self.bus = smbus.SMBus(bus)
+        self.i2c_address = i2c_address
         self._backlight = LCD_NOBACKLIGHT
 
+        # Set 4bit mode reliably
         self.lcd_write(0x03)
         self.lcd_write(0x03)
         self.lcd_write(0x03)
@@ -76,17 +78,17 @@ class lcd(object):
     @backlight.setter
     def backlight(self, state):
         self._backlight = state and LCD_BACKLIGHT or LCD_NOBACKLIGHT
-        self.lcd_device.write_cmd(self._backlight)
+        self.bus.write_byte(self.i2c_address, self._backlight)
 
     # clocks EN to latch command
     def lcd_strobe(self, data):
-        self.lcd_device.write_cmd(data | En | self._backlight)
+        self.bus.write_byte(self.i2c_address, data | En | self._backlight)
         sleep(.0005)
-        self.lcd_device.write_cmd(((data & ~En) | self._backlight))
+        self.bus.write_byte(self.i2c_address, ((data & ~En) | self._backlight))
         sleep(.0001)
 
     def lcd_write_four_bits(self, data):
-        self.lcd_device.write_cmd(data | self._backlight)
+        self.bus.write_byte(self.i2c_address, data | self._backlight)
         self.lcd_strobe(data)
 
     # write a command to lcd
