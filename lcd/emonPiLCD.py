@@ -277,7 +277,7 @@ def updateLCD():
 
     elif page == 7:
         lcd[0] = "emonPi Build:"
-        lcd[1] = sd_image_version.decode()
+        lcd[1] = sd_image_version
 
     elif page == 8:
         ret = subprocess.call(ssh_status, shell=True)
