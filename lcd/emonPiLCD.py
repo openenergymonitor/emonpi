@@ -26,7 +26,7 @@ import gsmhuaweistatus
 path = os.path.dirname(os.path.realpath(__file__))
 # ------------------------------------------------------------------------------------
 # Script version
-version = '3.0.1'
+version = '4'
 # ------------------------------------------------------------------------------------
 
 config = configparser.ConfigParser()
