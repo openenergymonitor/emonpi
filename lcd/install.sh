@@ -5,8 +5,7 @@
 # Assumes emonpi repository installed via git:
 # git clone https://github.com/openenergymonitor/emonpi.git
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-usrdir=${DIR/\/emonpi/}
+usrdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # interrogates the shebang of emonPiLCD.py to catch the python version
 shebang="$(head -1 emonPiLCD.py)"
@@ -20,7 +19,7 @@ if [ "$python" = "python3" ]; then
     pip3 install redis paho-mqtt xmltodict requests
 else
     sudo apt-get install -y python-smbus i2c-tools python-rpi.gpio python-gpiozero
-    pip install xmltodict
+    pip install redis paho-mqtt xmltodict requests
 fi
 
 
@@ -48,7 +47,7 @@ fi
 # Install service
 # ---------------------------------------------------------
 echo "- installing emonPiLCD.service"
-sudo ln -sf $usrdir/emonpi/lcd/$service.service /lib/systemd/system
+sudo ln -sf $usrdir/$service.service /lib/systemd/system
 sudo systemctl enable $service.service
 sudo systemctl restart $service.service
 
