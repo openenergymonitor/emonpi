@@ -8,8 +8,8 @@ After=sysinit.target syslog.target local-fs.target
 
 [Service]
 User=pi
-PIDFile=/var/run/emonpi.pid
-Environment='LOG_PATH=/var/log/emoncms'
+PIDFile=/var/run/emonpilcd.pid
+Environment='LOG_PATH=/var/log'
 ExecStart=/opt/openenergymonitor/emonpi/lcd/emonPiLCD.py --logfile=${LOG_PATH}/emonpilcd/emonpilcd.log
 PermissionsStartOnly=true
 ExecStartPre=/bin/mkdir -p ${LOG_PATH}/emonpilcd/
