@@ -9,12 +9,12 @@ After=sysinit.target syslog.target local-fs.target
 [Service]
 User=pi
 PIDFile=/var/run/emonpilcd.pid
-Environment='LOG_PATH=/var/log'
-ExecStart=/opt/openenergymonitor/emonpi/lcd/emonPiLCD.py --logfile=${LOG_PATH}/emonpilcd/emonpilcd.log
+Environment='LOG_PATH=/var/log/emonpilcd'
+ExecStart=/opt/openenergymonitor/emonpi/lcd/emonPiLCD.py --logfile=${LOG_PATH}/emonpilcd.log
 PermissionsStartOnly=true
-ExecStartPre=/bin/mkdir -p ${LOG_PATH}/emonpilcd/
-ExecStartPre=/bin/chgrp -R pi ${LOG_PATH}/emonpilcd/
-ExecStartPre=/bin/chmod 775 ${LOG_PATH}/emonpilcd/
+ExecStartPre=/bin/mkdir -p ${LOG_PATH}/
+ExecStartPre=/bin/chgrp -R pi ${LOG_PATH}/
+ExecStartPre=/bin/chmod 775 ${LOG_PATH}/
 Type=simple
 Restart=always
 
