@@ -1,3 +1,10 @@
+# Systemd unit file for emonPiLCD script
+# installation is done via the install.sh script in the same folder
+# VIEW STATUS
+# systemctl status emonPiLCD
+# VIEW LOG
+# journalctl -f -u emonPiLCD
+
 [Unit]
 Description=emonPiLCD service description
 After=mosquitto.service
