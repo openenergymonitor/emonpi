@@ -1,10 +1,6 @@
 [Unit]
 Description=emonPiLCD service description
-DefaultDependencies=no
-Before=shutdown.target
-Conflicts=shutdown.target
-Requires=local-fs.target
-After=sysinit.target syslog.target local-fs.target mosquitto.service
+After=mosquitto.service
 
 [Service]
 User=pi
