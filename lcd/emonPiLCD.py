@@ -357,7 +357,7 @@ def shutdown():
     time.sleep(4)
     # backlight zero must be the last call to the LCD to keep the backlight off
     lcd.backlight = 0
-    subprocess.call('halt', shell=False)
+    subprocess.call(['sudo','halt'], shell=False)
     sys.exit(0)  # end script
 
 
