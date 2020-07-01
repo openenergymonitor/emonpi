@@ -7,21 +7,10 @@
 
 usrdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-# interrogates the shebang of emonPiLCD.py to catch the python version
-shebang="$(head -1 emonPiLCD.py)"
-splitted=($(echo $shebang | tr "/" "\n"))
-python="${splitted[-1]}"
-
 sudo apt update
 
-if [ "$python" = "python3" ]; then
-    sudo apt-get install python3-smbus i2c-tools python3-rpi.gpio python3-pip redis-server  python3-gpiozero -y
-    pip3 install redis paho-mqtt xmltodict requests
-else
-    sudo apt-get install -y python-smbus i2c-tools python-rpi.gpio python-gpiozero
-    pip install redis paho-mqtt xmltodict requests
-fi
-
+sudo apt-get install -y python-smbus i2c-tools python-rpi.gpio python-gpiozero
+pip install redis paho-mqtt xmltodict requests
 
 # Uncomment dtparam=i2c_arm=on
 sudo sed -i "s/^#dtparam=i2c_arm=on/dtparam=i2c_arm=on/" /boot/config.txt
