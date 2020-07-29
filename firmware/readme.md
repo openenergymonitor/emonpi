@@ -1,6 +1,21 @@
 # Change Log - emonPi Discrete Sampling Firmware
 
-**See continuous-sampling branch for continuous sampling**
+**See continuous-sampling branch for continuous sampling FW**
+
+Compile using PlatformIO: https://guide.openenergymonitor.org/technical/compiling/
+
+***
+
+# V2.9.2 (17/11/19)
+
+- Fix RFM init 
+
+https://community.openenergymonitor.org/t/emonpi-firmware-build/12428/45
+
+```
+RAM:   [=====     ]  52.9% (used 1083 bytes from 2048 bytes)
+Flash: [======    ]  60.3% (used 18526 bytes from 30720 bytes)
+```
 
 # V2.9.0 (16/01/18)
 
@@ -16,7 +31,7 @@ Data:       1048 bytes (51.2% Full)
 
 # V2.8.4 (21/12/17)
 
-- Correct USA voltage for apparent power sampling to 120V. Only affects battery / DC USB 5V operation. Does not effect when powering unit vi AC-AC adaptor.
+- Correct USA voltage for apparent power sampling to 120V. Only affects battery / DC USB 5V operation. Does not effect when powering unit via AC-AC adaptor.
 
 ```
 Program:   17942 bytes (54.8% Full)
