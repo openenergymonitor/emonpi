@@ -7,7 +7,7 @@
 
 usrdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-sudo apt update
+# sudo apt update
 
 sudo apt-get install -y python-smbus i2c-tools python-rpi.gpio python-gpiozero
 pip install redis paho-mqtt xmltodict requests
