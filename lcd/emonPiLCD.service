@@ -1,41 +1,25 @@
 # Systemd unit file for emonPiLCD script
-
-# INSTALL:
-# sudo ln -s /usr/share/emonPiLCD/emonPiLCD.service /lib/systemd/system
-
-# RUN AT STARTUP
-# sudo systemctl daemon-reload
-# sudo systemctl enable emonPiLCD.service
-
-# START / STOP With:
-# sudo systemctl start emonPiLCD
-# sudo systemctl stop emonPiLCD
-
+# installation is done via the install.sh script in the same folder
 # VIEW STATUS
 # systemctl status emonPiLCD
 # VIEW LOG
 # journalctl -f -u emonPiLCD
 
 [Unit]
-Description=emonPiLCD Script
-Wants=mosquitto.service
+Description=emonPiLCD service description
 After=mosquitto.service
 
-# Needs to run as root so disable/enable ssh and shutdown emonpi
 [Service]
-Type=idle
-ExecStart=/usr/bin/python /usr/share/emonPiLCD/emonPiLCD.py
-User=root
-
-# Restart script if stopped on a failure. Will not restart if not configured correctly
-Restart=on-failure
-# Wait 60s before restart
-RestartSec=60
-
-# Tag things in the log
-# If you want to use the journal instead of the file above, uncomment SyslogIdentifier below
-# View with: sudo journalctl -f -u emonPiLCD -o cat
-SyslogIdentifier=emonPiLCD
+User=pi
+PIDFile=/var/run/emonpilcd.pid
+Environment='LOG_PATH=/var/log/emonpilcd'
+ExecStart=/opt/openenergymonitor/emonpi/lcd/emonPiLCD.py --logfile=${LOG_PATH}/emonpilcd.log
+PermissionsStartOnly=true
+ExecStartPre=/bin/mkdir -p ${LOG_PATH}/
+ExecStartPre=/bin/chgrp -R pi ${LOG_PATH}/
+ExecStartPre=/bin/chmod 775 ${LOG_PATH}/
+Type=simple
+Restart=always
 
 [Install]
 WantedBy=multi-user.target

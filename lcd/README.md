@@ -5,7 +5,7 @@ I2C Address: 0x27
 
 # Enabling The I2C Port
 
-**Tested on Raspbian Jessie and Stretch**
+**Tested on Raspbian**
 
 The I2C ports need to be enabled in Raspbian before they can be used.
 
@@ -66,9 +66,7 @@ sudo pip install redis paho-mqtt xmltodict requests
 
 ## Run as service 
 
-sudo ln -s /home/pi/emonpi/lcd/ /usr/share/emonPiLCD
-sudo ln -s /home/pi/emonpi/lcd/emonPiLCD /etc/init.d/emonPiLCD
-
-# Run at startup
-
-sudo update-rc.d emonPiLCD defaults
+Run the shell script  
+```
+./install.sh
+```
