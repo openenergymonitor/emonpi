@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-import lcddriver
-import time
+from __future__ import print_function
 import sys
 import subprocess
 import os
@@ -22,9 +21,9 @@ for i2c_address in lcd_i2c:
     break
 
 if lcd_status.rstrip() == 'False':
-  print ("I2C LCD NOT DETECTED on either 0x" + str(lcd_i2c) + " ...exiting LCD script")
-  sys.exit(1)
-  
+    print("I2C LCD NOT DETECTED on either 0x" + str(lcd_i2c) + " ...exiting LCD script")
+    sys.exit(1)
+
 lcd = lcddriver.lcd(int(current_lcd_i2c, 16))
 
 # ------------------------------------------------------------------------------------
@@ -32,6 +31,4 @@ lcd = lcddriver.lcd(int(current_lcd_i2c, 16))
 # ------------------------------------------------------------------------------------
 lcd.backlight = 1
 lcd.lcd_display_string("Updating........", 1)
-lcd.lcd_display_string("DO NOT UNPLUG!  ",2)
-time.sleep(1)
-sys.exit()
+lcd.lcd_display_string("DO NOT UNPLUG!  ", 2)

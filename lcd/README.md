@@ -1,4 +1,4 @@
-# HD44780 LCD with PCF8574 I2c 
+# HD44780 LCD with PCF8574 I2c
 
 I2C Address: 0x27
 
@@ -15,20 +15,19 @@ Un-comment / add the line
 
 	dtparam=i2c_arm=on
 
-Edit kernal modules file:
-	
- 	$ sudo nano /etc/modules
+Edit kernel modules file:
 
-Add these line:
+	$ sudo nano /etc/modules
+
+Add this line:
 
 i2c-dev
 
 Exit and save the file.
 
-​
 ## Install the I2C utilities:
 
-Usally pre-installed
+Usually pre-installed
 
 		$ sudo apt-get install python-smbus i2c-tools
 
@@ -37,9 +36,9 @@ Enter "sudo reboot" to restart the pi and now the I2C pins will be available to 
 
 ## Detect LCD on I2C bus and find out address
 
- 	$ sudo i2cdetect -y 1
+	$ sudo i2cdetect -y 1
 
-Expected output LCD is detect is `0x27` or `0x3F` e.g 
+Expected output is `0x27` or `0x3F` e.g.
 
 ```
 pi@emonpi:~ $  sudo i2cdetect -y 1
@@ -54,17 +53,17 @@ pi@emonpi:~ $  sudo i2cdetect -y 1
 70: -- -- -- -- -- -- -- --   
 ```
 
-Use port 0 for very olde 256Mb RAM pi (rev1) - not recomended to use this pi vesion
+Use port 0 for very old 256Mb RAM pi (rev1) - not recommended to use this pi version
 
 # Install emonPiLCD python script
 
 ```
 sudo apt-get update
-sudo apt-get install python-smbus i2c-tools python-rpi.gpio python-pip redis-server  python-gpiozero -y
-sudo pip install redis paho-mqtt xmltodict requests
+sudo apt-get install python3-smbus i2c-tools python3-rpi.gpio python3-pip redis-server python3-gpiozero -y
+sudo pip3 install redis paho-mqtt xmltodict requests
 ```
 
-## Run as service 
+## Run as service
 
 Run the shell script  
 ```

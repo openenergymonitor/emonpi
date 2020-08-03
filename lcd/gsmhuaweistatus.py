@@ -6,13 +6,13 @@
 # Tested with E3276, E3231,
 
 from __future__ import print_function
+import math
 import xmltodict
 import requests
-import math
 
 
 def to_size(size):
-    if (size == 0):
+    if size == 0:
         return '0 Bytes'
     size_name = ('Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB')
     i = int(math.floor(math.log(size, 1024)))
@@ -23,24 +23,20 @@ def to_size(size):
 
 def is_hilink(device_ip):
     try:
-        r = requests.get(url='http://' + device_ip + '/api/device/information', timeout=(2.0,2.0))
+        r = requests.get(url='http://' + device_ip + '/api/device/information', timeout=(2.0, 2.0))
     except requests.exceptions.RequestException as e:
-        #print ("Error: "+str(e))
-        return False;
+        return False
     if r.status_code != 200:
         return False
     d = xmltodict.parse(r.text, xml_attribs=True)
-    if 'error' in d:
-        return False
-    return True
+    return 'error' not in d
 
 
 def call_api(device_ip, resource, xml_attribs=True):
     try:
         r = requests.get(url='http://' + device_ip + resource, timeout=(2.0,2.0))
     except requests.exceptions.RequestException as e:
-        #print ("Error: "+str(e))
-        return False;
+        return False
     if r.status_code == 200:
         d = xmltodict.parse(r.text, xml_attribs=xml_attribs)
         if 'error' in d:
@@ -121,13 +117,13 @@ gsm_connection_status = ['', '']
 def return_gsm_connection_status(device_ip):
     connection_status = False
     d = call_api(device_ip, '/api/monitoring/status')
-    if d is not False:
+    if not d:
         connection_status = d['response']['ConnectionStatus']
         signal_level = d['response']['SignalIcon']
         network_type = d['response']['CurrentNetworkType']
         gsm_connection_status[0] = get_connection_status(connection_status)
     else:
-        return (['No HiLink','Device'])
+        return ['No HiLink', 'Device']
     if connection_status == '901':
         gsm_connection_status[1] = get_network_type(network_type) + ' Signal: ' + signal_level + '/5'
     return gsm_connection_status

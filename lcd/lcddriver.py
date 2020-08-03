@@ -1,5 +1,5 @@
-import i2c_lib
 from time import sleep
+import smbus
 
 # LCD Address
 # ADDRESS = 0x27
@@ -54,10 +54,12 @@ Rs = 0b00000001  # Register select bit
 
 class lcd(object):
     # initializes objects and lcd
-    def __init__(self, i2c_address):
-        self.lcd_device = i2c_lib.i2c_device(i2c_address)
+    def __init__(self, i2c_address=0x27, bus=1):
+        self.bus = smbus.SMBus(bus)
+        self.i2c_address = i2c_address
         self._backlight = LCD_NOBACKLIGHT
 
+        # Set 4bit mode reliably
         self.lcd_write(0x03)
         self.lcd_write(0x03)
         self.lcd_write(0x03)
@@ -76,17 +78,23 @@ class lcd(object):
     @backlight.setter
     def backlight(self, state):
         self._backlight = state and LCD_BACKLIGHT or LCD_NOBACKLIGHT
-        self.lcd_device.write_cmd(self._backlight)
+        self.bus.write_byte(self.i2c_address, self._backlight)
+
+    def __setitem__(self, line, string):
+        if not 0 <= line <= 1:
+            raise IndexError("line number out of range")
+        # Format string to exactly the width of LCD
+        self.lcd_display_string('{0!s:<16.16}'.format(string), line + 1)
 
     # clocks EN to latch command
     def lcd_strobe(self, data):
-        self.lcd_device.write_cmd(data | En | self._backlight)
+        self.bus.write_byte(self.i2c_address, data | En | self._backlight)
         sleep(.0005)
-        self.lcd_device.write_cmd(((data & ~En) | self._backlight))
+        self.bus.write_byte(self.i2c_address, ((data & ~En) | self._backlight))
         sleep(.0001)
 
     def lcd_write_four_bits(self, data):
-        self.lcd_device.write_cmd(data | self._backlight)
+        self.bus.write_byte(self.i2c_address, data | self._backlight)
         self.lcd_strobe(data)
 
     # write a command to lcd
@@ -98,11 +106,11 @@ class lcd(object):
     def lcd_display_string(self, string, line):
         if line == 1:
             self.lcd_write(0x80)
-        if line == 2:
+        elif line == 2:
             self.lcd_write(0xC0)
-        if line == 3:
+        elif line == 3:
             self.lcd_write(0x94)
-        if line == 4:
+        elif line == 4:
             self.lcd_write(0xD4)
 
         for char in string:
@@ -112,3 +120,11 @@ class lcd(object):
     def lcd_clear(self):
         self.lcd_write(LCD_CLEARDISPLAY)
         self.lcd_write(LCD_RETURNHOME)
+
+    # install a custom character
+    def lcd_create_char(self, location, charmap):
+        if not 0 <= location <= 7:
+            raise ValueError('There are only 8 character locations (0-7)')
+        self.lcd_write(LCD_SETCGRAMADDR | (location << 3), 0)
+        for row in charmap:
+            self.lcd_write(row, Rs)
