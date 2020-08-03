@@ -16,7 +16,7 @@ current_lcd_i2c = ''
 for i2c_address in lcd_i2c:
   lcd_status = subprocess.check_output([dir+"/emonPiLCD_detect.sh", "%s" % i2c_address])
   if lcd_status.rstrip() == 'True':
-    print "I2C LCD DETECTED Ox%s" % i2c_address
+    print("I2C LCD DETECTED Ox%s" % i2c_address)
     current_lcd_i2c = "0x%s" % i2c_address
     break
 
