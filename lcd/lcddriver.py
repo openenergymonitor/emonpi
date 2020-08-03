@@ -101,6 +101,7 @@ class lcd(object):
     def lcd_write(self, cmd, mode=0):
         self.lcd_write_four_bits(mode | (cmd & 0xF0))
         self.lcd_write_four_bits(mode | ((cmd << 4) & 0xF0))
+        sleep(.0001)
 
     # put string function
     def lcd_display_string(self, string, line):
