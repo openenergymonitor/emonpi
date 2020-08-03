@@ -10,5 +10,5 @@ for address in ['0x27','0x3f']:
         break
     except Exception:
         address=False
-        
-print address
+
+print(address)

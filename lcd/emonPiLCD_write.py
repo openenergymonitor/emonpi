@@ -17,12 +17,12 @@ if not address:
     sys.exit()
 
 if len(sys.argv)!=3:
-    print "not enough arguments provided, expecting: line1, line2"
+    print("not enough arguments provided, expecting: line1, line2")
     sys.exit()
 
 line1 = sys.argv[1]
 line2 = sys.argv[2]
-  
+
 lcd = lcddriver.lcd(int(address, 16))
 lcd.backlight = 1
 lcd.lcd_display_string(line1,1)
