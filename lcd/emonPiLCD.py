@@ -26,7 +26,7 @@ import gsmhuaweistatus
 path = os.path.dirname(os.path.realpath(__file__))
 # ------------------------------------------------------------------------------------
 # Script version
-version = '4'
+version = '5'
 # ------------------------------------------------------------------------------------
 
 config = configparser.ConfigParser()
@@ -287,8 +287,8 @@ def updateLCD():
         lcd[1] = 'Uptime %.2f days' % (seconds / 86400)
 
     elif page == 7:
-        lcd[0] = "emonPi Build:"
-        lcd[1] = sd_image_version
+        lcd[0] = sd_image_version
+        lcd[1] = "Serial: " + serial_num
 
     elif page == 8:
         ret = subprocess.call(ssh_status, shell=True)
@@ -349,6 +349,7 @@ def shutdown():
 def main():
     global page
     global sd_image_version
+    global serial_num
 
     # Initialise some redis variables
     r.set("gsm:active", 0)
@@ -401,6 +402,32 @@ def main():
     degree_sign = [ 6, 9, 9, 6, 0, 0, 0, 0 ]
     lcd.lcd_create_char(0, degree_sign)
 
+    # Read RaspberryPi serial number
+    pi_serial = False
+    try:
+        f = open('/proc/cpuinfo','r')
+        for line in f:
+            if line[0:6]=='Serial':
+                length=len(line)
+                pi_serial = line[11:length-1]
+        f.close()
+    except:
+        pi_serial = False
+        logger.error("Cannot read RasPi serial number")
+
+    if pi_serial:
+        pi_serial_short = ""
+        zero_flag = 1
+        for i in range(0,len(pi_serial)):
+            if pi_serial[i]!='0':
+                zero_flag = 0
+            if not zero_flag:
+                pi_serial_short += pi_serial[i]
+        serial_num = pi_serial_short.upper()
+        logger.info("RasPi Serial Number: %s" % serial_num)
+    else:
+        serial_num = "Error"
+
     # ------------------------------------------------------------------------------------
     # Discover & display emonPi SD card image version
     # ------------------------------------------------------------------------------------
@@ -414,9 +441,10 @@ def main():
     else:
         sd_image_version = 'N/A'
 
-    lcd[0] = "emonPi Build:"
-    lcd[1] = sd_image_version
+    lcd[0] = sd_image_version
+    lcd[1] = "Serial: " + serial_num
     logger.info("SD card image build version: %s", sd_image_version)
+    time.sleep(5)
 
     # Set up the buttons and install handlers
 
