@@ -1,6 +1,6 @@
 # HD44780 LCD with PCF8574 I2c
 
-I2C Address: 0x27
+I2C Address: 0x27 or 0x3f
 
 
 # Enabling The I2C Port
