@@ -20,7 +20,7 @@
 
 ## Technical:
 
-- [Technical Overview](https://guide.openenergymonitor.org/technical)
+- [Technical Overview](https://guide.openenergymonitor.org/technical/emonpi)
 
 - [Hardware Technical Wiki](http://wiki.openenergymonitor.org/index.php?title=EmonPi)
 
@@ -31,7 +31,7 @@
 
 ## Community & Support
 
-- [OpenEnergyMonitor Forums](https://community.openenergymonitor.org//)
+- [OpenEnergyMonitor Forums](https://community.openenergymonitor.org)
 
 OpenEnergyMonitor Shop Support: support@openenergymonitor.zendesk.com
 
