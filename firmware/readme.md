@@ -1,7 +1,5 @@
 # Change Log - emonPi Discrete Sampling Firmware
 
-**See continuous-sampling branch for continuous sampling FW**
-
 Compile using PlatformIO: https://guide.openenergymonitor.org/technical/compiling/
 
 ***
