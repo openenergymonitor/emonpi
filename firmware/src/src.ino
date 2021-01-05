@@ -74,7 +74,7 @@ LiquidCrystal_I2C lcd(0,0,0);
 
 //----------------------------emonPi Firmware Version---------------------------------------------------------------------------------------------------------------
 // Changelog: https://github.com/openenergymonitor/emonpi/blob/master/firmware/readme.md
-const int firmware_version = 292;                                     //firmware version x 100 e.g 100 = V1.00
+const int firmware_version = 293;                                     //firmware version x 100 e.g 100 = V1.00
 
 //----------------------------emonPi Settings---------------------------------------------------------------------------------------------------------------
 bool debug =                   true;
@@ -318,6 +318,7 @@ void loop()
     if (DS18B20_STATUS==1)
     {
       sensors.requestTemperatures();                                        // Send the command to get temperatures
+      delay(750);           //Wait longer for temperature conversion, required for new 20201 batch of RJ45 sensors 
       for(byte j=0;j<numSensors;j++) emonPi.temp[j]=get_temperature(j);
     }
 
