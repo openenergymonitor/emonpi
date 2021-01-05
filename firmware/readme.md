@@ -4,6 +4,11 @@ Compile using PlatformIO: https://guide.openenergymonitor.org/technical/compilin
 
 ***
 
+# V2.9.3 (05/01/21
+
+- Wait longer for DS18B20 conversion, require for new batch of RJ45 temp sensors
+
+
 # V2.9.2 (17/11/19)
 
 - Fix RFM init 
