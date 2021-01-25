@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# NOT USED ANYMORE REPLACED BY: https://github.com/openenergymonitor/EmonScripts/blob/master/update/firstbootupdate
+
 # Script to update new emonPi's to latest firmware and software the fist time they are booted up in the factory
 # Looks to see if /home/pi/data/emonpiupdate.log exists or LCD push button (GPIO 23) is pressed (high when pressed)
 
