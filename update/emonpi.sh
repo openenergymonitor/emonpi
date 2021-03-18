@@ -12,7 +12,10 @@ echo "Start ATmega328 serial upload using avrdude with latest.hex"
 echo "Discrete Sampling"
 
 echo "avrdude -c arduino -p ATMEGA328P -P /dev/ttyAMA0 -b 115200 -U flash:w:$usrdir/emonpi/firmware/compiled/latest.hex"
-
+sleep 3
+avrdude -c arduino -p ATMEGA328P -P /dev/ttyAMA0 -b 115200 -U flash:w:$usrdir/emonpi/firmware/compiled/latest.hex
+sleep 3
+#Try again
 avrdude -c arduino -p ATMEGA328P -P /dev/ttyAMA0 -b 115200 -U flash:w:$usrdir/emonpi/firmware/compiled/latest.hex
 
 sudo service emonhub start
