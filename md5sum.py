@@ -14,7 +14,7 @@ def main():
             # read contents of the file
             data = file_to_check.read()
             # pipe contents of the file through
-            md5_returned = hashlib.md5(data).hexdigest()
+            md5_returned = hashlib.md5(data.encode('utf-8')).hexdigest()
     else:
         md5_returned = 0
 
