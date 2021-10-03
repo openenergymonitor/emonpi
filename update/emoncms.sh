@@ -37,10 +37,10 @@ fi
 
 if [ -f $emoncms_dir/settings.php ]; then
     echo
-    current_settings_md5="$($usrdir/emonpi/./md5sum.py $emoncms_dir/settings.php)"
+    current_settings_md5="$(md5sum $emoncms_dir/settings.php | awk '{print $1}')"
     echo "current settings.php md5: $current_settings_md5"
 
-    current_default_settings_md5="$($usrdir/emonpi/md5sum.py $emoncms_dir/default.emonpi.settings.php)"
+    current_default_settings_md5="$(md5sum $emoncms_dir/default.emonpi.settings.php | awk '{print $1}')"
     echo "Default settings.php md5: $current_default_settings_md5"
 
     if [ "$current_default_settings_md5" == "$current_settings_md5" ]; then
@@ -77,7 +77,7 @@ fi
 # -----------------------------------------------------------------
 if [ -f $emoncms_dir/settings.php ]; then
   echo
-  new_default_settings_md5="$($usrdir/emonpi/md5sum.py $emoncms_dir/default.emonpi.settings.php)"
+  new_default_settings_md5="$(md5sum $emoncms_dir/default.emonpi.settings.php | awk '{print $1}')"
   echo "NEW default settings.php md5: $new_default_settings_md5"
 
   # check to see if there is an update waiting for settings.php
