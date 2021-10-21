@@ -21,7 +21,12 @@ else
     else
        echo "WiFi not configured"
        echo "Going for WIFI AP startup"
-       touch /home/pi/data/wifiAP-enabled
+       if [ -d /home/pi/data ]; then
+           touch /home/pi/data/wifiAP-enabled
+       fi
+       if [ -d /opt/openenergymonitor/data ]; then
+           touch /opt/openenergymonitor/data/wifiAP-enabled
+       fi
        wifiAP start
     fi
 fi
