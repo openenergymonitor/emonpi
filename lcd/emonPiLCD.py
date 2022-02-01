@@ -14,6 +14,7 @@ import logging.handlers
 import os
 import configparser
 import itertools
+import threading
 
 import redis
 import paho.mqtt.client as mqtt
@@ -62,6 +63,9 @@ r = redis.Redis(host=redis_host, port=redis_port, db=0, charset="utf-8", decode_
 # LCD backlight timeout in seconds 0: always on, 300: off after 5 min
 backlight_timeout = config.getint('general', 'backlight_timeout')
 default_page = config.getint('general', 'default_page')
+
+# Threadlocker used to lock the thread during LCD updates 
+lock = threading.Lock()
 
 #Names to be displayed on power reading page
 feed1_name = config.get('general', 'feed1_name')
@@ -150,9 +154,11 @@ def buttonPress():
 
 
 def updateLCD():
-    global page
-    global sshConfirm
-    global shutConfirm
+    # Lock thread to avoid LCD being corrupted if a button press interrupt interrupts the LCD update
+    with lock:
+        global page
+        global sshConfirm
+        global shutConfirm
 
     # Create object for getting IP addresses of interfaces
     ipaddress = IPAddress()
