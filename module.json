@@ -1,6 +1,6 @@
 {
     "name"         : "EmonPi",
-    "version"      : "2.9.4",
+    "version"      : "2.9.5",
     "location"     : "/opt/openenergymonitor",
     "branches_available": ["stable","master"],
     "requires": []
