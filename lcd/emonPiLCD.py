@@ -99,7 +99,7 @@ shutConfirm = False
 # ------------------------------------------------------------------------------------
 # Start Logging
 # ------------------------------------------------------------------------------------
-uselogfile = config.get('general', 'uselogfile')
+uselogfile = config.getboolean('general', 'uselogfile')
 logger = logging.getLogger("emonPiLCD")
 
 #ssh enable/disable/check commands
