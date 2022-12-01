@@ -6,10 +6,10 @@ The following guide provides an quick overview of how to setup the hardware part
 
 ![emonpi install](img/emonPi_install_diagram.png)
 
-<p class='note warning'>
-<a href="https://learn.openenergymonitor.org/electricity-monitoring/ct-sensors/installation">Please read the CT installation guide before installing.</a>
+```{warning}
+[Please read the CT installation guide before installing.](../electricity-monitoring/ct-sensors/installation)
 Your safety is your responsibility. Clip-on current sensors are non-invasive and should not have direct contact with the AC mains. However, installing the sensors will require working in close proximity to cables carrying high voltage. As a precaution, we recommend ensuring the cables are fully isolated; i.e., switch off the power prior to installing your sensors and proceed slowly with care. If you have any doubts, seek professional assistance.
-</p>
+```
 
 ## 1. CT sensor
 
@@ -20,9 +20,9 @@ Your safety is your responsibility. Clip-on current sensors are non-invasive and
 - For Solar PV install see [Solar PV Application page](/applications/solar-pv/#sensor-installation)
 - [Learn more about how CT sensors work...](https://learn.openenergymonitor.org/electricity-monitoring/voltage-sensing/measuring-voltage-with-an-acac-power-adapter)
 
-<p class='note'>
-The clip-on CT sensors must be clipped round either the Line or Neutral AC wire. <strong>NOT BOTH</strong>.
-</p>
+```{note}
+The clip-on CT sensors must be clipped round either the Line or Neutral AC wire. **NOT BOTH**
+```
 
 ![CT sensor installation ](img/ctinstall.jpg)
 
@@ -69,11 +69,9 @@ See [Solar PV Application Note](/applications/solar-pv/) for emonPi solar PV ins
 
 ## 7. Power Up
 
-
-<p class='note'>
+```{note}
 Ensure all sensors are connected before powering up.
-</p>
-
+```
 
 a.) **Switch on DC & AC power**
 
@@ -91,9 +89,9 @@ Optional: Shut down the emonPi, hold down the shutdown button for 5 seconds, the
 
 ![emonPi_shutdown.png](img/emonPi_shutdown.png)
 
-<p class='note warning'>
+```{warning}
 Unplugging power from the emonPi without following the correct shutdown procedure can result in a corrupted SD card.
-</p>
+```
 
 ## 9. Video Guide
 <div class='videoWrapper'>
