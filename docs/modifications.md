@@ -6,7 +6,7 @@ The emonPi updates its internal linux time via NTP when connected to the interne
 
 ![](img/DS3231rtc.jpg)
 
-![](img/EmonPi RTC.JPG)
+![](img/EmonPi_RTC.JPG)
 
 Once connected, check it's detected on the I2C bus by running:
 
