@@ -27,8 +27,6 @@ The emonPi is based on a RaspberryPi + emonPi measurement board. The emonPi meas
 <iframe width="560" height="315" src="https://www.youtube.com/embed/lc2LzCZnySo" frameborder="0" allowfullscreen></iframe>
 </div>
 
-**emonPi Wiki:** [https://wiki.openenergymonitor.org/index.php/EmonPi](https://wiki.openenergymonitor.org/index.php/EmonPi)
-
 ## System Overview
 
 The following system diagram shows the main hardware and software components that make up the emonPi. On the left we have the emonPi measurement board based on the ATmega328 microcontroller with inputs from the different sensors, RFM69 433 MHz transceiver, button and I2C connection to the LCD. 
@@ -74,8 +72,6 @@ EmonSD includes [emonHub](https://github.com/openenergymonitor/emonhub) which re
 
 ## Open Source
 
-**emonPi Wiki:**<br> [https://wiki.openenergymonitor.org/index.php/EmonPi](https://wiki.openenergymonitor.org/index.php/EmonPi)
-
 **emonPi Firmware** (see [Firmware Modification](/technical/compiling)<br>
 [emonPi Discrete Sampling Firmware](https://github.com/openenergymonitor/emonpi/tree/master/firmware)
 
@@ -93,8 +89,7 @@ EmonSD includes [emonHub](https://github.com/openenergymonitor/emonhub) which re
 | Sample period                       |  5s  | [Discrete sampling](https://github.com/openenergymonitor/emonpi/blob/master/firmware/firmware/firmware.ino)
 | Frequency | 433Mhz | [Identify RF module](https://openenergymonitor.org/emon/buildingblocks/which-radio-module)
 | RF range | 40m-100m | [Antenna testing](https://blog.openenergymonitor.org/2014/03/emontx-v3-antenna-testing/)
-| Power Consumption | 1.5W-2.5W RasPi2 / 2W-4W RasPi3 | [Further info](https://wiki.openenergymonitor.org/index.php/EmonPi#Electrical_Characteristics)
-| Embodied Energy | 40KWh | [Further info](https://wiki.openenergymonitor.org/index.php/EmonPi#Environmental_.26_Life_Cycle)
+| Power Consumption | 1.5W-2.5W RasPi2 / 2W-4W RasPi3 |
 | Operating temperature | -25 to +80 DegC | [Further info](https://www.raspberrypi.org/help/faqs/#performanceOperatingTemperature)
-| Physical Dimensions | 10cm x 8.5cm x 10cm | [Further info](https://wiki.openenergymonitor.org/index.php/EmonPi#Physical_Dimensions_.26_Fixtures)
+| Physical Dimensions | 10cm x 8.5cm x 10cm |
 
