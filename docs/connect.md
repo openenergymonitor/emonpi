@@ -4,7 +4,7 @@ The software running on both the emonPi and emonBase SD card is the same. We hav
 
 This guide walks through connecting an emonPi or emonBase running the emonSD software to your local network or/and the wider internet with either WiFi, Ethernet or 3G GSM Dongle. If you do not wish to connect to a network it is also possible to access the emonPi and emonBase user interface in stand-alone access point mode.
 
-If you are building your own RaspberryPi base station the emonSD image is available to download here: [Pre-build SD card download & Change Log](https://github.com/openenergymonitor/emonpi/wiki/emonSD-pre-built-SD-card-Download-&-Change-Log). The SD card can also be [purchased from the shop](http://shop.openenergymonitor.com/pre-loaded-emonsd-microsd-card-for-raspberry-pi/).
+If you are building your own RaspberryPi base station the emonSD image is available to download here: [Pre-build SD card download & Change Log](../emonsd/download.md). The SD card can also be [purchased from the shop](http://shop.openenergymonitor.com/pre-loaded-emonsd-microsd-card-for-raspberry-pi/).
 
 ## Option 1: Connecting via Ethernet
 
@@ -46,7 +46,7 @@ If the hostname does not work, it is usually possible to find a list of devices 
 
 - Follow setup wizard to connect to local WiFi network:
 
-*Note: If required emonPi can operate in Wifi AP mode without any network connection. If operating in AP mode use of a [RTC (real-time-clock)](https://wiki.openenergymonitor.org/index.php/EmonPi#Adding_a_Real_Time_Clock_.28RTC.29) is highly recommended to keep system time.*
+*Note: If required emonPi can operate in Wifi AP mode without any network connection. If operating in AP mode use of a [RTC (real-time-clock)](modifications.md) is highly recommended to keep system time.*
 
 ![emonpi-network-wizard2](img/emonpi-network-wizard2.png)
 

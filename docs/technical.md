@@ -64,7 +64,7 @@ The emonPi firmware implements a check for a minimum pulse width, this can be sh
 
 ## RaspberryPi and emonSD
 
-The emonPi Raspberry Pi runs our emonSD software stack which is based on [Raspbian Buster Lite](https://www.raspberrypi.org/downloads/raspbian/). The pre-built emonSD image is available to [purchase](https://shop.openenergymonitor.com/emonsd-pre-loaded-raspberry-pi-sd-card/) or [download](https://github.com/openenergymonitor/emonpi/wiki/emonSD-pre-built-SD-card-Download-&-Change-Log) or it is possible to built the image yourself using our automated build script, see [EmonScripts](https://github.com/openenergymonitor/EmonScripts).
+The emonPi Raspberry Pi runs our emonSD software stack which is based on [Raspbian Buster Lite](https://www.raspberrypi.org/downloads/raspbian/). The pre-built emonSD image is available to [purchase](https://shop.openenergymonitor.com/emonsd-pre-loaded-raspberry-pi-sd-card/) or [download](../emonsd/download.md) or it is possible to built the image yourself using our automated build script, see [EmonScripts](https://github.com/openenergymonitor/EmonScripts).
 
 EmonSD includes [emonHub](https://github.com/openenergymonitor/emonhub) which reads in the serial data from the emonPi measurement board and acts as a broker forwarding this data on to the local installation of emoncms via MQTT or to a remote server such as emoncms.org via HTTP. 
 

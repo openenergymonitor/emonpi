@@ -2,10 +2,6 @@
 
 **Raspberry Pi Energy Monitoring Shield**
 
-Technical Documentation: [http://wiki.openenergymonitor.org/index.php?title=EmonPi](http://wiki.openenergymonitor.org/index.php?title=EmonPi)
-
-emonPi Hardware Change Log: [http://wiki.openenergymonitor.org/index.php?title=EmonPi#Hardware_Change_Log](http://wiki.openenergymonitor.org/index.php?title=EmonPi#Hardware_Change_Log)
-
 <img src="photo.png" width="900">
 
 ### Schematic

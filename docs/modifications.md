@@ -1,6 +1,6 @@
 # Modifications
 
-## dding a Real Time Clock (RTC)
+## Adding a Real Time Clock (RTC)
 
 The emonPi updates its internal linux time via NTP when connected to the internet. However, if the emonPi is used in an offline network, or an accurate time stamp is essential, a hardware Real Time Clock (RTC) can easily be added to the Pi's GPIO. We have tested using a [DS3231 based RTC module](http://thepihut.com/products/mini-rtc-module-for-raspberry-pi). This RTC module communicates  with the emonPi via I2C, it can be easily connected as follows by soldering a five-pin header onto the emonPi aux GPIO pins: 
 

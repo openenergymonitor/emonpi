@@ -1,29 +1,23 @@
 # emonPi
 
-## Raspberry Pi based energy Monitoring Unit
+Raspberry Pi based energy Monitoring Unit
 
-![emonpi_diagram](docs/emonPi_System_Diagram.png)
+![emonPi](docs/img/emonPi_shop_photo.png)
 
+## Documentation
 
-## Purchase
+- [Install Guide](https://docs.openenergymonitor.org/emonpi/install.html)
+- [Connect](https://docs.openenergymonitor.org/emonpi/connect.html)
+- [Pulse counting](https://docs.openenergymonitor.org/emonpi/pulse_counting.html)
+- [Temperature sensing](https://docs.openenergymonitor.org/emonpi/temperature_sensing.html)
+- [Use in North America](https://docs.openenergymonitor.org/emonpi/north-america.html)
+- [Technical](https://docs.openenergymonitor.org/emonpi/technical.html)
 
-- [Online Shop](https://shop.openenergymonitor.com/emonpi-2/)
+Or view directly on github [here](docs).
 
-## User guide
+## [emonSD image download](https://docs.openenergymonitor.org/emonsd/download.html)
 
-- [Setup Guide](https://guide.openenergymonitor.org/)
-
-- [emonSD pre-built SD card image download](https://github.com/openenergymonitor/emonpi/wiki/emonSD-pre-built-SD-card-Download-&-Change-Log)
-
-
-## Technical:
-
-- [Technical Overview](https://guide.openenergymonitor.org/technical/emonpi)
-
-- [Hardware Technical Wiki](http://wiki.openenergymonitor.org/index.php?title=EmonPi)
-
-- [Software Stack Build & Documentation](https://github.com/openenergymonitor/emonscripts)
-
+[Software Stack Build & Documentation](https://github.com/openenergymonitor/emonscripts)
 
 ## Open-Hardware:
 
@@ -32,8 +26,7 @@
 ## Community & Support
 
 - [OpenEnergyMonitor Forums](https://community.openenergymonitor.org)
-
-OpenEnergyMonitor Shop Support: support@openenergymonitor.zendesk.com
+- OpenEnergyMonitor Shop Support: support@openenergymonitor.zendesk.com
 
 ## License
 
