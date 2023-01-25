@@ -269,7 +269,7 @@ sudo service isc-dhcp-server restart
 Thats it restart your emonpi/emonbase to finish and then connect to network emonPi with password: raspberry
 
 # 11) Add a Real Time Clock (RTC)
-When running an emonPi in offline mode we recommend adding a hardware RTC to ensure the system time is always correct. See [emonPi Wiki](https://wiki.openenergymonitor.org/index.php/EmonPi#Adding_a_Real_Time_Clock_.28RTC.29)
+When running an emonPi in offline mode we recommend adding a hardware RTC to ensure the system time is always correct. See [emonPi modifications](https://docs.openenergymonitor.org/emonpi/modifications.html)
 
 # Operation 
 

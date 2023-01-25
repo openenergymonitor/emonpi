@@ -16,13 +16,13 @@ Where possible we recommend connecting via Ethernet for best reliability and eas
 
 **emonPi:** The LCD display will display the firmware version then scan for connected sensors. Once the Raspberry Pi has booted up, the LCD will display the IP address of the emonPi on the local network:
 
-<img src="img/Etherent_Connected.jpg" style="padding-left:45px; padding-bottom:10px">
+![](img/Etherent_Connected.jpg)
 
 *Take care to connect the Ethernet to the socket on the same side as the USB sockets, not the RJ45 connector on the opposite side.*
 
 **emonBase:** Without the LCD Display we have to rely on either the hostname or network discovery tools to find the EmonBase on the network. Try browsing to the hostname: http://emonpi, http://emonpi.local or http://emonpi.lan. 
 
-You should now see the emoncms user login page. Register a new account and then continue to the next step [Log Locally](/setup/local) to configure your system.
+You should now see the emoncms user login page. Register a new account and then continue to the next step [Log Locally](../emoncms/intro-rpi.md) to configure your system.
 
 If the hostname does not work, it is usually possible to find a list of devices and their IP address's on your internet router. Alternatively Network Discovery tools such as Fing work well. Download [Fing Android](https://play.google.com/store/apps/details?id=com.overlook.android.fing&hl=en_GB) or [Fing iOS](https://itunes.apple.com/gb/app/fing-network-scanner/id430921107?mt=8).
 
@@ -56,7 +56,7 @@ If the hostname does not work, it is usually possible to find a list of devices 
 
 - After selecting local WiFi network and entering password the emonPi will turn off its own WiFi AP then reboot and try and connect to local WiFi network.
 
-*Note: if connection fails e.g. incorrect password, follow [instructions 1b](#1b-connect-to-ethernet) to connect temporary via Ethernet and use the Emoncms WiFi setup as detailed in [step 4](#4-connect-to-wifi-optional)*
+*Note: if connection fails e.g. incorrect password, follow instructions 1b to connect temporary via Ethernet and use the Emoncms WiFi setup as detailed in step 4*
 
 ![emonpi-network-wizard4](img/emonpi-network-wizard4.png)
 
@@ -65,7 +65,7 @@ If the hostname does not work, it is usually possible to find a list of devices 
 - emonPi: If hostname does not work on your network, enter the IP address shown on the LCD into your browsers address bar
 - *If using an emonBase and hostname does not work, look up its IP address from your router or use the Fing Network Discovery tool on [Android](https://play.google.com/store/apps/details?id=com.overlook.android.fing&hl=en_GB) and [iOS](https://itunes.apple.com/gb/app/fing-network-scanner/id430921107?mt=8)*.
 
-You should now see the emoncms user login page. Register a new account and then continue to the next step [Log Locally](/setup/local) to configure your system.
+You should now see the emoncms user login page. Register a new account and then continue to the next step [Log Locally](../emoncms/intro-rpi.md) to configure your system.
 
 ## Option 3: Connect to Ethernet and then configure Wifi
 

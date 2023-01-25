@@ -32,7 +32,7 @@ b) emonTx: Enable USA calibration using [on-board DIP switch](../emontx3/configu
 
 If monitoring a split-phase system the power values from each leg can be summed in Emoncms to calculate the total power.
 
-The emonPi by default reports `power1_plus_power2`, this input will need to be logged to a feed. See [Setup > Logging Locally](/setup/local).
+The emonPi by default reports `power1_plus_power2`, this input will need to be logged to a feed. See [Setup > Logging Locally](../emoncms/intro-rpi.md).
 
 If using emonTx then the power values from multiple CT inputs can be summed in Emoncms using `+ feed` Input Processor.
 

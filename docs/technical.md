@@ -58,7 +58,7 @@ The CT input's are designed for use with the [100A SCT-013-000 CT sensor](https:
 
 ### Pulse Counting
 
-Pulse counting on the emonPi uses the hardware interrupt IRQ1 on the ATmega328. The first hardware interrupt IRQ0 is used by the RFM69CW. Only one pulse counter input is possible per emonTx/emonPi. See guide [+ Add Optical Pulse Sensor](/setup/optical-pulse-sensor/) for more information on the optical pulse sensor.
+Pulse counting on the emonPi uses the hardware interrupt IRQ1 on the ATmega328. The first hardware interrupt IRQ0 is used by the RFM69CW. Only one pulse counter input is possible per emonTx/emonPi. See guide [+ Add Optical Pulse Sensor](pulse_counting.md) for more information on the optical pulse sensor.
 
 The emonPi firmware implements a check for a minimum pulse width, this can be shortened on systems with more frequent pulses, see line: [https://github.com/openenergymonitor/emonpi/blob/master/firmware/src/src.ino#L96](https://github.com/openenergymonitor/emonpi/blob/master/firmware/src/src.ino#L96).
 
@@ -72,7 +72,7 @@ EmonSD includes [emonHub](https://github.com/openenergymonitor/emonhub) which re
 
 ## Open Source
 
-**emonPi Firmware** (see [Firmware Modification](/technical/compiling)<br>
+**emonPi Firmware** (see [Firmware Modification](../electricity-monitoring/platformio/index.md)<br>
 [emonPi Discrete Sampling Firmware](https://github.com/openenergymonitor/emonpi/tree/master/firmware)
 
 **emonPi Schematic and Board files:**<br> [https://github.com/openenergymonitor/emonpi/tree/master/hardware/emonpi/emonpi_V1_6](https://github.com/openenergymonitor/emonpi/tree/master/hardware/emonpi/emonpi_V1_6)
