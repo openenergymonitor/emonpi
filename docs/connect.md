@@ -33,7 +33,7 @@ If the hostname does not work, it is usually possible to find a list of devices 
 ![emonPi WiFi](img/emonpi_wifi.png)
 
 - Connect 5V USB power [(2A USB power adapter recommended, 2.5A ideal)](http://shop.openenergymonitor.com/power-supplies/)
-- After a couple of minutes the emonPi/emonBase will broadcast a Wifi access point (AP) called `emonsd` with password `emonsd2022` (If you are using an image older than 'emonSD-10Nov22', please refer to this dropdown list to find the correct credentials for your install: https://docs.openenergymonitor.org/emonsd/download.html#emonsd-download).
+- After a couple of minutes the emonPi/emonBase will broadcast a Wifi access point (AP) called `emonsd` with password `emonsd2022` (If you are using an image older than `emonSD-10Nov22`, please refer to this dropdown list to find the correct credentials for your install: https://docs.openenergymonitor.org/emonsd/download.html#emonsd-download).
 
 emonSD-10Nov22 SSID
 
