@@ -1,7 +1,0 @@
-#!/bin/bash
-
-sudo service emonhub stop
-
-avrdude -v -c arduino -p ATMEGA328P -P /dev/ttyAMA0 -b 115200 -U flash:w:latest.hex
-
-sudo service emonhub start
