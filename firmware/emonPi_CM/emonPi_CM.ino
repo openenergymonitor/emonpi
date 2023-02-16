@@ -15,12 +15,12 @@
 //----------------------------emonPi Firmware Version---------------------------------------------------------------------------------------- 
 */
 
-const byte firmware_version[3] = {1,0,0};
+const byte firmware_version[3] = {1,1,0};
 /*
 V1.0.0   10/7/2021 Derived from emonLibCM examples and original emonPi sketch, that being derived from 
             https://github.com/openenergymonitor/emonpi/blob/master/Atmega328/emonPi_RFM69CW_RF12Demo_DiscreteSampling
             and emonLibCM example sketches, with config input based on emonTx V3 sketches.
-
+v1.1.0   16/2/2023 Support for LowPowerLabs
 
 emonhub.conf node decoder (assuming Node 5):
 
