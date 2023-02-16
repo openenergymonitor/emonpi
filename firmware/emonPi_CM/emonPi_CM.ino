@@ -15,22 +15,23 @@
 //----------------------------emonPi Firmware Version---------------------------------------------------------------------------------------- 
 */
 
-const byte firmware_version[3] = {1,1,0};
+const byte firmware_version[3] = {1,1,1};
 /*
 V1.0.0   10/7/2021 Derived from emonLibCM examples and original emonPi sketch, that being derived from 
             https://github.com/openenergymonitor/emonpi/blob/master/Atmega328/emonPi_RFM69CW_RF12Demo_DiscreteSampling
             and emonLibCM example sketches, with config input based on emonTx V3 sketches.
 v1.1.0   16/2/2023 Support for LowPowerLabs
+v1.1.1   16/2/2023 Print Radio format at startup, include message count in output
 
 emonhub.conf node decoder (assuming Node 5):
 
 [[5]]
     nodename = emonpiCM
     [[[rx]]]
-        names = power1,power2,power1pluspower2,vrms,t1,t2,t3,t4,t5,t6,pulse1count,pulse2count,E1,E2
-        datacodes = h, h, h, h, h, h, h, h, h, h, L, L, l, l
-        scales = 1,1,1, 0.01, 0.01,0.01,0.01,0.01,0.01,0.01, 1, 1, 1,1
-        units = W,W,W, V, C,C,C,C,C,C, p, p, Wh,Wh
+        names = Msg, power1,power2,power1pluspower2,vrms,t1,t2,t3,t4,t5,t6,pulse1count,pulse2count,E1,E2
+        datacodes = L, h, h, h, h, h, h, h, h, h, h, L, L, l, l
+        scales = 1, 1,1,1, 0.01, 0.01,0.01,0.01,0.01,0.01,0.01, 1, 1, 1,1
+        units = ,W,W,W, V, C,C,C,C,C,C, p, p, Wh,Wh
 
 */
 // #define EEWL_DEBUG
@@ -127,7 +128,7 @@ struct {
   float i1Lead = 1.2;                                   // 1.2° phase lead
   float i2Cal = 90.9;
   float i2Lead = 1.2; 
-  float period = 4.85;                                  // datalogging period - should be fractionally less than the PHPFINA database period in emonCMS
+  float period = 9.85;                                  // datalogging period - should be fractionally less than the PHPFINA database period in emonCMS
   bool  pulse_enable = true;                            // pulse 1 counting 1
   int   pulse_period = 0;                               // pulse 1 min period - 0 = no de-bounce
   bool  pulse2_enable = false;                          // pulse 2 counting 2
@@ -162,6 +163,7 @@ const byte emonPi_int1_pin      = 3;                                   // RJ45 p
 
 struct 
 {
+  unsigned long Msg;
   int power1;                                                          // Powers in watts
   int power2;
   int power1_plus_2;                                                   // added here to assure sum is from the same sampling period
@@ -264,6 +266,8 @@ void setup()
                EEProm.RF_freq == RFM_915MHZ ? 915                      // Fall through to 433 MHz Band @ 434 MHz
             : (EEProm.RF_freq == RFM_868MHZ ? 868 : 434)); 
   #endif
+  
+  emonPi.Msg = 0;
 }
 
 /**************************************************************************************************************************************************
@@ -389,7 +393,11 @@ void loop()
     emonPi.E1     = EmonLibCM_getWattHour(0);
     emonPi.E2     = EmonLibCM_getWattHour(1);
    
-    emonPi.Vrms     = EmonLibCM_getVrms() * 100;                       // Always send the ACTUAL measured voltage.
+    if (EmonLibCM_acPresent()) {
+      emonPi.Vrms = EmonLibCM_getVrms() * 100;
+    } else {
+      emonPi.Vrms = EmonLibCM_getAssumedVrms() * 100;
+    }
 
     if (EmonLibCM_getTemperatureSensorCount())
     {
@@ -480,6 +488,13 @@ void emonPi_startup()
   Serial.begin(BAUD_RATE);
   Serial.print(F("|emonPiCM V")); printVersion();
   Serial.println(F("|OpenEnergyMonitor.org"));
+
+  #if RadioFormat == RFM69_LOW_POWER_LABS
+    Serial.println(F("|Radio format: LowPowerLabs"));
+  #else
+    Serial.println(F("|Radio format: JeeLib Native"));
+  #endif
+
   load_config();                                                      // Load RF config from EEPROM (if any exists)
 
 #ifdef SAMPPIN
@@ -581,6 +596,7 @@ void lcd_print_currents(int current_lcd_i2c_addr, float I1, float I2, float pf1,
 
 void send_emonpi_serial()
 {
+  emonPi.Msg++;
   byte *b = (byte *)&emonPi;
 
   Serial.print(F("OK "));
