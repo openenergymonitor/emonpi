@@ -8,6 +8,8 @@ emonPi User Guide
    connect.md
    pulse_counting.md
    temperature_sensing.md
+   firmware.md
+   configuration.md
    modifications.md
    north-america.md
    Technical <technical.md>
