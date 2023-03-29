@@ -10,6 +10,8 @@ Raspberry Pi based energy Monitoring Unit
 - [Connect](https://docs.openenergymonitor.org/emonpi/connect.html)
 - [Pulse counting](https://docs.openenergymonitor.org/emonpi/pulse_counting.html)
 - [Temperature sensing](https://docs.openenergymonitor.org/emonpi/temperature_sensing.html)
+- [Firmware](https://docs.openenergymonitor.org/emonpi/firmware.html)
+- [Configuration](https://docs.openenergymonitor.org/emonpi/configuration.html)
 - [Use in North America](https://docs.openenergymonitor.org/emonpi/north-america.html)
 - [Modification](https://docs.openenergymonitor.org/emonpi/modification.html)
 - [Technical](https://docs.openenergymonitor.org/emonpi/technical.html)
