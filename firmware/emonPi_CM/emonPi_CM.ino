@@ -15,13 +15,14 @@
 //----------------------------emonPi Firmware Version---------------------------------------------------------------------------------------- 
 */
 
-const byte firmware_version[3] = {1,1,1};
+const byte firmware_version[3] = {1,1,2};
 /*
 V1.0.0   10/7/2021 Derived from emonLibCM examples and original emonPi sketch, that being derived from 
             https://github.com/openenergymonitor/emonpi/blob/master/Atmega328/emonPi_RFM69CW_RF12Demo_DiscreteSampling
             and emonLibCM example sketches, with config input based on emonTx V3 sketches.
 v1.1.0   16/2/2023 Support for LowPowerLabs
 v1.1.1   16/2/2023 Print Radio format at startup, include message count in output
+v1.1.2   28/3/2023 Fix missing ACKRequested sendACK
 
 emonhub.conf node decoder (assuming Node 5):
 
@@ -312,6 +313,11 @@ void loop()
       Serial.print(radio.readRSSI());
       Serial.print(F(")"));
       Serial.println();
+      
+      if (radio.ACKRequested()) {
+        radio.sendACK();
+      }
+
       double_LED_flash();
     }
     #else
