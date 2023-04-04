@@ -47,11 +47,9 @@ emonhub.conf node decoder (assuming Node 5):
 
 #include <emonEProm.h>                                                // OEM EPROM library
 
-#include <OneWire.h>
-
 // RFM interface
 #if RadioFormat == RFM69_LOW_POWER_LABS
-  #include <RFM69.h>
+  #include <RFM69_LPL.h>
   RFM69 radio;
 #else
   #include "spi.h"                                                       // Requires "RFM69 Native" JeeLib Driver
@@ -204,12 +202,12 @@ void setup()
   
   EmonLibCM_setAssumedVrms(EEProm.assumedVrms);
 
-  EmonLibCM_setPulseEnable(0, EEProm.pulse_enable);                    // Enable pulse counting
+  EmonLibCM_setPulseEnable(true);                                      // Enable pulse counting
   EmonLibCM_setPulsePin(0, emonPi_int1_pin, emonPi_int1);              // Pulse input Pin, Interrupt
-  EmonLibCM_setPulseMinPeriod(0, EEProm.pulse_period);                 // Minimum pulse period
+  EmonLibCM_setPulseMinPeriod(0, EEProm.pulse_period, (byte)FALLING);  // Minimum pulse period
   EmonLibCM_setPulseEnable(1, EEProm.pulse2_enable);                   // Enable pulse counting
   EmonLibCM_setPulsePin(1, emonPi_int1_pin, emonPi_int1);              // Pulse input Pin, Interrupt
-  EmonLibCM_setPulseMinPeriod(1, EEProm.pulse_period);                 // Minimum pulse period
+  EmonLibCM_setPulseMinPeriod(1, EEProm.pulse_period, (byte)FALLING);  // Minimum pulse period
 
   EmonLibCM_setTemperatureDataPin(4);                                  // OneWire data pin 
   EmonLibCM_setTemperaturePowerPin(-1);                                // Temperature sensor Power Pin - Not used.
@@ -279,6 +277,7 @@ void setup()
 
 void loop()             
 {
+  
   if (digitalRead(shutdown_switch_pin) == 0 )
   {
     digitalWrite(emonpi_GPIO_pin, HIGH);                               // if emonPi shutdown button pressed then send signal to the Pi on GPIO 11
@@ -301,23 +300,20 @@ void loop()
     #if RadioFormat == RFM69_LOW_POWER_LABS
     if (radio.receiveDone())
     {    
-      Serial.print(F("OK")); 
-      Serial.print(F(" "));
-      Serial.print(radio.SENDERID, DEC);
-      Serial.print(F(" "));
+      rfInfo.msgLength = radio.DATALEN;
+      rfInfo.srcNode = radio.SENDERID;
       for (byte i = 0; i < radio.DATALEN; i++) {
-        Serial.print((word)radio.DATA[i]);
-        Serial.print(F(" "));
+        nativeMsg[i] = radio.DATA[i];
       }
-      Serial.print(F("("));
-      Serial.print(radio.readRSSI());
-      Serial.print(F(")"));
-      Serial.println();
+      rfInfo.rssi = radio.readRSSI();
       
       if (radio.ACKRequested()) {
         radio.sendACK();
-      }
-
+      }    
+    
+      // send serial data
+      Serial.print(F("OK"));                                              // Bad packets (crc failure) are discarded by RFM69CW
+      print_frame(rfInfo.msgLength);		                                  // Print received data
       double_LED_flash();
     }
     #else
@@ -331,22 +327,12 @@ void loop()
 
       // send serial data
       Serial.print(F("OK"));                                              // Bad packets (crc failure) are discarded by RFM69CW
-      Serial.print(F(" "));
-      Serial.print(rfInfo.srcNode);        // Extract and print node ID
-      Serial.print(F(" "));
-      for (byte i = 2; i < rfInfo.msgLength; ++i) 
-      {
-        Serial.print((word)nativeMsg[i]);
-        Serial.print(F(" "));
-      }
-      Serial.print(F("("));
-      Serial.print(rfInfo.rssi);
-      Serial.print(F(")"));
-      Serial.println();
+      print_frame(rfInfo.msgLength);		                                  // Print received data
       double_LED_flash();
     }
     #endif
   } 
+  
 //-------------------------------------------------------------------------------------------------------------------------------------------
 // RF Data handler - outbound ***************************************************************************************************************
 //-------------------------------------------------------------------------------------------------------------------------------------------
@@ -399,11 +385,7 @@ void loop()
     emonPi.E1     = EmonLibCM_getWattHour(0);
     emonPi.E2     = EmonLibCM_getWattHour(1);
    
-    if (EmonLibCM_acPresent()) {
-      emonPi.Vrms = EmonLibCM_getVrms() * 100;
-    } else {
-      emonPi.Vrms = EmonLibCM_getAssumedVrms() * 100;
-    }
+    emonPi.Vrms     = EmonLibCM_getVrms() * 100;                       // Always send the ACTUAL measured voltage.
 
     if (EmonLibCM_getTemperatureSensorCount())
     {
@@ -456,6 +438,27 @@ void loop()
   }
 }
 
+/**************************************************************************************************************************************************
+*
+* SEND RECEIVED RF DATA TO RPi (/dev/ttyAMA0)
+*
+***************************************************************************************************************************************************/
+
+void print_frame(int len) 
+{
+  Serial.print(F(" "));
+  Serial.print(rfInfo.srcNode);        // Extract and print node ID
+  Serial.print(F(" "));
+  for (byte i = 2; i < len; ++i) 
+  {
+    Serial.print((word)nativeMsg[i]);
+    Serial.print(F(" "));
+  }
+  Serial.print(F("("));
+  Serial.print(rfInfo.rssi);
+  Serial.print(F(")"));
+  Serial.println();
+}
 
 /**************************************************************************************************************************************************
 *
