@@ -449,7 +449,7 @@ void print_frame(int len)
   Serial.print(F(" "));
   Serial.print(rfInfo.srcNode);        // Extract and print node ID
   Serial.print(F(" "));
-  for (byte i = 2; i < len; ++i) 
+  for (byte i = 0; i < len; ++i) 
   {
     Serial.print((word)nativeMsg[i]);
     Serial.print(F(" "));
