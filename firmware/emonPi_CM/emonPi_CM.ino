@@ -15,7 +15,7 @@
 //----------------------------emonPi Firmware Version---------------------------------------------------------------------------------------- 
 */
 
-const byte firmware_version[3] = {1,1,2};
+const byte firmware_version[3] = {1,1,3};
 /*
 V1.0.0   10/7/2021 Derived from emonLibCM examples and original emonPi sketch, that being derived from 
             https://github.com/openenergymonitor/emonpi/blob/master/Atmega328/emonPi_RFM69CW_RF12Demo_DiscreteSampling
@@ -23,6 +23,8 @@ V1.0.0   10/7/2021 Derived from emonLibCM examples and original emonPi sketch, t
 v1.1.0   16/2/2023 Support for LowPowerLabs
 v1.1.1   16/2/2023 Print Radio format at startup, include message count in output
 v1.1.2   28/3/2023 Fix missing ACKRequested sendACK
+v1.1.3   04/4/2023 Updated to use cut down version of RFM69 LowPowerLabs library
+                   Updated to match latest EmonLibCM library and emonPiFrontEndCM sketch from Robert
 
 emonhub.conf node decoder (assuming Node 5):
 
@@ -41,7 +43,7 @@ emonhub.conf node decoder (assuming Node 5):
 #define RFM69_JEELIB_NATIVE 2
 #define RFM69_LOW_POWER_LABS 3
 
-#define RadioFormat RFM69_LOW_POWER_LABS
+#define RadioFormat RFM69_JEELIB_NATIVE
 
 #include <emonLibCM.h>                                                 // OEM CM library
 
