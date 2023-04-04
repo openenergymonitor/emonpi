@@ -43,7 +43,7 @@ emonhub.conf node decoder (assuming Node 5):
 #define RFM69_JEELIB_NATIVE 2
 #define RFM69_LOW_POWER_LABS 3
 
-#define RadioFormat RFM69_JEELIB_NATIVE
+#define RadioFormat RFM69_LOW_POWER_LABS
 
 #include <emonLibCM.h>                                                 // OEM CM library
 
