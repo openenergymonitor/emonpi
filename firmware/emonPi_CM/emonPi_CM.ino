@@ -29,12 +29,12 @@ v1.1.3   04/4/2023 Updated to use cut down version of RFM69 LowPowerLabs library
 emonhub.conf node decoder (assuming Node 5):
 
 [[5]]
-    nodename = emonpiCM
+    nodename = emonpi
     [[[rx]]]
         names = Msg, power1,power2,power1pluspower2,vrms,t1,t2,t3,t4,t5,t6,pulse1count,pulse2count,E1,E2
         datacodes = L, h, h, h, h, h, h, h, h, h, h, L, L, l, l
         scales = 1, 1,1,1, 0.01, 0.01,0.01,0.01,0.01,0.01,0.01, 1, 1, 1,1
-        units = ,W,W,W, V, C,C,C,C,C,C, p, p, Wh,Wh
+        units = n,W,W,W, V, C,C,C,C,C,C, p, p, Wh,Wh
 
 */
 // #define EEWL_DEBUG
