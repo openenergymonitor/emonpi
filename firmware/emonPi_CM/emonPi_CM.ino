@@ -25,6 +25,8 @@ v1.1.1   16/2/2023 Print Radio format at startup, include message count in outpu
 v1.1.2   28/3/2023 Fix missing ACKRequested sendACK
 v1.1.3   04/4/2023 Updated to use cut down version of RFM69 LowPowerLabs library
                    Updated to match latest EmonLibCM library and emonPiFrontEndCM sketch from Robert
+v1.1.4   19/4/2023 Faster baud rate 115200 and reduced delay in the main loop to improve radio performance
+
 
 emonhub.conf node decoder (assuming Node 5):
 
