@@ -65,7 +65,7 @@ byte nativeMsg[66];                                                    // 'Nativ
 
 #define MAXMSG 62                                                      // Max length of o/g message - payload can be 62 bytes max in RFM69
 char outmsg[MAXMSG];                                                   // outgoing message (to emonGLCD etc)
-byte outmsgLength;                                                     // length of message: non-zero length triggers transmission
+byte outmsgLength = 0;                                                     // length of message: non-zero length triggers transmission
 byte txDestId = 0 ;                                                    // 
 struct {                                                               // Ancilliary information
   byte srcNode = 0;
@@ -95,15 +95,14 @@ unsigned long backlightOn;
 //----------------------------emonPi Settings------------------------------------------------------------------------------------------------
 bool debug                      = true;
 bool verbose                    = false;
-const unsigned long BAUD_RATE   = 38400;
+const unsigned long BAUD_RATE   = 115200;
 
 
 int i2c_LCD_Detect(int i2c_lcd_address[]);
 void emonPi_LCD_Startup(int current_i2c_addr);
 void Startup_to_LCD(int current_lcd_i2c_addr);
 void lcd_print_currents(int current_lcd_i2c_addr, float I1, float I2, float pf1, float pf2);
-void single_LED_flash(void);
-void double_LED_flash(void);
+
 void getCalibration(void);
 void send_emonpi_serial();
 void emonPi_startup(void);
@@ -302,6 +301,8 @@ void loop()
     #if RadioFormat == RFM69_LOW_POWER_LABS
     if (radio.receiveDone())
     {    
+      digitalWrite(LEDpin, HIGH);
+      
       rfInfo.msgLength = radio.DATALEN;
       rfInfo.srcNode = radio.SENDERID;
       for (byte i = 0; i < radio.DATALEN; i++) {
@@ -316,12 +317,15 @@ void loop()
       // send serial data
       Serial.print(F("OK"));                                              // Bad packets (crc failure) are discarded by RFM69CW
       print_frame(rfInfo.msgLength);		                                  // Print received data
-      double_LED_flash();
+      
+      digitalWrite(LEDpin, LOW);
     }
     #else
     int len = rf.receive(&nativeMsg, sizeof(nativeMsg));                 // Poll the RFM buffer and extract the data
     if (len > 1)
     {
+      digitalWrite(LEDpin, HIGH);
+      
       rfInfo.crc = true;
       rfInfo.msgLength = len;
       rfInfo.srcNode = nativeMsg[1];
@@ -330,7 +334,8 @@ void loop()
       // send serial data
       Serial.print(F("OK"));                                              // Bad packets (crc failure) are discarded by RFM69CW
       print_frame(rfInfo.msgLength);		                                  // Print received data
-      double_LED_flash();
+      
+      digitalWrite(LEDpin, LOW);
     }
     #endif
   } 
@@ -341,7 +346,7 @@ void loop()
 
 
 	if ((EEProm.rfOn & RFTX) && outmsgLength) {                           //if command 'outmsg' is waiting to be sent then let's send it
-    digitalWrite(LEDpin, HIGH); delay(200); digitalWrite(LEDpin, LOW);
+    digitalWrite(LEDpin, HIGH);
     Serial.print ("Sending ") ; Serial.print((word) outmsgLength); Serial.print(" bytes "); Serial.print("to node " ); Serial.println(txDestId) ;
     #if RadioFormat == RFM69_LOW_POWER_LABS
       radio.send(0, (void *)outmsg, outmsgLength);
@@ -349,6 +354,7 @@ void loop()
       rf.send(txDestId, (void *)outmsg, outmsgLength);                    //  void RF69<SPI>::send (uint8_t header, const void* ptr, int len) {
     #endif
     outmsgLength = 0;
+    digitalWrite(LEDpin, LOW);
 	}
 
   
@@ -358,8 +364,9 @@ void loop()
 
   if (Serial.available())                                              // Serial input from RPi for configuration/calibration
   {
+    digitalWrite(LEDpin, HIGH);
     getCalibration();                                                  // If serial input is received from RPi
-    double_LED_flash();
+    
     if (rfChanged)
     {
       #if RadioFormat == RFM69_LOW_POWER_LABS
@@ -371,6 +378,7 @@ void loop()
       #endif
       rfChanged = false;
     }
+    digitalWrite(LEDpin, LOW);
   }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------
@@ -379,7 +387,7 @@ void loop()
 
   if (EmonLibCM_Ready())   
   {
-    single_LED_flash();                                                // single flash of LED on local CT sample
+    digitalWrite(LEDpin, HIGH);
 
     emonPi.power1 = EmonLibCM_getRealPower(0);                       // Copy the desired variables ready for transmission 
     emonPi.power2 = EmonLibCM_getRealPower(1); 
@@ -415,11 +423,13 @@ void loop()
       Serial.println();
       
       lcd_print_currents(current_lcd_i2c_addr, EmonLibCM_getIrms(0), EmonLibCM_getIrms(1), EmonLibCM_getPF(0), EmonLibCM_getPF(1));
-   }
-    delay(50);
+    }
+    delay(10);
 
     // Save energy & pulse count values to EEPROM
     storeEValues(emonPi.E1, emonPi.E2, emonPi.pulseCount, emonPi.pulse2Count);
+    
+    digitalWrite(LEDpin, LOW);
   }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------
@@ -460,23 +470,7 @@ void print_frame(int len)
   Serial.print(rfInfo.rssi);
   Serial.print(F(")"));
   Serial.println();
-}
-
-/**************************************************************************************************************************************************
-*
-* LED flash
-*
-***************************************************************************************************************************************************/
-
-void single_LED_flash(void)
-{
-  digitalWrite(LEDpin, HIGH);  delay(30); digitalWrite(LEDpin, LOW);
-}
-
-void double_LED_flash(void)
-{
-  digitalWrite(LEDpin, HIGH);  delay(20); digitalWrite(LEDpin, LOW); delay(60); 
-  digitalWrite(LEDpin, HIGH);  delay(20); digitalWrite(LEDpin, LOW);
+  delay(10);
 }
 
 
@@ -621,7 +615,7 @@ void send_emonpi_serial()
   Serial.print(F(" (-0)"));
   Serial.println();
 
-  delay(10);
+  // delay(10);
 }
 
 void printVersion(void)
