@@ -15,7 +15,7 @@
 //----------------------------emonPi Firmware Version---------------------------------------------------------------------------------------- 
 */
 
-const byte firmware_version[3] = {1,1,3};
+const byte firmware_version[3] = {1,1,4};
 /*
 V1.0.0   10/7/2021 Derived from emonLibCM examples and original emonPi sketch, that being derived from 
             https://github.com/openenergymonitor/emonpi/blob/master/Atmega328/emonPi_RFM69CW_RF12Demo_DiscreteSampling
