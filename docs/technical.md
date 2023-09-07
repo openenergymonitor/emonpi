@@ -60,7 +60,7 @@ The CT input's are designed for use with the [100A SCT-013-000 CT sensor](https:
 
 Pulse counting on the emonPi uses the hardware interrupt IRQ1 on the ATmega328. The first hardware interrupt IRQ0 is used by the RFM69CW. Only one pulse counter input is possible per emonTx/emonPi. See guide [+ Add Optical Pulse Sensor](pulse_counting.md) for more information on the optical pulse sensor.
 
-The emonPi firmware implements a check for a minimum pulse width, this can be shortened on systems with more frequent pulses, see line: [https://github.com/openenergymonitor/emonpi/blob/master/firmware/src/src.ino#L96](https://github.com/openenergymonitor/emonpi/blob/master/firmware/src/src.ino#L96).
+The emonPi firmware implements a check for a minimum pulse width, this can be shortened on systems with more frequent pulses, see line: [https://github.com/openenergymonitor/emonpi/blob/master/firmware/emonPi_DS_jeelib_classic/main.ino#L96](https://github.com/openenergymonitor/emonpi/blob/master/firmware/emonPi_DS_jeelib_classic/main.ino#L96).
 
 ## RaspberryPi and emonSD
 
