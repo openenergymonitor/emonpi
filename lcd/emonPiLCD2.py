@@ -93,6 +93,7 @@ lcd_i2c = ['3c']
 # Default Startup Page
 max_number_pages = 8
 page = default_page
+screensaver = False
 
 sd_image_version = ''
 
@@ -114,6 +115,15 @@ ssh_status = "sudo systemctl status ssh > /dev/null"
 
 oled_last = True
 
+def drawClear():
+    global draw
+    global oled
+    global image
+
+    draw.rectangle((0, 0, 128, 32), outline=0, fill=0)
+    oled.image(image)
+    oled.show()
+        
 def drawText(x,y,msg,update=False):
     global draw
     global oled
@@ -134,6 +144,9 @@ def drawText(x,y,msg,update=False):
 
 
 def buttonPressLong():
+    global screensaver
+    screensaver = False
+    
     logger.info("Mode button LONG press")
 
     if sshConfirm:
@@ -160,11 +173,17 @@ def buttonPressLong():
 
 def buttonPress():
     global page
-    now = time.time()
+    global screensaver
+    global buttonPress_time
+    
+    if screensaver:
+        screensaver = False
+    else:
+        page += 1
+        if page > max_number_pages:
+            page = 0
 
-    page += 1
-    if page > max_number_pages:
-        page = 0
+    now = time.time()
     buttonPress_time = now
     
     logger.info("Mode button SHORT press")
@@ -178,13 +197,18 @@ def updateLCD():
         global page
         global sshConfirm
         global shutConfirm
+        global screensaver
 
     # Create object for getting IP addresses of interfaces
     ipaddress = IPAddress()
+    
+    if screensaver==True:
+        drawClear();
+        return
 
-    if not page == 9:
+    if not page == 5:
         sshConfirm = False
-    if not page == 11:
+    if not page == 7:
         shutConfirm = False
 
     # Now display the appropriate LCD page
@@ -367,6 +391,8 @@ def shutdown():
 
 def main():
     global page
+    global screensaver
+    global buttonPress_time
     global sd_image_version
     global serial_num
     
@@ -536,6 +562,9 @@ def main():
     # Enter main loop
     while True:
         now = time.time()
+        
+        if (now-buttonPress_time)>=59:
+            screensaver = True
 
         #Update LCD in case it is left at a screen where values can change (e.g uptime etc)
         updateLCD()
