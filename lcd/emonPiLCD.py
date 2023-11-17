@@ -6,12 +6,10 @@ import smbus
 bus = smbus.SMBus(1)
 for address in ['0x27','0x3f','0x3c']:
     try:
-        print(bus.read_byte(int(address,16)))
+        bus.read_byte(int(address,16))
         break
     except Exception:
         address=False
-
-print(address)
 
 if address=='0x27' or address=='0x3f':
     import emonPiLCD1
