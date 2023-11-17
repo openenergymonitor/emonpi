@@ -296,7 +296,7 @@ def updateLCD():
             page += 1
     """
 
-    elif page == 3:
+    if page == 3:
     # Get uptime
         with open('/proc/uptime', 'r') as f:
             seconds = float(f.readline().split()[0])
@@ -305,11 +305,11 @@ def updateLCD():
         drawText(0,0,datetime.now().strftime('%b %d %H:%M'))
         drawText(0,14,'Uptime %.2f days' % (seconds / 86400),True)
 
-    elif page == 4:
+    if page == 4:
         drawText(0,0,sd_image_version)
         drawText(0,14,"Serial: " + serial_num,True)
 
-    elif page == 5:
+    if page == 5:
         ret = subprocess.call(ssh_status, shell=True)
         if ret > 0:
             #ssh not running
@@ -321,14 +321,14 @@ def updateLCD():
         drawText(0,14,"Y press & hold",True)
         sshConfirm = False
 
-    elif page == 6:
+    if page == 6:
         sshConfirm = True
 
-    elif page == 7:
+    if page == 7:
         drawText(0,0,"Shutdown?")
         drawText(0,14,"Y press & hold",True)
         shutConfirm = False
-    elif page == 8:
+    if page == 8:
         drawText(0,0,"Shutdown?",True)
         shutConfirm = True
 
