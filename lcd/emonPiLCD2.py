@@ -261,6 +261,7 @@ def updateLCD():
             drawText(0,0,"GSM:")
             drawText(0,14,"NO DEVICE",True)
 
+    """
     if page == 3:
         if r.get("feed1") is not None:
             drawText(0,0,feed1_name + ':'  + r.get("feed1") + feed1_unit)
@@ -293,8 +294,9 @@ def updateLCD():
             drawText(0,0,'Connecting...')
             drawText(0,14,'Please Wait',True)
             page += 1
+    """
 
-    elif page == 6:
+    elif page == 3:
     # Get uptime
         with open('/proc/uptime', 'r') as f:
             seconds = float(f.readline().split()[0])
@@ -303,11 +305,11 @@ def updateLCD():
         drawText(0,0,datetime.now().strftime('%b %d %H:%M'))
         drawText(0,14,'Uptime %.2f days' % (seconds / 86400),True)
 
-    elif page == 7:
+    elif page == 4:
         drawText(0,0,sd_image_version)
         drawText(0,14,"Serial: " + serial_num,True)
 
-    elif page == 8:
+    elif page == 5:
         ret = subprocess.call(ssh_status, shell=True)
         if ret > 0:
             #ssh not running
@@ -319,14 +321,14 @@ def updateLCD():
         drawText(0,14,"Y press & hold",True)
         sshConfirm = False
 
-    elif page == 9:
+    elif page == 6:
         sshConfirm = True
 
-    elif page == 10:
+    elif page == 7:
         drawText(0,0,"Shutdown?")
         drawText(0,14,"Y press & hold",True)
         shutConfirm = False
-    elif page == 11:
+    elif page == 8:
         drawText(0,0,"Shutdown?",True)
         shutConfirm = True
 
