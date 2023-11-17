@@ -306,10 +306,6 @@ def updateLCD():
         drawText(0,14,'Uptime %.2f days' % (seconds / 86400),True)
 
     if page == 4:
-        drawText(0,0,sd_image_version)
-        drawText(0,14,"Serial: " + serial_num,True)
-
-    if page == 5:
         ret = subprocess.call(ssh_status, shell=True)
         if ret > 0:
             #ssh not running
@@ -321,16 +317,21 @@ def updateLCD():
         drawText(0,14,"Y press & hold",True)
         sshConfirm = False
 
-    if page == 6:
+    if page == 5:
         sshConfirm = True
 
-    if page == 7:
+    if page == 6:
         drawText(0,0,"Shutdown?")
         drawText(0,14,"Y press & hold",True)
         shutConfirm = False
-    if page == 8:
+        
+    if page == 7:
         drawText(0,0,"Shutdown?",True)
         shutConfirm = True
+
+    if page == 8:
+        drawText(0,0,sd_image_version)
+        drawText(0,14,"Serial: " + serial_num,True)
 
 
 class IPAddress:
