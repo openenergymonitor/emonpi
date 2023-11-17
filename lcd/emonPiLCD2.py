@@ -91,7 +91,7 @@ lcd_i2c = ['3c']
 # ------------------------------------------------------------------------------------
 
 # Default Startup Page
-max_number_pages = 11
+max_number_pages = 8
 page = default_page
 
 sd_image_version = ''
