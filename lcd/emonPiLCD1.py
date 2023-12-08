@@ -460,7 +460,7 @@ def main():
     # No bounce time increases response time but may result in switch bouncing...
     logger.info("Attaching push button interrupt...")
     try:
-        push_btn = Button(23, pull_up=True, hold_time=5)
+        push_btn = Button(23, pull_up=False, hold_time=5)
         push_btn.when_pressed = buttonPress
         push_btn.when_held = buttonPressLong
     except Exception:
