@@ -15,6 +15,7 @@ import os
 import configparser
 import itertools
 import threading
+import math
 
 import redis
 import paho.mqtt.client as mqtt
@@ -91,7 +92,7 @@ lcd_i2c = ['3c']
 # ------------------------------------------------------------------------------------
 
 # Default Startup Page
-max_number_pages = 8
+max_number_pages = 7
 page = default_page
 screensaver = False
 
@@ -99,6 +100,7 @@ sd_image_version = ''
 
 sshConfirm = False
 shutConfirm = False
+wifiAP_confirm = False
 
 # ------------------------------------------------------------------------------------
 # Start Logging
@@ -112,6 +114,10 @@ ssh_start = "sudo systemctl start ssh > /dev/null"
 ssh_disable = "sudo systemctl disable ssh > /dev/null"
 ssh_stop = "sudo systemctl stop ssh > /dev/null"
 ssh_status = "sudo systemctl status ssh > /dev/null"
+
+wifiAP_start = "sudo systemctl start wpa_supplicant@ap0.service > /dev/null"
+wifiAP_stop = "sudo systemctl start wpa_supplicant@wlan0.service > /dev/null"
+wifiAP_status = "ifconfig | grep 'inet 192.168.4.1'"
 
 oled_last = True
 
@@ -144,14 +150,14 @@ def drawText(x,y,msg,update=False):
 
 
 def buttonPressLong():
-    global screensaver
-    screensaver = False
+    global page
     
     logger.info("Mode button LONG press")
 
-    if sshConfirm:
+    if page == 6:
         ret = subprocess.call(ssh_status, shell=True)
         if ret > 0:
+            drawText(0,0,'Enabling SSH',True)
             #ssh not running, enable & start it
             subprocess.call(ssh_enable, shell=True)
             subprocess.call(ssh_start, shell=True)
@@ -159,6 +165,7 @@ def buttonPressLong():
             drawText(0,0,'SSH Enabled')
             drawText(0,14,'Change password!',True)
         else:
+            drawText(0,0,'Disabling SSH',True)
             #disable ssh
             subprocess.call(ssh_disable, shell=True)
             subprocess.call(ssh_stop, shell=True)
@@ -166,10 +173,30 @@ def buttonPressLong():
             drawText(0,0,'SSH Disabled')
             drawText(0,14,'',True)
 
-    elif shutConfirm:
+    elif page == 7:
         logger.info("Shutting down")
         shutdown()
-
+        
+    elif page == 4:
+        ret = subprocess.call(wifiAP_status, shell=True)       
+        if ret == 0:
+            logger.info("Stopping WiFi AP")
+            drawText(0,0,'Stopping WiFi AP',True)
+            subprocess.call(wifiAP_stop, shell=True)
+            time.sleep(1)
+            drawText(0,0,'WiFi AP Stopped',True)
+            time.sleep(1)
+            page = 3
+            updateLCD()
+        else:
+            logger.info("Starting WiFi AP")
+            drawText(0,0,'Starting WiFi AP',True)
+            subprocess.call(wifiAP_start, shell=True)
+            time.sleep(3)
+            drawText(0,0,'WiFi AP Started',True)
+            time.sleep(1)
+            page = 3
+            updateLCD()
 
 def buttonPress():
     global page
@@ -195,8 +222,6 @@ def updateLCD():
     # Lock thread to avoid LCD being corrupted if a button press interrupt interrupts the LCD update
     with lock:
         global page
-        global sshConfirm
-        global shutConfirm
         global screensaver
 
     # Create object for getting IP addresses of interfaces
@@ -206,13 +231,21 @@ def updateLCD():
         drawClear();
         return
 
-    if not page == 5:
-        sshConfirm = False
-    if not page == 7:
-        shutConfirm = False
+    if page == 0:
+        drawText(0,0,sd_image_version)
+        drawText(0,14,"Serial: " + serial_num,True)
+
+    if page == 1:
+    # Get uptime
+        with open('/proc/uptime', 'r') as f:
+            seconds = float(f.readline().split()[0])
+        r.set('uptime', seconds)
+
+        drawText(0,0,datetime.now().strftime('%b %d %H:%M'))
+        drawText(0,14,'Uptime %.2f days' % (seconds / 86400),True)
 
     # Now display the appropriate LCD page
-    if page == 0:
+    if page == 2:
     # Update ethernet
         eth0ip = ipaddress.get_ip_address('eth0')
         r.set("eth:active", int(bool(eth0ip)))
@@ -224,15 +257,18 @@ def updateLCD():
         if eval(r.get("eth:active")):
             drawText(0,0,"Ethernet: YES")
             drawText(0,14,r.get("eth:ip"),True)
-        elif eval(r.get("wlan:active")) or eval(r.get("gsm:active")):
-            page += 1
+        #elif eval(r.get("wlan:active")) or eval(r.get("gsm:active")):
+        #    page += 1
         else:
             drawText(0,0,"Ethernet:")
             drawText(0,14,"NOT CONNECTED",True)
 
-    if page == 1:
+    if page == 3:
     # Update wifi
         wlan0ip = ipaddress.get_ip_address('wlan0')
+        if not wlan0ip:
+            wlan0ip = ipaddress.get_ip_address('ap0')
+        
         r.set("wlan:active", int(bool(wlan0ip)))
         r.set("wlan:ip", wlan0ip)
 
@@ -252,21 +288,30 @@ def updateLCD():
             if int(r.get("wlan:signallevel")) > 0:
                 drawText(0,0,"WiFi: YES  "+r.get("wlan:signallevel")+"%")
             else:
-                if r.get("wlan:ip") == "192.168.42.1":
+                if r.get("wlan:ip") == "192.168.4.1":
                     drawText(0,0,"WiFi: AP MODE")
                 else:
                     drawText(0,0,"WiFi: YES")
 
             drawText(0,14,r.get("wlan:ip"),True)
-        elif eval(r.get("gsm:active")) or eval(r.get("eth:active")):
-            page += 1
+        #elif eval(r.get("gsm:active")) or eval(r.get("eth:active")):
+        #    page += 1
         else:
             drawText(0,0,"WiFi:")
             drawText(0,14,"NOT CONNECTED",True)
         oled.image(image)
         oled.show() 
 
-    if page == 2:
+    if page == 4:
+        ret = subprocess.call(wifiAP_status, shell=True)       
+        if ret == 0:
+            drawText(0,0,"Disable WiFi AP?")
+        else: 
+            drawText(0,0,"Enable WiFi AP?")
+            
+        drawText(0,14,"Y press & hold",True)
+
+    if page == 5:
     # Update Hi-Link 3G Dongle - connects on eth1
         if ipaddress.get_ip_address("eth1") and gsmhuaweistatus.is_hilink(hilink_device_ip):
             gsm_connection_status = gsmhuaweistatus.return_gsm_connection_status(hilink_device_ip)
@@ -285,51 +330,7 @@ def updateLCD():
             drawText(0,0,"GSM:")
             drawText(0,14,"NO DEVICE",True)
 
-    """
-    if page == 3:
-        if r.get("feed1") is not None:
-            drawText(0,0,feed1_name + ':'  + r.get("feed1") + feed1_unit)
-        else:
-            drawText(0,0,feed1_name + ':'  + "---")
-
-        if r.get("feed2") is not None:
-            drawText(0,14,feed2_name + ':'  + r.get("feed2") + feed2_unit,True)
-        else:
-            drawText(0,14,feed2_name + ':'  + "---",True)
-
-    elif page == 4:
-        vrms = r.get("vrms")
-        pulse = r.get("pulse")
-        if vrms is not None and pulse is not None:
-            drawText(0,0,'VRMS: ' + vrms + 'V')
-            drawText(0,14,'Pulse: ' + pulse + 'p',True)
-        else:
-            drawText(0,0,'Connecting...')
-            drawText(0,14,'Please Wait',True)
-            page += 1
-
-    elif page == 5:
-        temp1 = r.get('temp1')
-        temp2 = r.get('temp2')
-        if temp1 is not None and temp2 is not None:
-            drawText(0,0,'Temp 1: ' + temp1 + 'C')
-            drawText(0,14,'Temp 2: ' + temp2 + 'C',True)
-        else:
-            drawText(0,0,'Connecting...')
-            drawText(0,14,'Please Wait',True)
-            page += 1
-    """
-
-    if page == 3:
-    # Get uptime
-        with open('/proc/uptime', 'r') as f:
-            seconds = float(f.readline().split()[0])
-        r.set('uptime', seconds)
-
-        drawText(0,0,datetime.now().strftime('%b %d %H:%M'))
-        drawText(0,14,'Uptime %.2f days' % (seconds / 86400),True)
-
-    if page == 4:
+    if page == 6:
         ret = subprocess.call(ssh_status, shell=True)
         if ret > 0:
             #ssh not running
@@ -339,23 +340,10 @@ def updateLCD():
             drawText(0,0,"SSH Disable?")
 
         drawText(0,14,"Y press & hold",True)
-        sshConfirm = False
 
-    if page == 5:
-        sshConfirm = True
-
-    if page == 6:
+    if page == 7:
         drawText(0,0,"Shutdown?")
         drawText(0,14,"Y press & hold",True)
-        shutConfirm = False
-        
-    if page == 7:
-        drawText(0,0,"Shutdown?",True)
-        shutConfirm = True
-
-    if page == 8:
-        drawText(0,0,sd_image_version)
-        drawText(0,14,"Serial: " + serial_num,True)
 
 
 class IPAddress:
@@ -494,10 +482,7 @@ def main():
             break
     else:
         sd_image_version = 'N/A'
-    
-    drawText(0,0,sd_image_version)
-    drawText(0,14,"Serial: " + serial_num,True)
-    
+        
     logger.info("SD card image build version: %s", sd_image_version)
     time.sleep(1)
 
@@ -510,8 +495,9 @@ def main():
     logger.info("Attaching push button interrupt...")
     try:
         push_btn = Button(4, pull_up=True, bounce_time=0.1, hold_time=5)
-        push_btn.when_pressed = buttonPress
-        push_btn.when_held = buttonPressLong
+        #push_btn.when_pressed = buttonPress
+        #push_btn.when_held = buttonPressLong
+        
     except Exception:
         logger.error("Failed to attach LCD push button interrupt...")
 
@@ -556,19 +542,58 @@ def main():
     # time.sleep(2)
 
     buttonPress_time = time.time()
+    lcd_update_time = time.time()
 
     page = default_page
+    updateLCD();
+
+    btn_state = 0
+    btn_press_timer = 0
 
     # Enter main loop
     while True:
         now = time.time()
         
+        last_btn_state = btn_state
+        btn_state = push_btn.is_pressed
+        
+        if btn_state != last_btn_state:
+                
+            if btn_state and not last_btn_state:
+                btn_press_timer = now
+                
+            if last_btn_state and not btn_state:
+                press_time = now - btn_press_timer
+                if press_time<=1.0:
+                    buttonPress()
+                
+            if not btn_state:
+                btn_press_timer = 0
+                draw.rectangle((108, 15, 120, 25), outline=0, fill=0)
+                oled.image(image)
+                oled.show()
+                    
+        if btn_state:
+            press_time = math.floor(now - btn_press_timer)
+            if page==4 or page == 6 or page == 7:
+                if press_time>=1.0 and press_time<=5.0:
+                    draw.rectangle((108, 15, 120, 25), outline=0, fill=0)
+                    draw.text((110,14), str(press_time), font=font, fill=255)
+                    oled.image(image)
+                    oled.show()
+                    if press_time==5.0:
+                        buttonPressLong()
+                
+        
         if (now-buttonPress_time)>=59:
             screensaver = True
 
         #Update LCD in case it is left at a screen where values can change (e.g uptime etc)
-        updateLCD()
-        time.sleep(lcd_update_sec)
+        if (now-lcd_update_time)>=10.0:
+            lcd_update_time = now
+            updateLCD()
+            
+        time.sleep(0.1)
 
 if __name__ == '__main__':
     main()
