@@ -62,7 +62,7 @@ echo $$ > $lockfile
 
 # only run wifi-check script if wifi network has been configured
 
-if grep -q "network" /etc/wpa_supplicant/wpa_supplicant.conf
+if grep -q "network" /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
 then
   # We can perform check
   echo "Performing network check for wlan0"
