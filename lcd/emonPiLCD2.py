@@ -92,7 +92,7 @@ lcd_i2c = ['3c']
 # ------------------------------------------------------------------------------------
 
 # Default Startup Page
-max_number_pages = 7
+max_number_pages = 8
 page = default_page
 screensaver = False
 
@@ -154,7 +154,7 @@ def buttonPressLong():
     
     logger.info("Mode button LONG press")
 
-    if page == 6:
+    if page == 7:
         ret = subprocess.call(ssh_status, shell=True)
         if ret > 0:
             drawText(0,0,'Enabling SSH',True)
@@ -173,11 +173,11 @@ def buttonPressLong():
             drawText(0,0,'SSH Disabled')
             drawText(0,14,'',True)
 
-    elif page == 7:
+    elif page == 8:
         logger.info("Shutting down")
         shutdown()
         
-    elif page == 4:
+    elif page == 5:
         ret = subprocess.call(wifiAP_status, shell=True)       
         if ret == 0:
             logger.info("Stopping WiFi AP")
@@ -186,7 +186,7 @@ def buttonPressLong():
             time.sleep(1)
             drawText(0,0,'WiFi AP Stopped',True)
             time.sleep(1)
-            page = 3
+            page = 4
             updateLCD()
         else:
             logger.info("Starting WiFi AP")
@@ -195,7 +195,7 @@ def buttonPressLong():
             time.sleep(3)
             drawText(0,0,'WiFi AP Started',True)
             time.sleep(1)
-            page = 3
+            page = 4
             updateLCD()
 
 def buttonPress():
@@ -266,8 +266,6 @@ def updateLCD():
     if page == 3:
     # Update wifi
         wlan0ip = ipaddress.get_ip_address('wlan0')
-        if not wlan0ip:
-            wlan0ip = ipaddress.get_ip_address('ap0')
         
         r.set("wlan:active", int(bool(wlan0ip)))
         r.set("wlan:ip", wlan0ip)
@@ -288,21 +286,31 @@ def updateLCD():
             if int(r.get("wlan:signallevel")) > 0:
                 drawText(0,0,"WiFi: YES  "+r.get("wlan:signallevel")+"%")
             else:
-                if r.get("wlan:ip") == "192.168.4.1":
-                    drawText(0,0,"WiFi: AP MODE")
-                else:
-                    drawText(0,0,"WiFi: YES")
+                drawText(0,0,"WiFi: YES")
 
             drawText(0,14,r.get("wlan:ip"),True)
-        #elif eval(r.get("gsm:active")) or eval(r.get("eth:active")):
-        #    page += 1
         else:
             drawText(0,0,"WiFi:")
             drawText(0,14,"NOT CONNECTED",True)
         oled.image(image)
-        oled.show() 
+        oled.show()
 
     if page == 4:
+        ap0ip = ipaddress.get_ip_address('ap0')
+        
+        r.set("ap0:active", int(bool(ap0ip)))
+        r.set("ap0:ip", ap0ip)
+
+        if eval(r.get("ap0:active")):
+            drawText(0,0,"WiFi AP: YES")
+            drawText(0,14,r.get("ap0:ip"),True)
+        else:
+            drawText(0,0,"WiFi AP:")
+            drawText(0,14,"DISABLED",True)
+        oled.image(image)
+        oled.show()
+
+    if page == 5:
         ret = subprocess.call(wifiAP_status, shell=True)       
         if ret == 0:
             drawText(0,0,"Disable WiFi AP?")
@@ -311,7 +319,7 @@ def updateLCD():
             
         drawText(0,14,"Y press & hold",True)
 
-    if page == 5:
+    if page == 6:
     # Update Hi-Link 3G Dongle - connects on eth1
         if ipaddress.get_ip_address("eth1") and gsmhuaweistatus.is_hilink(hilink_device_ip):
             gsm_connection_status = gsmhuaweistatus.return_gsm_connection_status(hilink_device_ip)
@@ -330,7 +338,7 @@ def updateLCD():
             drawText(0,0,"GSM:")
             drawText(0,14,"NO DEVICE",True)
 
-    if page == 6:
+    if page == 7:
         ret = subprocess.call(ssh_status, shell=True)
         if ret > 0:
             #ssh not running
@@ -341,7 +349,7 @@ def updateLCD():
 
         drawText(0,14,"Y press & hold",True)
 
-    if page == 7:
+    if page == 8:
         drawText(0,0,"Shutdown?")
         drawText(0,14,"Y press & hold",True)
 
@@ -575,7 +583,7 @@ def main():
                     
         if btn_state:
             press_time = math.floor(now - btn_press_timer)
-            if page==4 or page == 6 or page == 7:
+            if page==5 or page == 7 or page == 8:
                 if press_time>=1.0 and press_time<=5.0:
                     draw.rectangle((108, 15, 120, 25), outline=0, fill=0)
                     draw.text((110,14), str(press_time), font=font, fill=255)
