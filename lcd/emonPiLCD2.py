@@ -117,7 +117,7 @@ ssh_status = "sudo systemctl status ssh > /dev/null"
 
 wifiAP_start = "sudo systemctl enable --now wpa_supplicant@ap0.service > /dev/null"
 wifiAP_stop = "sudo systemctl disable --now wpa_supplicant@ap0.service > /dev/null"
-wifiAP_status = "ifconfig | grep 'inet 192.168.4.1'"
+wifiAP_status = "ifconfig | grep 'inet 192.168.42.1'"
 
 oled_last = True
 
