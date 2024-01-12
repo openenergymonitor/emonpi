@@ -10,7 +10,8 @@ usrdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 # sudo apt update
 
 sudo apt-get install -y python3-smbus i2c-tools python3-rpi.gpio python3-gpiozero
-pip3 install redis paho-mqtt xmltodict requests adafruit-circuitpython-ssd1306
+sudo apt-get install -y libopenjp2-7
+pip3 install redis paho-mqtt xmltodict requests adafruit-circuitpython-ssd1306 Pillow
 
 # Uncomment dtparam=i2c_arm=on
 sudo sed -i "s/^#dtparam=i2c_arm=on/dtparam=i2c_arm=on/" /boot/config.txt
