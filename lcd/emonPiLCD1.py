@@ -40,7 +40,7 @@ mqtt_user = config.get('mqtt', 'mqtt_user')
 mqtt_passwd = config.get('mqtt', 'mqtt_passwd')
 mqtt_host = config.get('mqtt', 'mqtt_host')
 mqtt_port = config.getint('mqtt', 'mqtt_port')
-mqtt_topics = {config.get('mqtt', 'mqtt_emonpi_topic'): 'basedata',
+mqtt_topics = {
                config.get('mqtt', 'mqtt_temp1_topic'): 'temp1',
                config.get('mqtt', 'mqtt_temp2_topic'): 'temp2',
                config.get('mqtt', 'mqtt_feed1_topic'): 'feed1',
@@ -252,36 +252,45 @@ def updateLCD():
             lcd[1] = feed2_name + ':'  + "---"
 
     elif page == 4:
-        basedata = r.get("basedata")
-        vrms = r.get("vrms")
-        pulse = r.get("pulse")
-        if basedata is not None:
-            basedata = basedata.split(",")
-            lcd[0] = 'VRMS: ' + basedata[3] + "V"
-            lcd[1] = 'Pulse: ' + basedata[10] + "p"
-        elif vrms is not None and pulse is not None:
-            lcd[0] = 'VRMS: ' + vrms + 'V'
+        try:
+            vrmsf = float (r.get('vrms'))
+            vrmstext = "{vrms:.2f}V"
+            vrmstext = vrmstext.format(vrms = vrmsf)
+            pulse = r.get("pulse")
+
+            lcd[0] = 'VRMS: ' + vrmstext 
             lcd[1] = 'Pulse: ' + pulse + 'p'
-        else:
-            lcd[0] = 'Connecting...'
-            lcd[1] = 'Please Wait'
-            page += 1
+
+        except:
+            lcd[0] = 'VRMS: ' + "N/A"
+            lcd[1] = 'Pulse : ' + "N/A" 
+            logger.error("Error retreiving vrms/pulse or parsing to float .2f")
+            page +=1
 
     elif page == 5:
-        basedata = r.get("basedata")
-        temp1 = r.get('temp1')
-        temp2 = r.get('temp2')
-        if basedata is not None:
-            basedata = basedata.split(",")
-            lcd[0] = 'Temp 1: ' + basedata[4] + "\0C"
-            lcd[1] = 'Temp 2: ' + basedata[5] + "\0C"
-        elif temp1 is not None and temp2 is not None:
-            lcd[0] = 'Temp 1: ' + temp1 + '\0C'
-            lcd[1] = 'Temp 2: ' + temp2 + '\0C'
-        else:
-            lcd[0] = 'Connecting...'
-            lcd[1] = 'Please Wait'
-            page += 1
+        try:
+            temp1f = float (r.get('temp1'))
+            temp2f = float (r.get('temp2'))
+            temptext = "{temp:.2f}\0C"
+
+            if ( temp1f == 300  ) : 
+                text1 = "N/A" 
+            else:
+                text1 = temptext.format(temp = temp1f)
+
+            if ( temp2f == 300  ) : 
+                text2 = "N/A" 
+            else:
+                text2 = temptext.format(temp = temp2f)
+            
+            lcd[0] = 'Temp 1: ' + text1
+            lcd[1] = 'Temp 2: ' + text2 
+
+        except:
+            lcd[0] = 'Temp 1: ' + "N/A"
+            lcd[1] = 'Temp 2: ' + "N/A" 
+            logger.error("Error retreiving temperatures or parsing to float .2f")
+            page +=1
 
     elif page == 6:
     # Get uptime
