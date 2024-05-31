@@ -15,6 +15,8 @@
 V1.0.0   10/7/2021 Derived from emonLibCM examples and original emonPi sketch, that being derived from 
             https://github.com/openenergymonitor/emonpi/blob/master/Atmega328/emonPi_RFM69CW_RF12Demo_DiscreteSampling
             and emonLibCM example sketches, with config input based on emonTx V3 sketches.
+v1.1.5   06/5/2024 Remove verbose option to give more flash room
+                   Fix TX function to transmit in expected EmonHubOEMInterfacer format
 
 
 Config functions for emonPiCM
@@ -45,7 +47,7 @@ Byte
 #include <EEPROM.h>
 
  // Available Serial Commands
-const PROGMEM char helpText1[] =                                
+const PROGMEM char helpText1[] = 
 "|\n"
 "|Available commands:\n"
 "| l\t\t- list config (terse)\n"
@@ -53,7 +55,6 @@ const PROGMEM char helpText1[] =
 "| r\t\t- restore defaults & restart\n"
 "| s\t\t- save to EEPROM\n"
 "| v\t\t- show version\n"
-"| V<n>\t\t- verbose mode, 1 > ON, 0 > OFF\n"
 "| b<n>\t\t- set r.f. band n = 4 > 433MHz, 8 > 868MHz, 9 > 915MHz (may require hardware change)\n"
 "| p<nn>\t\t- set r.f. power. nn (0 - 31) = -18 dBm to +13 dBm. Default: 25 (+7 dBm)\n"
 "| g<nnn>\t- set Group (OEM default = 210)\n"
@@ -81,8 +82,8 @@ const PROGMEM char helpText1[] =
 "|\t\t\tN.B. Sensors CANNOT be added beyond the array size.\n"
 "| T<ccc>\\n\t- transmit a string.\n"  
 "| w<n>\t\t- n = 0 > radio OFF, n = 1 for Receive ON, n = 2 for Transmit ON, n = 3 for both ON\n" 
-"| z\t\t- set the energy values and pulse count(s) to zero\n" 
-"| ?\t\t- show this again\n|"
+"| z\t\t- set energy values and pulse count(s) to zero\n" 
+"| ?\t\t- help\n|"
 ;
 
 
@@ -123,8 +124,7 @@ static void list_calibration(void)
   Serial.print(F(", period: ")); Serial.println(EEProm.pulse2_period);
   Serial.print(F("|temp_enable: ")); Serial.print(EEProm.temp_enable);
   Serial.print(F(", sensors found: ")); Serial.println(EmonLibCM_getTemperatureSensorCount());
-  if (verbose)
-    printTemperatureSensorAddresses(true);
+  printTemperatureSensorAddresses(true);
 }
 
 static void report_calibration(void)
@@ -153,24 +153,15 @@ static void report_calibration(void)
 static void save_config()
 {
   eepromWrite(eepromSig, (byte *)&EEProm, sizeof(EEProm));
-  if (verbose)
-  {
-    eepromPrint(true);
-    Serial.println(F("\r\n|Config saved\r\n|"));
-  }
+  eepromPrint(true);
+  Serial.println(F("\r\n|Config saved\r\n|"));
 }
 
 static void wipe_eeprom(void)
 {
-  if (verbose)
-  {
-    Serial.print(F("|Resetting..."));
-  }
+  Serial.print(F("|Resetting..."));
   eepromHide(eepromSig);   
-  if (verbose)
-  {
-    Serial.println(F("|Sketch restarting with default config."));
-  }
+  Serial.println(F("|Restarting with default config."));
 }
 
 void softReset(void)
@@ -198,7 +189,6 @@ void getCalibration(void)
     int k1; 
     double k2, k3; 
     char c = Serial.peek();
-    char* msg;
     
     if (!lockout(c))
       switch (c) {
@@ -206,21 +196,10 @@ void getCalibration(void)
         case 'a':
           EEProm.assumedVrms = Serial.parseFloat();
           EmonLibCM_setAssumedVrms(EEProm.assumedVrms);            
-          if (verbose)
-          {
-            Serial.print(F("|Assumed V: "));Serial.println(EEProm.assumedVrms);
-          }
           break;
           
         case 'b':  // set band: 4 = 433, 8 = 868, 9 = 915
           EEProm.RF_freq = bandToFreq(Serial.parseInt());
-          if (verbose)
-          {
-            Serial.print(F("|RF Band = "));
-            if (EEProm.RF_freq == RFM_433MHZ) Serial.println(F("433MHz"));
-            if (EEProm.RF_freq == RFM_868MHZ) Serial.println(F("868MHz"));
-            if (EEProm.RF_freq == RFM_915MHZ) Serial.println(F("915MHz"));
-          }
           rfChanged = true;
           break;
 
@@ -247,10 +226,6 @@ void getCalibration(void)
             k2 = 0.1;
           EmonLibCM_datalog_period(k2); 
           EEProm.period = k2;
-          if (verbose)
-          {
-            Serial.print(F("|datalog period ")); Serial.print(k2);Serial.println(F(" s"));
-          }
           break;
           
         case 'f':
@@ -259,18 +234,10 @@ void getCalibration(void)
           */
           k1 = Serial.parseFloat();
           EEProm.lineFreq = k1;
-          if (verbose)
-          {
-            Serial.print(F("|freq ")); Serial.println(EEProm.lineFreq);
-          }
           break;
           
         case 'g':  // set network group
           EEProm.networkGroup = Serial.parseInt();
-          if (verbose)
-          {
-            Serial.print(F("|Group ")); Serial.println(EEProm.networkGroup);
-          }
           rfChanged = true;
           break;
 
@@ -311,10 +278,6 @@ void getCalibration(void)
               break;
 
             default : ;
-          }
-          if (verbose)
-          {
-            Serial.print(F("|k"));Serial.print(k1);Serial.print(F(" "));Serial.print(k2);Serial.print(F(" "));Serial.println(k3);
           }
           break;
             
@@ -357,43 +320,17 @@ void getCalibration(void)
               EEProm.pulse2_period = k2;
               break;
           }
-          if (verbose)
-          {
-            Serial.print(F("|Pulses: "));
-            switch (k1) {
-              case 0 : Serial.println(F("off")); 
-                break;
-              
-              case 1 : Serial.print(F("Ch 1: "));
-                Serial.print(k2);
-                Serial.println(F(" ms"));
-                break;
-              
-              case 2 : Serial.print(F("Ch 2: "));
-                Serial.print(k2);
-                Serial.println(F(" ms"));
-                break;
-            }
-          }
           break;        
     
         case 'n':
         case 'i':  //  Set NodeID - range expected: 1 - 60
           EEProm.nodeID = Serial.parseInt();
           EEProm.nodeID = constrain(EEProm.nodeID, 1, 63);
-          if (verbose)
-          {
-            Serial.print(F("|Node ")); Serial.println(EEProm.nodeID);
-          }
           rfChanged = true;
           break;
 
         case 'p': // set RF power level
           EEProm.rfPower = (Serial.parseInt() & 0x1F);
-          if (verbose)
-          {
-            Serial.print(F("|p: "));Serial.print((EEProm.rfPower & 0x1F) - 18);Serial.println(F(" dBm"));
-          }
           rfChanged = true;
           break; 
 
@@ -412,45 +349,84 @@ void getCalibration(void)
           set_temperatures();
           break;
 
-        case 'T': // write alpha-numeric string to be transmitted.
-          msg = outmsg;
-          {
-            char c = 0;
-            Serial.read();  // discard 'w'
-            while (c != '\n' && outmsgLength < MAXMSG)
-            {
-              c = Serial.read();
-              if (c > 31 && c < 127)
-              {
-                *msg++ = c;
-                outmsgLength++;
+case 'T': {
+
+        // split the data into its parts
+
+        char *strtokIndx; // this is used by strtok() as an index
+        char *endofstring;
+        int numChars = 250;
+        char receivedChars[numChars];    // enough to receive a CSV line of 62 3-digit values
+        byte ndx = 0;                    // Where we are in the receivedChars buffer
+        unsigned long serTimeout = 100; // 100 msec serial timeout
+
+        receivedChars[0] = '\0';
+        Serial.read(); // eat the 'T'
+
+        serTimeout = millis() + serTimeout;
+
+        while (millis() < serTimeout) {
+
+          while (Serial.available() > 0) {
+            char c = Serial.read();
+            if (c != 10 && c != 13) {
+              receivedChars[ndx] = c;
+              ndx++;
+              if (ndx >= numChars) {
+                // stop buffer overrun
+                ndx = numChars - 1;
               }
+            } else {
+              serTimeout = millis() - 100; //kill timeout loop
+              break;
             }
-          }          
-          break;
+          }
+        }
+        receivedChars[ndx] = '\0';
+
+        strtokIndx = strtok(receivedChars, ","); // setup and find the first characters before , or space
+        while (strtokIndx != NULL && strtokIndx != 0) {
+
+          long txDataByte = strtol(strtokIndx, &endofstring, 10); // convert this part to an integer
+          if ((endofstring == strtokIndx) || (txDataByte < 0 || txDataByte > 255)) {
+            Serial.print(F("Tx Data invalid each byte must be between 0 & 255:") );
+            Serial.println(F("Usage:T dest,byte1,byteN (Max bytes=60)"));
+            outmsgLength = 0; // make sure invalid data not sent
+            break;
+          } else {
+
+            if (outmsgLength == 0) {
+              // first byte should be the destination ID, 0 for broadcast
+              // This doesn't become part of the message
+              txDestId = txDataByte;
+              outmsgLength++;
+            } else {
+              outmsg[outmsgLength - 1] = txDataByte; // outmsg index is always - 1 due to destID not part of outmsg
+              outmsgLength++;
+            }
+          }
+          strtokIndx = strtok(NULL, ", "); // get the next characters
+        }
+
+        if (outmsgLength > 1) { // outmsgLength must be >1, byte1 = destid, byteN=payload
+          outmsgLength--;       // increased above artificially when dealing with txDestId
+        } else {
+          outmsgLength = 0; // If we only receive a single byte, we would have destId with no payload
+        }
+
+        break;
+      }
         
         case 'v': // print firmware version
           Serial.print(F("|emonPi CM V")); printVersion();
           break;
 
-        case 'V': // Verbose mode
-          /*
-          * Format expected: V0 | V1
-          */
-          verbose = (bool)Serial.parseInt();    
-          Serial.print(F("|Verbose mode "));Serial.println(verbose?F("on"):F("off"));
-         break;
-          
         case 'w':
           /*
           * Wireless off = 0, tx = 1, rx = 2, tx+rx  = 3
           * Format expected: w0 - w3 
           */
           EEProm.rfOn = Serial.parseInt();
-          if (verbose)
-          {
-            Serial.print(F("|Radio "));;Serial.println(EEProm.rfOn);
-          }
           break;
 
         case 'z':
