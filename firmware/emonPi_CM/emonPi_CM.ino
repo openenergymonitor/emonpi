@@ -15,7 +15,7 @@
 //----------------------------emonPi Firmware Version---------------------------------------------------------------------------------------- 
 */
 
-const byte firmware_version[3] = {1,1,4};
+const byte firmware_version[3] = {1,1,5};
 /*
 V1.0.0   10/7/2021 Derived from emonLibCM examples and original emonPi sketch, that being derived from 
             https://github.com/openenergymonitor/emonpi/blob/master/Atmega328/emonPi_RFM69CW_RF12Demo_DiscreteSampling
@@ -26,6 +26,9 @@ v1.1.2   28/3/2023 Fix missing ACKRequested sendACK
 v1.1.3   04/4/2023 Updated to use cut down version of RFM69 LowPowerLabs library
                    Updated to match latest EmonLibCM library and emonPiFrontEndCM sketch from Robert
 v1.1.4   19/4/2023 Faster baud rate 115200 and reduced delay in the main loop to improve radio performance
+v1.1.5   06/5/2024 Fix RX print_frame when using JEELIB_NATIVE format
+                   Remove verbose option to give more flash room
+                   Fix TX function to transmit in expected EmonHubOEMInterfacer format
 
 
 emonhub.conf node decoder (assuming Node 5):
@@ -56,7 +59,7 @@ emonhub.conf node decoder (assuming Node 5):
   #include <RFM69_LPL.h>
   RFM69 radio;
 #else
-  #include "spi.h"                                                       // Requires "RFM69 Native" JeeLib Driver
+  //#include "spi.h"                                                       // Requires "RFM69 Native" JeeLib Driver
   #include "rf69.h"
   RF69<SpiDev10> rf;
 #endif
@@ -96,7 +99,6 @@ unsigned long backlightOn;
 
 //----------------------------emonPi Settings------------------------------------------------------------------------------------------------
 bool debug                      = true;
-bool verbose                    = false;
 const unsigned long BAUD_RATE   = 115200;
 
 
@@ -349,7 +351,7 @@ void loop()
 
 	if ((EEProm.rfOn & RFTX) && outmsgLength) {                           //if command 'outmsg' is waiting to be sent then let's send it
     digitalWrite(LEDpin, HIGH);
-    Serial.print ("Sending ") ; Serial.print((word) outmsgLength); Serial.print(" bytes "); Serial.print("to node " ); Serial.println(txDestId) ;
+    Serial.print (F("Sending ")) ; Serial.print((word) outmsgLength); Serial.print(F(" bytes to node ") ); Serial.println(txDestId) ;
     #if RadioFormat == RFM69_LOW_POWER_LABS
       radio.send(0, (void *)outmsg, outmsgLength);
     #else
@@ -463,7 +465,11 @@ void print_frame(int len)
   Serial.print(F(" "));
   Serial.print(rfInfo.srcNode);        // Extract and print node ID
   Serial.print(F(" "));
+ #if RadioFormat == RFM69_LOW_POWER_LABS
   for (byte i = 0; i < len; ++i) 
+#else
+  for (byte i = 2; i < len; ++i) 
+#endif
   {
     Serial.print((word)nativeMsg[i]);
     Serial.print(F(" "));
@@ -570,7 +576,7 @@ void Startup_to_LCD(int current_lcd_i2c_addr)                          // Print 
 
   lcd.clear();
   lcd.print(F("Detected: ")); lcd.print(EmonLibCM_getTemperatureSensorCount());
-  lcd.setCursor(0, 1); lcd.print(F("DS18B20 Temp"));
+  lcd.setCursor(0, 1); lcd.print(F("W1 Temp"));
   delay(2000);
 
   lcd.clear();
